@@ -113,10 +113,7 @@ class PexelsService:
                 return response
             except HTTPError as e:
                 # Rate limit check
-                if (
-                    e.response.status_code == 429
-                    and attempt < self.max_retries - 1
-                ):
+                if e.response.status_code == 429 and attempt < self.max_retries - 1:
                     retry_after = int(
                         e.response.headers.get("Retry-After", self.retry_delay)
                     )
@@ -151,7 +148,7 @@ class PexelsService:
                 f"{self.base_url}/search",
                 {"query": query, "per_page": per_page},
             )
-            return response.json()["photos"]
+            return cast(list[Photo], response.json()["photos"])
         except Exception as e:
             logger.error("Error searching Pexels: %s", str(e))
             return []

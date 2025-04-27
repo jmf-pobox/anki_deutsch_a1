@@ -5,14 +5,27 @@ import shutil
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import TypedDict
 
-import pandas as pd  # type: ignore
+import pandas as pd
+from pandas import DataFrame
 
 from langlearn.models.adjective import Adjective
 from langlearn.services.anthropic_service import AnthropicService
 from langlearn.services.pexels_service import PexelsService
 
 logger = logging.getLogger(__name__)
+
+
+class AdjectiveRow(TypedDict):
+    """Type definition for adjective rows in the CSV file."""
+
+    word: str
+    english: str
+    example: str
+    comparative: str
+    superlative: str | None
+    image_path: str | None
 
 
 class ImageEnricher:
@@ -72,22 +85,32 @@ class ImageEnricher:
             self._backup_csv(csv_file)
 
             # Read the CSV file
-            df = pd.read_csv(csv_file)  # type: ignore
+            df: DataFrame = pd.read_csv(  # type: ignore[call-overload]
+                csv_file,
+                dtype={
+                    "word": str,
+                    "english": str,
+                    "example": str,
+                    "comparative": str,
+                    "superlative": str,
+                    "image_path": str,
+                },
+            )
 
             # Add image_path column if it doesn't exist
             if "image_path" not in df.columns:
                 df["image_path"] = ""
 
             # Process each adjective
-            for index, row in df.iterrows():
+            for index, row in df.iterrows():  # type: ignore[attr-defined]
                 try:
                     # Create a model instance for the Anthropic service
-                    model = Adjective(
-                        word=row["word"],  # type: ignore
-                        english=row["english"],  # type: ignore
-                        example=row["example"],  # type: ignore
-                        comparative=row["comparative"],  # type: ignore
-                        superlative=row.get("superlative", None),  # type: ignore
+                    model: Adjective = Adjective(
+                        word=str(row["word"]),  # type: ignore[arg-type]
+                        english=str(row["english"]),  # type: ignore[arg-type]
+                        example=str(row["example"]),  # type: ignore[arg-type]
+                        comparative=str(row["comparative"]),  # type: ignore[arg-type]
+                        superlative=str(row.get("superlative", None)) if row.get("superlative") else None,  # type: ignore[arg-type]
                     )
 
                     # Generate image filename
@@ -108,32 +131,32 @@ class ImageEnricher:
                             search_query, str(image_path)
                         ):
                             # Use absolute path when storing in CSV
-                            df.at[index, "image_path"] = str(image_path.absolute())
+                            df.at[index, "image_path"] = str(image_path.absolute())  # type: ignore[attr-defined]
                             logger.debug(
                                 "Successfully enriched adjective: %s with image",
-                                row["word"],  # type: ignore
+                                row["word"],  # type: ignore[arg-type]
                             )
                         else:
                             logger.error(
                                 "Failed to download image for adjective: %s",
-                                row["word"],  # type: ignore
+                                row["word"],  # type: ignore[arg-type]
                             )
                         self._rate_limit()  # Rate limit between API calls
                     else:
                         logger.debug(
                             "Image already exists for adjective: %s",
-                            row["word"],  # type: ignore
+                            row["word"],  # type: ignore[arg-type]
                         )
 
                 except Exception as e:
                     logger.error(
                         "Error enriching adjective %s: %s",
-                        row["word"],  # type: ignore
+                        row["word"],  # type: ignore[arg-type]
                         str(e),
                     )
 
             # Save the updated CSV
-            df.to_csv(csv_file, index=False)  # type: ignore
+            df.to_csv(csv_file, index=False)
             logger.info("Successfully enriched adjectives CSV with images")
 
         except Exception as e:

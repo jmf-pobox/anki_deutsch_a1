@@ -57,6 +57,7 @@ class CredentialManager:
         with contextlib.suppress(PasswordDeleteError):
             keyring.delete_password(self._app_name, username)
 
+
 def main() -> None:
     # Create a credential manager for your application
     key: str = "ANTHROPIC_API_KEY"

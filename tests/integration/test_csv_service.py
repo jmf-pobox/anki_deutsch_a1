@@ -67,7 +67,7 @@ def test_read_prepositions(tmp_path: Path) -> None:
         "preposition,english,case,example1,example2\n"
         "in,in,Accusative/Dative,Ich gehe in die Schule. (ACC),"
         "Ich bin in der Schule. (DAT)\n"
-        'auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch. (ACC),'
+        "auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch. (ACC),"
         '"Das Buch liegt auf dem Tisch. (DAT)"'
     )
 
