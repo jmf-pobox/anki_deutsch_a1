@@ -5,7 +5,7 @@ import logging.handlers
 import random
 import time
 from pathlib import Path
-from typing import Any, TypedDict, cast
+from typing import Any, Literal, TypedDict, cast
 
 import requests
 from requests.exceptions import HTTPError
@@ -68,6 +68,18 @@ class Photo(TypedDict):
 
 class PexelsService:
     """Service for interacting with the Pexels API."""
+
+    # Define valid size options as a type
+    PhotoSize = Literal[
+        "original",
+        "large2x",
+        "large",
+        "medium",
+        "small",
+        "portrait",
+        "landscape",
+        "tiny",
+    ]
 
     def __init__(self) -> None:
         """Initialize the PexelsService."""
@@ -193,7 +205,7 @@ class PexelsService:
             logger.error("Error downloading image: %s", str(e))
             return False
 
-    def get_image_url(self, query: str, size: str = "medium") -> str | None:
+    def get_image_url(self, query: str, size: PhotoSize = "medium") -> str | None:
         """Get the URL of an image from Pexels.
 
         Args:
@@ -210,7 +222,7 @@ class PexelsService:
                 return None
 
             photo: Photo = photos[0]
-            url: str = cast("str", photo["src"][size])
+            url: str = photo["src"][size]
             return url
         except Exception as e:
             logger.error("Error getting image URL: %s", str(e))

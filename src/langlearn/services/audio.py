@@ -4,11 +4,17 @@ import hashlib
 import logging
 import logging.handlers
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, TypedDict
 
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
-from mypy_boto3_polly.literals import LanguageCodeType, VoiceIdType
+from mypy_boto3_polly.literals import (
+    EngineType,
+    LanguageCodeType,
+    OutputFormatType,
+    TextTypeType,
+    VoiceIdType,
+)
 from mypy_boto3_polly.type_defs import SynthesizeSpeechOutputTypeDef
 
 if TYPE_CHECKING:
@@ -39,6 +45,15 @@ console_handler.setFormatter(
     logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 )
 logger.addHandler(console_handler)
+
+
+class PollyRequestParams(TypedDict):
+    Text: str
+    TextType: TextTypeType
+    VoiceId: VoiceIdType
+    LanguageCode: LanguageCodeType
+    OutputFormat: OutputFormatType
+    Engine: EngineType
 
 
 class AudioService:
@@ -103,13 +118,13 @@ class AudioService:
             logger.debug("SSML length: %d", len(ssml_text))
 
             # Log the full request parameters
-            request_params = {
+            request_params: PollyRequestParams = {
                 "Text": ssml_text,
-                "TextType": "ssml",
-                "VoiceId": cast("VoiceIdType", self.voice_id),
-                "LanguageCode": cast("LanguageCodeType", self.language_code),
-                "OutputFormat": "mp3",
-                "Engine": "neural",  # Daniel requires the neural engine
+                "TextType": "ssml",  # type: ignore[assignment]
+                "VoiceId": self.voice_id,
+                "LanguageCode": self.language_code,
+                "OutputFormat": "mp3",  # type: ignore[assignment]
+                "Engine": "neural",  # type: ignore[assignment] # Daniel requires the neural engine
             }
             logger.debug("AWS Polly request parameters: %s", request_params)
 
@@ -131,7 +146,7 @@ class AudioService:
         except ClientError as e:
             logger.error("Error generating audio: %s", e)
             logger.error("Error details: %s", e.response)
-            logger.error("Failed SSML: %s", ssml_text)  # Log the SSML that failed
+            logger.error("Failed SSML: %s", ssml_text) #type: ignore # Log the SSML that failed
             raise
 
     def _save_audio_file(
