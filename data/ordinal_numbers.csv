@@ -1,0 +1,121 @@
+number,word,english,case,gender,example
+1st,erste,first,Nominativ,masculine,Das ist der erste Tag in Deutschland.
+1st,erste,first,Nominativ,feminine,Das ist die erste Woche im Jahr.
+1st,erste,first,Nominativ,neuter,Das ist das erste Mal.
+1st,erste,first,Akkusativ,masculine,Ich sehe den ersten Tag des Monats.
+1st,erste,first,Akkusativ,feminine,Ich erlebe die erste Woche in Berlin.
+1st,erste,first,Akkusativ,neuter,Ich sehe das erste Mal den Ozean.
+1st,erste,first,Dativ,masculine,Ich gebe dem ersten Schüler das Buch.
+1st,erste,first,Dativ,feminine,Ich helfe der ersten Studentin.
+1st,erste,first,Dativ,neuter,Ich gebe dem ersten Kind ein Geschenk.
+1st,erste,first,Genitiv,masculine,Das ist das Ende des ersten Tages.
+1st,erste,first,Genitiv,feminine,Das ist der Anfang der ersten Woche.
+1st,erste,first,Genitiv,neuter,Das ist die Bedeutung des ersten Mals.
+2nd,zweite,second,Nominativ,masculine,Das ist der zweite Versuch.
+2nd,zweite,second,Nominativ,feminine,Das ist die zweite Chance.
+2nd,zweite,second,Nominativ,neuter,Das ist das zweite Mal.
+2nd,zweite,second,Akkusativ,masculine,Ich mache den zweiten Versuch.
+2nd,zweite,second,Akkusativ,feminine,Ich nutze die zweite Chance.
+2nd,zweite,second,Akkusativ,neuter,Ich sehe das zweite Mal den Film.
+2nd,zweite,second,Dativ,masculine,Ich helfe dem zweiten Schüler.
+2nd,zweite,second,Dativ,feminine,Ich gebe der zweiten Studentin das Buch.
+2nd,zweite,second,Dativ,neuter,Ich gebe dem zweiten Kind ein Spielzeug.
+2nd,zweite,second,Genitiv,masculine,Das ist das Ergebnis des zweiten Versuchs.
+2nd,zweite,second,Genitiv,feminine,Das ist der Wert der zweiten Chance.
+2nd,zweite,second,Genitiv,neuter,Das ist die Bedeutung des zweiten Mals.
+3rd,dritte,third,Nominativ,masculine,Das ist der dritte Kaffee heute.
+3rd,dritte,third,Nominativ,feminine,Das ist die dritte Tasse Kaffee.
+3rd,dritte,third,Nominativ,neuter,Das ist das dritte Mal.
+3rd,dritte,third,Akkusativ,masculine,Ich trinke den dritten Kaffee.
+3rd,dritte,third,Akkusativ,feminine,Ich bestelle die dritte Tasse.
+3rd,dritte,third,Akkusativ,neuter,Ich sehe das dritte Mal den Sonnenuntergang.
+3rd,dritte,third,Dativ,masculine,Ich gebe dem dritten Gast das Getränk.
+3rd,dritte,third,Dativ,feminine,Ich helfe der dritten Kellnerin.
+3rd,dritte,third,Dativ,neuter,Ich gebe dem dritten Kind ein Eis.
+3rd,dritte,third,Genitiv,masculine,Das ist der Geschmack des dritten Kaffees.
+3rd,dritte,third,Genitiv,feminine,Das ist der Preis der dritten Tasse.
+3rd,dritte,third,Genitiv,neuter,Das ist die Bedeutung des dritten Mals.
+4th,vierte,fourth,Nominativ,masculine,Das ist der vierte Besuch in Berlin.
+4th,vierte,fourth,Nominativ,feminine,Das ist die vierte Reise nach Deutschland.
+4th,vierte,fourth,Nominativ,neuter,Das ist das vierte Mal.
+4th,vierte,fourth,Akkusativ,masculine,Ich plane den vierten Besuch.
+4th,vierte,fourth,Akkusativ,feminine,Ich buche die vierte Reise.
+4th,vierte,fourth,Akkusativ,neuter,Ich sehe das vierte Mal die Stadt.
+4th,vierte,fourth,Dativ,masculine,Ich erzähle dem vierten Gast die Geschichte.
+4th,vierte,fourth,Dativ,feminine,Ich zeige der vierten Touristin die Sehenswürdigkeiten.
+4th,vierte,fourth,Dativ,neuter,Ich gebe dem vierten Kind eine Karte.
+4th,vierte,fourth,Genitiv,masculine,Das ist der Zweck des vierten Besuchs.
+4th,vierte,fourth,Genitiv,feminine,Das ist der Grund der vierten Reise.
+4th,vierte,fourth,Genitiv,neuter,Das ist die Bedeutung des vierten Mals.
+5th,fünfte,fifth,Nominativ,masculine,Das ist der fünfte Deutschkurs.
+5th,fünfte,fifth,Nominativ,feminine,Das ist die fünfte Lektion.
+5th,fünfte,fifth,Nominativ,neuter,Das ist das fünfte Mal.
+5th,fünfte,fifth,Akkusativ,masculine,Ich besuche den fünften Deutschkurs.
+5th,fünfte,fifth,Akkusativ,feminine,Ich lerne die fünfte Lektion.
+5th,fünfte,fifth,Akkusativ,neuter,Ich sehe das fünfte Mal den Film.
+5th,fünfte,fifth,Dativ,masculine,Ich erkläre dem fünften Schüler die Grammatik.
+5th,fünfte,fifth,Dativ,feminine,Ich helfe der fünften Studentin.
+5th,fünfte,fifth,Dativ,neuter,Ich gebe dem fünften Kind ein Buch.
+5th,fünfte,fifth,Genitiv,masculine,Das ist das Niveau des fünften Deutschkurses.
+5th,fünfte,fifth,Genitiv,feminine,Das ist der Inhalt der fünften Lektion.
+5th,fünfte,fifth,Genitiv,neuter,Das ist die Bedeutung des fünften Mals.
+6th,sechste,sixth,Nominativ,masculine,Das ist der sechste Monat hier.
+6th,sechste,sixth,Nominativ,feminine,Das ist die sechste Woche im Kurs.
+6th,sechste,sixth,Nominativ,neuter,Das ist das sechste Mal.
+6th,sechste,sixth,Akkusativ,masculine,Ich erlebe den sechsten Monat in Deutschland.
+6th,sechste,sixth,Akkusativ,feminine,Ich verbringe die sechste Woche im Ausland.
+6th,sechste,sixth,Akkusativ,neuter,Ich sehe das sechste Mal den Sonnenaufgang.
+6th,sechste,sixth,Dativ,masculine,Ich erzähle dem sechsten Gast von meinen Erfahrungen.
+6th,sechste,sixth,Dativ,feminine,Ich helfe der sechsten Studentin.
+6th,sechste,sixth,Dativ,neuter,Ich gebe dem sechsten Kind ein Spiel.
+6th,sechste,sixth,Genitiv,masculine,Das ist das Ende des sechsten Monats.
+6th,sechste,sixth,Genitiv,feminine,Das ist der Anfang der sechsten Woche.
+6th,sechste,sixth,Genitiv,neuter,Das ist die Bedeutung des sechsten Mals.
+7th,siebte,seventh,Nominativ,masculine,Das ist der siebte Versuch.
+7th,siebte,seventh,Nominativ,feminine,Das ist die siebte Chance.
+7th,siebte,seventh,Nominativ,neuter,Das ist das siebte Mal.
+7th,siebte,seventh,Akkusativ,masculine,Ich mache den siebten Versuch.
+7th,siebte,seventh,Akkusativ,feminine,Ich nutze die siebte Chance.
+7th,siebte,seventh,Akkusativ,neuter,Ich sehe das siebte Mal den Film.
+7th,siebte,seventh,Dativ,masculine,Ich gebe dem siebten Schüler eine Chance.
+7th,siebte,seventh,Dativ,feminine,Ich helfe der siebten Studentin.
+7th,siebte,seventh,Dativ,neuter,Ich gebe dem siebten Kind ein Geschenk.
+7th,siebte,seventh,Genitiv,masculine,Das ist das Ergebnis des siebten Versuchs.
+7th,siebte,seventh,Genitiv,feminine,Das ist der Wert der siebten Chance.
+7th,siebte,seventh,Genitiv,neuter,Das ist die Bedeutung des siebten Mals.
+8th,achte,eighth,Nominativ,masculine,Das ist der achte Tag in Folge.
+8th,achte,eighth,Nominativ,feminine,Das ist die achte Stunde des Tages.
+8th,achte,eighth,Nominativ,neuter,Das ist das achte Mal.
+8th,achte,eighth,Akkusativ,masculine,Ich erlebe den achten Tag ohne Regen.
+8th,achte,eighth,Akkusativ,feminine,Ich verbringe die achte Stunde im Büro.
+8th,achte,eighth,Akkusativ,neuter,Ich sehe das achte Mal den Sonnenuntergang.
+8th,achte,eighth,Dativ,masculine,Ich erzähle dem achten Gast von meinem Urlaub.
+8th,achte,eighth,Dativ,feminine,Ich helfe der achten Kollegin.
+8th,achte,eighth,Dativ,neuter,Ich gebe dem achten Kind ein Spielzeug.
+8th,achte,eighth,Genitiv,masculine,Das ist das Ende des achten Tages.
+8th,achte,eighth,Genitiv,feminine,Das ist der Beginn der achten Stunde.
+8th,achte,eighth,Genitiv,neuter,Das ist die Bedeutung des achten Mals.
+9th,neunte,ninth,Nominativ,masculine,Das ist der neunte Besuch im Museum.
+9th,neunte,ninth,Nominativ,feminine,Das ist die neunte Ausstellung.
+9th,neunte,ninth,Nominativ,neuter,Das ist das neunte Mal.
+9th,neunte,ninth,Akkusativ,masculine,Ich plane den neunten Besuch im Museum.
+9th,neunte,ninth,Akkusativ,feminine,Ich besuche die neunte Ausstellung.
+9th,neunte,ninth,Akkusativ,neuter,Ich sehe das neunte Mal die Gemälde.
+9th,neunte,ninth,Dativ,masculine,Ich zeige dem neunten Gast die Ausstellung.
+9th,neunte,ninth,Dativ,feminine,Ich erkläre der neunten Besucherin die Kunstwerke.
+9th,neunte,ninth,Dativ,neuter,Ich gebe dem neunten Kind einen Katalog.
+9th,neunte,ninth,Genitiv,masculine,Das ist der Zweck des neunten Besuchs.
+9th,neunte,ninth,Genitiv,feminine,Das ist der Inhalt der neunten Ausstellung.
+9th,neunte,ninth,Genitiv,neuter,Das ist die Bedeutung des neunten Mals.
+10th,zehnte,tenth,Nominativ,masculine,Das ist der zehnte Deutschtest.
+10th,zehnte,tenth,Nominativ,feminine,Das ist die zehnte Aufgabe.
+10th,zehnte,tenth,Nominativ,neuter,Das ist das zehnte Mal.
+10th,zehnte,tenth,Akkusativ,masculine,Ich schreibe den zehnten Deutschtest.
+10th,zehnte,tenth,Akkusativ,feminine,Ich löse die zehnte Aufgabe.
+10th,zehnte,tenth,Akkusativ,neuter,Ich sehe das zehnte Mal die Lösung.
+10th,zehnte,tenth,Dativ,masculine,Ich erkläre dem zehnten Schüler die Aufgabe.
+10th,zehnte,tenth,Dativ,feminine,Ich helfe der zehnten Studentin.
+10th,zehnte,tenth,Dativ,neuter,Ich gebe dem zehnten Kind ein Heft.
+10th,zehnte,tenth,Genitiv,masculine,Das ist das Ergebnis des zehnten Tests.
+10th,zehnte,tenth,Genitiv,feminine,Das ist der Schwierigkeitsgrad der zehnten Aufgabe.
+10th,zehnte,tenth,Genitiv,neuter,Das ist die Bedeutung des zehnten Mals. 

@@ -1,0 +1,37 @@
+pronoun,english,case,form,example
+ich,I,nominative,ich,Ich gehe nach Hause.
+ich,I,accusative,mich,Er sieht mich.
+ich,I,dative,mir,Gib mir das Buch.
+ich,I,genitive,meiner,Das ist das Haus meiner Eltern.
+du,you (informal),nominative,du,Du bist mein Freund.
+du,you (informal),accusative,dich,Ich sehe dich.
+du,you (informal),dative,dir,Ich gebe dir das Buch.
+du,you (informal),genitive,deiner,Das ist das Haus deiner Eltern.
+er,he,nominative,er,Er ist mein Bruder.
+er,he,accusative,ihn,Ich sehe ihn.
+er,he,dative,ihm,Ich gebe ihm das Buch.
+er,he,genitive,seiner,Das ist das Haus seiner Eltern.
+sie,she,nominative,sie,Sie ist meine Schwester.
+sie,she,accusative,sie,Ich sehe sie.
+sie,she,dative,ihr,Ich gebe ihr das Buch.
+sie,she,genitive,ihrer,Das ist das Haus ihrer Eltern.
+es,it,nominative,es,Es ist mein Auto.
+es,it,accusative,es,Ich sehe es.
+es,it,dative,ihm,Ich gebe ihm das Buch.
+es,it,genitive,seiner,Das ist das Haus seiner Eltern.
+wir,we,nominative,wir,Wir sind Freunde.
+wir,we,accusative,uns,Er sieht uns.
+wir,we,dative,uns,Er gibt uns das Buch.
+wir,we,genitive,unser,Das ist das Haus unserer Eltern.
+ihr,you (plural informal),nominative,ihr,Ihr seid meine Freunde.
+ihr,you (plural informal),accusative,euch,Ich sehe euch.
+ihr,you (plural informal),dative,euch,Ich gebe euch das Buch.
+ihr,you (plural informal),genitive,euer,Das ist das Haus eurer Eltern.
+sie,they,nominative,sie,Sie sind meine Freunde.
+sie,they,accusative,sie,Ich sehe sie.
+sie,they,dative,ihnen,Ich gebe ihnen das Buch.
+sie,they,genitive,ihrer,Das ist das Haus ihrer Eltern.
+Sie,you (formal),nominative,Sie,Sie sind mein Professor.
+Sie,you (formal),accusative,Sie,Ich sehe Sie.
+Sie,you (formal),dative,Ihnen,Ich gebe Ihnen das Buch.
+Sie,you (formal),genitive,Ihrer,Das ist das Haus Ihrer Eltern. 

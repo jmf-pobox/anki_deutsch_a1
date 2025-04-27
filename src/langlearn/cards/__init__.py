@@ -1,0 +1,1 @@
+"""Anki card generation functionality."""

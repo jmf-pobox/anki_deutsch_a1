@@ -1,0 +1,66 @@
+number,word,english,example
+2,zwei,two,Es gibt zwei Äpfel auf dem Tisch.
+3,drei,three,Wir haben drei Kinder.
+4,vier,four,Das Buch hat vier Kapitel.
+5,fünf,five,Er arbeitet fünf Tage pro Woche.
+6,sechs,six,Es sind sechs Personen im Raum.
+7,sieben,seven,Sie hat sieben Katzen.
+8,acht,eight,Das Konzert beginnt um acht Uhr.
+9,neun,nine,Es sind noch neun Tage bis Weihnachten.
+10,zehn,ten,Das Meeting dauert zehn Minuten.
+11,elf,eleven,Es sind elf Spieler im Team.
+12,zwölf,twelve,Es ist zwölf Uhr mittags.
+13,dreizehn,thirteen,Er ist dreizehn Jahre alt.
+14,vierzehn,fourteen,Sie hat vierzehn Bücher gelesen.
+15,fünfzehn,fifteen,Es sind fünfzehn Kilometer bis zur Stadt.
+16,sechzehn,sixteen,Das Haus hat sechzehn Zimmer.
+17,siebzehn,seventeen,Es sind siebzehn Grad Celsius.
+18,achtzehn,eighteen,Er ist achtzehn Jahre alt.
+19,neunzehn,nineteen,Sie hat neunzehn Euro bezahlt.
+20,zwanzig,twenty,Es sind zwanzig Minuten vergangen.
+30,dreißig,thirty,Das Ticket kostet dreißig Euro.
+40,vierzig,forty,Es sind vierzig Kilometer bis zum Flughafen.
+50,fünfzig,fifty,Er hat fünfzig Bücher in seiner Sammlung.
+60,sechzig,sixty,Das Konzert dauert sechzig Minuten.
+70,siebzig,seventy,Es sind siebzig Prozent der Stimmen.
+80,achtzig,eighty,Das Haus ist achtzig Jahre alt.
+90,neunzig,ninety,Es sind neunzig Tage bis zum Sommer.
+100,hundert,one hundred,Es sind hundert Menschen im Saal.
+200,zweihundert,two hundred,Das Hotel hat zweihundert Zimmer.
+300,dreihundert,three hundred,Es sind dreihundert Kilometer bis Berlin.
+400,vierhundert,four hundred,Das Buch hat vierhundert Seiten.
+500,fünfhundert,five hundred,Er hat fünfhundert Euro gespart.
+600,sechshundert,six hundred,Es sind sechshundert Gäste eingeladen.
+700,siebenhundert,seven hundred,Das Museum hat siebenhundert Exponate.
+800,achthundert,eight hundred,Es sind achthundert Meter bis zum Ziel.
+900,neunhundert,nine hundred,Das Stadion fasst neunhundert Zuschauer.
+1000,tausend,one thousand,Es sind tausend Euro im Portemonnaie.
+2000,zweitausend,two thousand,Das Unternehmen hat zweitausend Mitarbeiter.
+10000,zehntausend,ten thousand,Es sind zehntausend Besucher auf der Messe.
+100000,hunderttausend,one hundred thousand,Die Stadt hat hunderttausend Einwohner.
+1000000,eine Million,one million,Das Projekt kostet eine Million Euro.
+42,dreihundertzweiundvierzig,three hundred forty-two,Das Gebäude ist dreihundertzweiundvierzig Meter hoch.
+2153,zweitausendeinhundertdreiundfünfzig,two thousand one hundred fifty-three,Die Firma hat zweitausendeinhundertdreiundfünfzig Mitarbeiter.
+876,achthundertsechsundsiebzig,eight hundred seventy-six,Das Buch hat achthundertsechsundsiebzig Seiten.
+1245,eintausendzweihundertfünfundvierzig,one thousand two hundred forty-five,Die Strecke ist eintausendzweihundertfünfundvierzig Kilometer lang.
+5432,fünftausendvierhundertzweiunddreißig,five thousand four hundred thirty-two,Das Konzert hat fünftausendvierhundertzweiunddreißig Besucher.
+789,siebenhundertneunundachtzig,seven hundred eighty-nine,Das Hotel hat siebenhundertneunundachtzig Zimmer.
+3214,dreitausendzweihundertvierzehn,three thousand two hundred fourteen,Die Stadt hat dreitausendzweihundertvierzehn Einwohner.
+987,neunhundertsiebenundachtzig,nine hundred eighty-seven,Das Stadion fasst neunhundertsiebenundachtzig Zuschauer.
+4567,viertausendfünfhundertsiebenundsechzig,four thousand five hundred sixty-seven,Das Projekt kostet viertausendfünfhundertsiebenundsechzig Euro.
+234,zweihundertvierunddreißig,two hundred thirty-four,Es sind zweihundertvierunddreißig Gäste eingeladen.
+6789,sechstausendsiebenhundertneunundachtzig,six thousand seven hundred eighty-nine,Die Firma hat sechstausendsiebenhundertneunundachtzig Mitarbeiter.
+432,vierhundertzweiunddreißig,four hundred thirty-two,Das Gebäude ist vierhundertzweiunddreißig Meter hoch.
+5678,fünftausendsechshundertachtundsiebzig,five thousand six hundred seventy-eight,Die Strecke ist fünftausendsechshundertachtundsiebzig Kilometer lang.
+123,einhundertdreiundzwanzig,one hundred twenty-three,Das Buch hat einhundertdreiundzwanzig Seiten.
+8765,achttausendsiebenhundertfünfundsechzig,eight thousand seven hundred sixty-five,Das Konzert hat achttausendsiebenhundertfünfundsechzig Besucher.
+345,dreihundertfünfundvierzig,three hundred forty-five,Das Hotel hat dreihundertfünfundvierzig Zimmer.
+9876,neuntausendachthundertsechsundsiebzig,nine thousand eight hundred seventy-six,Die Stadt hat neuntausendachthundertsechsundsiebzig Einwohner.
+567,fünfhundertsiebenundsechzig,five hundred sixty-seven,Das Stadion fasst fünfhundertsiebenundsechzig Zuschauer.
+4321,viertausenddreihunderteinundzwanzig,four thousand three hundred twenty-one,Das Projekt kostet viertausenddreihunderteinundzwanzig Euro.
+7890,siebentausendachthundertneunzig,seven thousand eight hundred ninety,Es sind siebentausendachthundertneunzig Gäste eingeladen.
+2345,zweitausenddreihundertfünfundvierzig,two thousand three hundred forty-five,Die Firma hat zweitausenddreihundertfünfundvierzig Mitarbeiter.
+678,sechshundertachtundsiebzig,six hundred seventy-eight,Das Gebäude ist sechshundertachtundsiebzig Meter hoch.
+5432,fünftausendvierhundertzweiunddreißig,five thousand four hundred thirty-two,Die Strecke ist fünftausendvierhundertzweiunddreißig Kilometer lang.
+321,dreihunderteinundzwanzig,three hundred twenty-one,Das Buch hat dreihunderteinundzwanzig Seiten.
+8765,achttausendsiebenhundertfünfundsechzig,eight thousand seven hundred sixty-five,Das Konzert hat achttausendsiebenhundertfünfundsechzig Besucher.

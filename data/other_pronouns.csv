@@ -1,0 +1,209 @@
+pronoun,english,type,gender,case,form,example
+mein,my,possessive,Masculine,nominative,mein,Das ist mein Bruder.
+mein,my,possessive,Masculine,accusative,meinen,Ich sehe meinen Bruder.
+mein,my,possessive,Masculine,dative,meinem,Ich gebe meinem Bruder das Buch.
+mein,my,possessive,Masculine,genitive,meines,Das ist das Auto meines Bruders.
+mein,my,possessive,Feminine,nominative,meine,Das ist meine Schwester.
+mein,my,possessive,Feminine,accusative,meine,Ich sehe meine Schwester.
+mein,my,possessive,Feminine,dative,meiner,Ich gebe meiner Schwester das Buch.
+mein,my,possessive,Feminine,genitive,meiner,Das ist das Auto meiner Schwester.
+mein,my,possessive,Neutral,nominative,mein,Das ist mein Auto.
+mein,my,possessive,Neutral,accusative,mein,Ich sehe mein Auto.
+mein,my,possessive,Neutral,dative,meinem,Ich gebe meinem Auto einen Namen.
+mein,my,possessive,Neutral,genitive,meines,Das ist der Schlüssel meines Autos.
+mein,my,possessive,Plural,nominative,meine,Das sind meine Eltern.
+mein,my,possessive,Plural,accusative,meine,Ich sehe meine Eltern.
+mein,my,possessive,Plural,dative,meinen,Ich gebe meinen Eltern das Buch.
+mein,my,possessive,Plural,genitive,meiner,Das ist das Haus meiner Eltern.
+dein,your (informal),possessive,Masculine,nominative,dein,Das ist dein Bruder.
+dein,your (informal),possessive,Masculine,accusative,deinen,Ich sehe deinen Bruder.
+dein,your (informal),possessive,Masculine,dative,deinem,Ich gebe deinem Bruder das Buch.
+dein,your (informal),possessive,Masculine,genitive,deines,Das ist das Auto deines Bruders.
+dein,your (informal),possessive,Feminine,nominative,deine,Das ist deine Schwester.
+dein,your (informal),possessive,Feminine,accusative,deine,Ich sehe deine Schwester.
+dein,your (informal),possessive,Feminine,dative,deiner,Ich gebe deiner Schwester das Buch.
+dein,your (informal),possessive,Feminine,genitive,deiner,Das ist das Auto deiner Schwester.
+dein,your (informal),possessive,Neutral,nominative,dein,Das ist dein Auto.
+dein,your (informal),possessive,Neutral,accusative,dein,Ich sehe dein Auto.
+dein,your (informal),possessive,Neutral,dative,deinem,Ich gebe deinem Auto einen Namen.
+dein,your (informal),possessive,Neutral,genitive,deines,Das ist der Schlüssel deines Autos.
+dein,your (informal),possessive,Plural,nominative,deine,Das sind deine Eltern.
+dein,your (informal),possessive,Plural,accusative,deine,Ich sehe deine Eltern.
+dein,your (informal),possessive,Plural,dative,deinen,Ich gebe deinen Eltern das Buch.
+dein,your (informal),possessive,Plural,genitive,deiner,Das ist das Haus deiner Eltern.
+sein,his,possessive,Masculine,nominative,sein,Das ist sein Bruder.
+sein,his,possessive,Masculine,accusative,seinen,Ich sehe seinen Bruder.
+sein,his,possessive,Masculine,dative,seinem,Ich gebe seinem Bruder das Buch.
+sein,his,possessive,Masculine,genitive,seines,Das ist das Auto seines Bruders.
+sein,his,possessive,Feminine,nominative,seine,Das ist seine Schwester.
+sein,his,possessive,Feminine,accusative,seine,Ich sehe seine Schwester.
+sein,his,possessive,Feminine,dative,seiner,Ich gibt seiner Schwester das Buch.
+sein,his,possessive,Feminine,genitive,seiner,Das ist das Auto seiner Schwester.
+sein,his,possessive,Neutral,nominative,sein,Das ist sein Auto.
+sein,his,possessive,Neutral,accusative,sein,Ich sehe sein Auto.
+sein,his,possessive,Neutral,dative,seinem,Ich gebe seinem Auto einen Namen.
+sein,his,possessive,Neutral,genitive,seines,Das ist der Schlüssel seines Autos.
+sein,his,possessive,Plural,nominative,seine,Das sind seine Eltern.
+sein,his,possessive,Plural,accusative,seine,Ich sehe seine Eltern.
+sein,his,possessive,Plural,dative,seinen,Ich gibt seinen Eltern das Buch.
+sein,his,possessive,Plural,genitive,seiner,Das ist das Haus seiner Eltern.
+ihr,her,possessive,Masculine,nominative,ihr,Das ist ihr Bruder.
+ihr,her,possessive,Masculine,accusative,ihren,Ich sehe ihren Bruder.
+ihr,her,possessive,Masculine,dative,ihrem,Ich gebe ihrem Bruder das Buch.
+ihr,her,possessive,Masculine,genitive,ihres,Das ist das Auto ihres Bruders.
+ihr,her,possessive,Feminine,nominative,ihre,Das ist ihre Schwester.
+ihr,her,possessive,Feminine,accusative,ihre,Ich sehe ihre Schwester.
+ihr,her,possessive,Feminine,dative,ihrer,Ich gebe ihrer Schwester das Buch.
+ihr,her,possessive,Feminine,genitive,ihrer,Das ist das Auto ihrer Schwester.
+ihr,her,possessive,Neutral,nominative,ihr,Das ist ihr Auto.
+ihr,her,possessive,Neutral,accusative,ihr,Ich sehe ihr Auto.
+ihr,her,possessive,Neutral,dative,ihrem,Ich gebe ihrem Auto einen Namen.
+ihr,her,possessive,Neutral,genitive,ihres,Das ist der Schlüssel ihres Autos.
+ihr,her,possessive,Plural,nominative,ihre,Das sind ihre Eltern.
+ihr,her,possessive,Plural,accusative,ihre,Ich sehe ihre Eltern.
+ihr,her,possessive,Plural,dative,ihren,Ich gebe ihren Eltern das Buch.
+ihr,her,possessive,Plural,genitive,ihrer,Das ist das Haus ihrer Eltern.
+sein,its,possessive,Masculine,nominative,sein,Das ist sein Bruder.
+sein,its,possessive,Masculine,accusative,seinen,Ich sehe seinen Bruder.
+sein,its,possessive,Masculine,dative,seinem,Ich gebe seinem Bruder das Buch.
+sein,its,possessive,Masculine,genitive,seines,Das ist das Auto seines Bruders.
+sein,its,possessive,Feminine,nominative,seine,Das ist seine Schwester.
+sein,its,possessive,Feminine,accusative,seine,Ich sehe seine Schwester.
+sein,its,possessive,Feminine,dative,seiner,Ich gibt seiner Schwester das Buch.
+sein,its,possessive,Feminine,genitive,seiner,Das ist das Auto seiner Schwester.
+sein,its,possessive,Neutral,nominative,sein,Das ist sein Auto.
+sein,its,possessive,Neutral,accusative,sein,Ich sehe sein Auto.
+sein,its,possessive,Neutral,dative,seinem,Ich gebe seinem Auto einen Namen.
+sein,its,possessive,Neutral,genitive,seines,Das ist der Schlüssel seines Autos.
+sein,its,possessive,Plural,nominative,seine,Das sind seine Eltern.
+sein,its,possessive,Plural,accusative,seine,Ich sehe seine Eltern.
+sein,its,possessive,Plural,dative,seinen,Ich gibt seinen Eltern das Buch.
+sein,its,possessive,Plural,genitive,seiner,Das ist das Haus seiner Eltern.
+unser,our,possessive,Masculine,nominative,unser,Das ist unser Bruder.
+unser,our,possessive,Masculine,accusative,unseren,Ich sehe unseren Bruder.
+unser,our,possessive,Masculine,dative,unserem,Ich gebe unserem Bruder das Buch.
+unser,our,possessive,Masculine,genitive,unseres,Das ist das Auto unseres Bruders.
+unser,our,possessive,Feminine,nominative,unsere,Das ist unsere Schwester.
+unser,our,possessive,Feminine,accusative,unsere,Ich sehe unsere Schwester.
+unser,our,possessive,Feminine,dative,unserer,Ich gebe unserer Schwester das Buch.
+unser,our,possessive,Feminine,genitive,unserer,Das ist das Auto unserer Schwester.
+unser,our,possessive,Neutral,nominative,unser,Das ist unser Auto.
+unser,our,possessive,Neutral,accusative,unser,Ich sehe unser Auto.
+unser,our,possessive,Neutral,dative,unserem,Ich gebe unserem Auto einen Namen.
+unser,our,possessive,Neutral,genitive,unseres,Das ist der Schlüssel unseres Autos.
+unser,our,possessive,Plural,nominative,unsere,Das sind unsere Eltern.
+unser,our,possessive,Plural,accusative,unsere,Ich sehe unsere Eltern.
+unser,our,possessive,Plural,dative,unseren,Ich gebe unseren Eltern das Buch.
+unser,our,possessive,Plural,genitive,unserer,Das ist das Haus unserer Eltern.
+euer,your (plural informal),possessive,Masculine,nominative,euer,Das ist euer Bruder.
+euer,your (plural informal),possessive,Masculine,accusative,euren,Ich sehe euren Bruder.
+euer,your (plural informal),possessive,Masculine,dative,eurem,Ich gebe eurem Bruder das Buch.
+euer,your (plural informal),possessive,Masculine,genitive,eures,Das ist das Auto eures Bruders.
+euer,your (plural informal),possessive,Feminine,nominative,eure,Das ist eure Schwester.
+euer,your (plural informal),possessive,Feminine,accusative,eure,Ich sehe eure Schwester.
+euer,your (plural informal),possessive,Feminine,dative,eurer,Ich gebe eurer Schwester das Buch.
+euer,your (plural informal),possessive,Feminine,genitive,eurer,Das ist das Auto eurer Schwester.
+euer,your (plural informal),possessive,Neutral,nominative,euer,Das ist euer Auto.
+euer,your (plural informal),possessive,Neutral,accusative,euer,Ich sehe euer Auto.
+euer,your (plural informal),possessive,Neutral,dative,eurem,Ich gebe eurem Auto einen Namen.
+euer,your (plural informal),possessive,Neutral,genitive,eures,Das ist der Schlüssel eures Autos.
+euer,your (plural informal),possessive,Plural,nominative,eure,Das sind eure Eltern.
+euer,your (plural informal),possessive,Plural,accusative,eure,Ich sehe eure Eltern.
+euer,your (plural informal),possessive,Plural,dative,euren,Ich gebe euren Eltern das Buch.
+euer,your (plural informal),possessive,Plural,genitive,eurer,Das ist das Haus eurer Eltern.
+ihr,their,possessive,Masculine,nominative,ihr,Das ist ihr Bruder.
+ihr,their,possessive,Masculine,accusative,ihren,Ich sehe ihren Bruder.
+ihr,their,possessive,Masculine,dative,ihrem,Ich gebe ihrem Bruder das Buch.
+ihr,their,possessive,Masculine,genitive,ihres,Das ist das Auto ihres Bruders.
+ihr,their,possessive,Feminine,nominative,ihre,Das ist ihre Schwester.
+ihr,their,possessive,Feminine,accusative,ihre,Ich sehe ihre Schwester.
+ihr,their,possessive,Feminine,dative,ihrer,Ich gebe ihrer Schwester das Buch.
+ihr,their,possessive,Feminine,genitive,ihrer,Das ist das Auto ihrer Schwester.
+ihr,their,possessive,Neutral,nominative,ihr,Das ist ihr Auto.
+ihr,their,possessive,Neutral,accusative,ihr,Ich sehe ihr Auto.
+ihr,their,possessive,Neutral,dative,ihrem,Ich gebe ihrem Auto einen Namen.
+ihr,their,possessive,Neutral,genitive,ihres,Das ist der Schlüssel ihres Autos.
+ihr,their,possessive,Plural,nominative,ihre,Das sind ihre Eltern.
+ihr,their,possessive,Plural,accusative,ihre,Ich sehe ihre Eltern.
+ihr,their,possessive,Plural,dative,ihren,Ich gebe ihren Eltern das Buch.
+ihr,their,possessive,Plural,genitive,ihrer,Das ist das Haus ihrer Eltern.
+Ihr,your (formal),possessive,Masculine,nominative,Ihr,Das ist Ihr Bruder.
+Ihr,your (formal),possessive,Masculine,accusative,Ihren,Ich sehe Ihren Bruder.
+Ihr,your (formal),possessive,Masculine,dative,Ihrem,Ich gebe Ihrem Bruder das Buch.
+Ihr,your (formal),possessive,Masculine,genitive,Ihres,Das ist das Auto Ihres Bruders.
+Ihr,your (formal),possessive,Feminine,nominative,Ihre,Das ist Ihre Schwester.
+Ihr,your (formal),possessive,Feminine,accusative,Ihre,Ich sehe Ihre Schwester.
+Ihr,your (formal),possessive,Feminine,dative,Ihrer,Ich gebe Ihrer Schwester das Buch.
+Ihr,your (formal),possessive,Feminine,genitive,Ihrer,Das ist das Auto Ihrer Schwester.
+Ihr,your (formal),possessive,Neutral,nominative,Ihr,Das ist Ihr Auto.
+Ihr,your (formal),possessive,Neutral,accusative,Ihr,Ich sehe Ihr Auto.
+Ihr,your (formal),possessive,Neutral,dative,Ihrem,Ich gebe Ihrem Auto einen Namen.
+Ihr,your (formal),possessive,Neutral,genitive,Ihres,Das ist der Schlüssel Ihres Autos.
+Ihr,your (formal),possessive,Plural,nominative,Ihre,Das sind Ihre Eltern.
+Ihr,your (formal),possessive,Plural,accusative,Ihre,Ich sehe Ihre Eltern.
+Ihr,your (formal),possessive,Plural,dative,Ihren,Ich gebe Ihren Eltern das Buch.
+Ihr,your (formal),possessive,Plural,genitive,Ihrer,Das ist das Haus Ihrer Eltern.
+mich,myself,reflexive,Masculine,accusative,mich,Ich wasche mich.
+mir,myself,reflexive,Masculine,dative,mir,Ich kaufe mir ein Buch.
+dich,yourself,reflexive,Masculine,accusative,dich,Du wäschst dich.
+dir,yourself,reflexive,Masculine,dative,dir,Du kaufst dir ein Buch.
+sich,himself,reflexive,Masculine,accusative,sich,Er wäscht sich.
+sich,himself,reflexive,Masculine,dative,sich,Er kauft sich ein Buch.
+sich,herself,reflexive,Feminine,accusative,sich,Sie wäscht sich.
+sich,herself,reflexive,Feminine,dative,sich,Sie kauft sich ein Buch.
+sich,itself,reflexive,Neutral,accusative,sich,Das Kind wäscht sich.
+sich,itself,reflexive,Neutral,dative,sich,Das Kind kauft sich ein Spielzeug.
+uns,ourselves,reflexive,Plural,accusative,uns,Wir waschen uns.
+uns,ourselves,reflexive,Plural,dative,uns,Wir kaufen uns Bücher.
+euch,yourselves,reflexive,Plural,accusative,euch,Ihr wascht euch.
+euch,yourselves,reflexive,Plural,dative,euch,Ihr kauft euch Bücher.
+Sich,yourself (formal),reflexive,Masculine,accusative,Sich,Sie waschen Sich.
+Sich,yourself (formal),reflexive,Masculine,dative,Sich,Sie kaufen Sich ein Buch.
+dieser,this,demonstrative,Masculine,nominative,dieser,Dieser Mann ist groß.
+dieser,this,demonstrative,Masculine,accusative,diesen,Ich sehe diesen Mann.
+dieser,this,demonstrative,Masculine,dative,diesem,Ich gebe diesem Mann das Buch.
+dieser,this,demonstrative,Masculine,genitive,dieses,Das ist das Auto dieses Mannes.
+diese,this,demonstrative,Feminine,nominative,diese,Diese Frau ist groß.
+diese,this,demonstrative,Feminine,accusative,diese,Ich sehe diese Frau.
+diese,this,demonstrative,Feminine,dative,dieser,Ich gebe dieser Frau das Buch.
+diese,this,demonstrative,Feminine,genitive,dieser,Das ist das Auto dieser Frau.
+dieses,this,demonstrative,Neutral,nominative,dieses,Dieses Kind ist groß.
+dieses,this,demonstrative,Neutral,accusative,dieses,Ich sehe dieses Kind.
+dieses,this,demonstrative,Neutral,dative,diesem,Ich gebe diesem Kind das Buch.
+dieses,this,demonstrative,Neutral,genitive,dieses,Das ist das Spielzeug dieses Kindes.
+diese,this,demonstrative,Plural,nominative,diese,Diese Leute sind groß.
+diese,this,demonstrative,Plural,accusative,diese,Ich sehe diese Leute.
+diese,this,demonstrative,Plural,dative,diesen,Ich gebe diesen Leuten das Buch.
+diese,this,demonstrative,Plural,genitive,dieser,Das ist das Haus dieser Leute.
+der,that,demonstrative,Masculine,nominative,der,Der Mann ist groß.
+der,that,demonstrative,Masculine,accusative,den,Ich sehe den Mann.
+der,that,demonstrative,Masculine,dative,dem,Ich gebe dem Mann das Buch.
+der,that,demonstrative,Masculine,genitive,dessen,Das ist das Auto dessen Mannes.
+die,that,demonstrative,Feminine,nominative,die,Die Frau ist groß.
+die,that,demonstrative,Feminine,accusative,die,Ich sehe die Frau.
+die,that,demonstrative,Feminine,dative,der,Ich gebe der Frau das Buch.
+die,that,demonstrative,Feminine,genitive,deren,Das ist das Auto deren Frau.
+das,that,demonstrative,Neutral,nominative,das,Das Kind ist groß.
+das,that,demonstrative,Neutral,accusative,das,Ich sehe das Kind.
+das,that,demonstrative,Neutral,dative,dem,Ich gebe dem Kind das Buch.
+das,that,demonstrative,Neutral,genitive,dessen,Das ist das Spielzeug dessen Kindes.
+die,that,demonstrative,Plural,nominative,die,Die Leute sind groß.
+die,that,demonstrative,Plural,accusative,die,Ich sehe die Leute.
+die,that,demonstrative,Plural,dative,denen,Ich gebe denen das Buch.
+die,that,demonstrative,Plural,genitive,deren,Das ist das Haus deren Leute.
+solcher,such,demonstrative,Masculine,nominative,solcher,Solcher Mann ist selten.
+solcher,such,demonstrative,Masculine,accusative,solchen,Ich sehe solchen Mann.
+solcher,such,demonstrative,Masculine,dative,solchem,Ich gebe solchem Mann das Buch.
+solcher,such,demonstrative,Masculine,genitive,solches,Das ist das Auto solches Mannes.
+solche,such,demonstrative,Feminine,nominative,solche,Solche Frau ist selten.
+solche,such,demonstrative,Feminine,accusative,solche,Ich sehe solche Frau.
+solche,such,demonstrative,Feminine,dative,solcher,Ich gebe solcher Frau das Buch.
+solche,such,demonstrative,Feminine,genitive,solcher,Das ist das Auto solcher Frau.
+solches,such,demonstrative,Neutral,nominative,solches,Solches Kind ist selten.
+solches,such,demonstrative,Neutral,accusative,solches,Ich sehe solches Kind.
+solches,such,demonstrative,Neutral,dative,solchem,Ich gebe solchem Kind das Buch.
+solches,such,demonstrative,Neutral,genitive,solches,Das ist das Spielzeug solches Kindes.
+solche,such,demonstrative,Plural,nominative,solche,Solche Leute sind selten.
+solche,such,demonstrative,Plural,accusative,solche,Ich sehe solche Leute.
+solche,such,demonstrative,Plural,dative,solchen,Ich gebe solchen Leuten das Buch.
+solche,such,demonstrative,Plural,genitive,solcher,Das ist das Haus solcher Leute. 

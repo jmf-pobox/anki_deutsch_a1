@@ -1,0 +1,102 @@
+word,english,example,comparative,superlative,word_audio,example_audio,image_path
+groß,big/tall,Er ist sehr groß.,größer,am größten,data/audio/038c4ba71c55ea4d817d37062b489fb7.mp3,data/audio/e76845f1114e958ebd2c9c38d422fb9e.mp3,data/images/groß.jpg
+klein,small,Meine Wohnung ist klein.,kleiner,am kleinsten,data/audio/89a114bef2a7ddb400826f3683ca2bf8.mp3,data/audio/ca16a6b5ba5019c0234ea895b2ae4654.mp3,data/images/klein.jpg
+alt,old,Das ist ein altes Haus.,älter,am ältesten,data/audio/34823136d0dd91d0f5d22db740f7679c.mp3,data/audio/8ce23441c7756b485daa9a8f13bce2d8.mp3,data/images/alt.jpg
+jung,young,Sie ist sehr jung.,jünger,am jüngsten,data/audio/762930825dd8b0cae64e4677fa7774e3.mp3,data/audio/27e1c2635fb46a7917afe4bd685beb5d.mp3,data/images/jung.jpg
+neu,new,Ich habe ein neues Auto.,neuer,am neuesten,data/audio/83e71d83b2dcea23dcab3b64182494cc.mp3,data/audio/4990fca3ebe1fb65a46d1cf0bd5437f5.mp3,data/images/neu.jpg
+gut,good,Das Essen schmeckt gut.,besser,am besten,data/audio/bd4ca3a838ce3972af46b6e2d85985f2.mp3,data/audio/658b0628399cc54f57dc18a8a66a0283.mp3,data/images/gut.jpg
+schlecht,bad,Das Wetter ist schlecht.,schlechter,am schlechtesten,data/audio/b3ac108b47624a7d7947e220a0a50bfe.mp3,data/audio/4f8926da1e7fdb8dd07b5b35ce7ded66.mp3,data/images/schlecht.jpg
+schön,beautiful,Das ist eine schöne Blume.,schöner,am schönsten,data/audio/088c4e6cb8f58a83cb0e76d27dd896ce.mp3,data/audio/4dd63956fbd6e493233b78e41becc1d0.mp3,data/images/schön.jpg
+hässlich,ugly,Das ist ein hässliches Gebäude.,hässlicher,am hässlichsten,data/audio/2e2590b2caa72187f091d3cad5b16ef3.mp3,data/audio/199868b9252192b7800708a4d90c954a.mp3,data/images/hässlich.jpg
+interessant,interesting,Das Buch ist sehr interessant.,interessanter,am interessantesten,data/audio/4ad85cc0efeb437c8ef93a6d8b1d20c6.mp3,data/audio/269137412a8d005cbe25d202ef4f6f31.mp3,data/images/interessant.jpg
+langweilig,boring,Der Film ist langweilig.,langweiliger,am langweiligsten,data/audio/0131b0429af0adf58768c1bdb7a47aab.mp3,data/audio/6a0e651ad9118a3b9545059452dfa765.mp3,data/images/langweilig.jpg
+wichtig,important,Das ist eine wichtige Frage.,wichtiger,am wichtigsten,data/audio/08861b033fb0211666b76fd831d37104.mp3,data/audio/a812a8ae05a9fc783e8d9dbefb5b8983.mp3,data/images/wichtig.jpg
+kalt,cold,Heute ist es kalt.,kälter,am kältesten,data/audio/ba628e6419eeafc36eda4cb2ca6e3492.mp3,data/audio/4df9a41d31f68e2c420a8b7af87b7774.mp3,data/images/kalt.jpg
+warm,warm,Im Sommer ist es warm.,wärmer,am wärmsten,data/audio/a957a3153eb7126b1c5f8b6aac35de53.mp3,data/audio/a76f74877dc2644a4ffa0883d26f9197.mp3,data/images/warm.jpg
+heiß,hot,Der Kaffee ist zu heiß.,heißer,am heißesten,data/audio/56d5ac554d6d30608903317d08611131.mp3,data/audio/7729a4865a80b18bb8a6aaaeb18c011d.mp3,data/images/heiß.jpg
+teuer,expensive,Diese Uhr ist teuer.,teurer,am teuersten,data/audio/662116fbaa12d845aa04210c05fe1b11.mp3,data/audio/99b33db8c941e4a1d506844d46b41aff.mp3,data/images/teuer.jpg
+billig,cheap,Das Buch ist billig.,billiger,am billigsten,data/audio/a1146605da3849079ec90c9a11a9f22c.mp3,data/audio/b391b0040837279c491af12a8a1debf5.mp3,data/images/billig.jpg
+leicht,light/easy,Die Aufgabe ist leicht.,leichter,am leichtesten,data/audio/2a72ddfcd51848416cdf5dd55f075f07.mp3,data/audio/21235d4cfe43fd3e6ad8f843c36733bd.mp3,data/images/leicht.jpg
+schwer,heavy/difficult,Die Prüfung ist schwer.,schwerer,am schwersten,data/audio/8caed72b642ccde6bdcaf6c79dc17227.mp3,data/audio/cd792a1b84802cad69e8b48de85844f8.mp3,data/images/schwer.jpg
+schnell,fast,Er läuft sehr schnell.,schneller,am schnellsten,data/audio/ed9ea4fe0ce8526871b76deeec7daa1e.mp3,data/audio/1135d177f890726d8d353a16cc461717.mp3,data/images/schnell.jpg
+langsam,slow,Die Schildkröte ist langsam.,langsamer,am langsamsten,data/audio/837d88c69856ac1c2590e647e10f697e.mp3,data/audio/9e695cd9efc591613305ded8349bf78c.mp3,data/images/langsam.jpg
+früh,early,Ich stehe früh auf.,früher,am frühesten,data/audio/2242e3ceb7a34bb966804d0c73fcc949.mp3,data/audio/07c0ceac99ee4eec6fc13559dbbce333.mp3,data/images/früh.jpg
+spät,late,Es ist schon spät.,später,am spätesten,data/audio/5d67a4850a7e800ebcecb909281d7ed2.mp3,data/audio/deef8f6e2084a179c795eb0598ae910c.mp3,data/images/spät.jpg
+richtig,right/correct,Deine Antwort ist richtig.,richtiger,am richtigsten,data/audio/3c4e3ebba9a52d084e900697fe42f0cc.mp3,data/audio/19b9ebcfc5bdb2e72038608fd2284074.mp3,data/images/richtig.jpg
+falsch,wrong/false,Das ist falsch.,falscher,am falschesten,data/audio/8042c2ef76e94fb1b546ec621c46c769.mp3,data/audio/9209a13ad63402d37c78608f297b9075.mp3,data/images/falsch.jpg
+hell,bright,Das Zimmer ist hell.,heller,am hellsten,data/audio/4229d691b07b13341da53f17ab9f2416.mp3,data/audio/5d2842cc82473338667a5c5d6292c9c8.mp3,data/images/hell.jpg
+dunkel,dark,Es wird draußen dunkel.,dunkler,am dunkelsten,data/audio/fc4ee1ac6b737dc8ba92f88212b72a49.mp3,data/audio/0f8cd12e0b27544e9aa939cabc5dbfbc.mp3,data/images/dunkel.jpg
+stark,strong,Er ist sehr stark.,stärker,am stärksten,data/audio/2fbb71b04b02738300427866d6e3181a.mp3,data/audio/95f878ba42fef0deb99b327df9481965.mp3,data/images/stark.jpg
+schwach,weak,Ich fühle mich schwach.,schwächer,am schwächsten,data/audio/0e5c10ef5d7f6556deba45d00476a5f2.mp3,data/audio/b62f8d20e117135273885e929e62c6b8.mp3,data/images/schwach.jpg
+laut,loud,Die Musik ist zu laut.,lauter,am lautesten,data/audio/589866a4961da4ed2e7354026a936f4e.mp3,data/audio/fc985285e6f0cf33cd337dceb8481b5c.mp3,data/images/laut.jpg
+leise,quiet,Bitte sprich leise.,leiser,am leisesten,data/audio/48e4e10c9a4db4d3bdc18ea2e3cf7896.mp3,data/audio/170ea6ed21abcd38383f7b50e805a7db.mp3,data/images/leise.jpg
+hoch,high,Der Berg ist sehr hoch.,höher,am höchsten,data/audio/23c860df51db49ab82ca26089559bcfc.mp3,data/audio/6a991130421e2ae0287f5f47d7fb9e91.mp3,data/images/hoch.jpg
+niedrig,low,Der Tisch ist niedrig.,niedriger,am niedrigsten,data/audio/c4a59f238366683742d006d1d98b1f3f.mp3,data/audio/08f92ab8bf32036e27e3b0748aebcefb.mp3,data/images/niedrig.jpg
+lang,long,Der Fluss ist lang.,länger,am längsten,data/audio/7572559ca86e781ba8fe8073a0b725c6.mp3,data/audio/10eb6dc79400ffd00c011c7972cffbad.mp3,data/images/lang.jpg
+kurz,short,Der Rock ist kurz.,kürzer,am kürzesten,data/audio/5c941644113eebae030cad64bf8cc670.mp3,data/audio/85e33199abdb9e46412f42ff2d3d5199.mp3,data/images/kurz.jpg
+breit,wide,Die Straße ist sehr breit.,breiter,am breitesten,data/audio/9c39f2b6f16b734fa067877eaeba40fc.mp3,data/audio/ea8f855ecb54158d270fe0020201086c.mp3,data/images/breit.jpg
+schmal,narrow,Der Weg ist schmal.,schmaler,am schmalsten,data/audio/ce0930bad40804de81856c5392ffbce5.mp3,data/audio/16cd9417d30624a9c1ab78f0cd5b8482.mp3,data/images/schmal.jpg
+dick,thick/fat,Das Buch ist dick.,dicker,am dicksten,data/audio/7f55a0ed8b021080de00960cc73768fb.mp3,data/audio/6b67b0f889c09930c35494a99878ef38.mp3,data/images/dick.jpg
+dünn,thin,Sie ist sehr dünn.,dünner,am dünnsten,data/audio/0b91e2a209914e4111ee1cd07cb28e23.mp3,data/audio/aed560c4d2b1dba9e5d750d3492da659.mp3,data/images/dünn.jpg
+voll,full,Das Glas ist voll.,voller,am vollsten,data/audio/4f3673f24502597694f5fce90c7a7b66.mp3,data/audio/a66c9dd603dd1da172a2990406ad3fc5.mp3,data/images/voll.jpg
+leer,empty,Die Flasche ist leer.,leerer,am leersten,data/audio/3f60eb7939d4fdcb9244c0999b175f09.mp3,data/audio/79899981c6a05bc00b6901648e523ec9.mp3,data/images/leer.jpg
+sauber,clean,Mein Zimmer ist sauber.,sauberer,am saubersten,data/audio/38a92bf1f184c53144139dfa6a781a51.mp3,data/audio/bca2e9226b64828f34ac2cd96a3acb87.mp3,data/images/sauber.jpg
+schmutzig,dirty,Meine Hände sind schmutzig.,schmutziger,am schmutzigsten,data/audio/cb7eec3e8d4b45c888dea65863ea2069.mp3,data/audio/b57f31e752eb5b09b00785331008a566.mp3,data/images/schmutzig.jpg
+nass,wet,Meine Kleidung ist nass.,nasser,am nassesten,data/audio/adcd538a85b12ed619fe797efa22346d.mp3,data/audio/44d0d9b85a5297fac1b09d59c35dd9fc.mp3,data/images/nass.jpg
+trocken,dry,Die Wäsche ist jetzt trocken.,trockener,am trockensten,data/audio/82f81207084a2a2f6648d6db4897dae7.mp3,data/audio/b5caf4c23844d4ac98e8a57f194d63a1.mp3,data/images/trocken.jpg
+arm,poor,Er ist arm.,ärmer,am ärmsten,data/audio/f926b3e222d7afee57071b2256839701.mp3,data/audio/0bac909689b152ce6694801f3f0ca5ec.mp3,data/images/arm.jpg
+reich,rich,Sie ist sehr reich.,reicher,am reichsten,data/audio/b6e892a78d87fef0790e927ccc466563.mp3,data/audio/9df632e9812765459626fa67206a5988.mp3,data/images/reich.jpg
+gesund,healthy,Obst ist gesund.,gesünder,am gesündesten,data/audio/f56cebbe9ea36122f0e371ceb39ce522.mp3,data/audio/32f652289c31d2d96cb5b67deda52483.mp3,data/images/gesund.jpg
+krank,sick,Ich bin krank.,kränker,am kränksten,data/audio/b1c131274a8b2121a93bfe036e528c81.mp3,data/audio/04e1612d12d221abaf490d862558f94a.mp3,data/images/krank.jpg
+müde,tired,Ich bin müde.,müder,am müdesten,data/audio/ff9dfd03a43500479850caadfbf2e0fe.mp3,data/audio/66d26b02708e87b6a7162d0c9dc5378a.mp3,data/images/müde.jpg
+glücklich,happy,Sie ist sehr glücklich.,glücklicher,am glücklichsten,data/audio/3bca1046168cf6135a80bdde14805b42.mp3,data/audio/2c9c08443f84140f1cf184fa0310843d.mp3,data/images/glücklich.jpg
+traurig,sad,Er sieht traurig aus.,trauriger,am traurigsten,data/audio/fd9fc76872fa7ca38b3e700449def270.mp3,data/audio/c6d007dcf56764e376762a32cae113c7.mp3,data/images/traurig.jpg
+ruhig,calm/quiet,Die Straße ist ruhig.,ruhiger,am ruhigsten,data/audio/cda266b753457d17a76457795431739d.mp3,data/audio/cc8cbe42e1c163aef8ab7a514a11136c.mp3,data/images/ruhig.jpg
+nervös,nervous,Ich bin vor der Prüfung nervös.,nervöser,am nervösesten,data/audio/7ffd7d244f86c7555b75c9100bd919c0.mp3,data/audio/10308616dc8b5a34526637aa74aaa38f.mp3,data/images/nervös.jpg
+ängstlich,afraid/anxious,Das Kind ist ängstlich.,ängstlicher,am ängstlichsten,data/audio/0d4346840008f920ec535a01e4d4e48f.mp3,data/audio/2f2636b3babf18a228de5a87c469e9c4.mp3,data/images/ängstlich.jpg
+freundlich,friendly,Die Leute hier sind sehr freundlich.,freundlicher,am freundlichsten,data/audio/c876eeac1ebf1fd5c677d2d23ffbe891.mp3,data/audio/487874d05d3e5a669b5faead288684be.mp3,data/images/freundlich.jpg
+unfreundlich,unfriendly,Der Kellner war unfreundlich.,unfreundlicher,am unfreundlichsten,data/audio/ccc303528e1adcd6c5fda17a3a24151c.mp3,data/audio/1c4f222270c80b1105cec6aea66f27b9.mp3,data/images/unfreundlich.jpg
+höflich,polite,Er ist immer sehr höflich.,höflicher,am höflichsten,data/audio/50fffe2baed63fcdb4828e6c51eb64a9.mp3,data/audio/eeb3ef98bb6d6bdcc52b6e617e23b235.mp3,data/images/höflich.jpg
+unhöflich,impolite,Es ist unhöflich zu spät zu kommen.,unhöflicher,am unhöflichsten,data/audio/656d0ec9a2ff9790aa7301ff50a28c12.mp3,data/audio/d079cb4dbf739484eaf34b46b190ed83.mp3,data/images/unhöflich.jpg
+lustig,funny,Der Film ist lustig.,lustiger,am lustigsten,data/audio/6d3ac4ba0b8e7e109c5afdecf584c06f.mp3,data/audio/57727b1c8c5c175509589530c81dccc1.mp3,data/images/lustig.jpg
+ernst,serious,Das ist eine ernste Sache.,ernster,am ernstesten,data/audio/f66f8c3c3246e6819aaa792638114eda.mp3,data/audio/568c0c269125c77cdc3601d18ea6fdae.mp3,data/images/ernst.jpg
+offen,open,Das Fenster ist offen.,offener,am offensten,data/audio/bb256d72c1584e0119360c9228af4705.mp3,data/audio/e1c8a0d0877d76f7c365e0a530f65e64.mp3,data/images/offen.jpg
+geschlossen,closed,Die Tür ist geschlossen.,geschlossener,am geschlossensten,data/audio/52644124271acc06ad104fc3cff72e27.mp3,data/audio/0ff70f12fa86300e0fd65c2e163eca13.mp3,data/images/geschlossen.jpg
+einfach,simple/easy,Die Aufgabe ist einfach.,einfacher,am einfachsten,data/audio/d3cc0884b6eb8a7424a4047082836e77.mp3,data/audio/a03f87b4ceb4628fbce400d49a001cdd.mp3,data/images/einfach.jpg
+schwierig,difficult,Die Frage ist schwierig.,schwieriger,am schwierigsten,data/audio/5cbbbebb7254ff4611eb516ec1a295ae.mp3,data/audio/723fba207c6cc31233840ff1a3550a7b.mp3,data/images/schwierig.jpg
+möglich,possible,Das ist möglich.,möglicher,am möglichsten,data/audio/fdde276ac61a5f9e2a30e669ba428e28.mp3,data/audio/1eec045cb181a33a64edc235b8130fca.mp3,data/images/möglich.jpg
+unmöglich,impossible,Das ist unmöglich.,unmöglicher,am unmöglichsten,data/audio/e593da9789415914eeeb3f45ac54a5e0.mp3,data/audio/00ab7be5d65ab8aad996cc65c48b194a.mp3,data/images/unmöglich.jpg
+wahr,true,Die Geschichte ist wahr.,wahrer,am wahrsten,data/audio/c90c13507fc364353401f4e04939a619.mp3,data/audio/f057a875289b4609afddfa72908011d6.mp3,data/images/wahr.jpg
+falsch,false,Die Antwort ist falsch.,falscher,am falschesten,data/audio/8042c2ef76e94fb1b546ec621c46c769.mp3,data/audio/7fad19e2674fafafec3bd9333d85887c.mp3,data/images/falsch.jpg
+gleich,same/equal,Die beiden Häuser sind gleich.,gleicher,am gleichsten,data/audio/f4f2ca86e68e46cc596705a56fd2a1c6.mp3,data/audio/4a6208eafc6cf7cda0d6850f8666a8e4.mp3,data/images/gleich.jpg
+verschieden,different,Unsere Meinungen sind verschieden.,verschiedener,am verschiedensten,data/audio/c26c6cb2a2aed058b49efde189d284bf.mp3,data/audio/2a6b9aefa0ce2a023c95074e35188f5e.mp3,data/images/verschieden.jpg
+fertig,ready/done,Ich bin fertig mit der Arbeit.,fertiger,am fertigsten,data/audio/52ce9e11976c43e5295b591279c94ed4.mp3,data/audio/4e98b6c40be96bb126bdf592656e1d33.mp3,data/images/fertig.jpg
+deutlich,clear,Seine Aussprache ist sehr deutlich.,deutlicher,am deutlichsten,data/audio/75fe97fa4c78da742ade0c08851d1633.mp3,data/audio/a8437538d75ef534f263414e02d5d53e.mp3,data/images/deutlich.jpg
+genau,exact/precise,Das ist die genaue Zeit.,genauer,am genauesten,data/audio/3565952569560090f758c9cf0ae2bfce.mp3,data/audio/f68136a38f1d96a172487c8c5c9d009f.mp3,data/images/genau.jpg
+ähnlich,similar,Die beiden Schwestern sehen ähnlich aus.,ähnlicher,am ähnlichsten,data/audio/bb854039201f457fa5007ea9f2738535.mp3,data/audio/9a5059905ef36ef347b0ce72aa78e132.mp3,data/images/ähnlich.jpg
+verschieden,different,Die Sprachen sind sehr verschieden.,verschiedener,am verschiedensten,data/audio/c26c6cb2a2aed058b49efde189d284bf.mp3,data/audio/0e1e9d775b861e3ac21dbe7471e6f59b.mp3,data/images/verschieden.jpg
+wunderbar,wonderful,Das war ein wunderbarer Tag.,wunderbarer,am wunderbarsten,data/audio/213ff08c960c9d2f7b405886a6e2a98a.mp3,data/audio/2032ace77d4ae4e700fb1f0c6a987fca.mp3,data/images/wunderbar.jpg
+schrecklich,terrible,Der Film war schrecklich.,schrecklicher,am schrecklichsten,data/audio/db7b31bca16daba13256a1909e7b2e4f.mp3,data/audio/07055e56851a1d98412470a29fe5876c.mp3,data/images/schrecklich.jpg
+weit,far,Die Schule ist weit von hier.,weiter,am weitesten,data/audio/8290c29bcd88cef122f67d57ccfa328e.mp3,data/audio/1692e8d34a7021268226f30a0a7b4567.mp3,data/images/weit.jpg
+nah,near/close,Das Restaurant ist nah.,näher,am nächsten,data/audio/b476dd1f2e29b48fea39d7af0d307101.mp3,data/audio/82ba756e7242ddf883beae110e206533.mp3,data/images/nah.jpg
+vorsichtig,careful,Sei vorsichtig!,vorsichtiger,am vorsichtigsten,data/audio/fbc833e76b12b13591b231c4ceaa9e5c.mp3,data/audio/ef56f87448ef9b92e6a3ff628b8220e5.mp3,data/images/vorsichtig.jpg
+gefährlich,dangerous,Das ist gefährlich.,gefährlicher,am gefährlichsten,data/audio/7e589e112aec55f2eba8c82c60e03df8.mp3,data/audio/d29ef2df4cbb1cb8d15f131657ce6c1b.mp3,data/images/gefährlich.jpg
+sicher,safe/secure,Ich fühle mich hier sicher.,sicherer,am sichersten,data/audio/bb5c98f1331c50ea01d8d6fc54bf84d5.mp3,data/audio/19bfbde487c1314ca3b6cb015c3f78b9.mp3,data/images/sicher.jpg
+praktisch,practical,Das ist eine praktische Lösung.,praktischer,am praktischsten,data/audio/a5506cd8529cb814c7650f0741e41ebc.mp3,data/audio/333365e9655342f42d57a73af613cd46.mp3,data/images/praktisch.jpg
+theoretisch,theoretical,Das ist eine theoretische Frage.,theoretischer,am theoretischsten,data/audio/9ebf5a9c565cf00e157952e7d78462a1.mp3,data/audio/dd4dc95cf8a571f719b6782de0648948.mp3,data/images/theoretisch.jpg
+bequem,comfortable,Der Stuhl ist sehr bequem.,bequemer,am bequemsten,data/audio/9b82f75c69f1d4b76a09482549231c46.mp3,data/audio/2b0b2d4f1cb06ae77d390178b06f6626.mp3,data/images/bequem.jpg
+unbequem,uncomfortable,Diese Schuhe sind unbequem.,unbequemer,am unbequemsten,data/audio/859fd86ccf3713151724bd5e04f3f86f.mp3,data/audio/6cbc38cfff6771fe8caa31063d2dd135.mp3,data/images/unbequem.jpg
+ordentlich,tidy/neat,Sein Zimmer ist sehr ordentlich.,ordentlicher,am ordentlichsten,data/audio/1289047acd7b03bb6ef433cb0157ded8.mp3,data/audio/ab670aa3e412d02a0aab19a0118be30e.mp3,data/images/ordentlich.jpg
+unordentlich,untidy/messy,Mein Schreibtisch ist unordentlich.,unordentlicher,am unordentlichsten,data/audio/a20e675791a19871f61cc1a3c47d5e23.mp3,data/audio/e99c49792df1b1336cee902ddc0e05b4.mp3,data/images/unordentlich.jpg
+normal,normal,Das ist normal.,normaler,am normalsten,data/audio/fea087517c26fadd409bd4b9dc642555.mp3,data/audio/49ebf3079d9bbfecbc4905deaee10bf0.mp3,data/images/normal.jpg
+komisch,funny/strange,Das ist komisch.,komischer,am komischsten,data/audio/1dcea242e2539950f84beda0e8afa8ee.mp3,data/audio/8cee9d10faf49ef8bf5a50a1f0ca7616.mp3,data/images/komisch.jpg
+seltsam,strange,Das ist ein seltsames Geräusch.,seltsamer,am seltsamsten,data/audio/cf804be14e639a37e24117041514cf9e.mp3,data/audio/01643caa9b40b30f458a66d7a2eb1325.mp3,data/images/seltsam.jpg
+bereit,ready,Ich bin bereit.,bereiter,am bereitesten,data/audio/2a3432b6cbdcff7efadfac4490ead9bb.mp3,data/audio/063ff3becef34e3b5bcb4512fa5298e0.mp3,data/images/bereit.jpg
+böse,angry/evil,Er ist böse auf mich.,böser,am bösesten,data/audio/ece40577fee0833e87ee83a4c168f6f7.mp3,data/audio/aaa366c5676d056014456c57f7ea6f1c.mp3,data/images/böse.jpg
+freundlich,friendly,Sie ist sehr freundlich.,freundlicher,am freundlichsten,data/audio/c876eeac1ebf1fd5c677d2d23ffbe891.mp3,data/audio/1503f118a84c8efa5137ec05e6713503.mp3,data/images/freundlich.jpg
+fleißig,hardworking/diligent,Sie ist eine fleißige Studentin.,fleißiger,am fleißigsten,data/audio/d4a9df140dab0266d5cfa3d40ee42a4a.mp3,data/audio/8e57f7830d929ddf9534b9e00fc1c45d.mp3,data/images/fleißig.jpg
+faul,lazy,Er ist faul.,fauler,am faulsten,data/audio/334e551d99252d243a8f6aed8b6c5435.mp3,data/audio/792bab7d4717110ac73688882d47e4f9.mp3,data/images/faul.jpg
+geduldig,patient,Der Lehrer ist sehr geduldig.,geduldiger,am geduldigsten,data/audio/c0d656105a803701b03eb5f839ce4312.mp3,data/audio/357ab8d6955472e4c11895db4d5d481f.mp3,data/images/geduldig.jpg
+ungeduldig,impatient,Ich bin sehr ungeduldig.,ungeduldiger,am ungeduldigsten,data/audio/152b3054b89ca3c233bce13c4c9e82ba.mp3,data/audio/6cc08c1790a416fd3a3929864650c3c9.mp3,data/images/ungeduldig.jpg
+zufrieden,satisfied/content,Ich bin mit meiner Arbeit zufrieden.,zufriedener,am zufriedensten,data/audio/52c4b1597683d7cb6c120315454a0f75.mp3,data/audio/b170d47f0b2956cbac8fda406864a4d9.mp3,data/images/zufrieden.jpg
+unzufrieden,dissatisfied,Er ist mit dem Ergebnis unzufrieden.,unzufriedener,am unzufriedensten,data/audio/bc71292c99c6f4d86d8a50c0abc97e31.mp3,data/audio/f5aceac0c3585f1d472e701b440b4344.mp3,data/images/unzufrieden.jpg
