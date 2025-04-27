@@ -4,11 +4,13 @@ import logging
 import logging.handlers
 import os
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import keyring
 from anthropic import Anthropic
-from anthropic.types import Message
+
+if TYPE_CHECKING:
+    from anthropic.types import Message
 
 from langlearn.models.adjective import Adjective
 
@@ -83,7 +85,8 @@ class AnthropicService:
                 temperature=temperature,
                 messages=[{"role": "user", "content": prompt}],
             )
-            # The response content is a list of content blocks, each with a type and text
+            # The response content is a list of content blocks, each with a type
+            # and text
             if response.content and len(response.content) > 0:
                 content_block = response.content[0]
                 if hasattr(content_block, "text"):
@@ -117,9 +120,12 @@ class AnthropicService:
 
     def generate_pexels_query(self, model: Any) -> str:
         """Generate a Pexels query for the given model."""
-        prompt = f"""You are a helpful assistant that generates search queries for finding relevant images.
-Given a German word '{model.word}' meaning '{model.english}' with example '{model.example}',
-generate a short, specific Pexels search query in English that would find a relevant image.
+        prompt = f"""You are a helpful assistant that generates search queries
+for finding relevant images.
+Given a German word '{model.word}' meaning '{model.english}' with example
+'{model.example}',
+generate a short, specific Pexels search query in English that would find
+a relevant image.
 
 Guidelines:
 - Keep the query between 2-4 words

@@ -29,7 +29,10 @@ class NounCardGenerator(BaseCardGenerator):
             {
                 "name": "Card 1",
                 "qfmt": "{{Noun}}<br>{{Article}}",
-                "afmt": "{{FrontSide}}<hr id=answer>{{English}}<br>Plural: {{Plural}}<br>Example: {{Example}}<br>Related: {{Related}}",
+                "afmt": (
+                    "{{FrontSide}}<hr id=answer>{{English}}<br>Plural: {{Plural}}<br>"
+                    "Example: {{Example}}<br>Related: {{Related}}"
+                ),
             }
         ]
 

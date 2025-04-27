@@ -78,7 +78,8 @@ def test_enrich_adjectives_error_handling(
     """Test error handling during enrichment with invalid input."""
     caplog.set_level(logging.INFO)
 
-    # Create a temporary CSV file with invalid content that should trigger error handling
+    # Create a temporary CSV file with invalid content that should trigger
+    # error handling
     csv_file = tmp_path / "test_adjectives.csv"
     csv_file.write_text(
         "word,english,example\n,,"

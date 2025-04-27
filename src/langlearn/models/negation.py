@@ -85,7 +85,8 @@ class Negation(BaseModel):
                         or words_lower[neg_pos + i] != part
                     ):
                         print(
-                            f"Multi-word negation parts not in sequence at position {neg_pos + i}"
+                            f"Multi-word negation parts not in sequence at "
+                            f"position {neg_pos + i}"
                         )
                         return False
         except ValueError:

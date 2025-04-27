@@ -63,9 +63,13 @@ haben,to have,habe,hast,hat,hat gehabt,Ich habe ein Buch."""
 def test_read_prepositions(tmp_path: Path) -> None:
     """Test reading prepositions from a CSV file."""
     # Create a temporary CSV file
-    csv_content = """preposition,english,case,example1,example2
-in,in,Accusative/Dative,Ich gehe in die Schule. (ACC),Ich bin in der Schule. (DAT)
-auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch. (ACC),Das Buch liegt auf dem Tisch. (DAT)"""
+    csv_content = (
+        "preposition,english,case,example1,example2\n"
+        "in,in,Accusative/Dative,Ich gehe in die Schule. (ACC),"
+        "Ich bin in der Schule. (DAT)\n"
+        'auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch. (ACC),'
+        '"Das Buch liegt auf dem Tisch. (DAT)"'
+    )
 
     csv_file = tmp_path / "test_prepositions.csv"
     csv_file.write_text(csv_content)

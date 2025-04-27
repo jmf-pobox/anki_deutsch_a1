@@ -159,7 +159,8 @@ def test_other_pronoun_with_umlauts() -> None:
 
 
 def test_other_pronoun_all_cases_and_genders() -> None:
-    """Test that all cases and genders are valid for possessive and demonstrative pronouns."""
+    """Test that all cases and genders are valid for possessive and
+    demonstrative pronouns."""
     cases = [Case.NOMINATIVE, Case.ACCUSATIVE, Case.DATIVE, Case.GENITIVE]
     genders = [Gender.MASCULINE, Gender.FEMININE, Gender.NEUTRAL, Gender.PLURAL]
     types = [PronounType.POSSESSIVE, PronounType.DEMONSTRATIVE]

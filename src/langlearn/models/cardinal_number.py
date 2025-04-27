@@ -51,7 +51,8 @@ class CardinalNumber(BaseModel):
         valid_chars = set("abcdefghijklmnopqrstuvwxyz ,.-")
         if not all(char.lower() in valid_chars for char in v):
             raise ValueError(
-                "English translation must contain only letters, spaces, hyphens, and commas"
+                "English translation must contain only letters, spaces, "
+                "hyphens, and commas"
             )
         return v
 

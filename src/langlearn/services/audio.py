@@ -72,7 +72,8 @@ class AudioService:
         self.speech_rate = speech_rate
         self.output_dir.mkdir(exist_ok=True)
         logger.info(
-            "AudioService initialized with voice_id=%s, language_code=%s, speech_rate=%d",
+            "AudioService initialized with voice_id=%s, language_code=%s, "
+            "speech_rate=%d",
             voice_id,
             language_code,
             speech_rate,
@@ -108,7 +109,7 @@ class AudioService:
                 "VoiceId": cast("VoiceIdType", self.voice_id),
                 "LanguageCode": cast("LanguageCodeType", self.language_code),
                 "OutputFormat": "mp3",
-                "Engine": "neural",  # Daniel is a neural voice, so we must use the neural engine
+                "Engine": "neural",  # Daniel requires the neural engine
             }
             logger.debug("AWS Polly request parameters: %s", request_params)
 

@@ -42,10 +42,7 @@ class IrregularVerb(Verb):
             return True
 
         # Check for irregular present tense forms
-        if self._has_irregular_present():
-            return True
-
-        return False
+        return bool(self._has_irregular_present())
 
     def _has_vowel_changes(self) -> bool:
         """Check if the verb has vowel changes in present tense.

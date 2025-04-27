@@ -112,19 +112,23 @@ class PexelsService:
                 response.raise_for_status()
                 return response
             except HTTPError as e:
-                if e.response.status_code == 429:  # Rate limit
-                    if attempt < self.max_retries - 1:
-                        retry_after = int(
-                            e.response.headers.get("Retry-After", self.retry_delay)
-                        )
-                        logger.warning(
-                            "Rate limited. Waiting %d seconds before retry (attempt %d/%d)",
-                            retry_after,
-                            attempt + 1,
-                            self.max_retries,
-                        )
-                        time.sleep(retry_after)
-                        continue
+                # Rate limit check
+                if (
+                    e.response.status_code == 429
+                    and attempt < self.max_retries - 1
+                ):
+                    retry_after = int(
+                        e.response.headers.get("Retry-After", self.retry_delay)
+                    )
+                    logger.warning(
+                        "Rate limited. Waiting %d seconds before retry "
+                        "(attempt %d/%d)",
+                        retry_after,
+                        attempt + 1,
+                        self.max_retries,
+                    )
+                    time.sleep(retry_after)
+                    continue
                 raise
             except Exception as e:
                 logger.error("Error making request to Pexels: %s", str(e))
@@ -203,13 +207,13 @@ class PexelsService:
             str: URL of the image, or None if not found
         """
         try:
-            photos : list[Photo] = self.search_photos(query, per_page=1)
+            photos: list[Photo] = self.search_photos(query, per_page=1)
             if not photos:
                 logger.error("No photos found for query: %s", query)
                 return None
 
             photo: Photo = photos[0]
-            url: str = cast(str, photo["src"][size])
+            url: str = cast("str", photo["src"][size])
             return url
         except Exception as e:
             logger.error("Error getting image URL: %s", str(e))

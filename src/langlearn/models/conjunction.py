@@ -87,7 +87,8 @@ class Conjunction(BaseModel):
         if self.type == ConjunctionType.SUBORDINATING:
             print("Checking subordinating conjunction position")
             # Should be at the start of the dependent clause
-            # This is a simplified check - in reality, we'd need to parse the sentence structure
+            # This is a simplified check - in reality, we'd need to parse
+            # the sentence structure
             if conj_pos > 0:  # Not at the start of the main clause
                 print("Subordinating conjunction in valid position")
                 return True

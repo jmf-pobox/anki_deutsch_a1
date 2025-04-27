@@ -132,7 +132,8 @@ def test_invalid_conjunction_positions() -> None:
             word="weil",
             english="because",
             type=ConjunctionType.SUBORDINATING,
-            example="Weil ich krank bin, bleibe ich zu Hause.",  # Subordinating at start
+            # Subordinating at start
+            example="Weil ich krank bin, bleibe ich zu Hause.",
         ),
         Conjunction(
             word="deshalb",

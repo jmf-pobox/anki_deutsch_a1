@@ -35,7 +35,4 @@ class RegularVerb(Verb):
             return False
 
         # Check perfect tense formation
-        if not (self.perfect.startswith("hat ") and self.perfect.endswith("t")):
-            return False
-
-        return True
+        return self.perfect.startswith("hat ") and self.perfect.endswith("t")

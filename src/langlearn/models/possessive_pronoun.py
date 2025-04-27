@@ -128,4 +128,7 @@ class OtherPronoun(BaseModel):
 
     def __str__(self) -> str:
         """Return a string representation of the pronoun."""
-        return f"{self.pronoun} ({self.english}) - {self.type.value}/{self.gender.value}/{self.case.value}: {self.form}"
+        return (
+            f"{self.pronoun} ({self.english}) - {self.type.value}/"
+            f"{self.gender.value}/{self.case.value}: {self.form}"
+        )

@@ -105,10 +105,12 @@ def test_cardinal_number_validation_empty_english() -> None:
 
 
 def test_cardinal_number_validation_invalid_english_characters() -> None:
-    """Test that an English translation with invalid characters raises a ValidationError."""
+    """Test that an English translation with invalid characters raises a
+    ValidationError."""
     with pytest.raises(
         ValueError,
-        match="English translation must contain only letters, spaces, hyphens, and commas",
+        match="English translation must contain only letters, spaces, "
+        "hyphens, and commas",
     ):
         CardinalNumber(
             number="42",
