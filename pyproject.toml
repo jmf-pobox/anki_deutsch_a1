@@ -29,6 +29,8 @@ dev = [
     "ruff>=0.1.5",
     "mypy>=1.7.0",
     "pytest>=7.4.0",
+    "pandas-stubs>=2.2.0",
+    "types-requests>=2.31.0",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -39,6 +41,8 @@ dependencies = [
     "ruff>=0.1.5",
     "mypy>=1.7.0",
     "pytest>=7.4.0",
+    "pandas-stubs>=2.2.0",
+    "types-requests>=2.31.0",
 ]
 
 [tool.hatch.envs.default.scripts]

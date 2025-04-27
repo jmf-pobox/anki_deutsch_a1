@@ -5,7 +5,7 @@ import pytest
 from langlearn.models.conjunction import Conjunction, ConjunctionType
 
 
-def test_conjunction_initialization():
+def test_conjunction_initialization() -> None:
     """Test that a Conjunction can be initialized with valid data."""
     conjunction = Conjunction(
         word="und",
@@ -19,7 +19,7 @@ def test_conjunction_initialization():
     assert conjunction.example == "Ich lese ein Buch und sie schaut fern."
 
 
-def test_conjunction_validation():
+def test_conjunction_validation() -> None:
     """Test that validation works correctly for valid conjunctions."""
     valid_conjunctions = [
         Conjunction(
@@ -53,7 +53,7 @@ def test_conjunction_validation():
         assert conjunction.validate_position() is True
 
 
-def test_invalid_example_sentences():
+def test_invalid_example_sentences() -> None:
     """Test that invalid example sentences are caught."""
     invalid_examples = [
         Conjunction(
@@ -80,7 +80,7 @@ def test_invalid_example_sentences():
         assert conjunction.validate_example() is False
 
 
-def test_conjunction_position_validation():
+def test_conjunction_position_validation() -> None:
     """Test position validation for different conjunction types."""
     # Test coordinating conjunctions (should be between clauses)
     coordinating = Conjunction(
@@ -119,7 +119,7 @@ def test_conjunction_position_validation():
     assert adverbial.validate_position() is True
 
 
-def test_invalid_conjunction_positions():
+def test_invalid_conjunction_positions() -> None:
     """Test that invalid conjunction positions are caught."""
     invalid_positions = [
         Conjunction(
@@ -146,7 +146,7 @@ def test_invalid_conjunction_positions():
         assert conjunction.validate_position() is False
 
 
-def test_conjunction_type_validation():
+def test_conjunction_type_validation() -> None:
     """Test that invalid conjunction types are caught."""
     # Test that all valid ConjunctionType values work
     for conjunction_type in ConjunctionType:

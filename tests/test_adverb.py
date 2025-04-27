@@ -5,7 +5,7 @@ import pytest
 from langlearn.models.adverb import Adverb, AdverbType
 
 
-def test_adverb_initialization():
+def test_adverb_initialization() -> None:
     """Test that an Adverb can be initialized with valid data."""
     adverb = Adverb(
         word="hier", english="here", type=AdverbType.LOCATION, example="Ich wohne hier."
@@ -16,7 +16,7 @@ def test_adverb_initialization():
     assert adverb.example == "Ich wohne hier."
 
 
-def test_adverb_validation():
+def test_adverb_validation() -> None:
     """Test that validation works correctly for valid adverbs."""
     valid_adverbs = [
         Adverb(
@@ -44,7 +44,7 @@ def test_adverb_validation():
         assert adverb.validate_position() is True
 
 
-def test_invalid_example_sentences():
+def test_invalid_example_sentences() -> None:
     """Test that invalid example sentences are caught."""
     invalid_examples = [
         Adverb(
@@ -71,7 +71,7 @@ def test_invalid_example_sentences():
         assert adverb.validate_example() is False
 
 
-def test_adverb_position_validation():
+def test_adverb_position_validation() -> None:
     """Test position validation for different adverb types."""
     # Test location adverbs (should be at end)
     location_adverb = Adverb(
@@ -115,7 +115,7 @@ def test_adverb_position_validation():
     assert intensity_adverb.validate_position() is True
 
 
-def test_invalid_adverb_positions():
+def test_invalid_adverb_positions() -> None:
     """Test that invalid adverb positions are caught."""
     invalid_positions = [
         Adverb(
@@ -142,7 +142,7 @@ def test_invalid_adverb_positions():
         assert adverb.validate_position() is False
 
 
-def test_adverb_type_validation():
+def test_adverb_type_validation() -> None:
     """Test that invalid adverb types are caught."""
     # Test that all valid AdverbType values work
     for adverb_type in AdverbType:

@@ -25,7 +25,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_live_audio_generation():
+def test_live_audio_generation() -> None:
     """Test audio generation with real AWS Polly service."""
     service = AudioService()
     result = service.generate_audio("Hallo, wie geht es dir?")
@@ -38,7 +38,7 @@ def test_live_audio_generation():
     os.remove(result)
 
 
-def test_live_audio_custom_config():
+def test_live_audio_custom_config() -> None:
     """Test audio generation with custom configuration."""
     service = AudioService(
         output_dir="custom_audio",

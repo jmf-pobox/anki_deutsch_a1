@@ -3,7 +3,7 @@
 from langlearn.models.separable_verb import SeparableVerb
 
 
-def test_separable_verb_creation():
+def test_separable_verb_creation() -> None:
     """Test creating a separable verb with valid data."""
     verb = SeparableVerb(
         verb="aufstehen",
@@ -26,7 +26,7 @@ def test_separable_verb_creation():
     assert verb.prefix == "auf"
 
 
-def test_separable_verb_validation():
+def test_separable_verb_validation() -> None:
     """Test validation of separable verb conjugation patterns."""
     # Valid separable verb
     valid_verb = SeparableVerb(
@@ -68,7 +68,7 @@ def test_separable_verb_validation():
     assert invalid_verb2.validate_separable_conjugation() is False
 
 
-def test_separable_verb_from_csv():
+def test_separable_verb_from_csv() -> None:
     """Test creating a separable verb from CSV data."""
     csv_data = {
         "verb": "ausgehen",

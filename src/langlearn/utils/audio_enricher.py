@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd  # type: ignore
-from pandas import DataFrame
+from pandas import DataFrame  # type: ignore
 
 from langlearn.services.audio import AudioService
 from langlearn.services.csv_service import CSVService
@@ -74,30 +74,35 @@ class AudioEnricher:
             # Process each adjective
             for index, row in df.iterrows():
                 try:
+                    # Skip rows with empty values
+                    if pd.isna(row["word"]) or pd.isna(row["example"]):
+                        logger.error("Error enriching adjective: empty word or example")
+                        continue
+
                     # Check if word audio exists
                     word_audio_path_str = (
-                        str(row["word_audio"]) if pd.notna(row["word_audio"]) else ""
+                        str(row["word_audio"]) if pd.notna(row["word_audio"]) else ""  # type: ignore
                     )
                     word_audio_path = (
                         Path(word_audio_path_str) if word_audio_path_str else None
                     )
                     if not word_audio_path or not word_audio_path.exists():
                         word_audio_path = self.audio_service.generate_audio(
-                            str(row["word"])
+                            str(row["word"])  # type: ignore
                         )
                         df.at[index, "word_audio"] = str(word_audio_path)
                         logger.debug(
-                            "Generated new word audio for: %s", str(row["word"])
+                            "Generated new word audio for: %s", str(row["word"])  # type: ignore
                         )
                     else:
                         logger.debug(
-                            "Using existing word audio for: %s", str(row["word"])
+                            "Using existing word audio for: %s", str(row["word"])  # type: ignore
                         )
 
                     # Check if example audio exists
                     example_audio_path_str = (
-                        str(row["example_audio"])
-                        if pd.notna(row["example_audio"])
+                        str(row["example_audio"])  # type: ignore
+                        if pd.notna(row["example_audio"])  # type: ignore
                         else ""
                     )
                     example_audio_path = (
@@ -105,24 +110,24 @@ class AudioEnricher:
                     )
                     if not example_audio_path or not example_audio_path.exists():
                         example_audio_path = self.audio_service.generate_audio(
-                            str(row["example"])
+                            str(row["example"])  # type: ignore
                         )
                         df.at[index, "example_audio"] = str(example_audio_path)
                         logger.debug(
-                            "Generated new example audio for: %s", str(row["word"])
+                            "Generated new example audio for: %s", str(row["word"])  # type: ignore
                         )
                     else:
                         logger.debug(
-                            "Using existing example audio for: %s", str(row["word"])
+                            "Using existing example audio for: %s", str(row["word"])  # type: ignore
                         )
 
                 except Exception as e:
                     logger.error(
-                        "Error enriching adjective %s: %s", str(row["word"]), str(e)
+                        "Error enriching adjective %s: %s", str(row["word"]), str(e)  # type: ignore
                     )
 
             # Save the updated CSV
-            df.to_csv(csv_file, index=False)
+            df.to_csv(csv_file, index=False)  # type: ignore
             logger.info("Successfully enriched adjectives CSV with audio files")
 
         except Exception as e:

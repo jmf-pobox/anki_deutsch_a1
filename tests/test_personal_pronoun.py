@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from langlearn.models.personal_pronoun import Case, PersonalPronoun
 
 
-def test_personal_pronoun_initialization():
+def test_personal_pronoun_initialization() -> None:
     """Test that a personal pronoun can be initialized with valid data."""
     pronoun = PersonalPronoun(
         pronoun="ich",
@@ -20,7 +20,7 @@ def test_personal_pronoun_initialization():
     assert pronoun.example == "Ich gehe nach Hause."
 
 
-def test_personal_pronoun_validation_empty_pronoun():
+def test_personal_pronoun_validation_empty_pronoun() -> None:
     """Test that an empty pronoun raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         PersonalPronoun(
@@ -33,7 +33,7 @@ def test_personal_pronoun_validation_empty_pronoun():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_personal_pronoun_validation_invalid_characters():
+def test_personal_pronoun_validation_invalid_characters() -> None:
     """Test that invalid characters in the pronoun raise a ValueError."""
     with pytest.raises(ValueError, match="Pronoun contains invalid characters"):
         PersonalPronoun(
@@ -45,7 +45,7 @@ def test_personal_pronoun_validation_invalid_characters():
         )
 
 
-def test_personal_pronoun_validation_empty_form():
+def test_personal_pronoun_validation_empty_form() -> None:
     """Test that an empty form raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         PersonalPronoun(
@@ -58,7 +58,7 @@ def test_personal_pronoun_validation_empty_form():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_personal_pronoun_validation_invalid_form_characters():
+def test_personal_pronoun_validation_invalid_form_characters() -> None:
     """Test that invalid characters in the form raise a ValueError."""
     with pytest.raises(ValueError, match="Pronoun form contains invalid characters"):
         PersonalPronoun(
@@ -70,7 +70,7 @@ def test_personal_pronoun_validation_invalid_form_characters():
         )
 
 
-def test_personal_pronoun_validation_empty_example():
+def test_personal_pronoun_validation_empty_example() -> None:
     """Test that an empty example raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         PersonalPronoun(
@@ -79,7 +79,7 @@ def test_personal_pronoun_validation_empty_example():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_personal_pronoun_validation_missing_form_in_example():
+def test_personal_pronoun_validation_missing_form_in_example() -> None:
     """Test that an example without the pronoun form raises a ValueError."""
     with pytest.raises(
         ValueError, match="Example sentence must contain the pronoun form"
@@ -93,7 +93,7 @@ def test_personal_pronoun_validation_missing_form_in_example():
         )
 
 
-def test_personal_pronoun_validation_missing_punctuation():
+def test_personal_pronoun_validation_missing_punctuation() -> None:
     """Test that an example without proper punctuation raises a ValueError."""
     with pytest.raises(
         ValueError, match="Example sentence must end with proper punctuation"
@@ -107,7 +107,7 @@ def test_personal_pronoun_validation_missing_punctuation():
         )
 
 
-def test_personal_pronoun_string_representation():
+def test_personal_pronoun_string_representation() -> None:
     """Test the string representation of a personal pronoun."""
     pronoun = PersonalPronoun(
         pronoun="ich",
@@ -119,7 +119,7 @@ def test_personal_pronoun_string_representation():
     assert str(pronoun) == "ich (I) - nominative: ich"
 
 
-def test_personal_pronoun_with_umlauts():
+def test_personal_pronoun_with_umlauts() -> None:
     """Test that personal pronouns with umlauts are valid."""
     pronoun = PersonalPronoun(
         pronoun="für",
@@ -132,7 +132,7 @@ def test_personal_pronoun_with_umlauts():
     assert pronoun.form == "für"
 
 
-def test_personal_pronoun_all_cases():
+def test_personal_pronoun_all_cases() -> None:
     """Test that all cases are valid."""
     cases = [Case.NOMINATIVE, Case.ACCUSATIVE, Case.DATIVE, Case.GENITIVE]
     for case in cases:
@@ -146,7 +146,7 @@ def test_personal_pronoun_all_cases():
         assert pronoun.case == case
 
 
-def test_personal_pronoun_from_csv():
+def test_personal_pronoun_from_csv() -> None:
     """Test creating a personal pronoun from actual CSV data."""
     pronoun = PersonalPronoun(
         pronoun="ich",

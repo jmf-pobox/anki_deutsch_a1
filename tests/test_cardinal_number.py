@@ -3,7 +3,7 @@ import pytest
 from langlearn.models.cardinal_number import CardinalNumber
 
 
-def test_cardinal_number_initialization():
+def test_cardinal_number_initialization() -> None:
     """Test that a CardinalNumber can be initialized with valid data."""
     cardinal = CardinalNumber(
         number="42",
@@ -17,7 +17,7 @@ def test_cardinal_number_initialization():
     assert cardinal.example == "Es sind zweiundvierzig Schüler in der Klasse."
 
 
-def test_cardinal_number_validation_empty_number():
+def test_cardinal_number_validation_empty_number() -> None:
     """Test that an empty number raises a ValidationError."""
     with pytest.raises(ValueError, match="Number cannot be empty"):
         CardinalNumber(
@@ -28,7 +28,7 @@ def test_cardinal_number_validation_empty_number():
         )
 
 
-def test_cardinal_number_validation_invalid_number():
+def test_cardinal_number_validation_invalid_number() -> None:
     """Test that an invalid number format raises a ValidationError."""
     with pytest.raises(ValueError, match="Number must be a valid integer"):
         CardinalNumber(
@@ -39,7 +39,7 @@ def test_cardinal_number_validation_invalid_number():
         )
 
 
-def test_cardinal_number_validation_number_too_small():
+def test_cardinal_number_validation_number_too_small() -> None:
     """Test that a number less than 2 raises a ValidationError."""
     with pytest.raises(ValueError, match="Number must be 2 or greater"):
         CardinalNumber(
@@ -47,7 +47,7 @@ def test_cardinal_number_validation_number_too_small():
         )
 
 
-def test_cardinal_number_validation_number_too_large():
+def test_cardinal_number_validation_number_too_large() -> None:
     """Test that a number greater than 1,000,000 raises a ValidationError."""
     with pytest.raises(ValueError, match="Number must not exceed 1,000,000"):
         CardinalNumber(
@@ -58,7 +58,7 @@ def test_cardinal_number_validation_number_too_large():
         )
 
 
-def test_cardinal_number_validation_empty_word():
+def test_cardinal_number_validation_empty_word() -> None:
     """Test that an empty word raises a ValidationError."""
     with pytest.raises(ValueError, match="Word cannot be empty"):
         CardinalNumber(
@@ -69,7 +69,7 @@ def test_cardinal_number_validation_empty_word():
         )
 
 
-def test_cardinal_number_validation_invalid_word_characters():
+def test_cardinal_number_validation_invalid_word_characters() -> None:
     """Test that a word with invalid characters raises a ValidationError."""
     with pytest.raises(
         ValueError, match="Word must contain only letters, spaces, and umlauts"
@@ -82,7 +82,7 @@ def test_cardinal_number_validation_invalid_word_characters():
         )
 
 
-def test_cardinal_number_validation_word_with_umlauts():
+def test_cardinal_number_validation_word_with_umlauts() -> None:
     """Test that a word with umlauts is valid."""
     cardinal = CardinalNumber(
         number="5",
@@ -93,7 +93,7 @@ def test_cardinal_number_validation_word_with_umlauts():
     assert cardinal.word == "fünf"
 
 
-def test_cardinal_number_validation_empty_english():
+def test_cardinal_number_validation_empty_english() -> None:
     """Test that an empty English translation raises a ValidationError."""
     with pytest.raises(ValueError, match="English translation cannot be empty"):
         CardinalNumber(
@@ -104,7 +104,7 @@ def test_cardinal_number_validation_empty_english():
         )
 
 
-def test_cardinal_number_validation_invalid_english_characters():
+def test_cardinal_number_validation_invalid_english_characters() -> None:
     """Test that an English translation with invalid characters raises a ValidationError."""
     with pytest.raises(
         ValueError,
@@ -118,7 +118,7 @@ def test_cardinal_number_validation_invalid_english_characters():
         )
 
 
-def test_cardinal_number_validation_empty_example():
+def test_cardinal_number_validation_empty_example() -> None:
     """Test that an empty example raises a ValidationError."""
     with pytest.raises(ValueError, match="Example cannot be empty"):
         CardinalNumber(
@@ -126,7 +126,7 @@ def test_cardinal_number_validation_empty_example():
         )
 
 
-def test_cardinal_number_validation_missing_word_in_example():
+def test_cardinal_number_validation_missing_word_in_example() -> None:
     """Test that an example without the word raises a ValidationError."""
     with pytest.raises(ValueError, match="Example must contain the German word"):
         CardinalNumber(
@@ -137,7 +137,7 @@ def test_cardinal_number_validation_missing_word_in_example():
         )
 
 
-def test_cardinal_number_validation_missing_punctuation():
+def test_cardinal_number_validation_missing_punctuation() -> None:
     """Test that an example without proper punctuation raises a ValidationError."""
     with pytest.raises(ValueError, match="Example must end with proper punctuation"):
         CardinalNumber(
@@ -148,7 +148,7 @@ def test_cardinal_number_validation_missing_punctuation():
         )
 
 
-def test_cardinal_number_string_representation():
+def test_cardinal_number_string_representation() -> None:
     """Test the string representation of a CardinalNumber."""
     cardinal = CardinalNumber(
         number="42",
@@ -159,7 +159,7 @@ def test_cardinal_number_string_representation():
     assert str(cardinal) == "42 (zweiundvierzig) - forty-two"
 
 
-def test_cardinal_number_from_csv():
+def test_cardinal_number_from_csv() -> None:
     """Test creating a CardinalNumber from CSV data."""
     cardinal = CardinalNumber(
         number="2153",

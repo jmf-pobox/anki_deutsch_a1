@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from langlearn.models.other_pronoun import Case, Gender, OtherPronoun, PronounType
 
 
-def test_other_pronoun_initialization():
+def test_other_pronoun_initialization() -> None:
     """Test that a pronoun can be initialized with valid data."""
     pronoun = OtherPronoun(
         pronoun="mein",
@@ -24,7 +24,7 @@ def test_other_pronoun_initialization():
     assert pronoun.example == "Das ist mein Bruder."
 
 
-def test_other_pronoun_validation_empty_pronoun():
+def test_other_pronoun_validation_empty_pronoun() -> None:
     """Test that an empty pronoun raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         OtherPronoun(
@@ -39,7 +39,7 @@ def test_other_pronoun_validation_empty_pronoun():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_other_pronoun_validation_invalid_characters():
+def test_other_pronoun_validation_invalid_characters() -> None:
     """Test that invalid characters in the pronoun raise a ValueError."""
     with pytest.raises(ValueError, match="Pronoun contains invalid characters"):
         OtherPronoun(
@@ -53,7 +53,7 @@ def test_other_pronoun_validation_invalid_characters():
         )
 
 
-def test_other_pronoun_validation_empty_form():
+def test_other_pronoun_validation_empty_form() -> None:
     """Test that an empty form raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         OtherPronoun(
@@ -68,7 +68,7 @@ def test_other_pronoun_validation_empty_form():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_other_pronoun_validation_invalid_form_characters():
+def test_other_pronoun_validation_invalid_form_characters() -> None:
     """Test that invalid characters in the form raise a ValueError."""
     with pytest.raises(ValueError, match="Pronoun form contains invalid characters"):
         OtherPronoun(
@@ -82,7 +82,7 @@ def test_other_pronoun_validation_invalid_form_characters():
         )
 
 
-def test_other_pronoun_validation_empty_example():
+def test_other_pronoun_validation_empty_example() -> None:
     """Test that an empty example raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         OtherPronoun(
@@ -97,7 +97,7 @@ def test_other_pronoun_validation_empty_example():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_other_pronoun_validation_missing_form_in_example():
+def test_other_pronoun_validation_missing_form_in_example() -> None:
     """Test that an example without the pronoun form raises a ValueError."""
     with pytest.raises(
         ValueError, match="Example sentence must contain the pronoun form"
@@ -113,7 +113,7 @@ def test_other_pronoun_validation_missing_form_in_example():
         )
 
 
-def test_other_pronoun_validation_missing_punctuation():
+def test_other_pronoun_validation_missing_punctuation() -> None:
     """Test that an example without proper punctuation raises a ValueError."""
     with pytest.raises(
         ValueError, match="Example sentence must end with proper punctuation"
@@ -129,7 +129,7 @@ def test_other_pronoun_validation_missing_punctuation():
         )
 
 
-def test_other_pronoun_string_representation():
+def test_other_pronoun_string_representation() -> None:
     """Test the string representation of a pronoun."""
     pronoun = OtherPronoun(
         pronoun="mein",
@@ -143,7 +143,7 @@ def test_other_pronoun_string_representation():
     assert str(pronoun) == "mein (my) - possessive/Masculine/nominative: mein"
 
 
-def test_other_pronoun_with_umlauts():
+def test_other_pronoun_with_umlauts() -> None:
     """Test that pronouns with umlauts are valid."""
     pronoun = OtherPronoun(
         pronoun="für",
@@ -158,7 +158,7 @@ def test_other_pronoun_with_umlauts():
     assert pronoun.form == "für"
 
 
-def test_other_pronoun_all_cases_and_genders():
+def test_other_pronoun_all_cases_and_genders() -> None:
     """Test that all cases and genders are valid for possessive and demonstrative pronouns."""
     cases = [Case.NOMINATIVE, Case.ACCUSATIVE, Case.DATIVE, Case.GENITIVE]
     genders = [Gender.MASCULINE, Gender.FEMININE, Gender.NEUTRAL, Gender.PLURAL]
@@ -180,7 +180,7 @@ def test_other_pronoun_all_cases_and_genders():
                 assert pronoun.gender == gender
 
 
-def test_reflexive_pronoun_first_person():
+def test_reflexive_pronoun_first_person() -> None:
     """Test first person reflexive pronouns."""
     # Accusative
     pronoun = OtherPronoun(
@@ -211,7 +211,7 @@ def test_reflexive_pronoun_first_person():
     assert pronoun.form == "mir"
 
 
-def test_reflexive_pronoun_third_person():
+def test_reflexive_pronoun_third_person() -> None:
     """Test third person reflexive pronouns."""
     # Test all genders with 'sich'
     genders = [
@@ -250,7 +250,7 @@ def test_reflexive_pronoun_third_person():
         assert pronoun.gender == gender
 
 
-def test_reflexive_pronoun_formal():
+def test_reflexive_pronoun_formal() -> None:
     """Test formal reflexive pronouns."""
     # Accusative
     pronoun = OtherPronoun(
@@ -281,7 +281,7 @@ def test_reflexive_pronoun_formal():
     assert pronoun.form == "Sich"
 
 
-def test_demonstrative_pronoun_dieser():
+def test_demonstrative_pronoun_dieser() -> None:
     """Test 'dieser' demonstrative pronouns."""
     test_cases = [
         (Gender.MASCULINE, Case.NOMINATIVE, "dieser", "Dieser Mann ist groß."),
@@ -307,7 +307,7 @@ def test_demonstrative_pronoun_dieser():
         assert pronoun.form == form
 
 
-def test_demonstrative_pronoun_der():
+def test_demonstrative_pronoun_der() -> None:
     """Test 'der' demonstrative pronouns."""
     test_cases = [
         (Gender.MASCULINE, Case.NOMINATIVE, "der", "Der Mann ist groß."),
@@ -333,7 +333,7 @@ def test_demonstrative_pronoun_der():
         assert pronoun.form == form
 
 
-def test_demonstrative_pronoun_solcher():
+def test_demonstrative_pronoun_solcher() -> None:
     """Test 'solcher' demonstrative pronouns."""
     test_cases = [
         (Gender.MASCULINE, Case.NOMINATIVE, "solcher", "Solcher Mann ist selten."),
@@ -359,7 +359,7 @@ def test_demonstrative_pronoun_solcher():
         assert pronoun.form == form
 
 
-def test_demonstrative_pronoun_invalid_case():
+def test_demonstrative_pronoun_invalid_case() -> None:
     """Test that demonstrative pronouns accept all cases."""
     for case in Case:
         pronoun = OtherPronoun(
@@ -374,7 +374,7 @@ def test_demonstrative_pronoun_invalid_case():
         assert pronoun.case == case
 
 
-def test_reflexive_pronoun_invalid_case():
+def test_reflexive_pronoun_invalid_case() -> None:
     """Test that reflexive pronouns only accept accusative and dative cases."""
     invalid_cases = [Case.NOMINATIVE, Case.GENITIVE]
     for case in invalid_cases:
@@ -393,7 +393,7 @@ def test_reflexive_pronoun_invalid_case():
             )
 
 
-def test_reflexive_pronoun_invalid_example():
+def test_reflexive_pronoun_invalid_example() -> None:
     """Test that reflexive pronouns require reflexive verbs in examples."""
     with pytest.raises(
         ValueError, match="Example for reflexive pronoun must contain a reflexive verb"
@@ -409,7 +409,7 @@ def test_reflexive_pronoun_invalid_example():
         )
 
 
-def test_other_pronoun_from_csv():
+def test_other_pronoun_from_csv() -> None:
     """Test creating a pronoun from actual CSV data."""
     pronoun = OtherPronoun(
         pronoun="mein",

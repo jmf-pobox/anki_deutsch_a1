@@ -3,7 +3,7 @@
 from langlearn.models.irregular_verb import IrregularVerb
 
 
-def test_irregular_verb_creation():
+def test_irregular_verb_creation() -> None:
     """Test creating an irregular verb with valid data."""
     verb = IrregularVerb(
         verb="sein",
@@ -26,7 +26,7 @@ def test_irregular_verb_creation():
     assert verb.notes == "Highly irregular, no pattern"
 
 
-def test_irregular_verb_validation():
+def test_irregular_verb_validation() -> None:
     """Test validation of irregular verb conjugation patterns."""
     # Verb with vowel changes
     vowel_change_verb = IrregularVerb(
@@ -81,7 +81,7 @@ def test_irregular_verb_validation():
     assert invalid_verb.validate_irregular_conjugation() is False
 
 
-def test_irregular_verb_from_csv():
+def test_irregular_verb_from_csv() -> None:
     """Test creating an irregular verb from CSV data."""
     csv_data = {
         "verb": "kommen",

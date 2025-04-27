@@ -3,7 +3,7 @@
 from langlearn.models.adjective import Adjective
 
 
-def test_adjective_creation():
+def test_adjective_creation() -> None:
     """Test creating an adjective with valid data."""
     adj = Adjective(
         word="groß",
@@ -20,7 +20,7 @@ def test_adjective_creation():
     assert adj.superlative == "am größten"
 
 
-def test_comparative_validation():
+def test_comparative_validation() -> None:
     """Test validation of comparative forms."""
     # Regular comparative
     regular = Adjective(
@@ -63,7 +63,7 @@ def test_comparative_validation():
     assert invalid.validate_comparative() is False
 
 
-def test_superlative_validation():
+def test_superlative_validation() -> None:
     """Test validation of superlative forms."""
     # Regular superlative
     regular = Adjective(
@@ -116,7 +116,7 @@ def test_superlative_validation():
     assert optional.validate_superlative() is True
 
 
-def test_adjective_from_csv():
+def test_adjective_from_csv() -> None:
     """Test creating an adjective from CSV data."""
     csv_data = {
         "word": "jung",

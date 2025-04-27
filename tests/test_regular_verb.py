@@ -3,7 +3,7 @@
 from langlearn.models.regular_verb import RegularVerb
 
 
-def test_regular_verb_creation():
+def test_regular_verb_creation() -> None:
     """Test creating a regular verb with valid data."""
     verb = RegularVerb(
         verb="lernen",
@@ -24,7 +24,7 @@ def test_regular_verb_creation():
     assert verb.example == "Ich lerne Deutsch."
 
 
-def test_regular_verb_validation():
+def test_regular_verb_validation() -> None:
     """Test validation of regular verb conjugation patterns."""
     # Valid regular verb
     valid_verb = RegularVerb(
@@ -63,7 +63,7 @@ def test_regular_verb_validation():
     assert invalid_verb2.validate_regular_conjugation() is False
 
 
-def test_regular_verb_from_csv():
+def test_regular_verb_from_csv() -> None:
     """Test creating a regular verb from CSV data."""
     csv_data = {
         "verb": "spielen",

@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from langlearn.models.interjection import Interjection
 
 
-def test_interjection_initialization():
+def test_interjection_initialization() -> None:
     """Test that an interjection can be initialized with valid data."""
     interjection = Interjection(
         word="Ach",
@@ -18,7 +18,7 @@ def test_interjection_initialization():
     assert interjection.example == "Ach, jetzt verstehe ich!"
 
 
-def test_interjection_validation_empty_word():
+def test_interjection_validation_empty_word() -> None:
     """Test that an empty word raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         Interjection(
@@ -30,7 +30,7 @@ def test_interjection_validation_empty_word():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_interjection_validation_invalid_characters():
+def test_interjection_validation_invalid_characters() -> None:
     """Test that invalid characters in the word raise a ValueError."""
     with pytest.raises(
         ValueError, match="Interjection word contains invalid characters"
@@ -43,7 +43,7 @@ def test_interjection_validation_invalid_characters():
         )
 
 
-def test_interjection_validation_empty_example():
+def test_interjection_validation_empty_example() -> None:
     """Test that an empty example raises a ValidationError."""
     with pytest.raises(ValidationError) as exc_info:
         Interjection(
@@ -52,7 +52,7 @@ def test_interjection_validation_empty_example():
     assert "String should have at least 1 character" in str(exc_info.value)
 
 
-def test_interjection_validation_missing_word_in_example():
+def test_interjection_validation_missing_word_in_example() -> None:
     """Test that an example without the interjection word raises a ValueError."""
     with pytest.raises(
         ValueError, match="Example sentence must contain the interjection word"
@@ -65,7 +65,7 @@ def test_interjection_validation_missing_word_in_example():
         )
 
 
-def test_interjection_validation_missing_punctuation():
+def test_interjection_validation_missing_punctuation() -> None:
     """Test that an example without proper punctuation raises a ValueError."""
     with pytest.raises(
         ValueError, match="Example sentence must end with proper punctuation"
@@ -78,7 +78,7 @@ def test_interjection_validation_missing_punctuation():
         )
 
 
-def test_interjection_string_representation():
+def test_interjection_string_representation() -> None:
     """Test the string representation of an interjection."""
     interjection = Interjection(
         word="Ach",
@@ -89,7 +89,7 @@ def test_interjection_string_representation():
     assert str(interjection) == "Ach - oh (expression of surprise)"
 
 
-def test_interjection_with_umlauts():
+def test_interjection_with_umlauts() -> None:
     """Test that interjections with umlauts are valid."""
     interjection = Interjection(
         word="Ähm",
@@ -101,7 +101,7 @@ def test_interjection_with_umlauts():
     assert interjection.translation == "um"
 
 
-def test_interjection_with_punctuation():
+def test_interjection_with_punctuation() -> None:
     """Test that interjections with punctuation are valid."""
     interjection = Interjection(
         word="Hoppla!",

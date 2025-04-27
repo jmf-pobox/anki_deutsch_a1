@@ -5,7 +5,7 @@ import logging.handlers
 import random
 import time
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, TypedDict, cast
 
 import requests
 from requests.exceptions import HTTPError
@@ -178,9 +178,9 @@ class PexelsService:
             response.raise_for_status()
 
             # Save the image
-            output_path = Path(output_path)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, "wb") as f:
+            path = Path(output_path)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with open(path, "wb") as f:
                 f.write(response.content)
 
             logger.debug(
@@ -203,13 +203,14 @@ class PexelsService:
             str: URL of the image, or None if not found
         """
         try:
-            photos = self.search_photos(query, per_page=1)
+            photos : list[Photo] = self.search_photos(query, per_page=1)
             if not photos:
                 logger.error("No photos found for query: %s", query)
                 return None
 
-            photo = photos[0]
-            return photo["src"][size]
+            photo: Photo = photos[0]
+            url: str = cast(str, photo["src"][size])
+            return url
         except Exception as e:
             logger.error("Error getting image URL: %s", str(e))
             return None

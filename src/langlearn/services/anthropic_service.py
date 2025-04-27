@@ -42,7 +42,7 @@ logger.addHandler(console_handler)
 class AnthropicService:
     """Service for generating Pexels search queries using Anthropic's Claude API."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the service with API credentials.
 
         Raises:

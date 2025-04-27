@@ -5,7 +5,7 @@ import pytest
 from langlearn.models.negation import Negation, NegationType
 
 
-def test_negation_initialization():
+def test_negation_initialization() -> None:
     """Test that a Negation can be initialized with valid data."""
     negation = Negation(
         word="nicht",
@@ -19,7 +19,7 @@ def test_negation_initialization():
     assert negation.example == "Ich verstehe das nicht."
 
 
-def test_negation_validation():
+def test_negation_validation() -> None:
     """Test that validation works correctly for valid negations."""
     valid_negations = [
         Negation(
@@ -71,7 +71,7 @@ def test_negation_validation():
         assert negation.validate_position() is True
 
 
-def test_invalid_example_sentences():
+def test_invalid_example_sentences() -> None:
     """Test that invalid example sentences are caught."""
     invalid_examples = [
         Negation(
@@ -98,7 +98,7 @@ def test_invalid_example_sentences():
         assert negation.validate_example() is False
 
 
-def test_negation_position_validation():
+def test_negation_position_validation() -> None:
     """Test position validation for different negation types."""
     # Test general negation (at end or before adjective)
     general_end = Negation(
@@ -172,7 +172,7 @@ def test_negation_position_validation():
     assert intensifier.validate_position() is True
 
 
-def test_invalid_negation_positions():
+def test_invalid_negation_positions() -> None:
     """Test that invalid negation positions are caught."""
     invalid_positions = [
         Negation(
@@ -205,7 +205,7 @@ def test_invalid_negation_positions():
         assert negation.validate_position() is False
 
 
-def test_negation_type_validation():
+def test_negation_type_validation() -> None:
     """Test that invalid negation types are caught."""
     # Test that all valid NegationType values work
     for negation_type in NegationType:

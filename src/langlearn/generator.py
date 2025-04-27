@@ -457,7 +457,7 @@ class AnkiDeckGenerator:
     def _get_audio(self, text: str) -> bytes | None:
         """Get audio for text using AWS Polly."""
         try:
-            response = self.audio_service.synthesize_speech(
+            response = self.audio_service.synthesize_speech(  # type: ignore
                 Text=text,
                 OutputFormat="mp3",
                 VoiceId="Vicki",
