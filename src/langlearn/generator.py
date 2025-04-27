@@ -1,5 +1,8 @@
 import csv
 import random
+import os
+import shutil
+import tempfile
 from typing import TYPE_CHECKING
 
 import genanki  # type: ignore
@@ -37,8 +40,34 @@ class AnkiDeckGenerator:
         # Initialize services
         self.audio_service = AudioService()
 
+        # Track media files
+        self.media_files: set[str] = set()  # Set of media file paths
+        self.media_dir = tempfile.mkdtemp()
+        
+        # Store project root for resolving relative paths
+        self.project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
         # Define the models (note types)
         self._define_models()
+
+    def __del__(self):
+        """Clean up temporary media directory."""
+        if hasattr(self, 'media_dir'):
+            shutil.rmtree(self.media_dir, ignore_errors=True)
+
+    def _read_template_file(self, template_path: str) -> str:
+        """Read a template file and return its contents.
+
+        Args:
+            template_path: Path to the template file
+
+        Returns:
+            Contents of the template file
+        """
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        full_path = os.path.join(template_dir, template_path)
+        with open(full_path, "r", encoding="utf-8") as f:
+            return f.read()
 
     def _define_models(self) -> None:
         """Define the various note types for different word categories."""
@@ -53,15 +82,45 @@ class AnkiDeckGenerator:
                 {"name": "Plural"},
                 {"name": "Example"},
                 {"name": "Related"},
+                {"name": "Audio"},
             ],
             templates=[
                 {
                     "name": "Card 1",
-                    "qfmt": "{{Noun}}<br>{{Article}}",
-                    "afmt": "{{FrontSide}}<hr id=answer>{{English}}<br>Plural: \
-                    {{Plural}}<br>Example: {{Example}}<br>Related: {{Related}}",
+                    "qfmt": """
+                        {{Noun}}<br>
+                        {{Article}}
+                        {{#Audio}}<br>{{Audio}}{{/Audio}}
+                    """,
+                    "afmt": """
+                        {{FrontSide}}
+                        <hr id=answer>
+                        {{English}}<br>
+                        Plural: {{Plural}}<br>
+                        Example: {{Example}}<br>
+                        Related: {{Related}}
+                    """,
                 }
             ],
+            css="""
+                .card {
+                    font-family: Arial, sans-serif;
+                    font-size: 18px;
+                    text-align: center;
+                    background-color: #f5f5f5;
+                    padding: 20px;
+                }
+                .german {
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: #669933;
+                }
+                .english {
+                    font-size: 20px;
+                    color: #333;
+                    margin: 10px 0;
+                }
+            """,
         )
 
         # Verb model
@@ -76,6 +135,7 @@ class AnkiDeckGenerator:
                 {"name": "Present_Er"},
                 {"name": "Perfect"},
                 {"name": "Example"},
+                {"name": "ExampleAudio"},
             ],
             templates=[
                 {
@@ -93,6 +153,7 @@ class AnkiDeckGenerator:
                         </div>
                         <div class="perfect"><b>Perfect:</b> {{Perfect}}</div>
                         <div class="example"><b>Example:</b> {{Example}}</div>
+                        {{#ExampleAudio}}{{ExampleAudio}}{{/ExampleAudio}}
                     """,
                 },
             ],
@@ -130,43 +191,19 @@ class AnkiDeckGenerator:
                 {"name": "English"},
                 {"name": "Example"},
                 {"name": "Comparative"},
+                {"name": "Superlative"},
+                {"name": "Image"},
+                {"name": "WordAudio"},
+                {"name": "ExampleAudio"},
             ],
             templates=[
                 {
                     "name": "German Adjective Card",
-                    "qfmt": "{{Word}}",
-                    "afmt": """
-                        <div class="german">{{Word}}</div>
-                        <hr>
-                        <div class="english">{{English}}</div>
-                        <div class="example"><b>Example:</b> {{Example}}</div>
-                        <div class="comparative">{{Comparative}}</div>
-                    """,
+                    "qfmt": self._read_template_file("adjectives/card_front.html"),
+                    "afmt": self._read_template_file("adjectives/card_back.html"),
                 },
             ],
-            css="""
-                .card {
-                    font-family: Arial, sans-serif;
-                    font-size: 18px;
-                    text-align: center;
-                    background-color: #f5f5f5;
-                    padding: 20px;
-                }
-                .german {
-                    font-size: 24px;
-                    font-weight: bold;
-                    color: #996633;
-                }
-                .english {
-                    font-size: 20px;
-                    color: #333;
-                    margin: 10px 0;
-                }
-                .example, .comparative {
-                    text-align: left;
-                    margin: 5px 0;
-                }
-            """,
+            css=self._read_template_file("adjectives/style.css"),
         )
 
         # Preposition model
@@ -179,6 +216,8 @@ class AnkiDeckGenerator:
                 {"name": "Case"},
                 {"name": "Example1"},
                 {"name": "Example2"},
+                {"name": "Example1Audio"},
+                {"name": "Example2Audio"},
             ],
             templates=[
                 {
@@ -190,7 +229,9 @@ class AnkiDeckGenerator:
                         <div class="english">{{English}}</div>
                         <div class="case"><b>Case:</b> {{Case}}</div>
                         <div class="example"><b>Example 1:</b> {{Example1}}</div>
+                        {{#Example1Audio}}{{Example1Audio}}{{/Example1Audio}}
                         <div class="example"><b>Example 2:</b> {{Example2}}</div>
+                        {{#Example2Audio}}{{Example2Audio}}{{/Example2Audio}}
                     """,
                 },
             ],
@@ -228,6 +269,7 @@ class AnkiDeckGenerator:
                 {"name": "English"},
                 {"name": "Context"},
                 {"name": "Related"},
+                {"name": "PhraseAudio"},
             ],
             templates=[
                 {
@@ -235,6 +277,7 @@ class AnkiDeckGenerator:
                     "qfmt": "{{Phrase}}",
                     "afmt": """
                         <div class="german">{{Phrase}}</div>
+                        {{#PhraseAudio}}{{PhraseAudio}}{{/PhraseAudio}}
                         <hr>
                         <div class="english">{{English}}</div>
                         <div class="context"><b>Context:</b> {{Context}}</div>
@@ -266,6 +309,32 @@ class AnkiDeckGenerator:
                 }
             """,
         )
+
+    def _add_media_file(self, file_path: str) -> str:
+        """Add a media file to the deck and return its Anki reference.
+
+        Args:
+            file_path: Path to the media file
+
+        Returns:
+            Anki media reference for the file
+        """
+        if not file_path:
+            return ""
+
+        # Convert to absolute path if relative
+        if not os.path.isabs(file_path):
+            file_path = os.path.join(self.project_root, file_path)
+
+        if not os.path.exists(file_path):
+            print(f"Warning: Media file not found: {file_path}")
+            return ""
+
+        # Store the full path for later use
+        self.media_files.add(file_path)
+        
+        # For all media files, we just need the filename
+        return os.path.basename(file_path)
 
     def add_noun(
         self,
@@ -311,6 +380,7 @@ class AnkiDeckGenerator:
         present_er: str,
         perfect: str,
         example: str,
+        example_audio: str = "",
     ) -> None:
         """Add a verb card to the deck.
 
@@ -322,6 +392,7 @@ class AnkiDeckGenerator:
             present_er: Present tense 3rd person singular
             perfect: Perfect tense form
             example: Example sentence
+            example_audio: Audio for the example sentence
         """
         note = genanki.Note(
             model=self.verb_model,
@@ -333,12 +404,21 @@ class AnkiDeckGenerator:
                 present_er,
                 perfect,
                 example,
+                example_audio,
             ],
         )
         self.deck.add_note(note)  # type: ignore
 
     def add_adjective(
-        self, word: str, english: str, example: str, comparative: str = ""
+        self, 
+        word: str, 
+        english: str, 
+        example: str, 
+        comparative: str = "", 
+        superlative: str = "",
+        image: str = "",
+        word_audio: str = "",
+        example_audio: str = "",
     ) -> None:
         """Add an adjective/adverb card to the deck.
 
@@ -347,9 +427,14 @@ class AnkiDeckGenerator:
             english: English translation
             example: Example sentence
             comparative: Comparative form
+            superlative: Superlative form
+            image: HTML img tag for the image
+            word_audio: Audio filename for the word
+            example_audio: Audio filename for the example
         """
         note = genanki.Note(
-            model=self.adj_model, fields=[word, english, example, comparative]
+            model=self.adj_model, 
+            fields=[word, english, example, comparative, superlative, image, word_audio, example_audio]
         )
         self.deck.add_note(note)  # type: ignore[no-untyped-call]
 
@@ -360,6 +445,8 @@ class AnkiDeckGenerator:
         case: str,
         example1: str,
         example2: str = "",
+        example1_audio: str = "",
+        example2_audio: str = "",
     ) -> None:
         """Add a preposition card to the deck.
 
@@ -369,15 +456,30 @@ class AnkiDeckGenerator:
             case: Case it takes (Akkusativ/Dativ)
             example1: First example sentence
             example2: Second example sentence
+            example1_audio: Audio for the first example
+            example2_audio: Audio for the second example
         """
         note = genanki.Note(
             model=self.prep_model,
-            fields=[preposition, english, case, example1, example2],
+            fields=[
+                preposition,
+                english,
+                case,
+                example1,
+                example2,
+                example1_audio,
+                example2_audio,
+            ],
         )
-        self.deck.add_note(note)  # type: ignore[no-untyped-call]
+        self.deck.add_note(note)  # type: ignore
 
     def add_phrase(
-        self, phrase: str, english: str, context: str, related: str = ""
+        self,
+        phrase: str,
+        english: str,
+        context: str,
+        related: str = "",
+        phrase_audio: str = "",
     ) -> None:
         """Add a phrase card to the deck.
 
@@ -386,11 +488,19 @@ class AnkiDeckGenerator:
             english: English translation
             context: Usage context
             related: Related expressions
+            phrase_audio: Audio for the phrase
         """
         note = genanki.Note(
-            model=self.phrase_model, fields=[phrase, english, context, related]
+            model=self.phrase_model,
+            fields=[
+                phrase,
+                english,
+                context,
+                related,
+                phrase_audio,
+            ],
         )
-        self.deck.add_note(note)  # type: ignore[no-untyped-call]
+        self.deck.add_note(note)  # type: ignore
 
     def save_deck(self, filename: str) -> None:
         """Save the deck to an .apkg file.
@@ -398,7 +508,24 @@ class AnkiDeckGenerator:
         Args:
             filename: The filename to save the deck to
         """
-        genanki.Package(self.deck).write_to_file(filename)  # type: ignore
+        # Create the package with media files
+        package = genanki.Package(self.deck)  # type: ignore
+        
+        # Add all media files to the package
+        media_files: list[str] = []
+        for src_path in self.media_files:
+            if os.path.exists(src_path):
+                # Get the original filename
+                original_name = os.path.basename(src_path)
+                # Create a temporary copy with the original name
+                temp_path = os.path.join(self.media_dir, original_name)
+                shutil.copy2(src_path, temp_path)
+                media_files.append(temp_path)
+        
+        package.media_files = media_files
+        
+        # Write the package
+        package.write_to_file(filename)  # type: ignore
         print(f"Deck saved to {filename}")
 
     def load_from_csv(self, csv_file: str, word_type: str) -> None:
@@ -412,46 +539,121 @@ class AnkiDeckGenerator:
             reader = csv.DictReader(f)
             for row in reader:
                 if word_type == "noun":
+                    # Handle audio files for nouns
+                    audio_filename = row.get("audio_filename", "")
+                    if audio_filename:
+                        audio_ref = self._add_media_file(audio_filename)
+                        audio_ref = f"[sound:{audio_ref}]" if audio_ref else ""
+                    else:
+                        audio_ref = ""
+
                     self.add_noun(
-                        row["Noun"],
-                        row["Article"],
-                        row["English"],
-                        row["Plural"],
-                        row["Example"],
-                        row.get("Related", ""),
-                        row.get("AudioFilename", None),
+                        row["noun"],
+                        row["article"],
+                        row["english"],
+                        row["plural"],
+                        row["example"],
+                        row.get("related", ""),
+                        audio_ref,
                     )
                 elif word_type == "verb":
+                    # Handle audio files for verbs
+                    example_audio = row.get("example_audio", "")
+                    if example_audio:
+                        example_audio_ref = self._add_media_file(example_audio)
+                        example_audio_ref = f"[sound:{example_audio_ref}]" if example_audio_ref else ""
+                    else:
+                        example_audio_ref = ""
+
                     self.add_verb(
-                        row["Verb"],
-                        row["English"],
-                        row["Present_Ich"],
-                        row["Present_Du"],
-                        row["Present_Er"],
-                        row["Perfect"],
-                        row["Example"],
+                        row["verb"],
+                        row["english"],
+                        row["present_ich"],
+                        row["present_du"],
+                        row["present_er"],
+                        row["perfect"],
+                        row["example"],
+                        example_audio_ref,
                     )
                 elif word_type == "adjective":
+                    # Get image path and create HTML img tag if image exists
+                    image_path = row.get("image_path", "")
+                    if image_path:
+                        # Add media file and get reference
+                        media_ref = self._add_media_file(image_path)
+                        image_html = f'<img src="{media_ref}">' if media_ref else ""
+                    else:
+                        image_html = ""
+
+                    # Handle audio files
+                    word_audio_path = row.get("word_audio", "")
+                    example_audio_path = row.get("example_audio", "")
+                    
+                    # Add word audio with [sound:] wrapper
+                    if word_audio_path:
+                        word_audio_ref = self._add_media_file(word_audio_path)
+                        word_audio_ref = f"[sound:{word_audio_ref}]" if word_audio_ref else ""
+                    else:
+                        word_audio_ref = ""
+
+                    # Add example audio with [sound:] wrapper
+                    if example_audio_path:
+                        example_audio_ref = self._add_media_file(example_audio_path)
+                        example_audio_ref = f"[sound:{example_audio_ref}]" if example_audio_ref else ""
+                    else:
+                        example_audio_ref = ""
+                    
                     self.add_adjective(
-                        row["Word"],
-                        row["English"],
-                        row["Example"],
-                        row.get("Comparative", ""),
+                        row["word"],
+                        row["english"],
+                        row["example"],
+                        row.get("comparative", ""),
+                        row.get("superlative", ""),
+                        image_html,
+                        word_audio_ref,
+                        example_audio_ref,
                     )
                 elif word_type == "preposition":
+                    # Handle audio files for prepositions
+                    example1_audio = row.get("example1_audio", "")
+                    example2_audio = row.get("example2_audio", "")
+                    
+                    if example1_audio:
+                        example1_audio_ref = self._add_media_file(example1_audio)
+                        example1_audio_ref = f"[sound:{example1_audio_ref}]" if example1_audio_ref else ""
+                    else:
+                        example1_audio_ref = ""
+
+                    if example2_audio:
+                        example2_audio_ref = self._add_media_file(example2_audio)
+                        example2_audio_ref = f"[sound:{example2_audio_ref}]" if example2_audio_ref else ""
+                    else:
+                        example2_audio_ref = ""
+
                     self.add_preposition(
-                        row["Preposition"],
-                        row["English"],
-                        row["Case"],
-                        row["Example1"],
-                        row.get("Example2", ""),
+                        row["preposition"],
+                        row["english"],
+                        row["case"],
+                        row["example1"],
+                        row.get("example2", ""),
+                        example1_audio_ref,
+                        example2_audio_ref,
                     )
                 elif word_type == "phrase":
+                    # Handle audio files for phrases
+                    phrase_audio = row.get("phrase_audio", "")
+                    if phrase_audio:
+                        phrase_audio_ref = self._add_media_file(phrase_audio)
+                        phrase_audio_ref = f"[sound:{phrase_audio_ref}]" if phrase_audio_ref else ""
+                    else:
+                        phrase_audio_ref = ""
+
                     self.add_phrase(
-                        row["Phrase"],
-                        row["English"],
-                        row["Context"],
-                        row.get("Related", ""),
+                        row["phrase"],
+                        row["english"],
+                        row["context"],
+                        row.get("related", ""),
+                        phrase_audio_ref,
                     )
 
     def _get_audio(self, text: str) -> bytes | None:

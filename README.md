@@ -10,6 +10,12 @@ An early difficulty in acquiring German is to cope with the lack of systematic r
 
 This Python application should be able to generate Anki decks for any level (A1, A2, ... C2) as the data is separate from the system.  The system is intended to create customized page layouts for different types of words.  The raw worklists are enriched with images and audio assets.  The goal is to use very little English in the cards themselves but rather point to pictures as prompts, present fill in the blank statements, to present listening comprehension questions, or to engage in dialog even.
 
+## General Documentation
+
+This system is built for Anki as a front-end. Card templates tell Anki which fields should appear on the front and back of your card, and control which cards will be generated when certain fields have text in them. By adjusting your card templates, you can alter the design and styling of many of your cards at once.  Anki supports HTML, CSS, some JavaScript, MathJax, and LaTeX. Media is also supported (audio, video). In general, cards are treated as webpages.
+
+* https://docs.ankiweb.net/templates/intro.html - Anki template system
+
 ## Project Status
 
 The project is currently in an intermediary phase with the following components completed:
@@ -46,21 +52,25 @@ The project is currently in an intermediary phase with the following components 
 ## Project Structure
 
 ```
-anki_deutsch_a1/
-├── data/                  # CSV data files
-│   └── backups/           # Automatic backups of enriched files
-│   └── audio/             # Supporting audio
-│   └── images/            # Supporting images
+langlearn-anki-deck-generator/
+├── data/                  # Language data in CSV files
+│   └── audio/             # Supporting audio enrichments
+│   └── images/            # Supporting image enrichments
+│   └── backups/           # Backups of CVS files made during enrichment
 |
 ├── src/
 │   └── langlearn/
-│       ├── models/        # Pydantic models
-│       ├── cards/         # Card generators
-│       └── services/      # External service integrations
+│       ├── models/        # Pydantic models representing parts of speech and language acquisition units
+│       ├── cards/         # Card generators for each part of Pydantic model, depends upon models
+│       └── services/      # Service interfaces to external endpoints (AWS, Pexels, Filesystem, etc.)
+│       └── utils/         # Utilities that are used to generate and enrich content, manage API keys, etc.
+│       └── scripts/       # Scripts that are used to generate content, rely upon utils
+│       └── examples/      # Standalone example showing the genanki interface and deck creation
 |
 ├── tests/                 # Test suites
+│       └── integration/   # Tests that call live APIs and/or external dependencies (e.g., filesystem, keyring)
 |
-└── languages/             # Language-specific documentation
+└── languages/             # Language-specific documentation covering grammar and required data files
 ```
 
 ## Installation
