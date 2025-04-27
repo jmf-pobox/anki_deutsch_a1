@@ -15,10 +15,10 @@ from langlearn.utils.audio_enricher import AudioEnricher
 
 @pytest.fixture
 def cleanup_audio_dir() -> Generator[None, None, None]:
-    """Clean up audio directories after tests."""
+    """Clean up test audio directories after tests."""
     yield
-    if os.path.exists("data/audio"):
-        shutil.rmtree("data/audio")
+    if os.path.exists("data/test_audio"):
+        shutil.rmtree("data/test_audio")
 
 
 @pytest.fixture(autouse=True)
@@ -44,11 +44,11 @@ klein,small,Meine Wohnung ist klein.,kleiner,am kleinsten"""
     csv_file.write_text(csv_content)
 
     # Create enricher and process
-    enricher = AudioEnricher()
+    enricher = AudioEnricher(audio_dir="data/test_audio")
     enricher.enrich_adjectives(csv_file)
 
     # Verify results
-    assert os.path.exists("data/audio")
+    assert os.path.exists("data/test_audio")
 
     # Read the updated CSV
     with open(csv_file) as f:

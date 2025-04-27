@@ -42,11 +42,15 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
+test = "pytest {args:tests tests/integration}"
+test-unit = "pytest {args:tests --ignore=tests/integration}"
+test-integration = "pytest {args:tests/integration}"
 lint = "ruff check ."
 format = "ruff format ."
 type = "mypy src/langlearn tests"
 check = ["lint", "type", "test"]
+check-unit = ["lint", "type", "test-unit"]
+check-integration = ["lint", "type", "test-integration"]
 
 [tool.ruff]
 line-length = 88

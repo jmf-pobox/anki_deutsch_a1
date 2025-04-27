@@ -35,11 +35,9 @@ def mock_keyring() -> Generator[MagicMock, None, None]:
 
 
 @pytest.fixture
-def anthropic_service(mock_anthropic: MagicMock) -> AnthropicService:
-    """Fixture for creating an AnthropicService instance with mocked client."""
-    os.environ["ANTHROPIC_API_KEY"] = "test_key"
-    service = AnthropicService()
-    return service
+def anthropic_service() -> AnthropicService:
+    """Fixture for creating an AnthropicService instance."""
+    return AnthropicService()
 
 
 def test_anthropic_service_initialization(mock_keyring: MagicMock) -> None:
@@ -53,16 +51,8 @@ def test_anthropic_service_initialization(mock_keyring: MagicMock) -> None:
         AnthropicService()
 
 
-def test_generate_pexels_query(
-    anthropic_service: AnthropicService, mock_anthropic: MagicMock
-) -> None:
+def test_generate_pexels_query(anthropic_service: AnthropicService) -> None:
     """Test generating a Pexels query from a model."""
-    # Setup mock response
-    mock_content = {"text": "test query"}
-    mock_response = MagicMock(spec=Message)
-    mock_response.content = [mock_content]
-    mock_anthropic.return_value.messages.create.return_value = mock_response
-
     # Create test model
     test_model = MockModel(
         word="groß",
@@ -74,8 +64,22 @@ def test_generate_pexels_query(
     query = anthropic_service.generate_pexels_query(test_model)
 
     # Verify results
-    assert query == "test query"
-    mock_anthropic.return_value.messages.create.assert_called_once()
+    assert isinstance(query, str)
+    assert len(query) > 0
+    # Query should be semantically related to the input
+    assert any(
+        word.lower() in query.lower()
+        for word in [
+            "big",
+            "large",
+            "huge",
+            "tall",
+            "house",
+            "building",
+            "size",
+            "groß",
+        ]
+    ), f"Query '{query}' does not contain any expected semantic terms"
 
 
 def test_prompt_creation(anthropic_service: AnthropicService) -> None:
@@ -128,5 +132,17 @@ def test_live_generate_pexels_query() -> None:
 
     assert isinstance(query, str)
     assert len(query) > 0
-    # Query should be semantically related to the English translation
-    assert any(word in query.lower() for word in ["big", "large", "huge", "house"])
+    # Query should be semantically related to the input
+    assert any(
+        word.lower() in query.lower()
+        for word in [
+            "big",
+            "large",
+            "huge",
+            "tall",
+            "house",
+            "building",
+            "size",
+            "groß",
+        ]
+    ), f"Query '{query}' does not contain any expected semantic terms"

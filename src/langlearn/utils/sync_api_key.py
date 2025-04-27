@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import contextlib
 
 import keyring
 from keyring.errors import PasswordDeleteError
@@ -51,11 +52,8 @@ class CredentialManager:
         Args:
             username: The username whose credentials should be deleted
         """
-        try:
+        with contextlib.suppress(PasswordDeleteError):
             keyring.delete_password(self._app_name, username)
-        except PasswordDeleteError:
-            # Password didn't exist or couldn't be deleted
-            pass
 
 
 # Usage example

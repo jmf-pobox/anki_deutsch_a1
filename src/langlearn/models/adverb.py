@@ -67,28 +67,23 @@ class Adverb(BaseModel):
                 return True
 
         # Manner and frequency adverbs typically come after the verb
-        if self.type in [AdverbType.MANNER, AdverbType.FREQUENCY]:
-            # Can be after the verb
-            if adverb_pos > 0:
-                return True
+        if self.type in [AdverbType.MANNER, AdverbType.FREQUENCY] and adverb_pos > 0:
+            return True
 
         # Location adverbs typically come at the end
-        if self.type == AdverbType.LOCATION:
-            # Should be towards the end of the sentence
-            if adverb_pos > 0:
-                return True
+        if self.type == AdverbType.LOCATION and adverb_pos > 0:
+            return True
 
         # Intensity adverbs come before what they modify
-        if self.type == AdverbType.INTENSITY:
-            # Should not be at the end
-            if adverb_pos < len(words) - 1:
-                return True
+        if self.type == AdverbType.INTENSITY and adverb_pos < len(words) - 1:
+            return True
 
         # Modal adverbs (attitude, probability) often come in second position
-        if self.type in [AdverbType.ATTITUDE, AdverbType.PROBABILITY]:
-            # Can be at start or in second position
-            if adverb_pos <= 1:
-                return True
+        if (
+            self.type in [AdverbType.ATTITUDE, AdverbType.PROBABILITY]
+            and adverb_pos <= 1
+        ):
+            return True
 
         # Addition and limitation adverbs are more flexible
         if self.type in [AdverbType.ADDITION, AdverbType.LIMITATION]:

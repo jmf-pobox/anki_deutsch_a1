@@ -1,14 +1,16 @@
-"""Service for generating Pexels search queries using Anthropic's Claude API."""
+"""Service for interacting with Anthropic's Claude API."""
 
 import logging
 import logging.handlers
+import os
 from pathlib import Path
-from typing import cast
+from typing import Any
 
-import anthropic
 import keyring
-from anthropic.types import ContentBlock, Message, TextBlock
-from pydantic import BaseModel
+from anthropic import Anthropic
+from anthropic.types import Message
+
+from langlearn.models.adjective import Adjective
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -38,107 +40,103 @@ logger.addHandler(console_handler)
 
 
 class AnthropicService:
-    """Service for interacting with Anthropic's Claude API to generate Pexels search queries."""
+    """Service for generating Pexels search queries using Anthropic's Claude API."""
 
-    def __init__(self) -> None:
-        """Initialize the Anthropic service with API key from environment or keyring."""
-        key = "ANTHROPIC_API_KEY"
-        api_key = keyring.get_password(key, key)
-        if not api_key:
-            raise ValueError(f"Key {key} not found in system keyring")
-
-        # Log the first few characters of the API key for debugging
-        if api_key:
-            logger.debug("API key prefix: %s...", api_key[:10])
-            logger.debug("API key length: %d", len(api_key))
-
-        self.client = anthropic.Anthropic(api_key=api_key)
-
-    def generate_pexels_query(self, model: BaseModel) -> str:
-        """
-        Generate a Pexels search query based on the given Pydantic model.
-
-        Args:
-            model: A Pydantic model instance to generate a query for
-
-        Returns:
-            str: A search query suitable for Pexels API
+    def __init__(self):
+        """Initialize the service with API credentials.
 
         Raises:
-            ValueError: If the model type is not supported or no response received
+            ValueError: If the API key cannot be found in environment or keyring
         """
-        # Get the model's class name for type-specific handling
-        model_type = model.__class__.__name__
+        # Try to get API key from environment first
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
 
-        # Create a prompt based on the model type
-        prompt = self._create_prompt(model, model_type)
-        logger.info("Generated prompt for %s: %s", model_type, prompt)
+        # Fall back to keyring if not in environment
+        if not api_key:
+            api_key = keyring.get_password("ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
 
-        # Get the response from Claude
-        response: Message = self.client.messages.create(
-            model="claude-3-7-sonnet-20250219",
-            max_tokens=100,
-            temperature=0.7,
-            system="You are a helpful assistant that generates search queries for the Pexels image API.",
-            messages=[{"role": "user", "content": prompt}],
-        )
+        if not api_key:
+            raise ValueError("Key ANTHROPIC_API_KEY not found in system keyring")
 
-        # Log the response for debugging
-        logger.info("Received response: %s", response)
+        self.api_key = api_key
+        self.model = "claude-3-7-sonnet-20250219"  # Updated to current model
+        self.client = Anthropic(api_key=self.api_key)
+        logger.debug(f"Initialized AnthropicService with model: {self.model}")
 
-        # Extract and clean the query
-        if not response.content:
-            raise ValueError("No content received from Claude")
-
-        # Handle both TextBlock and dict response types
-        content: ContentBlock = response.content[0]
-        if isinstance(content, TextBlock):
-            query = content.text.strip()
-        elif isinstance(content, dict) and "text" in content:
-            query = cast("str", content["text"]).strip()
-        else:
-            raise ValueError(f"Unexpected content type: {type(content)}")
-
-        logger.info("Extracted query: %s", query)
-        return query
-
-    def _create_prompt(self, model: BaseModel, model_type: str) -> str:
-        """
-        Create a prompt for Claude based on the model type and data.
+    def _generate_response(
+        self, prompt: str, max_tokens: int = 100, temperature: float = 0.7
+    ) -> str:
+        """Generate a response from the Anthropic API.
 
         Args:
-            model: The Pydantic model instance
-            model_type: The name of the model class
+            prompt: The prompt to send to the API
+            max_tokens: Maximum number of tokens to generate
+            temperature: Controls randomness in the response (0.0-1.0)
 
         Returns:
-            str: A formatted prompt for Claude
+            str: The generated response
         """
-        # Get model fields and their values
-        model_data = model.model_dump()
+        try:
+            response: Message = self.client.messages.create(
+                model=self.model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            # The response content is a list of content blocks, each with a type and text
+            if response.content and len(response.content) > 0:
+                content_block = response.content[0]
+                if hasattr(content_block, "text"):
+                    return str(content_block.text)
+                return str(content_block)
+            return ""
+        except Exception as e:
+            logger.error(f"Error calling Anthropic API: {e}")
+            raise
 
-        # Extract key fields that are most relevant for image search
-        search_relevant_fields = ["word", "noun", "verb", "english", "example"]
-        key_data = {
-            k: v for k, v in model_data.items() if k in search_relevant_fields and v
-        }
+    def _extract_key_data(self, model: Any) -> str:
+        """Extract key data from a model for prompt generation.
 
-        # Create a more detailed prompt focusing on specific, visual elements
-        base_prompt = (
-            "You are helping to generate search queries for finding high-quality, relevant images on Pexels. "
-            "Given a German language learning model, generate a detailed, specific search query that would return "
-            "appropriate, visually clear images for the word or concept.\n\n"
-            "Guidelines for the search query:\n"
-            "1. Be specific and descriptive - include adjectives, settings, and context\n"
-            "2. Focus on concrete, visual elements that would appear in photographs\n"
-            "3. If the concept is abstract, suggest imagery that clearly symbolizes or represents it\n"
-            "4. Include relevant context from the example sentence\n"
-            "5. Use natural language that would return high-quality stock photos\n"
-            "6. Avoid generic or vague terms\n"
-            "7. Consider cultural context and appropriateness\n\n"
-            f"Model data: {key_data}\n\n"
-            "Generate a detailed, specific search query that would return high-quality, relevant images. "
-            "The query should be in English and focus on concrete, visual elements. "
-            "Return ONLY the search query, nothing else."
-        )
+        Args:
+            model: The model to extract data from
 
-        return base_prompt
+        Returns:
+            str: Key data from the model
+        """
+        try:
+            if isinstance(model, Adjective):
+                return (
+                    f"Word: {model.word}\n"
+                    f"English: {model.english}\n"
+                    f"Example: {model.example}"
+                )
+            return str(model)
+        except Exception as e:
+            logger.error("Error extracting key data: %s", str(e))
+            return str(model)
+
+    def generate_pexels_query(self, model: Any) -> str:
+        """Generate a Pexels query for the given model."""
+        prompt = f"""You are a helpful assistant that generates search queries for finding relevant images.
+Given a German word '{model.word}' meaning '{model.english}' with example '{model.example}',
+generate a short, specific Pexels search query in English that would find a relevant image.
+
+Guidelines:
+- Keep the query between 2-4 words
+- Focus on concrete, visual aspects
+- Include size/scale descriptors when relevant
+- Use common synonyms if helpful
+- Ensure query relates directly to the word meaning and example
+
+Output only the search query, nothing else."""
+
+        try:
+            response = self._generate_response(
+                prompt,
+                max_tokens=50,  # Reduced since we only need a short query
+                temperature=0.3,  # Lower temperature for more consistent results
+            )
+            return response.strip()
+        except Exception as e:
+            logger.error(f"Error generating Pexels query: {e}")
+            raise

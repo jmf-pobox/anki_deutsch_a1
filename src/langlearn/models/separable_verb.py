@@ -45,7 +45,9 @@ class SeparableVerb(Verb):
             return False
 
         # Check that the example sentence has the prefix at the end
-        if not self.example.endswith(f" {self.prefix}."):
-            return False
+        return self.example.endswith(f" {self.prefix}.")
 
-        return True
+    def is_valid_example(self) -> bool:
+        """Check if the example sentence is valid for a separable verb."""
+        # Check that the example sentence has the prefix at the end
+        return self.example.endswith(f" {self.prefix}.")

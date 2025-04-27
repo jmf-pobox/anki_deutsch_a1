@@ -5,7 +5,7 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
-import pandas as pd
+import pandas as pd  # type: ignore
 
 from langlearn.services.audio import AudioService
 from langlearn.services.csv_service import CSVService
@@ -74,26 +74,26 @@ class AudioEnricher:
             for index, row in df.iterrows():
                 try:
                     # Generate word audio
-                    word_audio_path = self.audio_service.generate_audio(row["word"])
+                    word_audio_path = self.audio_service.generate_audio(row["word"])  # type: ignore
                     df.at[index, "word_audio"] = str(word_audio_path)
 
                     # Generate example audio
                     example_audio_path = self.audio_service.generate_audio(
-                        row["example"]
+                        row["example"]  # type: ignore
                     )
                     df.at[index, "example_audio"] = str(example_audio_path)
 
                     logger.debug(
                         "Successfully enriched adjective: %s with audio files",
-                        row["word"],
+                        row["word"],  # type: ignore
                     )
                 except Exception as e:
                     logger.error(
-                        "Error enriching adjective %s: %s", row["word"], str(e)
+                        "Error enriching adjective %s: %s", row["word"], str(e)  # type: ignore
                     )
 
             # Save the updated CSV
-            df.to_csv(csv_file, index=False)
+            df.to_csv(csv_file, index=False)  # type: ignore
             logger.info("Successfully enriched adjectives CSV with audio files")
 
         except Exception as e:

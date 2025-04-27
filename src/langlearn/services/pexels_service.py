@@ -3,10 +3,12 @@
 import logging
 import logging.handlers
 import random
+import time
 from pathlib import Path
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import requests
+from requests.exceptions import HTTPError
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -75,6 +77,8 @@ class PexelsService:
         if not self.api_key:
             raise ValueError("Pexels API key not found in keyring")
         self.base_url = "https://api.pexels.com/v1"
+        self.max_retries = 3
+        self.retry_delay = 1  # seconds
 
     def _get_headers(self) -> dict[str, str]:
         """Get headers for Pexels API requests.
@@ -82,7 +86,51 @@ class PexelsService:
         Returns:
             dict: Headers for API requests
         """
-        return {"Authorization": self.api_key}
+        return {"Authorization": str(self.api_key)}
+
+    def _make_request(self, url: str, params: dict[str, Any]) -> requests.Response:
+        """Make a request to the Pexels API with retry logic.
+
+        Args:
+            url: API endpoint URL
+            params: Query parameters
+
+        Returns:
+            Response from the API
+
+        Raises:
+            HTTPError: If the request fails after all retries
+        """
+        for attempt in range(self.max_retries):
+            try:
+                response = requests.get(
+                    url,
+                    headers=self._get_headers(),
+                    params=params,
+                    timeout=10,
+                )
+                response.raise_for_status()
+                return response
+            except HTTPError as e:
+                if e.response.status_code == 429:  # Rate limit
+                    if attempt < self.max_retries - 1:
+                        retry_after = int(
+                            e.response.headers.get("Retry-After", self.retry_delay)
+                        )
+                        logger.warning(
+                            "Rate limited. Waiting %d seconds before retry (attempt %d/%d)",
+                            retry_after,
+                            attempt + 1,
+                            self.max_retries,
+                        )
+                        time.sleep(retry_after)
+                        continue
+                raise
+            except Exception as e:
+                logger.error("Error making request to Pexels: %s", str(e))
+                if attempt == self.max_retries - 1:
+                    raise
+        raise HTTPError("Failed to make request after all retries")
 
     def search_photos(self, query: str, per_page: int = 5) -> list[Photo]:
         """Search for photos on Pexels.
@@ -95,13 +143,10 @@ class PexelsService:
             List of photo results
         """
         try:
-            response = requests.get(
+            response = self._make_request(
                 f"{self.base_url}/search",
-                headers=self._get_headers(),
-                params={"query": query, "per_page": per_page},
-                timeout=10,
+                {"query": query, "per_page": per_page},
             )
-            response.raise_for_status()
             return response.json()["photos"]
         except Exception as e:
             logger.error("Error searching Pexels: %s", str(e))

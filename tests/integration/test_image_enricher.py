@@ -32,7 +32,7 @@ def test_enrich_adjectives_success(
     # Verify CSV was updated with image paths
     updated_content = csv_file.read_text()
     assert "image_path" in updated_content
-    
+
     # Verify images were downloaded to the default data/images directory
     assert Path("data/images/groß.jpg").exists()
     assert Path("data/images/klein.jpg").exists()

@@ -1,9 +1,9 @@
-"""Noun card generator for Anki."""
+"""Card generator for nouns."""
 
 import genanki  # type: ignore
 
-from ..models.noun import Noun
-from .base import BaseCardGenerator
+from langlearn.cards.base import BaseCardGenerator
+from langlearn.models.noun import Noun
 
 
 class NounCardGenerator(BaseCardGenerator):

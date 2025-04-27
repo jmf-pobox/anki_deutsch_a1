@@ -111,3 +111,8 @@ class IrregularVerb(Verb):
             return actual_forms == expected_forms
 
         return False
+
+    def has_irregular_forms(self) -> bool:
+        """Check if the verb has any irregular forms."""
+        # Check for irregular present tense forms
+        return bool(self._has_irregular_present())

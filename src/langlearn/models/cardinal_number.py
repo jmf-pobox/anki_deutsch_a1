@@ -26,7 +26,7 @@ class CardinalNumber(BaseModel):
         except ValueError as e:
             if str(e).startswith("Number must"):
                 raise e
-            raise ValueError("Number must be a valid integer")
+            raise ValueError("Number must be a valid integer") from e
         return v
 
     @field_validator("word")
