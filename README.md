@@ -1,6 +1,14 @@
 # Language Learn Anki Deck Generator (langlearn-anki-deck-generator)
 
-A specialized Anki deck generator for German language learning, focusing on A1 level vocabulary and grammar.
+## Project Introduction
+
+This Python application is designed to generate Anki decks for language learning. The motivation for the project is to create decks that reflect grammatical nuances of the target language while preserving the popular Anki user interface to the content.
+
+Currently, German is the only target language, but Korean and other languages are planned.  The intent is to make the code base modular enough to support multiple languages, while still being customized for the grammar of each language.  
+
+An early difficulty in acquiring German is to cope with the lack of systematic rules related to the gender of nouns.  In many languages, the word ending conveys gender or at least strongly hints at gender. While there are some heuristics in German, the reality is that the learner has to be able to recall / memorize the gender.  Most decks with German include the article (der/das/die), but they do not test the learner specifically for recalling the article.  The pedagagocial method in Anki (spaced, repeition, progressive recall) is designed to help learners memorize material, but most decks for German treat the article plus noun as a phrase (das Buch), rather than prompting for the article (___ Buch?).  This is only one such nuance in German.  Others include separable verbs, cases for prepositions, and many other must be memorized elements.
+
+This Python application should be able to generate Anki decks for any level (A1, A2, ... C2) as the data is separate from the system.  The system is intended to create customized page layouts for different types of words.  The raw worklists are enriched with images and audio assets.  The goal is to use very little English in the cards themselves but rather point to pictures as prompts, present fill in the blank statements, to present listening comprehension questions, or to engage in dialog even.
 
 ## Project Status
 
@@ -86,14 +94,18 @@ export AWS_DEFAULT_REGION=your_region
 
 ## Usage
 
-The project is currently in development. Once completed, it will provide:
+The project is currently in development. 
 
-1. Generation of Anki decks for German A1 vocabulary
-2. Audio pronunciation for all words
+The intended use involves a user of the application deciding their target language, using LLMs to build wordlists for each part of speech and each supported content type (e.g., dialog), followed by enrichment with speech sourced from AWS Polly (or a similar service), and images sourced from Pexels, finally resulting in a custom programmatically generated Anki deck.
+
+Once completed, it will provide:
+
+1. Generation of Anki decks based on target language data
+2. Audio for all words
 3. Image associations for concrete nouns and adjectives
 4. Example sentences for context
-5. Grammar notes and tips
-6. Automatic backups of enriched data files
+5. Unique card templates in Anki for different parts of speech
+5. Additional card templates (listening comprehension, dialog)
 
 ## Development
 
@@ -109,7 +121,7 @@ python -m pytest tests/ -v
 
 ### Contributing
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch for a new language or feature
 3. Make your changes
 4. Run tests
 5. Submit a pull request
