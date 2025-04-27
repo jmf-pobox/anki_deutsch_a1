@@ -2,6 +2,7 @@
 
 import logging
 import shutil
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -17,15 +18,19 @@ logger = logging.getLogger(__name__)
 class ImageEnricher:
     """Service for enriching data with image assets."""
 
-    def __init__(self, images_dir: str = "data/images") -> None:
+    def __init__(
+        self, images_dir: str = "data/images", rate_limit_ms: int = 500
+    ) -> None:
         """Initialize the ImageEnricher.
 
         Args:
             images_dir: Directory to store image files
+            rate_limit_ms: Delay in milliseconds between API calls
         """
         self.images_dir = Path(images_dir).absolute()
         self.anthropic_service = AnthropicService()
         self.pexels_service = PexelsService()
+        self.rate_limit_ms = rate_limit_ms
         self._setup_directories()
 
     def _setup_directories(self) -> None:
@@ -49,6 +54,10 @@ class ImageEnricher:
         shutil.copy2(csv_file, backup_file)
         logger.info("Created backup of CSV file at: %s", backup_file)
         return backup_file
+
+    def _rate_limit(self) -> None:
+        """Sleep for the configured rate limit duration."""
+        time.sleep(self.rate_limit_ms / 1000.0)
 
     def enrich_adjectives(self, csv_file: Path) -> None:
         """Enrich adjectives with image files.
@@ -92,6 +101,7 @@ class ImageEnricher:
                             model
                         )
                         logger.debug("Generated search query: %s", search_query)
+                        self._rate_limit()  # Rate limit between API calls
 
                         # Download the image
                         if self.pexels_service.download_image(
@@ -108,6 +118,7 @@ class ImageEnricher:
                                 "Failed to download image for adjective: %s",
                                 row["word"],  # type: ignore
                             )
+                        self._rate_limit()  # Rate limit between API calls
                     else:
                         logger.debug(
                             "Image already exists for adjective: %s",

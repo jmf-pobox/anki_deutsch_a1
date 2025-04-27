@@ -153,18 +153,18 @@ def test_live_get_image_url() -> None:
 
 @pytest.mark.live
 def test_live_download_image(
-    tmp_path: Path, 
+    tmp_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test image download with real API key."""
     service = PexelsService()  # Uses real API key from keyring
     output_path = tmp_path / "test.jpg"
-    
+
     # Try a few different queries to increase chances of success
     queries = ["house", "nature", "city"]
     success = False
     rate_limited = False
-    
+
     for i, query in enumerate(queries):
         if i > 0:  # Add delay between attempts
             time.sleep(5)  # Wait 5 seconds between queries
@@ -177,17 +177,17 @@ def test_live_download_image(
                 rate_limited = True
                 logger.warning("Rate limited by Pexels API")
             continue
-    
+
     if rate_limited:
         pytest.skip("Rate limited by Pexels API")
-        
+
     if not success:
         # If we're not rate limited but still failed, check the logs
         # to see if we got any rate limit errors in the nested calls
         log_text = caplog.text.lower()
         if "429" in log_text or "too many requests" in log_text:
             pytest.skip("Rate limited by Pexels API (detected in logs)")
-        
+
     assert success, "Failed to download image after trying multiple queries"
     assert output_path.exists()
     assert output_path.stat().st_size > 0
