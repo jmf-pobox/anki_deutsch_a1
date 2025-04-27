@@ -146,7 +146,7 @@ class AudioService:
         except ClientError as e:
             logger.error("Error generating audio: %s", e)
             logger.error("Error details: %s", e.response)
-            logger.error("Failed SSML: %s", ssml_text) #type: ignore # Log the SSML that failed
+            logger.error("Failed SSML: %s", ssml_text)  # type: ignore # Log the SSML that failed
             raise
 
     def _save_audio_file(
@@ -161,10 +161,6 @@ class AudioService:
         Returns:
             Path to the saved audio file, or None if saving failed
         """
-        if "AudioStream" not in response:
-            logger.error("No AudioStream in response")
-            return None
-
         # Generate unique filename based on text content
         filename = f"{hashlib.md5(text.encode()).hexdigest()}.mp3"
         filepath = self.output_dir / filename

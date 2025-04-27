@@ -4,6 +4,7 @@ import logging
 import sys
 import time
 from pathlib import Path
+from typing import Literal
 
 import keyring
 import pytest
@@ -37,10 +38,11 @@ def test_api_direct() -> None:
 
     try:
         headers = {"Authorization": api_key}
+        params: dict[str, str | int] = {"query": "test", "per_page": 1}
         response = requests.get(
             "https://api.pexels.com/v1/search",
             headers=headers,
-            params={"query": "test", "per_page": 1},
+            params=params,
         )
         print(f"Status code: {response.status_code}", file=sys.stderr)
         print(f"Response: {response.text}", file=sys.stderr)
@@ -84,7 +86,8 @@ def test_live_image_url() -> None:
 
     # Test different sizes with delay between requests
     rate_limited = False
-    for i, size in enumerate(["small", "large", "original"]):
+    sizes: list[Literal["small", "large", "original"]] = ["small", "large", "original"]
+    for i, size in enumerate(sizes):
         if i > 0:  # Add delay between attempts
             time.sleep(5)  # Wait 5 seconds between queries
         try:

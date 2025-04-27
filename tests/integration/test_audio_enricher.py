@@ -7,7 +7,7 @@ from collections.abc import Generator
 from pathlib import Path
 from typing import cast
 
-import pandas as pd  # type: ignore
+import pandas as pd
 import pytest
 
 from langlearn.utils.audio_enricher import AudioEnricher
