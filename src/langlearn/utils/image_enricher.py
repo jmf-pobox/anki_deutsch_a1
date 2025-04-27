@@ -110,7 +110,11 @@ class ImageEnricher:
                         english=str(row["english"]),  # type: ignore[arg-type]
                         example=str(row["example"]),  # type: ignore[arg-type]
                         comparative=str(row["comparative"]),  # type: ignore[arg-type]
-                        superlative=str(row.get("superlative", None)) if row.get("superlative") else None,  # type: ignore[arg-type]
+                        superlative=(
+                            str(row.get("superlative", None))
+                            if row.get("superlative")
+                            else None
+                        ),  # type: ignore[arg-type]
                     )
 
                     # Generate image filename

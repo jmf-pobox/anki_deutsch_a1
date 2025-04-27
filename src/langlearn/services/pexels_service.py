@@ -148,7 +148,7 @@ class PexelsService:
                 f"{self.base_url}/search",
                 {"query": query, "per_page": per_page},
             )
-            return cast(list[Photo], response.json()["photos"])
+            return cast("list[Photo]", response.json()["photos"])
         except Exception as e:
             logger.error("Error searching Pexels: %s", str(e))
             return []
