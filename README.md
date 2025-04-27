@@ -76,13 +76,16 @@ cd anki-deutsch-a1
 hatch env create
 ```
 
-3. Configure API keys using the sync-api-key utility, which stores secrets via keyring:
+3. Configure API keys using the api_keyring utility, which stores secrets via keyring:
 ```bash
 # For Anthropic API key
-python src/langlearn/utils/sync-api-key.py ANTHROPIC_API_KEY your_api_key_here
+python src/langlearn/utils/api_keyring.py add ANTHROPIC_API_KEY your_api_key_here
 
 # For Pexels API key
-python src/langlearn/utils/sync-api-key.py PEXELS_API_KEY your_api_key_here
+python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_api_key_here
+
+# To view a stored API key
+python src/langlearn/utils/api_keyring.py view ANTHROPIC_API_KEY
 ```
 
 4. Configure AWS credentials for audio generation:
