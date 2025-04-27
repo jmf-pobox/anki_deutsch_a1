@@ -1,4 +1,4 @@
-# Anki Deutsch A1
+# Language Learn Anki Deck Generator (langlearn-anki-deck-generator)
 
 A specialized Anki deck generator for German language learning, focusing on A1 level vocabulary and grammar.
 
