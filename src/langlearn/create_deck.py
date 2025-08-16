@@ -13,7 +13,9 @@ def main() -> None:
     """Create an Anki deck from the CSV files in the data directory."""
     # Get the path to the data directory
     script_dir = Path(__file__).parent
-    project_dir = script_dir.parent.parent  # Changed to go up two levels to reach project root
+    project_dir = (
+        script_dir.parent.parent
+    )  # Changed to go up two levels to reach project root
     data_dir = project_dir / "data"
     output_dir = project_dir / "output"
 

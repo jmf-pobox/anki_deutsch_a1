@@ -92,11 +92,13 @@ class AudioEnricher:
                         )
                         df.at[index, "word_audio"] = str(word_audio_path)
                         logger.debug(
-                            "Generated new word audio for: %s", str(row["word"])  # type: ignore
+                            "Generated new word audio for: %s",
+                            str(row["word"]),  # type: ignore
                         )
                     else:
                         logger.debug(
-                            "Using existing word audio for: %s", str(row["word"])  # type: ignore
+                            "Using existing word audio for: %s",
+                            str(row["word"]),  # type: ignore
                         )
 
                     # Check if example audio exists
@@ -114,16 +116,20 @@ class AudioEnricher:
                         )
                         df.at[index, "example_audio"] = str(example_audio_path)
                         logger.debug(
-                            "Generated new example audio for: %s", str(row["word"])  # type: ignore
+                            "Generated new example audio for: %s",
+                            str(row["word"]),  # type: ignore
                         )
                     else:
                         logger.debug(
-                            "Using existing example audio for: %s", str(row["word"])  # type: ignore
+                            "Using existing example audio for: %s",
+                            str(row["word"]),  # type: ignore
                         )
 
                 except Exception as e:
                     logger.error(
-                        "Error enriching adjective %s: %s", str(row["word"]), str(e)  # type: ignore
+                        "Error enriching adjective %s: %s",
+                        str(row["word"]),
+                        str(e),  # type: ignore
                     )
 
             # Save the updated CSV

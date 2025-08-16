@@ -55,6 +55,12 @@ type = "mypy src/langlearn tests"
 check = ["lint", "type", "test"]
 check-unit = ["lint", "type", "test-unit"]
 check-integration = ["lint", "type", "test-integration"]
+# Application scripts
+app = "python src/langlearn/create_deck.py"
+run-sample = "python src/langlearn/examples/create_sample_deck.py"
+run-adjectives = "python src/langlearn/create_deck.py"
+run-all = "python -c \"from langlearn.create_deck import main; main()\""
+encode-audio = "python -m langlearn.scripts.encode_audio {args}"
 
 [tool.ruff]
 line-length = 88

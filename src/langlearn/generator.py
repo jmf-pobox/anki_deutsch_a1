@@ -1,6 +1,6 @@
 import csv
-import random
 import os
+import random
 import shutil
 import tempfile
 from typing import TYPE_CHECKING
@@ -43,16 +43,18 @@ class AnkiDeckGenerator:
         # Track media files
         self.media_files: set[str] = set()  # Set of media file paths
         self.media_dir = tempfile.mkdtemp()
-        
+
         # Store project root for resolving relative paths
-        self.project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        self.project_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..")
+        )
 
         # Define the models (note types)
         self._define_models()
 
     def __del__(self):
         """Clean up temporary media directory."""
-        if hasattr(self, 'media_dir'):
+        if hasattr(self, "media_dir"):
             shutil.rmtree(self.media_dir, ignore_errors=True)
 
     def _read_template_file(self, template_path: str) -> str:
@@ -66,7 +68,7 @@ class AnkiDeckGenerator:
         """
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         full_path = os.path.join(template_dir, template_path)
-        with open(full_path, "r", encoding="utf-8") as f:
+        with open(full_path, encoding="utf-8") as f:
             return f.read()
 
     def _define_models(self) -> None:
@@ -199,11 +201,11 @@ class AnkiDeckGenerator:
             templates=[
                 {
                     "name": "German Adjective Card",
-                    "qfmt": self._read_template_file("adjectives/card_front.html"),
-                    "afmt": self._read_template_file("adjectives/card_back.html"),
+                    "qfmt": self._read_template_file("adjective_DE_de_front.html"),
+                    "afmt": self._read_template_file("adjective_DE_de_back.html"),
                 },
             ],
-            css=self._read_template_file("adjectives/style.css"),
+            css=self._read_template_file("adjective_DE_de.css"),
         )
 
         # Preposition model
@@ -332,7 +334,7 @@ class AnkiDeckGenerator:
 
         # Store the full path for later use
         self.media_files.add(file_path)
-        
+
         # For all media files, we just need the filename
         return os.path.basename(file_path)
 
@@ -410,11 +412,11 @@ class AnkiDeckGenerator:
         self.deck.add_note(note)  # type: ignore
 
     def add_adjective(
-        self, 
-        word: str, 
-        english: str, 
-        example: str, 
-        comparative: str = "", 
+        self,
+        word: str,
+        english: str,
+        example: str,
+        comparative: str = "",
         superlative: str = "",
         image: str = "",
         word_audio: str = "",
@@ -433,8 +435,17 @@ class AnkiDeckGenerator:
             example_audio: Audio filename for the example
         """
         note = genanki.Note(
-            model=self.adj_model, 
-            fields=[word, english, example, comparative, superlative, image, word_audio, example_audio]
+            model=self.adj_model,
+            fields=[
+                word,
+                english,
+                example,
+                comparative,
+                superlative,
+                image,
+                word_audio,
+                example_audio,
+            ],
         )
         self.deck.add_note(note)  # type: ignore[no-untyped-call]
 
@@ -510,7 +521,7 @@ class AnkiDeckGenerator:
         """
         # Create the package with media files
         package = genanki.Package(self.deck)  # type: ignore
-        
+
         # Add all media files to the package
         media_files: list[str] = []
         for src_path in self.media_files:
@@ -521,9 +532,9 @@ class AnkiDeckGenerator:
                 temp_path = os.path.join(self.media_dir, original_name)
                 shutil.copy2(src_path, temp_path)
                 media_files.append(temp_path)
-        
+
         package.media_files = media_files
-        
+
         # Write the package
         package.write_to_file(filename)  # type: ignore
         print(f"Deck saved to {filename}")
@@ -561,7 +572,9 @@ class AnkiDeckGenerator:
                     example_audio = row.get("example_audio", "")
                     if example_audio:
                         example_audio_ref = self._add_media_file(example_audio)
-                        example_audio_ref = f"[sound:{example_audio_ref}]" if example_audio_ref else ""
+                        example_audio_ref = (
+                            f"[sound:{example_audio_ref}]" if example_audio_ref else ""
+                        )
                     else:
                         example_audio_ref = ""
 
@@ -588,21 +601,25 @@ class AnkiDeckGenerator:
                     # Handle audio files
                     word_audio_path = row.get("word_audio", "")
                     example_audio_path = row.get("example_audio", "")
-                    
+
                     # Add word audio with [sound:] wrapper
                     if word_audio_path:
                         word_audio_ref = self._add_media_file(word_audio_path)
-                        word_audio_ref = f"[sound:{word_audio_ref}]" if word_audio_ref else ""
+                        word_audio_ref = (
+                            f"[sound:{word_audio_ref}]" if word_audio_ref else ""
+                        )
                     else:
                         word_audio_ref = ""
 
                     # Add example audio with [sound:] wrapper
                     if example_audio_path:
                         example_audio_ref = self._add_media_file(example_audio_path)
-                        example_audio_ref = f"[sound:{example_audio_ref}]" if example_audio_ref else ""
+                        example_audio_ref = (
+                            f"[sound:{example_audio_ref}]" if example_audio_ref else ""
+                        )
                     else:
                         example_audio_ref = ""
-                    
+
                     self.add_adjective(
                         row["word"],
                         row["english"],
@@ -617,16 +634,24 @@ class AnkiDeckGenerator:
                     # Handle audio files for prepositions
                     example1_audio = row.get("example1_audio", "")
                     example2_audio = row.get("example2_audio", "")
-                    
+
                     if example1_audio:
                         example1_audio_ref = self._add_media_file(example1_audio)
-                        example1_audio_ref = f"[sound:{example1_audio_ref}]" if example1_audio_ref else ""
+                        example1_audio_ref = (
+                            f"[sound:{example1_audio_ref}]"
+                            if example1_audio_ref
+                            else ""
+                        )
                     else:
                         example1_audio_ref = ""
 
                     if example2_audio:
                         example2_audio_ref = self._add_media_file(example2_audio)
-                        example2_audio_ref = f"[sound:{example2_audio_ref}]" if example2_audio_ref else ""
+                        example2_audio_ref = (
+                            f"[sound:{example2_audio_ref}]"
+                            if example2_audio_ref
+                            else ""
+                        )
                     else:
                         example2_audio_ref = ""
 
@@ -644,7 +669,9 @@ class AnkiDeckGenerator:
                     phrase_audio = row.get("phrase_audio", "")
                     if phrase_audio:
                         phrase_audio_ref = self._add_media_file(phrase_audio)
-                        phrase_audio_ref = f"[sound:{phrase_audio_ref}]" if phrase_audio_ref else ""
+                        phrase_audio_ref = (
+                            f"[sound:{phrase_audio_ref}]" if phrase_audio_ref else ""
+                        )
                     else:
                         phrase_audio_ref = ""
 

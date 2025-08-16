@@ -14,7 +14,7 @@ class Adjective(BaseModel):
     english: str = Field(..., description="English translation")
     example: str = Field(..., description="Example sentence using the adjective")
     comparative: str = Field(..., description="Comparative form of the adjective")
-    superlative: str = Field(..., description="Superlative form of the adjective")
+    superlative: str = Field("", description="Superlative form of the adjective")
 
     def validate_comparative(self) -> bool:
         """Validate that the comparative form follows German grammar rules.

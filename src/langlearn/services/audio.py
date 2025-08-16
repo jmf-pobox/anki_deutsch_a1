@@ -30,7 +30,9 @@ log_dir.mkdir(exist_ok=True)
 
 # Add file handler for audio.log
 file_handler = logging.handlers.RotatingFileHandler(
-    log_dir / "audio.log", maxBytes=1024 * 1024, backupCount=5  # 1MB
+    log_dir / "audio.log",
+    maxBytes=1024 * 1024,
+    backupCount=5,  # 1MB
 )
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(

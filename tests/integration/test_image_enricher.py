@@ -46,8 +46,7 @@ def test_enrich_adjectives_error_handling(
     # Create a temporary CSV file with invalid data
     csv_file = tmp_path / "adjectives.csv"
     csv_file.write_text(
-        "word,english,example,comparative\n"
-        "invalid,invalid,Invalid example.,invalid\n"
+        "word,english,example,comparative\ninvalid,invalid,Invalid example.,invalid\n"
     )
 
     # Run the enrichment
@@ -65,7 +64,7 @@ def test_backup_creation(
     # Create a temporary CSV file
     csv_file = tmp_path / "adjectives.csv"
     csv_file.write_text(
-        "word,english,example,comparative\n" "test,test,Test example.,test\n"
+        "word,english,example,comparative\ntest,test,Test example.,test\n"
     )
 
     # Run the enrichment

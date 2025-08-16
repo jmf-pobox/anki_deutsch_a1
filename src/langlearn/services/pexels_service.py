@@ -20,7 +20,9 @@ log_dir.mkdir(exist_ok=True)
 
 # Add file handler for pexels.log
 file_handler = logging.handlers.RotatingFileHandler(
-    log_dir / "pexels.log", maxBytes=1024 * 1024, backupCount=5  # 1MB
+    log_dir / "pexels.log",
+    maxBytes=1024 * 1024,
+    backupCount=5,  # 1MB
 )
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(
@@ -130,8 +132,7 @@ class PexelsService:
                         e.response.headers.get("Retry-After", self.retry_delay)
                     )
                     logger.warning(
-                        "Rate limited. Waiting %d seconds before retry "
-                        "(attempt %d/%d)",
+                        "Rate limited. Waiting %d seconds before retry (attempt %d/%d)",
                         retry_after,
                         attempt + 1,
                         self.max_retries,

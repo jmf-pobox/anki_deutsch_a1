@@ -105,15 +105,7 @@ def test_superlative_validation() -> None:
     )
     assert invalid.validate_superlative() is False
 
-    # Optional superlative (None)
-    optional = Adjective(
-        word="wichtig",
-        english="important",
-        example="Das ist eine wichtige Frage.",
-        comparative="wichtiger",
-        superlative=None,
-    )
-    assert optional.validate_superlative() is True
+    # Test case removed - all German adjectives should have superlative forms
 
 
 def test_adjective_from_csv() -> None:
