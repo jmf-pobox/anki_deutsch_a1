@@ -5,7 +5,7 @@ from .base import BaseCardGenerator
 from .noun import NounCardGenerator
 
 __all__ = [
-    "BaseCardGenerator",
     "AdjectiveCardGenerator",
+    "BaseCardGenerator",
     "NounCardGenerator",
 ]

@@ -122,6 +122,19 @@ class MediaService:
             self._stats["generation_errors"] += 1
             return None
 
+    def generate_or_get_audio(self, text: str) -> str | None:
+        """Generate audio for text or return existing audio file path.
+
+        Alias for generate_audio to maintain backward compatibility.
+
+        Args:
+            text: Text to generate audio for
+
+        Returns:
+            Path to audio file or None if generation failed
+        """
+        return self.generate_audio(text)
+
     def generate_image(
         self,
         word: str,
@@ -173,6 +186,23 @@ class MediaService:
             logger.error(f"Error generating image for '{word}': {e}")
             self._stats["generation_errors"] += 1
             return None
+
+    def generate_or_get_image(
+        self, word: str, search_query: str | None = None, example_sentence: str = ""
+    ) -> str | None:
+        """Generate/download image for word or return existing image file path.
+
+        Alias for generate_image to maintain backward compatibility.
+
+        Args:
+            word: German word to get image for
+            search_query: Optional search query
+            example_sentence: Example sentence for context
+
+        Returns:
+            Path to image file or None if generation failed
+        """
+        return self.generate_image(word, search_query, example_sentence)
 
     def generate_media_for_word(
         self,

@@ -255,7 +255,12 @@ class GermanLanguageService:
         Returns:
             Combined text for audio generation
         """
-        return f"{adjective.word}, {adjective.comparative}, {adjective.superlative}"
+        parts = [adjective.word]
+        if adjective.comparative:
+            parts.append(adjective.comparative)
+        if adjective.superlative:
+            parts.append(adjective.superlative)
+        return ", ".join(parts)
 
     def get_combined_noun_audio_text(self, noun: Noun) -> str:
         """Generate text for combined noun audio (article + noun + plural).
@@ -266,7 +271,11 @@ class GermanLanguageService:
         Returns:
             Combined text for audio generation
         """
-        return f"{noun.article} {noun.noun}, die {noun.plural}"
+        # Check if plural already includes article
+        if noun.plural.startswith(("der ", "die ", "das ")):
+            return f"{noun.article} {noun.noun}, {noun.plural}"
+        else:
+            return f"{noun.article} {noun.noun}, die {noun.plural}"
 
     def get_conceptual_image_search_terms(
         self, word_type: str, word: str, english: str
@@ -342,3 +351,126 @@ class GermanLanguageService:
                 return "empty void nothing zero"
 
         return f"prohibition stop {english} negative"
+
+    def is_concrete_noun(self, noun: str) -> bool:
+        """Determine if a German noun represents a concrete object.
+
+        Uses German-specific patterns and suffixes to classify nouns as
+        concrete (physical objects) or abstract (concepts, ideas).
+
+        Args:
+            noun: German noun to classify
+
+        Returns:
+            True if the noun likely represents a concrete object
+        """
+        if not noun:
+            return False
+
+        noun_lower = noun.lower()
+
+        # Abstract noun suffixes in German
+        abstract_suffixes = [
+            "heit",
+            "keit",
+            "ung",
+            "ion",
+            "tion",
+            "sion",
+            "schaft",
+            "tum",
+            "nis",
+            "mus",
+            "tät",
+            "ität",
+            "ei",
+            "ie",
+            "ur",
+            "anz",
+        ]
+
+        # Check for abstract suffixes
+        for suffix in abstract_suffixes:
+            if noun_lower.endswith(suffix):
+                return False
+
+        # Common concrete noun patterns (more likely to be concrete)
+        concrete_indicators = [
+            # Diminutives are usually concrete
+            "chen",
+            "lein",
+            # Tools and objects
+            "zeug",
+            "werk",
+            "gerät",
+        ]
+
+        for indicator in concrete_indicators:
+            if indicator in noun_lower:
+                return True
+
+        # Known abstract concept words
+        abstract_words = {
+            "freiheit",
+            "liebe",
+            "glück",
+            "freude",
+            "angst",
+            "mut",
+            "hoffnung",
+            "zeit",
+            "gedanke",
+            "idee",
+            "träume",
+            "wissen",
+            "bildung",
+            "kultur",
+            "musik",
+            "kunst",
+            "sprache",
+            "geschichte",
+            "zukunft",
+            "vergangenheit",
+            "wahrheit",
+            "schönheit",
+            "gesundheit",
+            "krankheit",
+            "erfolg",
+        }
+
+        if noun_lower in abstract_words:
+            return False
+
+        # Known concrete objects
+        concrete_words = {
+            "hund",
+            "katze",
+            "haus",
+            "auto",
+            "baum",
+            "stuhl",
+            "tisch",
+            "buch",
+            "telefon",
+            "computer",
+            "brot",
+            "wasser",
+            "apfel",
+            "blume",
+            "berg",
+            "fluss",
+            "stadt",
+            "straße",
+            "fenster",
+            "tür",
+            "bett",
+            "küche",
+        }
+
+        if noun_lower in concrete_words:
+            return True
+
+        # Default heuristic: assume concrete unless proven abstract
+        # This works better for vocabulary learning where most nouns
+        # taught to beginners are concrete objects
+        return True

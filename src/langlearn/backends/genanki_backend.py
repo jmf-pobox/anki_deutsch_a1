@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import genanki  # type: ignore
 
-from .base import CardTemplate, DeckBackend, MediaFile, NoteType
+from .base import DeckBackend, MediaFile, NoteType
 
 if TYPE_CHECKING:
     from genanki import Deck, Model
@@ -30,10 +30,10 @@ class GenankiBackend(DeckBackend):
         self._deck_id = random.randrange(1 << 30, 1 << 31)
 
         # Create the deck
-        self._deck: "Deck" = genanki.Deck(self._deck_id, deck_name, description)
+        self._deck: Deck = genanki.Deck(self._deck_id, deck_name, description)
 
         # Track note types and their genanki models
-        self._note_types: dict[str, "Model"] = {}
+        self._note_types: dict[str, Model] = {}
 
         # Create temporary directory for media files
         self._media_dir = tempfile.mkdtemp()
@@ -89,13 +89,16 @@ class GenankiBackend(DeckBackend):
         note_type_id: str,
         fields: list[str],
         tags: list[str] | None = None,
-    ) -> None:
+    ) -> int:
         """Add a note to the deck.
 
         Args:
             note_type_id: ID of the note type to use
             fields: List of field values for the note
             tags: Optional list of tags for the note (not used in genanki)
+
+        Returns:
+            The note ID (generated)
         """
         if note_type_id not in self._note_types:
             raise ValueError(f"Note type ID {note_type_id} not found")
@@ -104,6 +107,9 @@ class GenankiBackend(DeckBackend):
         note = genanki.Note(model=model, fields=fields)
 
         self._deck.add_note(note)
+
+        # Generate a simple note ID for genanki compatibility
+        return len(self._deck.notes)
 
     def add_media_file(self, file_path: str) -> MediaFile:
         """Add a media file to the deck.

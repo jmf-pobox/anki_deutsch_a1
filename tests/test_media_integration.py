@@ -238,7 +238,9 @@ class TestMediaIntegration:
             assert '<img src="image.jpg"' in result[5]
 
             # Verify that audio generation was called with the right parameters
-            backend._generate_or_get_audio.assert_any_call("schön, schöner, am schönsten")
+            backend._generate_or_get_audio.assert_any_call(
+                "schön, schöner, am schönsten"
+            )
             backend._generate_or_get_audio.assert_any_call("Das Haus ist schön.")
 
     def test_process_fields_with_media_noun(self, backend: AnkiBackend) -> None:
@@ -256,16 +258,22 @@ class TestMediaIntegration:
             "",
         ]  # Added fields for Image, WordAudio, ExampleAudio
 
-        fake_audio_path = "/fake/audio.mp3"
+        fake_audio_path = "/fake/katze.mp3"  # Make path match expected reference
         fake_media_file = Mock()
         fake_media_file.reference = "[sound:katze.mp3]"
 
         with (
             patch.object(
-                backend, "_generate_or_get_audio", side_effect=[fake_audio_path, fake_audio_path]
+                backend,
+                "_generate_or_get_audio",
+                side_effect=[fake_audio_path, fake_audio_path],
             ),
             patch.object(backend, "_generate_or_get_image", return_value=None),
-            patch.object(backend, "add_media_file", side_effect=[fake_media_file, fake_media_file]),
+            patch.object(
+                backend,
+                "add_media_file",
+                side_effect=[fake_media_file, fake_media_file],
+            ),
         ):
             result = backend._process_fields_with_media(note_type_name, fields)
 
@@ -293,7 +301,7 @@ class TestMediaIntegration:
             "",
         ]
 
-        fake_audio_path = "/fake/example_audio.mp3"
+        fake_audio_path = "/fake/example.mp3"  # Make path match expected reference
         fake_media_file = Mock()
         fake_media_file.reference = "[sound:example.mp3]"
 
@@ -321,7 +329,7 @@ class TestMediaIntegration:
             "",
         ]
 
-        fake_audio_path = "/fake/audio.mp3"
+        fake_audio_path = "/fake/example.mp3"  # Make path match expected reference
         fake_media_file = Mock()
         fake_media_file.reference = "[sound:example.mp3]"
 
@@ -348,7 +356,7 @@ class TestMediaIntegration:
             "",
         ]
 
-        fake_audio_path = "/fake/phrase_audio.mp3"
+        fake_audio_path = "/fake/phrase.mp3"  # Make path match expected reference
         fake_media_file = Mock()
         fake_media_file.reference = "[sound:phrase.mp3]"
 
@@ -401,9 +409,9 @@ class TestMediaIntegration:
             note_id = backend.add_note(note_type_id, fields)
 
             assert note_id is not None
-            # Verify _process_fields_with_media was called with correct note type name
+            # Verify _process_fields_with_media was called with correct note type ID
             backend._process_fields_with_media.assert_called_once_with(
-                "German Adjective with Media", fields
+                note_type_id, fields
             )
 
     def test_media_generation_statistics_tracking(self, backend: AnkiBackend) -> None:
@@ -541,7 +549,7 @@ class TestMediaIntegration:
         # Mock successful audio generation for combined forms and example
         fake_combined_path = "/fake/combined.mp3"
         fake_example_path = "/fake/example.mp3"
-        
+
         fake_combined_media = Mock()
         fake_combined_media.reference = "[sound:combined.mp3]"
         fake_example_media = Mock()
@@ -552,7 +560,11 @@ class TestMediaIntegration:
         fake_image_file.reference = "gut.jpg"
 
         with (
-            patch.object(backend, "_generate_or_get_audio", side_effect=[fake_combined_path, fake_example_path]),
+            patch.object(
+                backend,
+                "_generate_or_get_audio",
+                side_effect=[fake_combined_path, fake_example_path],
+            ),
             patch.object(
                 backend, "_generate_or_get_image", return_value="/fake/gut.jpg"
             ),
@@ -599,16 +611,24 @@ class TestMediaIntegration:
 
         fake_combined_path = "/fake/combined.mp3"
         fake_example_path = "/fake/example.mp3"
-        
+
         fake_combined_media = Mock()
         fake_combined_media.reference = "[sound:combined.mp3]"
         fake_example_media = Mock()
         fake_example_media.reference = "[sound:example.mp3]"
 
         with (
-            patch.object(backend, "_generate_or_get_audio", side_effect=[fake_combined_path, fake_example_path]),
+            patch.object(
+                backend,
+                "_generate_or_get_audio",
+                side_effect=[fake_combined_path, fake_example_path],
+            ),
             patch.object(backend, "_generate_or_get_image", return_value=None),
-            patch.object(backend, "add_media_file", side_effect=[fake_combined_media, fake_example_media]),
+            patch.object(
+                backend,
+                "add_media_file",
+                side_effect=[fake_combined_media, fake_example_media],
+            ),
         ):
             result = backend._process_fields_with_media(note_type_name, fields)
 

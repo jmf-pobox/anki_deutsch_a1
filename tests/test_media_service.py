@@ -6,8 +6,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.services.audio import AudioService
+from langlearn.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.services.pexels_service import PexelsService
 
 

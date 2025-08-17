@@ -50,7 +50,7 @@ def test_new_media_generation() -> None:
     stats = backend.get_stats()
     if "media_generation_stats" in stats:
         media_gen = stats["media_generation_stats"]
-        print(f"\nNew generation results:")
+        print("\nNew generation results:")
         print(f"  Audio generated: {media_gen['audio_generated']}")
         print(f"  Images downloaded: {media_gen['images_downloaded']}")
         print(f"  Errors: {media_gen['generation_errors']}")

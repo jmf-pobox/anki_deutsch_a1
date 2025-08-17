@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from ..backends.base import CardTemplate, DeckBackend, NoteType
+from ..backends.base import DeckBackend, NoteType
 from ..services.template_service import TemplateService
 
 # Generic type for the data model

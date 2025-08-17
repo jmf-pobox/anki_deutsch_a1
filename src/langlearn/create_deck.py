@@ -908,7 +908,7 @@ def load_adjectives_from_csv(
     """Load adjectives from CSV and create cards with automatic media generation."""
     cards_added = 0
 
-    with open(csv_path, "r", encoding="utf-8") as f:
+    with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row["word"].strip():  # Skip empty rows
@@ -942,7 +942,7 @@ def load_adverbs_from_csv(
     """Load adverbs from CSV and create cards with automatic media generation."""
     cards_added = 0
 
-    with open(csv_path, "r", encoding="utf-8") as f:
+    with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row["word"].strip():  # Skip empty rows
@@ -977,7 +977,7 @@ def load_negations_from_csv(
     """Load negations from CSV and create cards with automatic media generation."""
     cards_added = 0
 
-    with open(csv_path, "r", encoding="utf-8") as f:
+    with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row["word"].strip():  # Skip empty rows
@@ -1010,7 +1010,7 @@ def load_nouns_from_csv(backend: AnkiBackend, note_type_id: str, csv_path: Path)
     """Load nouns from CSV and create cards with automatic media generation."""
     cards_added = 0
 
-    with open(csv_path, "r", encoding="utf-8") as f:
+    with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row.get("noun", "").strip():  # Skip empty rows
@@ -1124,7 +1124,7 @@ def main() -> None:
         print(f"Info: {negations_file} not found, skipping negations")
 
     # Show statistics
-    print(f"\n=== Generation Statistics ===")
+    print("\n=== Generation Statistics ===")
     stats = backend.get_stats()
     if "media_generation_stats" in stats:
         media_gen = stats["media_generation_stats"]
@@ -1144,7 +1144,7 @@ def main() -> None:
     print(f"📚 Total cards created: {total_cards}")
 
     # Show subdeck organization
-    print(f"\n📁 Deck Structure:")
+    print("\n📁 Deck Structure:")
     print(f"   Main deck: {backend.deck_name}")
     if hasattr(backend, "_subdecks") and backend._subdecks:
         for subdeck_name in backend._subdecks.keys():

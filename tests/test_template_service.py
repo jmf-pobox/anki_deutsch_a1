@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from langlearn.backends.base import CardTemplate
-from langlearn.services.template_service import TemplateService, TemplateFiles
+from langlearn.services.template_service import TemplateFiles, TemplateService
 
 
 class TestTemplateService:

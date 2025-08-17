@@ -145,7 +145,7 @@ def demonstrate_media_integration() -> None:
             print(f"  {i + 1}. ERROR adding '{adj_data[0]}': {e}")
 
     # Show statistics
-    print(f"\n=== Media Generation Statistics ===")
+    print("\n=== Media Generation Statistics ===")
     if hasattr(backend, "get_stats"):
         stats = backend.get_stats()
 

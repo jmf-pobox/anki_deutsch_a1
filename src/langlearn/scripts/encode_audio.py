@@ -12,7 +12,6 @@ import logging
 import sys
 from pathlib import Path
 
-
 from langlearn.services.audio import AudioService
 
 
@@ -46,7 +45,7 @@ def read_text_file(file_path: Path) -> str:
         UnicodeDecodeError: If the file can't be decoded as UTF-8
     """
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read().strip()
         if not content:
             raise ValueError("Text file is empty")

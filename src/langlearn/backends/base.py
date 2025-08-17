@@ -80,13 +80,16 @@ class DeckBackend(ABC):
         note_type_id: str,
         fields: list[str],
         tags: list[str] | None = None,
-    ) -> None:
+    ) -> int:
         """Add a note to the deck.
 
         Args:
             note_type_id: ID of the note type to use
             fields: List of field values for the note
             tags: Optional list of tags for the note
+
+        Returns:
+            The note ID
         """
 
     @abstractmethod
