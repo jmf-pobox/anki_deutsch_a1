@@ -1,71 +1,96 @@
 """Base class for Anki card generators."""
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Generic, TypeVar
 
-import genanki  # type: ignore
+from ..backends.base import CardTemplate, DeckBackend, NoteType
+from ..services.template_service import TemplateService
+
+# Generic type for the data model
+T = TypeVar("T")
 
 
-class BaseCardGenerator(ABC):
+class BaseCardGenerator(ABC, Generic[T]):
     """Abstract base class for all Anki card generators.
 
-    Attributes:
-        model_id: Unique ID for the card model
-        model_name: Name of the card model
-        fields: List of field names for the card
-        templates: List of card templates
-        css: CSS styling for the card
+    Uses generics to provide type safety for the data model being processed.
+    Works with any backend implementation through the BackendProtocol.
     """
 
     def __init__(
         self,
-        model_id: int,
-        model_name: str,
-        fields: list[str],
-        templates: list[dict[str, str]],
-        css: str = "",
+        backend: DeckBackend,
+        template_service: TemplateService,
+        card_type: str,
     ) -> None:
         """Initialize the base card generator.
 
         Args:
-            model_id: Unique ID for the card model
-            model_name: Name of the card model
-            fields: List of field names for the card
-            templates: List of card templates
-            css: CSS styling for the card
+            backend: Backend implementation for deck operations
+            template_service: Service for loading card templates
+            card_type: Type of card (adjective, noun, etc.)
         """
-        self.model_id = model_id
-        self.model_name = model_name
-        self.fields = fields
-        self.templates = templates
-        self.css = css
-        self._model: genanki.Model | None = None
+        self._backend = backend
+        self._template_service = template_service
+        self._card_type = card_type
+        self._note_type_id: str | None = None
 
     @property
-    def model(self) -> genanki.Model:
-        """Get the genanki model for this card type.
+    def note_type_id(self) -> str:
+        """Get or create the note type for this card generator.
 
         Returns:
-            The genanki model
-        """
-        if self._model is None:
-            self._model = genanki.Model(
-                self.model_id,
-                self.model_name,
-                fields=[{"name": field} for field in self.fields],
-                templates=self.templates,
-                css=self.css,
-            )
-        return self._model
+            Note type ID for this card type
 
-    @abstractmethod
-    def create_note(self, data: Any) -> genanki.Note:
-        """Create an Anki note from the given data.
+        Raises:
+            RuntimeError: If note type creation fails
+        """
+        if self._note_type_id is None:
+            note_type = self._create_note_type()
+            self._note_type_id = self._backend.create_note_type(note_type)
+            if self._note_type_id is None:
+                raise RuntimeError(f"Failed to create note type for {self._card_type}")
+        return self._note_type_id
+
+    def add_card(self, data: T) -> None:
+        """Add a card to the deck using the backend.
 
         Args:
-            data: The data to create the note from
+            data: The data model to create the card from
+        """
+        fields = self._extract_fields(data)
+        self._backend.add_note(self.note_type_id, fields)
+
+    def _create_note_type(self) -> NoteType:
+        """Create a note type for this card generator.
 
         Returns:
-            The created Anki note
+            NoteType configured for this card type
+        """
+        template = self._template_service.get_template(self._card_type)
+        return NoteType(
+            name=template.name,
+            fields=self._get_field_names(),
+            templates=[template],
+        )
+
+    @abstractmethod
+    def _get_field_names(self) -> list[str]:
+        """Get the list of field names for this card type.
+
+        Returns:
+            List of field names in the correct order
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _extract_fields(self, data: T) -> list[str]:
+        """Extract field values from the data model.
+
+        Args:
+            data: The data model to extract fields from
+
+        Returns:
+            List of field values in the correct order
         """
         raise NotImplementedError

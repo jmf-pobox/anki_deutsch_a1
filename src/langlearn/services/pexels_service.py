@@ -91,8 +91,10 @@ class PexelsService:
         if not self.api_key:
             raise ValueError("Pexels API key not found in keyring")
         self.base_url = "https://api.pexels.com/v1"
-        self.max_retries = 3
-        self.retry_delay = 1  # seconds
+        self.max_retries = 5  # Increased for bulk operations
+        self.base_delay = 2  # Base delay in seconds for exponential backoff
+        self.max_delay = 60  # Maximum delay cap
+        self.request_delay = 1.0  # Minimum delay between requests to be API-friendly
 
     def _get_headers(self) -> dict[str, str]:
         """Get headers for Pexels API requests.
@@ -102,8 +104,40 @@ class PexelsService:
         """
         return {"Authorization": str(self.api_key)}
 
+    def _calculate_backoff_delay(
+        self, attempt: int, retry_after: int | None = None
+    ) -> int:
+        """Calculate exponential backoff delay with jitter.
+
+        Args:
+            attempt: Current attempt number (0-based)
+            retry_after: Server-suggested retry delay (if any)
+
+        Returns:
+            Delay in seconds
+        """
+        if retry_after is not None:
+            # Use server-suggested delay, but apply exponential backoff on top
+            base_delay = max(retry_after, self.base_delay)
+        else:
+            base_delay = self.base_delay
+
+        # Exponential backoff: base_delay * 2^attempt
+        delay = base_delay * (2**attempt)
+
+        # Cap the delay
+        delay = min(delay, self.max_delay)
+
+        # Add jitter to prevent thundering herd (±20%)
+        import random
+
+        jitter = delay * 0.2 * (random.random() - 0.5)  # -10% to +10%
+        delay = int(delay + jitter)
+
+        return max(delay, 1)  # Minimum 1 second
+
     def _make_request(self, url: str, params: dict[str, Any]) -> requests.Response:
-        """Make a request to the Pexels API with retry logic.
+        """Make a request to the Pexels API with exponential backoff retry logic.
 
         Args:
             url: API endpoint URL
@@ -121,29 +155,55 @@ class PexelsService:
                     url,
                     headers=self._get_headers(),
                     params=params,
-                    timeout=10,
+                    timeout=15,  # Increased timeout for stability
                 )
                 response.raise_for_status()
+
+                # Add small delay after successful request to be API-friendly
+                if attempt == 0:  # Only delay on first successful attempt, not retries
+                    time.sleep(self.request_delay)
+
                 return response
             except HTTPError as e:
                 # Rate limit check
                 if e.response.status_code == 429 and attempt < self.max_retries - 1:
-                    retry_after = int(
-                        e.response.headers.get("Retry-After", self.retry_delay)
-                    )
+                    # Get server-suggested retry delay
+                    retry_after = None
+                    if "Retry-After" in e.response.headers:
+                        try:
+                            retry_after = int(e.response.headers["Retry-After"])
+                        except ValueError:
+                            pass
+
+                    # Calculate exponential backoff delay
+                    delay = self._calculate_backoff_delay(attempt, retry_after)
+
                     logger.warning(
-                        "Rate limited. Waiting %d seconds before retry (attempt %d/%d)",
-                        retry_after,
+                        "Rate limited. Using exponential backoff: waiting %d seconds "
+                        "(attempt %d/%d, base_delay=%ds)",
+                        delay,
                         attempt + 1,
                         self.max_retries,
+                        retry_after or self.base_delay,
                     )
-                    time.sleep(retry_after)
+                    time.sleep(delay)
                     continue
                 raise
             except Exception as e:
+                if attempt < self.max_retries - 1:
+                    # Apply exponential backoff for other errors too
+                    delay = self._calculate_backoff_delay(attempt)
+                    logger.warning(
+                        "Request failed (%s). Retrying in %d seconds (attempt %d/%d)",
+                        str(e),
+                        delay,
+                        attempt + 1,
+                        self.max_retries,
+                    )
+                    time.sleep(delay)
+                    continue
                 logger.error("Error making request to Pexels: %s", str(e))
-                if attempt == self.max_retries - 1:
-                    raise
+                raise
         raise HTTPError("Failed to make request after all retries")
 
     def search_photos(self, query: str, per_page: int = 5) -> list[Photo]:
@@ -166,12 +226,15 @@ class PexelsService:
             logger.error("Error searching Pexels: %s", str(e))
             return []
 
-    def download_image(self, query: str, output_path: str) -> bool:
+    def download_image(
+        self, query: str, output_path: str, size: PhotoSize = "medium"
+    ) -> bool:
         """Download an image from Pexels.
 
         Args:
             query: Search query
             output_path: Path to save the image
+            size: Image size to download (default: "medium" for good quality/size balance)
 
         Returns:
             bool: True if successful, False otherwise
@@ -185,7 +248,7 @@ class PexelsService:
 
             # Randomly select one of the top results
             selected_photo = random.choice(photos)
-            image_url = selected_photo["src"]["original"]
+            image_url = selected_photo["src"][size]
 
             # Download the image
             response = requests.get(image_url, timeout=10)
@@ -198,7 +261,10 @@ class PexelsService:
                 f.write(response.content)
 
             logger.debug(
-                "Successfully downloaded image from %s to %s", image_url, output_path
+                "Successfully downloaded image (%s size) from %s to %s",
+                size,
+                image_url,
+                output_path,
             )
             return True
 

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:addon-docs.ankiweb.net)",
+      "Bash(mkdir:*)",
+      "Bash(hatch run test-unit:*)",
+      "Bash(hatch run:*)",
+      "Bash(python:*)",
+      "Bash(PYTHONPATH=/Users/jfreeman/Coding/anki_deutsch_a1/src python examples/backend_demonstration.py)",
+      "Bash(mypy:*)",
+      "Bash(PYTHONPATH=src python examples/media_integration_demo.py)",
+      "Bash(PYTHONPATH=src python -c \"\nbackend_name = ''German Adjective with Media''\nprint(''Checking note type detection...'')\nprint(''noun in note_type_id.lower():'', ''noun'' in backend_name.lower())\nprint(''verb in note_type_id.lower():'', ''verb'' in backend_name.lower())  \nprint(''adjective in note_type_id.lower():'', ''adjective'' in backend_name.lower())\nprint(''preposition in note_type_id.lower():'', ''preposition'' in backend_name.lower())\nprint(''phrase in note_type_id.lower():'', ''phrase'' in backend_name.lower())\n\")",
+      "Bash(PYTHONPATH=src python examples/backend_demonstration.py)",
+      "WebFetch(domain:www.pexels.com)",
+      "WebSearch",
+      "Bash(PYTHONPATH=src python:*)",
+      "Bash(rm:*)",
+      "Bash(grep:*)",
+      "Bash(ruff check:*)"
+    ],
+    "deny": []
+  }
+}

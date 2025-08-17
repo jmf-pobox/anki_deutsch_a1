@@ -1,66 +1,62 @@
 """Card generator for nouns."""
 
-import genanki  # type: ignore
+from ..backends.base import DeckBackend
+from ..cards.base import BaseCardGenerator
+from ..models.noun import Noun
+from ..services.template_service import TemplateService
 
-from langlearn.cards.base import BaseCardGenerator
-from langlearn.models.noun import Noun
 
+class NounCardGenerator(BaseCardGenerator[Noun]):
+    """Generator for noun cards in Anki with type safety."""
 
-class NounCardGenerator(BaseCardGenerator):
-    """Generator for noun cards in Anki."""
-
-    def __init__(self, model_id: int) -> None:
+    def __init__(
+        self,
+        backend: DeckBackend,
+        template_service: TemplateService,
+    ) -> None:
         """Initialize the noun card generator.
 
         Args:
-            model_id: Unique ID for the card model
+            backend: Backend implementation for deck operations
+            template_service: Service for loading card templates
         """
-        fields = [
+        super().__init__(backend, template_service, "noun")
+
+    def _get_field_names(self) -> list[str]:
+        """Get the list of field names for noun cards.
+
+        Returns:
+            List of field names in the correct order
+        """
+        return [
             "Noun",
             "Article",
             "English",
             "Plural",
             "Example",
             "Related",
-            "Audio",
+            "Image",
+            "WordAudio",
+            "ExampleAudio",
         ]
 
-        templates = [
-            {
-                "name": "Card 1",
-                "qfmt": "{{Noun}}<br>{{Article}}",
-                "afmt": (
-                    "{{FrontSide}}<hr id=answer>{{English}}<br>Plural: {{Plural}}<br>"
-                    "Example: {{Example}}<br>Related: {{Related}}"
-                ),
-            }
-        ]
-
-        super().__init__(
-            model_id=model_id,
-            model_name="German Noun",
-            fields=fields,
-            templates=templates,
-        )
-
-    def create_note(self, data: Noun) -> genanki.Note:
-        """Create an Anki note from a Noun model.
+    def _extract_fields(self, data: Noun) -> list[str]:
+        """Extract field values from a Noun model.
 
         Args:
-            data: The Noun model to create the note from
+            data: The Noun model to extract fields from
 
         Returns:
-            The created Anki note
+            List of field values in the correct order
         """
-        return genanki.Note(
-            model=self.model,
-            fields=[
-                data.noun,
-                data.article,
-                data.english,
-                data.plural,
-                data.example,
-                data.related,
-                "",  # Audio field (to be implemented later)
-            ],
-        )
+        return [
+            data.noun,
+            data.article,
+            data.english,
+            data.plural,
+            data.example,
+            data.related,
+            "",  # Image field (to be filled by backend media processing)
+            "",  # WordAudio field (to be filled by backend media processing)
+            "",  # ExampleAudio field (to be filled by backend media processing)
+        ]
