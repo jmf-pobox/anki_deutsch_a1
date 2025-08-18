@@ -16,6 +16,8 @@ This directory contains comprehensive design documentation for the German A1 voc
 - 📝 **Daily development work?** → [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md)
 - 🔍 **Looking up a component?** → [DESIGN-SRP.md](./DESIGN-SRP.md)
 - 📚 **Understanding design history?** → [DESIGN.md](./DESIGN.md)
+- 📊 **Current test coverage?** → Run `hatch run test-cov` and view `htmlcov/index.html`
+- 🔧 **Type safety and MyPy standards?** → [CODE-TYPING.md](./CODE-TYPING.md)
 
 ---
 

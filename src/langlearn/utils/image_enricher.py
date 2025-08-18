@@ -85,7 +85,7 @@ class ImageEnricher:
             self._backup_csv(csv_file)
 
             # Read the CSV file
-            df: DataFrame = pd.read_csv(  # type: ignore[call-overload]
+            df: DataFrame = pd.read_csv(
                 csv_file,
                 dtype={
                     "word": str,
@@ -102,19 +102,22 @@ class ImageEnricher:
                 df["image_path"] = ""
 
             # Process each adjective
-            for index, row in df.iterrows():  # type: ignore[attr-defined]
+            for index, row in df.iterrows():
                 try:
                     # Create a model instance for the Anthropic service
                     model: Adjective = Adjective(
-                        word=str(row["word"]),  # type: ignore[arg-type]
-                        english=str(row["english"]),  # type: ignore[arg-type]
-                        example=str(row["example"]),  # type: ignore[arg-type]
-                        comparative=str(row["comparative"]),  # type: ignore[arg-type]
+                        word=str(row["word"]),
+                        english=str(row["english"]),
+                        example=str(row["example"]),
+                        comparative=str(row["comparative"]),
                         superlative=(
-                            str(row.get("superlative", None))
+                            str(row.get("superlative", ""))
                             if row.get("superlative")
-                            else None
-                        ),  # type: ignore[arg-type]
+                            else ""
+                        ),
+                        word_audio="",
+                        example_audio="",
+                        image_path="",
                     )
 
                     # Generate image filename
@@ -135,27 +138,27 @@ class ImageEnricher:
                             search_query, str(image_path)
                         ):
                             # Use absolute path when storing in CSV
-                            df.at[index, "image_path"] = str(image_path.absolute())  # type: ignore[attr-defined]
+                            df.at[index, "image_path"] = str(image_path.absolute())
                             logger.debug(
                                 "Successfully enriched adjective: %s with image",
-                                row["word"],  # type: ignore[arg-type]
+                                row["word"],
                             )
                         else:
                             logger.error(
                                 "Failed to download image for adjective: %s",
-                                row["word"],  # type: ignore[arg-type]
+                                row["word"],
                             )
                         self._rate_limit()  # Rate limit between API calls
                     else:
                         logger.debug(
                             "Image already exists for adjective: %s",
-                            row["word"],  # type: ignore[arg-type]
+                            row["word"],
                         )
 
                 except Exception as e:
                     logger.error(
                         "Error enriching adjective %s: %s",
-                        row["word"],  # type: ignore[arg-type]
+                        row["word"],
                         str(e),
                     )
 

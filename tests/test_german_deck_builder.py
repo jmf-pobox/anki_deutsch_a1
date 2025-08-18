@@ -46,6 +46,9 @@ class TestGermanDeckBuilder:
                 plural="Katzen",
                 example="Die Katze schläft.",
                 related="Haustier",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
             Noun(
                 noun="Hund",
@@ -54,6 +57,9 @@ class TestGermanDeckBuilder:
                 plural="Hunde",
                 example="Der Hund bellt.",
                 related="Haustier",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
         ]
 
@@ -67,6 +73,9 @@ class TestGermanDeckBuilder:
                 example="Das Haus ist schön.",
                 comparative="schöner",
                 superlative="am schönsten",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
             Adjective(
                 word="groß",
@@ -74,6 +83,9 @@ class TestGermanDeckBuilder:
                 example="Der Baum ist groß.",
                 comparative="größer",
                 superlative="am größten",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
         ]
 
@@ -86,12 +98,18 @@ class TestGermanDeckBuilder:
                 english="fast",
                 type=AdverbType.MANNER,
                 example="Er läuft schnell.",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
             Adverb(
                 word="sehr",
                 english="very",
                 type=AdverbType.INTENSITY,
                 example="Das ist sehr gut.",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
         ]
 
@@ -104,12 +122,18 @@ class TestGermanDeckBuilder:
                 english="not",
                 type=NegationType.GENERAL,
                 example="Ich gehe nicht.",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
             Negation(
                 word="kein",
                 english="no/none",
                 type=NegationType.ARTICLE,
                 example="Ich habe kein Geld.",
+                word_audio="",
+                example_audio="",
+                image_path="",
             ),
         ]
 
@@ -755,16 +779,16 @@ class TestGermanDeckBuilder:
                         with patch.object(
                             builder._deck_manager, "add_note"
                         ) as mock_add_note:
-                            result = builder.generate_negation_cards(generate_media=True)
+                            result = builder.generate_negation_cards(
+                                generate_media=True
+                            )
 
                             assert result == 1
                             # Should generate audio for the negation word and example
                             assert mock_gen_audio.call_count >= 1
 
     @patch("langlearn.german_deck_builder.GenankiBackend")
-    def test_load_data_from_directory_all_files(
-        self, mock_genanki: Mock
-    ) -> None:
+    def test_load_data_from_directory_all_files(self, mock_genanki: Mock) -> None:
         """Test loading data from directory with all file types."""
         mock_backend = Mock(spec=DeckBackend)
         mock_genanki.return_value = mock_backend

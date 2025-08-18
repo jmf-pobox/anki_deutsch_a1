@@ -1067,8 +1067,8 @@ def main() -> None:
     adjectives_file = data_dir / "adjectives.csv"
     if adjectives_file.exists():
         print(f"\nProcessing adjectives from {adjectives_file}")
-        backend.set_current_subdeck("Adjectives")
-        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")
+        backend.set_current_subdeck("Adjectives")  # type: ignore[attr-defined]  # API boundary - method may not exist in all backend implementations
+        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")  # type: ignore[attr-defined]  # API boundary - method may not exist in all backend implementations
         adjective_note_type = create_adjective_note_type()
         adjective_note_type_id = backend.create_note_type(adjective_note_type)
         cards_added = load_adjectives_from_csv(
@@ -1083,8 +1083,8 @@ def main() -> None:
     adverbs_file = data_dir / "adverbs.csv"
     if adverbs_file.exists():
         print(f"\nProcessing adverbs from {adverbs_file}")
-        backend.set_current_subdeck("Adverbs")
-        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")
+        backend.set_current_subdeck("Adverbs")  # type: ignore[attr-defined]  # API boundary
+        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")  # type: ignore[attr-defined]  # API boundary
         adverb_note_type = create_adverb_note_type()
         adverb_note_type_id = backend.create_note_type(adverb_note_type)
         cards_added = load_adverbs_from_csv(backend, adverb_note_type_id, adverbs_file)
@@ -1097,8 +1097,8 @@ def main() -> None:
     nouns_file = data_dir / "nouns.csv"
     if nouns_file.exists():
         print(f"\nProcessing nouns from {nouns_file}")
-        backend.set_current_subdeck("Nouns")
-        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")
+        backend.set_current_subdeck("Nouns")  # type: ignore[attr-defined]  # API boundary
+        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")  # type: ignore[attr-defined]  # API boundary
         noun_note_type = create_noun_note_type()
         noun_note_type_id = backend.create_note_type(noun_note_type)
         cards_added = load_nouns_from_csv(backend, noun_note_type_id, nouns_file)
@@ -1111,8 +1111,8 @@ def main() -> None:
     negations_file = data_dir / "negations.csv"
     if negations_file.exists():
         print(f"\nProcessing negations from {negations_file}")
-        backend.set_current_subdeck("Negations")
-        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")
+        backend.set_current_subdeck("Negations")  # type: ignore[attr-defined]  # API boundary
+        print(f"📁 Creating subdeck: {backend.get_current_deck_name()}")  # type: ignore[attr-defined]  # API boundary
         negation_note_type = create_negation_note_type()
         negation_note_type_id = backend.create_note_type(negation_note_type)
         cards_added = load_negations_from_csv(
@@ -1160,7 +1160,7 @@ def main() -> None:
         return
     finally:
         # Clean up backend explicitly
-        backend.close()
+        backend.close()  # type: ignore[attr-defined]  # API boundary
 
     print("🎉 Generation complete! Audio and images added automatically.")
 

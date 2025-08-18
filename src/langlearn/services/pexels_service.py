@@ -39,6 +39,19 @@ console_handler.setFormatter(
 logger.addHandler(console_handler)
 
 
+# Define valid size options as a type
+PhotoSize = Literal[
+    "original",
+    "large2x",
+    "large",
+    "medium",
+    "small",
+    "portrait",
+    "landscape",
+    "tiny",
+]
+
+
 class PhotoSource(TypedDict):
     """Type definition for Pexels photo source URLs."""
 
@@ -70,18 +83,6 @@ class Photo(TypedDict):
 
 class PexelsService:
     """Service for interacting with the Pexels API."""
-
-    # Define valid size options as a type
-    PhotoSize = Literal[
-        "original",
-        "large2x",
-        "large",
-        "medium",
-        "small",
-        "portrait",
-        "landscape",
-        "tiny",
-    ]
 
     def __init__(self) -> None:
         """Initialize the PexelsService."""

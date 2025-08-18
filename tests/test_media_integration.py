@@ -3,6 +3,7 @@
 import hashlib
 import os
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -45,7 +46,7 @@ class TestMediaIntegration:
         )
 
     @pytest.fixture
-    def temp_audio_file(self) -> str:
+    def temp_audio_file(self) -> Generator[str, None, None]:
         """Create a temporary audio file for testing."""
         with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
             f.write(b"fake mp3 content")
@@ -56,7 +57,7 @@ class TestMediaIntegration:
             os.unlink(temp_path)
 
     @pytest.fixture
-    def temp_image_file(self) -> str:
+    def temp_image_file(self) -> Generator[str, None, None]:
         """Create a temporary image file for testing."""
         with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as f:
             f.write(b"fake jpeg content")
@@ -238,10 +239,10 @@ class TestMediaIntegration:
             assert '<img src="image.jpg"' in result[5]
 
             # Verify that audio generation was called with the right parameters
-            backend._generate_or_get_audio.assert_any_call(
+            backend._generate_or_get_audio.assert_any_call(  # type: ignore[attr-defined]  # Mock boundary
                 "schön, schöner, am schönsten"
             )
-            backend._generate_or_get_audio.assert_any_call("Das Haus ist schön.")
+            backend._generate_or_get_audio.assert_any_call("Das Haus ist schön.")  # type: ignore[attr-defined]  # Mock boundary
 
     def test_process_fields_with_media_noun(self, backend: AnkiBackend) -> None:
         """Test _process_fields_with_media processes noun cards correctly."""
@@ -284,8 +285,8 @@ class TestMediaIntegration:
             assert result[8] == "[sound:katze.mp3]"
 
             # Verify that audio generation was called with the right parameters
-            backend._generate_or_get_audio.assert_any_call("die Katze, die Katzen")
-            backend._generate_or_get_audio.assert_any_call("Die Katze schläft.")
+            backend._generate_or_get_audio.assert_any_call("die Katze, die Katzen")  # type: ignore[attr-defined]  # Mock boundary
+            backend._generate_or_get_audio.assert_any_call("Die Katze schläft.")  # type: ignore[attr-defined]  # Mock boundary
 
     def test_process_fields_with_media_verb(self, backend: AnkiBackend) -> None:
         """Test _process_fields_with_media processes verb cards correctly."""
@@ -410,7 +411,7 @@ class TestMediaIntegration:
 
             assert note_id is not None
             # Verify _process_fields_with_media was called with correct note type ID
-            backend._process_fields_with_media.assert_called_once_with(
+            backend._process_fields_with_media.assert_called_once_with(  # type: ignore[attr-defined]  # Mock boundary
                 note_type_id, fields
             )
 
@@ -577,10 +578,10 @@ class TestMediaIntegration:
             result = backend._process_fields_with_media(note_type_name, fields)
 
             # Verify combined adjective audio and example audio were processed
-            backend._generate_or_get_audio.assert_any_call(
+            backend._generate_or_get_audio.assert_any_call(  # type: ignore[attr-defined]  # Mock boundary
                 "gut, besser, am besten"
             )  # Combined forms
-            backend._generate_or_get_audio.assert_any_call(
+            backend._generate_or_get_audio.assert_any_call(  # type: ignore[attr-defined]  # Mock boundary
                 "Das Wetter ist gut."
             )  # Example
 
@@ -592,7 +593,7 @@ class TestMediaIntegration:
             assert result[7] == "[sound:example.mp3]"
 
             # Verify that audio generation was called 2 times (combined forms, example)
-            assert backend._generate_or_get_audio.call_count == 2
+            assert backend._generate_or_get_audio.call_count == 2  # type: ignore[attr-defined]  # Mock boundary
 
     def test_adjective_with_missing_forms(self, backend: AnkiBackend) -> None:
         """Test adjective processing when comparative or superlative are missing."""
@@ -633,11 +634,11 @@ class TestMediaIntegration:
             result = backend._process_fields_with_media(note_type_name, fields)
 
             # Should call audio generation for combined forms and example (2 calls total)
-            assert backend._generate_or_get_audio.call_count == 2
-            backend._generate_or_get_audio.assert_any_call(
+            assert backend._generate_or_get_audio.call_count == 2  # type: ignore[attr-defined]  # Mock boundary
+            backend._generate_or_get_audio.assert_any_call(  # type: ignore[attr-defined]  # Mock boundary
                 "schnell, schneller"
             )  # Combined available forms
-            backend._generate_or_get_audio.assert_any_call(
+            backend._generate_or_get_audio.assert_any_call(  # type: ignore[attr-defined]  # Mock boundary
                 "Das Auto ist schnell."
             )  # Example
 

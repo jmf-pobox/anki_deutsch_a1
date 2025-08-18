@@ -288,6 +288,9 @@ class AnkiBackend(DeckBackend):
                     example=example,
                     comparative=comparative,
                     superlative=superlative,
+                    word_audio="",
+                    example_audio="",
+                    image_path="",
                 )
                 # Use rich domain model method directly
                 combined_text = adjective.get_combined_audio_text()
@@ -339,6 +342,9 @@ class AnkiBackend(DeckBackend):
                     plural=plural,
                     example=example,
                     related=fields[5] if len(fields) > 5 else "",
+                    word_audio="",
+                    example_audio="",
+                    image_path="",
                 )
                 # Use rich domain model method directly
                 combined_text = noun_obj.get_combined_audio_text()
@@ -555,7 +561,7 @@ class AnkiBackend(DeckBackend):
 
         exporter = AnkiPackageExporter(self._collection)
         exporter.did = self._deck_id
-        exporter.include_media = True  # Ensure media is included
+        exporter.include_media = True  # type: ignore[attr-defined]  # Anki API boundary - attribute may not exist in all versions
 
         logger.info(f"Exporting deck with {len(self._media_files)} media files")
 
@@ -567,7 +573,7 @@ class AnkiBackend(DeckBackend):
                 exporter.exportInto(output_path)
             else:
                 # Fallback: use the collection export
-                self._collection.export_anki_package(output_path, [self._deck_id], True)
+                self._collection.export_anki_package(output_path, [self._deck_id], True)  # type: ignore[misc,arg-type]  # Anki API boundary - signature varies by version
         except Exception as e:
             logger.error(f"Export failed with error: {e}")
             # As a last resort, create a simple export

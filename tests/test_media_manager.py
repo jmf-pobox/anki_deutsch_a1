@@ -1,6 +1,7 @@
 """Tests for MediaManager functionality."""
 
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -46,7 +47,7 @@ class TestMediaManager:
         return MediaManager(mock_backend, mock_media_service)
 
     @pytest.fixture
-    def temp_file(self) -> str:
+    def temp_file(self) -> Generator[str, None, None]:
         """Create a temporary file for testing."""
         with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as f:
             f.write(b"fake audio content")

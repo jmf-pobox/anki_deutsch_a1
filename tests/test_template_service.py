@@ -1,6 +1,7 @@
 """Unit tests for TemplateService."""
 
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -13,7 +14,7 @@ class TestTemplateService:
     """Test TemplateService functionality."""
 
     @pytest.fixture
-    def temp_template_dir(self) -> Path:
+    def temp_template_dir(self) -> Generator[Path, None, None]:
         """Create temporary template directory with test files."""
         with tempfile.TemporaryDirectory() as temp_dir:
             template_dir = Path(temp_dir)

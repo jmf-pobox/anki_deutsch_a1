@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from .audio import AudioService
-from .pexels_service import PexelsService
+from .pexels_service import PexelsService, PhotoSize
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class MediaGenerationConfig:
     """Configuration for media generation behavior."""
 
     audio_sample_rate: int = 16000
-    image_size: PexelsService.PhotoSize = "medium"
+    image_size: PhotoSize = "medium"
     audio_dir: str = "data/audio"
     images_dir: str = "data/images"
 

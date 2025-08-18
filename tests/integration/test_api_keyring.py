@@ -15,19 +15,19 @@ from langlearn.utils.api_keyring import CredentialManager
 class TestApiKeyring(unittest.TestCase):
     """Integration tests for the API keyring utility."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         self.test_app_name = "test_app"
         self.test_username = "test_user"
         self.test_password = "test_password"
         self.cred_manager = CredentialManager(self.test_app_name)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up test environment."""
         # Clean up any test credentials
         self.cred_manager.delete_credentials(self.test_username)
 
-    def test_save_and_retrieve_credentials(self):
+    def test_save_and_retrieve_credentials(self) -> None:
         """Test saving and retrieving credentials."""
         # Save credentials
         self.cred_manager.save_credentials(self.test_username, self.test_password)
@@ -38,7 +38,7 @@ class TestApiKeyring(unittest.TestCase):
         # Verify
         self.assertEqual(retrieved_password, self.test_password)
 
-    def test_delete_credentials(self):
+    def test_delete_credentials(self) -> None:
         """Test deleting credentials."""
         # Save credentials first
         self.cred_manager.save_credentials(self.test_username, self.test_password)
@@ -50,12 +50,12 @@ class TestApiKeyring(unittest.TestCase):
         retrieved_password = self.cred_manager.get_password(self.test_username)
         self.assertIsNone(retrieved_password)
 
-    def test_nonexistent_credentials(self):
+    def test_nonexistent_credentials(self) -> None:
         """Test retrieving nonexistent credentials."""
         retrieved_password = self.cred_manager.get_password("nonexistent_user")
         self.assertIsNone(retrieved_password)
 
-    def test_update_credentials(self):
+    def test_update_credentials(self) -> None:
         """Test updating existing credentials."""
         # Save initial credentials
         self.cred_manager.save_credentials(self.test_username, self.test_password)
@@ -68,7 +68,7 @@ class TestApiKeyring(unittest.TestCase):
         retrieved_password = self.cred_manager.get_password(self.test_username)
         self.assertEqual(retrieved_password, new_password)
 
-    def test_multiple_apps(self):
+    def test_multiple_apps(self) -> None:
         """Test managing credentials for multiple apps."""
         # Create another app's credential manager
         other_app_name = "other_test_app"

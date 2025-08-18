@@ -12,6 +12,9 @@ def test_negation_initialization() -> None:
         english="not",
         type=NegationType.GENERAL,
         example="Ich verstehe das nicht.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert negation.word == "nicht"
     assert negation.english == "not"
@@ -27,42 +30,63 @@ def test_negation_validation() -> None:
             english="not",
             type=NegationType.GENERAL,
             example="Ich verstehe das nicht.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="kein",
             english="no/not a",
             type=NegationType.ARTICLE,
             example="Ich habe kein Auto.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="niemand",
             english="nobody",
             type=NegationType.PRONOUN,
             example="Niemand ist hier.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="nie",
             english="never",
             type=NegationType.TEMPORAL,
             example="Ich war noch nie in Berlin.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="nirgends",
             english="nowhere",
             type=NegationType.SPATIAL,
             example="Das Buch ist nirgends zu finden.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="weder",
             english="neither",
             type=NegationType.CORRELATIVE,
             example="Ich spreche weder Französisch noch Spanisch.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="gar nicht",
             english="not at all",
             type=NegationType.INTENSIFIER,
             example="Das gefällt mir gar nicht.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
     ]
 
@@ -79,18 +103,27 @@ def test_invalid_example_sentences() -> None:
             english="not",
             type=NegationType.GENERAL,
             example="nicht verstehe das.",  # No capital letter
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="kein",
             english="no/not a",
             type=NegationType.ARTICLE,
             example="Ich habe kein Auto",  # No period
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="niemand",
             english="nobody",
             type=NegationType.PRONOUN,
             example="Jemand ist hier.",  # Missing negation
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
     ]
 
@@ -106,6 +139,9 @@ def test_negation_position_validation() -> None:
         english="not",
         type=NegationType.GENERAL,
         example="Ich verstehe das nicht.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert general_end.validate_position() is True
 
@@ -114,6 +150,9 @@ def test_negation_position_validation() -> None:
         english="not",
         type=NegationType.GENERAL,
         example="Das ist nicht gut.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert general_before_adj.validate_position() is True
 
@@ -123,6 +162,9 @@ def test_negation_position_validation() -> None:
         english="no/not a",
         type=NegationType.ARTICLE,
         example="Ich habe kein Auto.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert article.validate_position() is True
 
@@ -132,6 +174,9 @@ def test_negation_position_validation() -> None:
         english="nobody",
         type=NegationType.PRONOUN,
         example="Niemand ist hier.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert pronoun_subject.validate_position() is True
 
@@ -141,6 +186,9 @@ def test_negation_position_validation() -> None:
         english="never",
         type=NegationType.TEMPORAL,
         example="Ich war noch nie in Berlin.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert temporal.validate_position() is True
 
@@ -150,6 +198,9 @@ def test_negation_position_validation() -> None:
         english="nowhere",
         type=NegationType.SPATIAL,
         example="Das Buch ist nirgends zu finden.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert spatial.validate_position() is True
 
@@ -159,6 +210,9 @@ def test_negation_position_validation() -> None:
         english="neither",
         type=NegationType.CORRELATIVE,
         example="Ich spreche weder Französisch noch Spanisch.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert correlative.validate_position() is True
 
@@ -168,6 +222,9 @@ def test_negation_position_validation() -> None:
         english="not at all",
         type=NegationType.INTENSIFIER,
         example="Das gefällt mir gar nicht.",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert intensifier.validate_position() is True
 
@@ -180,24 +237,36 @@ def test_invalid_negation_positions() -> None:
             english="not",
             type=NegationType.GENERAL,
             example="Nicht ich verstehe das.",  # General negation at start
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="kein",
             english="no/not a",
             type=NegationType.ARTICLE,
             example="Das Auto kein.",  # Article negation at end
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="nie",
             english="never",
             type=NegationType.TEMPORAL,
             example="Ich war in Berlin nie.",  # Temporal negation at end
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
         Negation(
             word="weder",
             english="neither",
             type=NegationType.CORRELATIVE,
             example="Ich spreche weder.",  # Correlative without pair
+            word_audio="",
+            example_audio="",
+            image_path="",
         ),
     ]
 
@@ -209,7 +278,15 @@ def test_negation_type_validation() -> None:
     """Test that invalid negation types are caught."""
     # Test that all valid NegationType values work
     for negation_type in NegationType:
-        Negation(word="test", english="test", type=negation_type, example="Test test.")
+        Negation(
+            word="test",
+            english="test",
+            type=negation_type,
+            example="Test test.",
+            word_audio="",
+            example_audio="",
+            image_path="",
+        )
 
     # Test that trying to use an invalid type raises ValueError
     with pytest.raises(ValueError):
@@ -221,4 +298,7 @@ def test_negation_type_validation() -> None:
             english="test",
             type=NegationType(invalid_type),  # This should raise ValueError
             example="Test test.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )

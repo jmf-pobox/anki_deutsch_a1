@@ -146,7 +146,7 @@ dmypy.json
 .pyre/
 .pytype/
 .vscode/
-#.idea/
+.idea/
 
 # Cython debug symbols
 cython_debug/
@@ -154,13 +154,10 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# IDE specific
-.vscode/
-.idea/
-
 # Project specific
 .pexels.key
 AI.md
+.claude/
 CLAUDE.md
 data/backups
 data/images

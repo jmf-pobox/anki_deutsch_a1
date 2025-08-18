@@ -375,5 +375,8 @@ class GermanLanguageService:
             english="",  # Placeholder - not used for classification
             plural="",  # Placeholder - not used for classification
             example="",  # Placeholder - not used for classification
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         return temp_noun.is_concrete()

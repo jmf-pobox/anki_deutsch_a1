@@ -3,7 +3,7 @@
 import os
 
 import pytest
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoCredentialsError  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
 
 from langlearn.services import AudioService
 
@@ -13,7 +13,7 @@ def has_aws_credentials() -> bool:
     try:
         service = AudioService()
         # Try a simple describe voices call to verify credentials
-        service.client.describe_voices()  # type: ignore[no-untyped-call]
+        service.client.describe_voices()
         return True
     except NoCredentialsError:
         return False

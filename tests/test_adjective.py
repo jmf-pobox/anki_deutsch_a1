@@ -11,6 +11,9 @@ def test_adjective_creation() -> None:
         example="Er ist sehr groß.",
         comparative="größer",
         superlative="am größten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
 
     assert adj.word == "groß"
@@ -29,6 +32,9 @@ def test_comparative_validation() -> None:
         example="Meine Wohnung ist klein.",
         comparative="kleiner",
         superlative="am kleinsten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert regular.validate_comparative() is True
 
@@ -39,6 +45,9 @@ def test_comparative_validation() -> None:
         example="Das ist ein altes Haus.",
         comparative="älter",
         superlative="am ältesten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert umlaut.validate_comparative() is True
 
@@ -49,6 +58,9 @@ def test_comparative_validation() -> None:
         example="Das Essen schmeckt gut.",
         comparative="besser",
         superlative="am besten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert irregular.validate_comparative() is True
 
@@ -59,6 +71,9 @@ def test_comparative_validation() -> None:
         example="Das ist eine schöne Blume.",
         comparative="schöne",  # Missing -er ending
         superlative="am schönsten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert invalid.validate_comparative() is False
 
@@ -72,6 +87,9 @@ def test_superlative_validation() -> None:
         example="Meine Wohnung ist klein.",
         comparative="kleiner",
         superlative="am kleinsten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert regular.validate_superlative() is True
 
@@ -82,6 +100,9 @@ def test_superlative_validation() -> None:
         example="Das ist ein altes Haus.",
         comparative="älter",
         superlative="am ältesten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert umlaut.validate_superlative() is True
 
@@ -92,6 +113,9 @@ def test_superlative_validation() -> None:
         example="Das Essen schmeckt gut.",
         comparative="besser",
         superlative="am besten",
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert irregular.validate_superlative() is True
 
@@ -102,6 +126,9 @@ def test_superlative_validation() -> None:
         example="Das ist eine schöne Blume.",
         comparative="schöner",
         superlative="der schönste",  # Wrong pattern, should be "am schönsten"
+        word_audio="",
+        example_audio="",
+        image_path="",
     )
     assert invalid.validate_superlative() is False
 
@@ -118,7 +145,7 @@ def test_adjective_from_csv() -> None:
         "superlative": "am jüngsten",
     }
 
-    adj = Adjective(**csv_data)
+    adj = Adjective(word_audio="", example_audio="", image_path="", **csv_data)
     assert adj.word == "jung"
     assert adj.validate_comparative() is True
     assert adj.validate_superlative() is True

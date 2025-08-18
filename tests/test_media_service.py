@@ -1,6 +1,7 @@
 """Unit tests for MediaService."""
 
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -36,7 +37,7 @@ class TestMediaService:
         )
 
     @pytest.fixture
-    def temp_project_root(self) -> Path:
+    def temp_project_root(self) -> Generator[Path, None, None]:
         """Temporary project root for testing."""
         with tempfile.TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)

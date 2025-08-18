@@ -16,6 +16,9 @@ class TestNounDomainBehavior:
             english="cat",
             plural="Katzen",
             example="Die Katze schläft.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
         result = noun.get_combined_audio_text()
@@ -29,6 +32,9 @@ class TestNounDomainBehavior:
             english="chair",
             plural="die Stühle",  # Already includes article
             example="Der Stuhl ist bequem.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
         result = noun.get_combined_audio_text()
@@ -38,7 +44,14 @@ class TestNounDomainBehavior:
         """Test concrete noun detection using German language patterns."""
         # Concrete nouns
         concrete = Noun(
-            noun="Katze", article="die", english="cat", plural="Katzen", example=""
+            noun="Katze",
+            article="die",
+            english="cat",
+            plural="Katzen",
+            example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         assert concrete.is_concrete() is True
 
@@ -49,12 +62,22 @@ class TestNounDomainBehavior:
             english="freedom",
             plural="",
             example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         assert abstract_suffix.is_concrete() is False
 
         # Abstract nouns by word list
         abstract_word = Noun(
-            noun="Liebe", article="die", english="love", plural="", example=""
+            noun="Liebe",
+            article="die",
+            english="love",
+            plural="",
+            example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         assert abstract_word.is_concrete() is False
 
@@ -80,10 +103,13 @@ class TestNounDomainBehavior:
                 english="test",
                 plural="",
                 example="",
+                word_audio="",
+                example_audio="",
+                image_path="",
             )
-            assert (
-                noun.is_concrete() == expected
-            ), f"{noun_text} should be {'concrete' if expected else 'abstract'}"
+            assert noun.is_concrete() == expected, (
+                f"{noun_text} should be {'concrete' if expected else 'abstract'}"
+            )
 
     def test_get_image_search_terms_concrete(self) -> None:
         """Test image search terms for concrete nouns use direct translation."""
@@ -93,6 +119,9 @@ class TestNounDomainBehavior:
             english="cat",
             plural="Katzen",
             example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         assert noun.get_image_search_terms() == "cat"
 
@@ -100,7 +129,14 @@ class TestNounDomainBehavior:
         """Test enhanced search terms for abstract concepts."""
         # Test specific concept mappings
         love_noun = Noun(
-            noun="Liebe", article="die", english="love", plural="", example=""
+            noun="Liebe",
+            article="die",
+            english="love",
+            plural="",
+            example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         result = love_noun.get_image_search_terms()
         assert "heart symbol" in result and "family together" in result
@@ -111,6 +147,9 @@ class TestNounDomainBehavior:
             english="freedom",
             plural="",
             example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         result = freedom_noun.get_image_search_terms()
         assert "person celebrating independence" in result
@@ -122,6 +161,9 @@ class TestNounDomainBehavior:
             english="wisdom",
             plural="",
             example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         result = abstract_noun.get_image_search_terms()
         assert result == "wisdom concept symbol"
@@ -135,6 +177,9 @@ class TestNounDomainBehavior:
             english="dog",
             plural="Hunde",
             example="Der Hund bellt laut.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
         # All methods should work
@@ -149,6 +194,9 @@ class TestNounDomainBehavior:
             english="hope",
             plural="",
             example="Die Hoffnung stirbt zuletzt.",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
         assert abstract_noun.is_concrete() is False
@@ -169,7 +217,14 @@ class TestNounDomainBehavior:
     ) -> None:
         """Test various German noun audio generation patterns."""
         noun_obj = Noun(
-            noun=noun, article=article, english=english, plural=plural, example=""
+            noun=noun,
+            article=article,
+            english=english,
+            plural=plural,
+            example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         assert noun_obj.get_combined_audio_text() == expected_audio
 
@@ -177,7 +232,14 @@ class TestNounDomainBehavior:
         """Test edge cases with empty or invalid data."""
         # Empty noun should be considered concrete by default heuristic
         empty_noun = Noun(
-            noun="", article="der", english="", plural="", example=""
+            noun="",
+            article="der",
+            english="",
+            plural="",
+            example="",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
         assert empty_noun.is_concrete() is False  # Empty noun is not concrete
 

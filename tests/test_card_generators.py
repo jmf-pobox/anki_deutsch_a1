@@ -77,6 +77,9 @@ class TestNounCardGenerator:
             plural="die Katzen",
             example="Die Katze schläft.",
             related="Tier",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
     def test_noun_card_generator_initialization(
@@ -222,6 +225,9 @@ class TestAdjectiveCardGenerator:
             example="Das Haus ist schön.",
             comparative="schöner",
             superlative="am schönsten",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
     def test_adjective_card_generator_initialization(
@@ -325,6 +331,9 @@ class TestCardGeneratorIntegration:
             plural="Tests",
             example="Das ist ein Test.",
             related="Prüfung",
+            word_audio="",
+            example_audio="",
+            image_path="",
         )
 
         generator.add_card(noun_data)

@@ -6,8 +6,8 @@ import logging.handlers
 from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict
 
-import boto3
-from botocore.exceptions import ClientError, NoCredentialsError
+import boto3  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+from botocore.exceptions import ClientError, NoCredentialsError  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
 from mypy_boto3_polly.literals import (
     EngineType,
     LanguageCodeType,
@@ -56,6 +56,7 @@ class PollyRequestParams(TypedDict):
     LanguageCode: LanguageCodeType
     OutputFormat: OutputFormatType
     Engine: EngineType
+    SampleRate: str
 
 
 class AudioService:
@@ -82,7 +83,7 @@ class AudioService:
         """
         if TYPE_CHECKING:
             self.client: PollyClient
-        self.client = boto3.client("polly")  # type: ignore[no-untyped-call]
+        self.client = boto3.client("polly")
         self.output_dir = Path(output_dir)
         self.voice_id = voice_id
         self.language_code = language_code
@@ -122,19 +123,17 @@ class AudioService:
             # Log the full request parameters
             request_params: PollyRequestParams = {
                 "Text": ssml_text,
-                "TextType": "ssml",  # type: ignore[assignment]
+                "TextType": "ssml",
                 "VoiceId": self.voice_id,
                 "LanguageCode": self.language_code,
-                "OutputFormat": "mp3",  # type: ignore[assignment]
-                "Engine": "neural",  # type: ignore[assignment] # Daniel requires the neural engine
+                "OutputFormat": "mp3",
+                "Engine": "neural",  # Daniel requires neural
                 "SampleRate": "16000",  # Lower sample rate for smaller files (was 22050 default)
             }
             logger.debug("AWS Polly request parameters: %s", request_params)
 
             try:
-                response = self.client.synthesize_speech(  # type: ignore[no-untyped-call]
-                    **request_params
-                )
+                response = self.client.synthesize_speech(**request_params)
             except NoCredentialsError:
                 logger.error(
                     "AWS credentials not found. Please configure your AWS credentials."
@@ -149,7 +148,7 @@ class AudioService:
         except ClientError as e:
             logger.error("Error generating audio: %s", e)
             logger.error("Error details: %s", e.response)
-            logger.error("Failed SSML: %s", ssml_text)  # type: ignore # Log the SSML that failed
+            logger.error("Failed SSML: %s", ssml_text)  # Log the SSML that failed
             raise
 
     def _save_audio_file(
