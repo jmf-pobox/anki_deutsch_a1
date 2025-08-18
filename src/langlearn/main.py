@@ -39,7 +39,7 @@ def main() -> None:
         # Create the deck using GermanDeckBuilder
         with GermanDeckBuilder(
             deck_name=deck_name,
-            backend_type="genanki",  # Use genanki backend for media testing
+            backend_type="anki",  # Use AnkiBackend for production
             enable_media_generation=True,  # Enable media generation
         ) as builder:
             print(f"🚀 Initialized {builder.backend_type} backend")

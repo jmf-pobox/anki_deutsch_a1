@@ -21,11 +21,11 @@ def demo_german_deck_builder() -> None:
     print("🚀 GermanDeckBuilder Demo")
     print("=" * 50)
 
-    # Create builder with genanki backend (no external dependencies)
-    print("\n📦 Creating GermanDeckBuilder with genanki backend...")
+    # Create builder with AnkiBackend (production default)
+    print("\n📦 Creating GermanDeckBuilder with AnkiBackend...")
     with GermanDeckBuilder(
         deck_name="Demo German A1 Vocabulary",
-        backend_type="genanki",
+        backend_type="anki",  # Use production AnkiBackend
         enable_media_generation=False,  # Disable to avoid API dependencies
     ) as builder:
         print(f"✅ Builder initialized: {builder.deck_name}")
@@ -148,7 +148,7 @@ def demo_with_csv_loading() -> None:
 
     with GermanDeckBuilder(
         deck_name="CSV Demo Deck",
-        backend_type="genanki",
+        backend_type="anki",  # Use production AnkiBackend
         enable_media_generation=False,
     ) as builder:
         print(f"📂 Loading data from {data_dir}...")
