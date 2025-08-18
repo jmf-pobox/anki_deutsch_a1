@@ -38,7 +38,7 @@ class AnkiDeckGenerator:
         )
 
         # Initialize services
-        self.audio_service = AudioService()
+        self.audio_service = AudioService(output_dir="data/audio")
 
         # Track media files
         self.media_files: set[str] = set()  # Set of media file paths
@@ -711,7 +711,11 @@ def generate_audio(text: str, output_dir: str | None = None) -> str | None:
     Returns:
         Path to the generated audio file or None if generation failed
     """
-    service = AudioService(output_dir=output_dir) if output_dir else AudioService()
+    service = (
+        AudioService(output_dir=output_dir)
+        if output_dir
+        else AudioService(output_dir="data/audio")
+    )
     return service.generate_audio(text)
 
 

@@ -352,125 +352,28 @@ class GermanLanguageService:
 
         return f"prohibition stop {english} negative"
 
-    def is_concrete_noun(self, noun: str) -> bool:
+    def is_concrete_noun(self, noun_str: str) -> bool:
         """Determine if a German noun represents a concrete object.
 
-        Uses German-specific patterns and suffixes to classify nouns as
-        concrete (physical objects) or abstract (concepts, ideas).
+        DEPRECATED: Use Noun.is_concrete() method directly when you have a Noun model.
+        This method is kept for backward compatibility during refactoring.
 
         Args:
-            noun: German noun to classify
+            noun_str: German noun string to evaluate
 
         Returns:
             True if the noun likely represents a concrete object
         """
-        if not noun:
-            return False
+        # For backward compatibility, create a temporary Noun model
+        # In practice, callers should use the Noun.is_concrete() method directly
+        from ..models.noun import Noun
 
-        noun_lower = noun.lower()
-
-        # Abstract noun suffixes in German
-        abstract_suffixes = [
-            "heit",
-            "keit",
-            "ung",
-            "ion",
-            "tion",
-            "sion",
-            "schaft",
-            "tum",
-            "nis",
-            "mus",
-            "tät",
-            "ität",
-            "ei",
-            "ie",
-            "ur",
-            "anz",
-        ]
-
-        # Check for abstract suffixes
-        for suffix in abstract_suffixes:
-            if noun_lower.endswith(suffix):
-                return False
-
-        # Common concrete noun patterns (more likely to be concrete)
-        concrete_indicators = [
-            # Diminutives are usually concrete
-            "chen",
-            "lein",
-            # Tools and objects
-            "zeug",
-            "werk",
-            "gerät",
-        ]
-
-        for indicator in concrete_indicators:
-            if indicator in noun_lower:
-                return True
-
-        # Known abstract concept words
-        abstract_words = {
-            "freiheit",
-            "liebe",
-            "glück",
-            "freude",
-            "angst",
-            "mut",
-            "hoffnung",
-            "zeit",
-            "gedanke",
-            "idee",
-            "träume",
-            "wissen",
-            "bildung",
-            "kultur",
-            "musik",
-            "kunst",
-            "sprache",
-            "geschichte",
-            "zukunft",
-            "vergangenheit",
-            "wahrheit",
-            "schönheit",
-            "gesundheit",
-            "krankheit",
-            "erfolg",
-        }
-
-        if noun_lower in abstract_words:
-            return False
-
-        # Known concrete objects
-        concrete_words = {
-            "hund",
-            "katze",
-            "haus",
-            "auto",
-            "baum",
-            "stuhl",
-            "tisch",
-            "buch",
-            "telefon",
-            "computer",
-            "brot",
-            "wasser",
-            "apfel",
-            "blume",
-            "berg",
-            "fluss",
-            "stadt",
-            "straße",
-            "fenster",
-            "tür",
-            "bett",
-            "küche",
-        }
-
-        if noun_lower in concrete_words:
-            return True
-
-        # Default heuristic: assume concrete unless proven abstract
-        # This works better for vocabulary learning where most nouns
-        # taught to beginners are concrete objects
-        return True
+        # Create minimal noun for classification
+        temp_noun = Noun(
+            noun=noun_str,
+            article="der",  # Placeholder - not used for classification
+            english="",  # Placeholder - not used for classification
+            plural="",  # Placeholder - not used for classification
+            example="",  # Placeholder - not used for classification
+        )
+        return temp_noun.is_concrete()

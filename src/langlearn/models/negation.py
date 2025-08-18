@@ -31,6 +31,9 @@ class Negation(BaseModel):
     english: str = Field(..., description="English translation")
     type: NegationType = Field(..., description="Type of negation")
     example: str = Field(..., description="Example sentence using the negation")
+    word_audio: str = Field("", description="Path to audio file for the negation")
+    example_audio: str = Field("", description="Path to audio file for the example")
+    image_path: str = Field("", description="Path to image file for the negation")
 
     def validate_example(self) -> bool:
         """Validate that the example contains the negation and follows basic rules.

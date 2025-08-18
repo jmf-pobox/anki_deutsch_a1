@@ -42,6 +42,7 @@ dependencies = [
     "ruff>=0.1.5",
     "mypy>=1.7.0",
     "pytest>=7.4.0",
+    "pytest-cov>=4.0.0",
     "pandas-stubs>=2.2.0",
     "types-requests>=2.31.0",
 ]
@@ -50,14 +51,18 @@ dependencies = [
 test = "pytest {args:tests tests/integration}"
 test-unit = "pytest {args:tests --ignore=tests/integration}"
 test-integration = "pytest {args:tests/integration}"
+test-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests tests/integration}"
+test-unit-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests --ignore=tests/integration}"
+test-integration-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests/integration}"
 lint = "ruff check ."
 format = "ruff format ."
 type = "mypy src/langlearn tests"
 check = ["lint", "type", "test"]
 check-unit = ["lint", "type", "test-unit"]
 check-integration = ["lint", "type", "test-integration"]
+check-cov = ["lint", "type", "test-cov"]
 # Application scripts
-app = "python src/langlearn/create_deck.py"
+app = "PYTHONPATH=src python src/langlearn/main.py"
 run-sample = "python src/langlearn/examples/create_sample_deck.py"
 run-adjectives = "python src/langlearn/create_deck.py"
 run-all = "python -c \"from langlearn.create_deck import main; main()\""
@@ -109,4 +114,26 @@ minversion = "7.0"
 addopts = "-ra -q --doctest-modules"
 testpaths = [
     "tests",
-] 
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "tests/*",
+    "*/test_*.py",
+    "src/langlearn/genanki.pyi",
+    "*/examples/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
+precision = 2 

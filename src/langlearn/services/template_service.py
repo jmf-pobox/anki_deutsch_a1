@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import NamedTuple
 
-from langlearn.backends.base import CardTemplate
+from langlearn.backends.base import CardTemplate, NoteType
 
 logger = logging.getLogger(__name__)
 
@@ -174,3 +174,94 @@ class TemplateService:
                 card_types.add(card_type)
 
         return sorted(card_types)
+
+    def get_noun_note_type(self) -> NoteType:
+        """Get complete NoteType for German nouns.
+
+        Returns:
+            NoteType configured for German noun cards
+        """
+        template = self.get_template("noun")
+
+        return NoteType(
+            name="German Noun with Media",
+            fields=[
+                "Noun",
+                "Article",
+                "English",
+                "Plural",
+                "Example",
+                "Related",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
+            ],
+            templates=[template],
+        )
+
+    def get_adjective_note_type(self) -> NoteType:
+        """Get complete NoteType for German adjectives.
+
+        Returns:
+            NoteType configured for German adjective cards
+        """
+        template = self.get_template("adjective")
+
+        return NoteType(
+            name="German Adjective with Media",
+            fields=[
+                "Word",
+                "English",
+                "Example",
+                "Comparative",
+                "Superlative",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
+            ],
+            templates=[template],
+        )
+
+    def get_adverb_note_type(self) -> NoteType:
+        """Get complete NoteType for German adverbs.
+
+        Returns:
+            NoteType configured for German adverb cards
+        """
+        template = self.get_template("adverb")
+
+        return NoteType(
+            name="German Adverb with Media",
+            fields=[
+                "Word",
+                "English",
+                "Type",
+                "Example",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
+            ],
+            templates=[template],
+        )
+
+    def get_negation_note_type(self) -> NoteType:
+        """Get complete NoteType for German negations.
+
+        Returns:
+            NoteType configured for German negation cards
+        """
+        template = self.get_template("negation")
+
+        return NoteType(
+            name="German Negation with Media",
+            fields=[
+                "Word",
+                "English",
+                "Type",
+                "Example",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
+            ],
+            templates=[template],
+        )

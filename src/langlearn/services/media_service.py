@@ -152,10 +152,10 @@ class MediaService:
             Path to image file or None if generation failed
         """
         try:
-            # Generate descriptive filename
-            search_term = search_query or word
+            # Generate descriptive filename using German word
+            # Always use German word for filename to match CSV expectations
             safe_filename = "".join(
-                c for c in search_term if c.isalnum() or c in (" ", "-", "_")
+                c for c in word if c.isalnum() or c in (" ", "-", "_")
             ).rstrip()
             safe_filename = safe_filename.replace(" ", "_").lower()
             image_path = self._images_dir / f"{safe_filename}.jpg"

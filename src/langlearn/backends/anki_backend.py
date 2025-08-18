@@ -1,6 +1,7 @@
 """Official Anki library backend implementation for deck generation."""
 
 import hashlib
+import logging
 import os
 import shutil
 import tempfile
@@ -18,6 +19,8 @@ from ..services.german_language_service import GermanLanguageService
 from ..services.media_service import MediaGenerationConfig, MediaService
 from ..services.pexels_service import PexelsService
 from .base import DeckBackend, MediaFile, NoteType
+
+logger = logging.getLogger(__name__)
 
 
 class AnkiBackend(DeckBackend):
@@ -172,12 +175,20 @@ class AnkiBackend(DeckBackend):
 
         # Process fields for media generation
         processed_fields = self._process_fields_with_media(note_type_id, fields)
+        print(
+            f"DEBUG: Final processed fields: {[f[:30] + '...' if len(f) > 30 else f for f in processed_fields]}"
+        )
 
-        # Create note
-        note = self._collection.new_note(anki_notetype_id)
+        # Create note - need to get the notetype dict first
+        notetype = self._collection.models.get(anki_notetype_id)
+        if notetype is None:
+            raise ValueError(f"Note type not found: {anki_notetype_id}")
+        note = self._collection.new_note(notetype)
         for i, field_value in enumerate(processed_fields):
             if i < len(note.fields):
                 note.fields[i] = field_value
+                if "[sound:" in field_value:
+                    print(f"DEBUG: Setting field {i} to audio: {field_value}")
 
         if tags:
             note.tags = tags
@@ -203,6 +214,8 @@ class AnkiBackend(DeckBackend):
                 # It's a note type ID, get the name
                 anki_notetype_id = self._note_type_map[note_type_input]
                 notetype = self._collection.models.get(anki_notetype_id)
+                if notetype is None:
+                    return fields
                 note_type_name = notetype.get("name", "")
             else:
                 # It's already a note type name (for backward compatibility with tests)
@@ -211,11 +224,33 @@ class AnkiBackend(DeckBackend):
             # Create a copy to modify
             processed_fields = fields.copy()
 
-            # Process based on note type
+            # Process based on note type - SKIP PROCESSING IF FIELDS ALREADY HAVE AUDIO
             if "adjective" in note_type_name.lower() and len(fields) >= 8:
-                processed_fields = self._process_adjective_fields(processed_fields)
+                # Only process if audio fields are actually empty
+                if not (fields[6] and fields[7]):
+                    processed_fields = self._process_adjective_fields(processed_fields)
+                else:
+                    print(
+                        "DEBUG: Skipping adjective processing - audio already present"
+                    )
             elif "noun" in note_type_name.lower() and len(fields) >= 9:
-                processed_fields = self._process_noun_fields(processed_fields)
+                # Only process if audio fields are actually empty
+                if not (fields[7] and fields[8]):
+                    processed_fields = self._process_noun_fields(processed_fields)
+                else:
+                    print("DEBUG: Skipping noun processing - audio already present")
+            elif "adverb" in note_type_name.lower() and len(fields) >= 7:
+                # Only process if audio fields are actually empty
+                if not (fields[5] and fields[6]):
+                    processed_fields = self._process_adverb_fields(processed_fields)
+                else:
+                    print("DEBUG: Skipping adverb processing - audio already present")
+            elif "negation" in note_type_name.lower() and len(fields) >= 7:
+                # Only process if audio fields are actually empty
+                if not (fields[5] and fields[6]):
+                    processed_fields = self._process_negation_fields(processed_fields)
+                else:
+                    print("DEBUG: Skipping negation processing - audio already present")
             elif "verb" in note_type_name.lower() and len(fields) >= 8:
                 processed_fields = self._process_verb_fields(processed_fields)
             elif "preposition" in note_type_name.lower() and len(fields) >= 7:
@@ -231,6 +266,9 @@ class AnkiBackend(DeckBackend):
 
     def _process_adjective_fields(self, fields: list[str]) -> list[str]:
         """Process adjective fields with combined audio and image generation."""
+        print(
+            f"DEBUG: Processing adjective fields: {[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
+        )
         try:
             # Fields: [Word, English, Example, Comparative, Superlative, Image, WordAudio, ExampleAudio]
             word = fields[0]
@@ -239,34 +277,38 @@ class AnkiBackend(DeckBackend):
             comparative = fields[3]
             superlative = fields[4]
 
-            # Generate combined audio for adjective forms
-            adjective = Adjective(
-                word=word,
-                english=english,
-                example=example,
-                comparative=comparative,
-                superlative=superlative,
+            # Only generate audio if fields are empty (avoid duplicate processing)
+            print(
+                f"DEBUG: Adjective WordAudio field (6): '{fields[6] if len(fields) > 6 else 'N/A'}'"
             )
-            combined_text = self._german_service.get_combined_adjective_audio_text(
-                adjective
-            )
+            if len(fields) > 6 and not fields[6]:  # WordAudio field is empty
+                adjective = Adjective(
+                    word=word,
+                    english=english,
+                    example=example,
+                    comparative=comparative,
+                    superlative=superlative,
+                )
+                # Use rich domain model method directly
+                combined_text = adjective.get_combined_audio_text()
+                combined_audio_path = self._generate_or_get_audio(combined_text)
+                if combined_audio_path:
+                    fields[6] = f"[sound:{os.path.basename(combined_audio_path)}]"
 
-            combined_audio_path = self._generate_or_get_audio(combined_text)
-            if combined_audio_path:
-                fields[6] = f"[sound:{os.path.basename(combined_audio_path)}]"
+            # Only generate example audio if field is empty
+            if len(fields) > 7 and not fields[7]:  # ExampleAudio field is empty
+                example_audio_path = self._generate_or_get_audio(example)
+                if example_audio_path:
+                    fields[7] = f"[sound:{os.path.basename(example_audio_path)}]"
 
-            # Generate example audio
-            example_audio_path = self._generate_or_get_audio(example)
-            if example_audio_path:
-                fields[7] = f"[sound:{os.path.basename(example_audio_path)}]"
-
-            # Generate image
-            context_query = self._german_service.extract_context_from_sentence(
-                example, word, english
-            )
-            image_path = self._generate_or_get_image(word, context_query, example)
-            if image_path:
-                fields[5] = f'<img src="{os.path.basename(image_path)}">'
+            # Only generate image if field is empty
+            if len(fields) > 5 and not fields[5]:  # Image field is empty
+                context_query = self._german_service.extract_context_from_sentence(
+                    example, word, english
+                )
+                image_path = self._generate_or_get_image(word, context_query, example)
+                if image_path:
+                    fields[5] = f'<img src="{os.path.basename(image_path)}">'
 
             return fields
         except Exception as e:
@@ -275,6 +317,9 @@ class AnkiBackend(DeckBackend):
 
     def _process_noun_fields(self, fields: list[str]) -> list[str]:
         """Process noun fields with combined audio generation."""
+        print(
+            f"DEBUG: Processing noun fields: {[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
+        )
         try:
             # Fields: [Noun, Article, English, Plural, Example, Related, Image, WordAudio, ExampleAudio]
             noun = fields[0]
@@ -282,25 +327,30 @@ class AnkiBackend(DeckBackend):
             plural = fields[3]
             example = fields[4]
 
-            # Generate combined audio for noun
-            noun_obj = Noun(
-                noun=noun,
-                article=article,
-                english=fields[2],
-                plural=plural,
-                example=example,
-                related=fields[5] if len(fields) > 5 else "",
+            # Only generate audio if fields are empty (avoid duplicate processing)
+            print(
+                f"DEBUG: Noun WordAudio field (7): '{fields[7] if len(fields) > 7 else 'N/A'}'"
             )
-            combined_text = self._german_service.get_combined_noun_audio_text(noun_obj)
+            if len(fields) > 7 and not fields[7]:  # WordAudio field is empty
+                noun_obj = Noun(
+                    noun=noun,
+                    article=article,
+                    english=fields[2],
+                    plural=plural,
+                    example=example,
+                    related=fields[5] if len(fields) > 5 else "",
+                )
+                # Use rich domain model method directly
+                combined_text = noun_obj.get_combined_audio_text()
+                combined_audio_path = self._generate_or_get_audio(combined_text)
+                if combined_audio_path:
+                    fields[7] = f"[sound:{os.path.basename(combined_audio_path)}]"
 
-            combined_audio_path = self._generate_or_get_audio(combined_text)
-            if combined_audio_path:
-                fields[7] = f"[sound:{os.path.basename(combined_audio_path)}]"
-
-            # Generate example audio
-            example_audio_path = self._generate_or_get_audio(example)
-            if example_audio_path:
-                fields[8] = f"[sound:{os.path.basename(example_audio_path)}]"
+            # Only generate example audio if field is empty
+            if len(fields) > 8 and not fields[8]:  # ExampleAudio field is empty
+                example_audio_path = self._generate_or_get_audio(example)
+                if example_audio_path:
+                    fields[8] = f"[sound:{os.path.basename(example_audio_path)}]"
 
             return fields
         except Exception as e:
@@ -364,6 +414,60 @@ class AnkiBackend(DeckBackend):
             print(f"Error processing phrase fields: {e}")
             return fields
 
+    def _process_adverb_fields(self, fields: list[str]) -> list[str]:
+        """Process adverb fields with audio generation."""
+        print(
+            f"DEBUG: Processing adverb fields: {[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
+        )
+        try:
+            # Fields: [Word, English, Type, Example, Image, WordAudio, ExampleAudio]
+            word = fields[0] if len(fields) > 0 else ""
+            example = fields[3] if len(fields) > 3 else ""
+
+            # Only generate word audio if field is empty (avoid duplicate processing)
+            print(
+                f"DEBUG: Adverb WordAudio field (5): '{fields[5] if len(fields) > 5 else 'N/A'}'"
+            )
+            if len(fields) > 5 and not fields[5]:  # WordAudio field is empty
+                word_audio_path = self._generate_or_get_audio(word)
+                if word_audio_path:
+                    fields[5] = f"[sound:{os.path.basename(word_audio_path)}]"
+
+            # Only generate example audio if field is empty
+            if len(fields) > 6 and not fields[6]:  # ExampleAudio field is empty
+                example_audio_path = self._generate_or_get_audio(example)
+                if example_audio_path:
+                    fields[6] = f"[sound:{os.path.basename(example_audio_path)}]"
+
+            return fields
+        except Exception as e:
+            print(f"Error processing adverb fields: {e}")
+            return fields
+
+    def _process_negation_fields(self, fields: list[str]) -> list[str]:
+        """Process negation fields with audio generation."""
+        try:
+            # Fields: [Word, English, Type, Example, Image, WordAudio, ExampleAudio]
+            word = fields[0] if len(fields) > 0 else ""
+            example = fields[3] if len(fields) > 3 else ""
+
+            # Only generate word audio if field is empty (avoid duplicate processing)
+            if len(fields) > 5 and not fields[5]:  # WordAudio field is empty
+                word_audio_path = self._generate_or_get_audio(word)
+                if word_audio_path:
+                    fields[5] = f"[sound:{os.path.basename(word_audio_path)}]"
+
+            # Only generate example audio if field is empty
+            if len(fields) > 6 and not fields[6]:  # ExampleAudio field is empty
+                example_audio_path = self._generate_or_get_audio(example)
+                if example_audio_path:
+                    fields[6] = f"[sound:{os.path.basename(example_audio_path)}]"
+
+            return fields
+        except Exception as e:
+            print(f"Error processing negation fields: {e}")
+            return fields
+
     def _generate_or_get_audio(self, text: str) -> str | None:
         """Generate audio for text or return existing audio file path."""
         try:
@@ -411,18 +515,21 @@ class AnkiBackend(DeckBackend):
             self._media_generation_stats["generation_errors"] += 1
             return None
 
-    def _is_concrete_noun(self, noun: str) -> bool:
+    def _is_concrete_noun(self, noun_str: str) -> bool:
         """Basic heuristic to determine if a noun represents a concrete object.
 
-        Delegates to GermanLanguageService.
+        DEPRECATED: This method is kept for backward compatibility.
+        New code should use Noun.is_concrete() method directly.
 
         Args:
-            noun: German noun to evaluate
+            noun_str: German noun to evaluate
 
         Returns:
             True if likely concrete, False otherwise
         """
-        return self._german_service.is_concrete_noun(noun)
+        # For backward compatibility, delegate to the service method
+        # which now uses the domain model internally
+        return self._german_service.is_concrete_noun(noun_str)
 
     def add_media_file(self, file_path: str) -> MediaFile:
         """Add a media file to the deck."""
@@ -448,21 +555,29 @@ class AnkiBackend(DeckBackend):
 
         exporter = AnkiPackageExporter(self._collection)
         exporter.did = self._deck_id
+        exporter.include_media = True  # Ensure media is included
 
-        # The correct method name might be different, let's try the common patterns
-        if hasattr(exporter, "export_to_file"):
-            exporter.export_to_file(output_path)
-        elif hasattr(exporter, "exportInto"):
-            exporter.exportInto(output_path)
-        else:
-            # Create a simple export by copying the collection
+        logger.info(f"Exporting deck with {len(self._media_files)} media files")
+
+        try:
+            # Try the modern API first
+            if hasattr(exporter, "export_to_file"):
+                exporter.export_to_file(output_path)
+            elif hasattr(exporter, "exportInto"):
+                exporter.exportInto(output_path)
+            else:
+                # Fallback: use the collection export
+                self._collection.export_anki_package(output_path, [self._deck_id], True)
+        except Exception as e:
+            logger.error(f"Export failed with error: {e}")
+            # As a last resort, create a simple export
             import shutil
 
             shutil.copy2(self._collection_path, output_path)
 
     def get_stats(self) -> dict[str, Any]:
         """Get deck statistics."""
-        stats = {
+        stats: dict[str, Any] = {
             "deck_name": self.deck_name,
             "note_types_count": len(self._note_type_map),
             "notes_count": 0,
@@ -481,9 +596,10 @@ class AnkiBackend(DeckBackend):
         )
 
         try:
-            stats["notes_count"] = self._collection.db.scalar(
-                "SELECT count() FROM notes"
-            )
+            if self._collection.db is not None:
+                stats["notes_count"] = self._collection.db.scalar(
+                    "SELECT count() FROM notes"
+                )
         except Exception:
             pass
 

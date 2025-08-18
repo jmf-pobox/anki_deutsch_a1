@@ -1,427 +1,284 @@
-# 🎓 German A1 Anki Deck Generator (langlearn-anki-deck-generator)
+# 🎓 German A1 Anki Deck Generator
 
-[![Migration Status](https://img.shields.io/badge/Migration-Completed%20✅-brightgreen)](LIBRARY_REFACTOR.md) [![Tests](https://img.shields.io/badge/Tests-107%20Passing-brightgreen)](#testing) [![Performance](https://img.shields.io/badge/Performance-3900%2B%20notes%2Fsec-blue)](#performance) [![German Optimization](https://img.shields.io/badge/German-Optimized%20🇩🇪-orange)](#german-features)
+A German language learning application that generates customized Anki decks for A1-level learners, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
 
-## 🎯 Project Vision
+[![Tests](https://img.shields.io/badge/Tests-263%20Passing-brightgreen)](#testing)
+[![Backend](https://img.shields.io/badge/Backend-Dual%20Support-blue)](#architecture)
+[![Language](https://img.shields.io/badge/German-A1%20Level-orange)](#german-features)
 
-A **world-class German language learning platform** that generates sophisticated Anki decks with advanced features specifically designed for German grammar nuances. This isn't just another flashcard generator—it's a comprehensive language learning system that leverages AI categorization, advanced scheduling, and responsive design to optimize German acquisition.
+## 📋 Project Status
 
-### 🇩🇪 German-Specific Excellence
+**Current State**: Functional German A1 deck generator with backend abstraction layer  
+**Active Backend**: genanki (production ready)  
+**Available Backend**: Official Anki library (architectural integration complete)  
+**Test Coverage**: 263 unit tests passing
 
-**The Challenge**: German grammar is notoriously complex with:
-- **Noun genders** (der/die/das) that must be memorized and **plural forms**
-- **Case system** (Nominativ, Akkusativ, Dativ, Genitiv) affecting articles and adjectives
-- **Separable verbs** that split in sentences (ich stehe auf)
-- **Irregular verbs** with unique conjugation patterns
-- **Case-dependent prepositions** requiring specific cases
-- **Word Order rules** which are structure and word specific (e.g., denn vs. weil)
+### Core Functionality ✅
+- **Deck Generation**: Creates Anki decks (.apkg files) with German vocabulary
+- **German Language Support**: Specialized handling for nouns, verbs, adjectives, adverbs, negations
+- **Media Integration**: AWS Polly audio generation and Pexels image integration
+- **Backend Flexibility**: Support for both genanki and official Anki library backends
+- **Type Safety**: Full MyPy compliance with comprehensive validation
 
-**Our Solution**: This system creates **specialized card types** for each grammar element with:
-- ✅ **Gender-specific scheduling** (20% more frequent noun gender drills)
-- ✅ **Irregular verb recognition** (30% more frequent irregular patterns)
-- ✅ **Case system emphasis** (25% more frequent case-dependent words)
-- ✅ **Audio enhancement** (pronunciation integration with scheduling bonuses)
-- ✅ **Cognate optimization** (English-similar words get adjusted intervals)
-- **Audio Transcription** audio is generated using AWS Polly
-- **Image Association** images obtained via Pexels
+## 📚 Documentation
 
-### 🚀 World-Class Technical Features
+This project includes comprehensive design documentation in the `docs/` directory:
 
-- **4.5MB+ Comprehensive Decks** with embedded media
-- **3,900+ Notes/Second** bulk generation performance
-- **SHA-256 Media Deduplication** preventing duplicate files
-- **Responsive Templates** with dark mode and mobile support
-- **German AI Categorization** for optimized spaced repetition
-- **Database Optimization** with transaction safety and integrity checks
+### 🎯 **Primary Documentation**
 
-## General Documentation
+#### **[docs/DESIGN-INDEX.md](docs/DESIGN-INDEX.md)** - Documentation Navigator
+**Start here** for navigation of all design documents. Provides:
+- Quick start guide for new developers
+- Document descriptions and use cases
+- Cross-reference guide between documents
+- Maintenance guidelines and update procedures
 
-This system is built for Anki as a front-end. Card templates tell Anki which fields should appear on the front and back of your card, and control which cards will be generated when certain fields have text in them. By adjusting your card templates, you can alter the design and styling of many of your cards at once.  Anki supports HTML, CSS, some JavaScript, MathJax, and LaTeX. Media is also supported (audio, video). In general, cards are treated as webpages.
+### 🏗️ **Architecture Documentation**
 
-* https://docs.ankiweb.net/templates/intro.html - Anki template system
+#### **[docs/DESIGN-SRP.md](docs/DESIGN-SRP.md)** - System Component Inventory
+Complete codebase inventory organized by Single Responsibility Principle:
+- Package hierarchy with responsibility matrix
+- Class-by-class functionality breakdown
+- Component relationship mapping
+- Code organization reference
 
-## 🎉 Project Status: **PRODUCTION READY** ✅
+#### **[docs/DESIGN-STATE.md](docs/DESIGN-STATE.md)** - Current Quality Assessment
+Critical analysis of current codebase state:
+- Measured code quality metrics
+- Technical debt assessment
+- Multi-language readiness evaluation
+- Implementation priority matrix
 
-**Migration Completed**: August 2025 (ahead of schedule)  
-**Success Rate**: 100% - All objectives exceeded  
-**Test Coverage**: 107/107 unit tests passing  
-**Performance**: 3,900+ notes/second generation  
+#### **[docs/DESIGN-GUIDANCE.md](docs/DESIGN-GUIDANCE.md)** - Development Standards
+Prescriptive guidance for development work:
+- Architectural principles and patterns
+- Code quality requirements and gates
+- Import structure and testing standards
+- Anti-patterns and prohibited practices
 
-### 🏆 Core Features (COMPLETED)
+#### **[docs/DESIGN.md](docs/DESIGN.md)** - Original Architecture Analysis
+Historical context and intended design patterns:
+- Original architectural intentions
+- Intended design patterns analysis
+- Clean architecture principles documentation
+- Abstract base class designs
 
-#### 📚 Advanced Deck Generation
-- ✅ **Official Anki Library Integration** - Migrated from genanki to official ankitects/anki
-- ✅ **5 Specialized Card Types** - Noun, Verb, Adjective, Preposition, Phrase
-- ✅ **Advanced Templates** - Responsive CSS with dark mode and mobile support
-- ✅ **Real .apkg Export** - Generates 4.5MB+ decks with embedded media
-- ✅ **Backend Abstraction** - Clean interface supporting multiple libraries
+### 🔄 **Migration Documentation**
 
-#### 🎨 German Language Optimization
-- ✅ **AI Categorization** - Automatic detection of German learning patterns
-- ✅ **Custom Scheduling** - Gender (0.8x), Irregular verbs (0.7x), Cases (0.75x)
-- ✅ **Cognate Detection** - English-similar words get 1.3x intervals
-- ✅ **Audio Enhancement** - Pronunciation-rich cards get 1.2x intervals
-- ✅ **Smart Recommendations** - AI-generated optimization suggestions
+#### **[docs/MIGRATION_PLAN.md](docs/ANKI_MIGRATION_PLAN.md)** - Backend Migration Status
+Current status of genanki to official Anki library migration:
+- Phase-by-phase migration progress
+- Current implementation status
+- Risk assessment and mitigation strategies
+- Timeline and success criteria
 
-#### ⚡ Performance & Media
-- ✅ **Enhanced Media Handling** - SHA-256 deduplication, corruption detection
-- ✅ **Bulk Operations** - Transaction-safe 3,900+ notes/second creation
-- ✅ **Database Optimization** - VACUUM, integrity checks, performance monitoring
-- ✅ **AWS Polly Integration** - High-quality German pronunciation
-- ✅ **Pexels Integration** - Automated image association with backup
+#### **[docs/LIBRARY_REFACTOR.md](docs/ANKI_LIBRARY_REFACTOR.md)** - Integration Architecture
+Technical achievements in backend integration:
+- Dual backend architecture implementation
+- Interface consistency and switching capability
+- Performance characteristics and testing status
+- Benefits realized and future considerations
 
-#### 🔧 Data & Validation
-- ✅ **Comprehensive Models** - Pydantic validation for all German grammar
-- ✅ **CSV Data Management** - A1-level content with enrichment pipeline
-- ✅ **API Key Management** - Secure keyring-based credential storage
-- ✅ **Backup Systems** - Automatic CSV versioning during enrichment
-- ✅ **Type Safety** - Full mypy compliance with proper Anki types
+#### **[docs/LEGACY.md](docs/LEGACY.md)** - Component Evolution
+Analysis of components for potential refactoring:
+- Current backend architecture assessment
+- Future consolidation scenarios
+- Decision framework and evaluation criteria
+- Maintenance recommendations
 
-### 🚀 Advanced Features (COMPLETED)
+### 🧪 **Testing Documentation**
 
-#### 🎯 Phase 3 Enhancements
-- ✅ **Media Deduplication** - Hash-based duplicate detection saves storage
-- ✅ **File Validation** - Corruption detection, size limits, format verification
-- ✅ **Responsive Design** - Mobile-optimized templates with accessibility
-- ✅ **Conditional Rendering** - Smart templates that adapt to available content
-- ✅ **Database Transactions** - Bulk operations with rollback safety
-- ✅ **Performance Analytics** - Comprehensive statistics and optimization metrics
+#### **[docs/ANKI_API_TESTPLAN.md](docs/ANKI_API_TESTPLAN.md)** - Comprehensive Test Strategy
+Detailed testing plan for official Anki backend validation:
+- Phase-by-phase test coverage plan
+- German language integration testing
+- Performance and error recovery testing
+- Success criteria and deliverables
 
-### 🎓 Educational Excellence
+## 🇩🇪 German Language Features
 
-#### German Grammar Mastery
-- ✅ **Noun Gender Cards** - Dedicated article recall with case declensions
-- ✅ **Verb Conjugation** - Present, perfect tense with irregular pattern detection
-- ✅ **Adjective Comparison** - Positive, comparative, superlative with visual design
-- ✅ **Preposition Cases** - Case requirements with multiple example contexts
-- ✅ **Common Phrases** - Contextual usage with related expression groups
+### Grammar-Specific Handling
+- **Noun Cards**: Article recall with gender and plural forms
+- **Verb Cards**: Conjugation patterns with irregular verb detection
+- **Adjective Cards**: Comparison forms (positive, comparative, superlative)
+- **Preposition Cards**: Case requirements with example contexts
+- **Phrase Cards**: Common expressions with contextual usage
 
-#### Learning Optimization
-- ✅ **Spaced Repetition** - German-specific scheduling parameters
-- ✅ **Visual Learning** - Image integration for concrete concepts
-- ✅ **Audio Reinforcement** - Native German pronunciation for all content
-- ✅ **Progressive Difficulty** - AI-detected complexity with adapted intervals
-- ✅ **Context Examples** - Real German sentences demonstrating usage
+### Language Learning Optimizations
+- **Gender Validation**: Proper article-noun combinations (der/die/das)
+- **Case System**: Nominative, Accusative, Dative, Genitive handling
+- **Irregular Patterns**: Special handling for irregular verbs and plurals
+- **Audio Integration**: German pronunciation using AWS Polly
+- **Visual Learning**: Contextual images from Pexels API
 
-### 🔮 Future Enhancements (Optional)
-
-#### Potential Phase 4 Features
-- 📋 **Multi-Language Support** - Korean, Spanish, French expansion
-- 📋 **FSRS Integration** - Latest spaced repetition research
-- 📋 **Web Interface** - Browser-based deck management
-- 📋 **Progress Analytics** - Learning curve analysis and insights
-- 📋 **Community Features** - Shared decks and collaborative content
-- 📋 **Advanced Scheduling** - ML-powered personalized intervals
-
-## Project Structure
+## 🏗️ Project Structure
 
 ```
-langlearn-anki-deck-generator/
+anki-deutsch-a1/
 ├── 📊 data/                    # German A1 vocabulary data (CSV format)
-│   ├── 🔊 audio/               # AWS Polly German pronunciation (150+ files)
-│   ├── 🖼️  images/              # Pexels visual associations (80+ images)
-│   └── 💾 backups/             # Automatic CSV versioning during enrichment
+│   ├── nouns.csv              # German nouns with gender and plurals
+│   ├── adjectives.csv         # Adjectives with comparison forms
+│   ├── verbs.csv              # Regular and irregular verbs
+│   ├── adverbs.csv            # Adverbs with usage examples
+│   └── negations.csv          # Negation words and phrases
 │
 ├── 🏗️ src/langlearn/
-│   ├── 🎯 backends/            # ✨ NEW: Official Anki library integration
-│   │   ├── base.py             # Abstract backend interfaces
-│   │   ├── anki_backend.py     # 1,100+ lines of advanced features
-│   │   └── genanki_backend.py  # Legacy compatibility wrapper
-│   ├── 📝 models/              # Pydantic German grammar models (validation)
-│   ├── 🃏 cards/               # Specialized card generators (5 types)
-│   ├── 🔌 services/            # External API integrations (AWS, Pexels)
-│   ├── 🛠️ utils/               # API key management, enrichment tools
-│   ├── 📜 scripts/             # Content generation and processing
-│   └── 🎨 templates/           # HTML/CSS templates for responsive cards
+│   ├── 🎯 backends/            # Backend abstraction layer
+│   │   ├── base.py             # Abstract interfaces
+│   │   ├── genanki_backend.py  # genanki implementation
+│   │   └── anki_backend.py     # Official Anki library implementation
+│   ├── 📝 models/              # Pydantic German language models
+│   ├── 🔌 services/            # External API integrations (AWS, Pexels, CSV)
+│   ├── 🛠️ utils/               # API key management and utilities
+│   ├── 🎨 templates/           # HTML/CSS templates for card designs
+│   ├── main.py                 # Main application entry point
+│   └── german_deck_builder.py  # Primary deck orchestrator
 │
-├── 🧪 tests/                   # 107 comprehensive unit tests
-│   └── integration/            # Live API testing (marked with @pytest.mark.live)
-│
-├── 📦 output/                  # Generated Anki decks
-│   ├── phase3_comprehensive_deck.apkg    # 4.5MB full-feature demonstration
-│   ├── validation_deck_phase2.apkg       # Manual testing deck
-│   └── demo_official_anki.apkg           # Backend comparison demo
-│
-├── 🌍 languages/               # German grammar documentation and rules
-├── 📋 examples/                # Working demonstrations and tutorials
-│   └── backend_demonstration.py         # Shows both genanki and official backends
-│
-└── 📖 Documentation/
-    ├── MIGRATION_PLAN.md       # Detailed migration tracking
-    ├── LIBRARY_REFACTOR.md     # Complete migration results
-    ├── CLAUDE.md              # Development guidelines
-    └── README.md              # This file
+├── 🧪 tests/                   # 263 comprehensive unit tests
+├── 📦 output/                  # Generated Anki decks (.apkg files)
+├── 🌍 languages/               # German grammar documentation
+├── 📋 examples/                # Usage demonstrations
+└── 📖 docs/                    # Comprehensive design documentation
 ```
 
-## Installation
+## 🚀 Installation & Setup
 
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/anki-deutsch-a1.git
+git clone <repository-url>
 cd anki-deutsch-a1
 ```
 
-2. Install dependencies using Hatch:
+2. **Install dependencies using Hatch:**
 ```bash
 hatch env create
 ```
 
-3. Configure API keys using the api_keyring utility, which stores secrets via keyring:
+3. **Configure API keys (optional for media generation):**
 ```bash
-# For Anthropic API key
-python src/langlearn/utils/api_keyring.py add ANTHROPIC_API_KEY your_api_key_here
+# Store API keys securely using keyring
+python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_pexels_key
 
-# For Pexels API key
-python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_api_key_here
-
-# To view a stored API key
-python src/langlearn/utils/api_keyring.py view ANTHROPIC_API_KEY
+# Configure AWS credentials for German audio
+export AWS_ACCESS_KEY_ID=your_aws_key
+export AWS_SECRET_ACCESS_KEY=your_aws_secret
+export AWS_DEFAULT_REGION=us-east-1
 ```
 
-4. Configure AWS credentials for German audio generation:
+4. **Verify installation:**
 ```bash
-export AWS_ACCESS_KEY_ID=your_access_key
-export AWS_SECRET_ACCESS_KEY=your_secret_key
-export AWS_DEFAULT_REGION=us-east-1  # Recommended for Polly
-```
-
-5. Verify installation with comprehensive test:
-```bash
-# Run all unit tests to verify setup
+# Run comprehensive test suite
 hatch run test-unit
 
-# Run backend demonstration
-PYTHONPATH=src python examples/backend_demonstration.py
-
-# Check generated decks in output/ directory
-ls -la output/*.apkg
+# Test deck generation
+PYTHONPATH=src python src/langlearn/main.py
 ```
 
-## 🚀 Usage
+## 💻 Usage
 
-### Quick Start (Production Ready)
-
+### Basic Deck Generation
 ```bash
-# Create a comprehensive German A1 deck with all features
-python examples/backend_demonstration.py
-
-# Run the complete feature demonstration
-PYTHONPATH=/path/to/project/src python examples/backend_demonstration.py
+# Create German A1 vocabulary deck
+python src/langlearn/main.py
 ```
 
-This generates two demonstration decks:
-- `demo_genanki.apkg` - Using legacy genanki library
-- `demo_official_anki.apkg` - Using advanced official Anki library ✨
+This generates a complete German A1 Anki deck with:
+- All vocabulary types (nouns, verbs, adjectives, adverbs, negations)
+- Proper German grammar validation
+- Optional media integration (audio/images)
+- Export to `.apkg` format ready for Anki import
 
-### 🎯 Advanced Usage
-
-#### Create Custom German Decks
-
+### Backend Selection
 ```python
-from langlearn.backends import AnkiBackend
+from langlearn.german_deck_builder import GermanDeckBuilder
 
-# Initialize with German optimization
-backend = AnkiBackend('My German Deck', 'Personalized A1 vocabulary')
+# Use genanki backend (current default)
+with GermanDeckBuilder(
+    deck_name="My German Deck",
+    backend_type="genanki",
+    enable_media_generation=True
+) as builder:
+    builder.load_data_from_directory("data/")
+    builder.generate_all_cards(generate_media=True)
+    builder.export_deck("output/german_deck.apkg")
 
-# Create specialized German note types
-noun_id = backend.create_german_noun_note_type()
-verb_id = backend.create_german_verb_note_type()
-adj_id = backend.create_advanced_german_adjective_note_type()  # ✨ Advanced template
-
-# Add notes with automatic German categorization
-backend.add_note(
-    note_type_id=noun_id,
-    fields=['Katze', 'die', 'cat', 'die Katzen', 'Die Katze schläft.', 'Tier', '[sound:katze.mp3]'],
-    tags=['noun', 'animal']
-)
-
-# Bulk operations for performance (3,900+ notes/sec)
-bulk_notes = [
-    {'note_type_id': verb_id, 'fields': ['sein', 'to be', ...], 'tags': ['verb', 'irregular']},
-    {'note_type_id': adj_id, 'fields': ['schön', 'beautiful', ...], 'tags': ['adjective']}
-]
-created_ids = backend.add_notes_bulk(bulk_notes)
-
-# Export with all advanced features
-backend.export_deck('my_german_deck.apkg')
+# Alternative: Use official Anki library backend
+# backend_type="anki"  # (requires additional validation)
 ```
 
-#### Enhanced Media Integration
+## 🧪 Development & Testing
 
-```python
-# Add media with automatic deduplication
-audio_file = backend.add_media_file('/path/to/pronunciation.mp3')
-image_file = backend.add_media_file('/path/to/visual.jpg')
-
-# Get comprehensive statistics
-stats = backend.get_stats()
-print(f"German optimization: {stats['german_scheduling']['total_categorized_cards']} cards")
-print(f"Media efficiency: {stats['media_stats']['duplicates_skipped']} duplicates skipped")
-print(f"Performance: {stats['database_stats']['database_size_mb']} MB database")
-```
-
-### 🎓 What You Get
-
-#### 🇩🇪 German-Optimized Learning
-1. **Gender-Specific Cards** - Noun gender recall with case declensions
-2. **Verb Conjugation Mastery** - Present/perfect tense with irregular detection
-3. **Visual Adjectives** - Image-enhanced comparison cards (positive/comparative/superlative)
-4. **Case-Aware Prepositions** - Context examples showing proper case usage
-5. **Common Phrases** - Contextual expressions with related vocabulary
-
-#### ⚡ Advanced Technical Features
-1. **Smart Scheduling** - German-specific AI categorization for optimal retention
-2. **Media Management** - Automatic deduplication and corruption detection
-3. **Responsive Design** - Mobile-friendly cards with dark mode support
-4. **Performance Excellence** - Bulk operations and database optimization
-5. **Quality Assurance** - 107 unit tests ensuring reliability
-
-## Development
-
-### 🧪 Testing
-
-#### Unit Tests (Offline)
+### Running Tests
 ```bash
-# Run all unit tests (no API calls)
+# All unit tests (offline, no API calls)
 hatch run test-unit
 
-# Run with coverage
-hatch run test
-
-# Run specific test categories
-pytest tests/test_backends.py -v  # Backend abstraction tests
-pytest tests/test_adjective.py -v  # German adjective validation
-```
-
-#### Integration Tests (Live APIs)
-```bash
-# Run tests requiring API keys (AWS, Pexels)
+# Integration tests (requires API keys)  
 hatch run test-integration
 
-# Note: Requires ANTHROPIC_API_KEY, PEXELS_API_KEY in keyring
-# and AWS credentials in environment
+# Code quality checks
+hatch run format     # Code formatting
+hatch run lint       # Linting
+hatch run type       # Type checking
 ```
 
-#### Performance Testing
-```bash
-# Test bulk operations performance
-python -c "
-from langlearn.backends import AnkiBackend
-backend = AnkiBackend('Perf Test')
-# Creates 3,900+ notes/second with transaction safety
-"
-```
+### Development Workflow
+Following the mandatory development workflow from `CLAUDE.md`:
+1. Run unit tests: `hatch run test-unit`
+2. Fix linting: `hatch run ruff check --fix`
+3. Format code: `hatch run format`
+4. Verify tests still pass: `hatch run test-unit`
 
-### 📊 Quality Metrics
-- ✅ **107/107 Unit Tests** passing
-- ✅ **Full Type Safety** with mypy compliance
-- ✅ **Performance Excellence** 3,900+ notes/second
-- ✅ **German Expertise** 5 specialized card types
-- ✅ **Advanced Features** Media deduplication, responsive templates
-- ✅ **Production Ready** Comprehensive error handling
+## 🔧 Architecture
 
-### 📝 Adding German Content
+### Backend Abstraction
+The application uses a backend abstraction layer supporting multiple Anki libraries:
+- **genanki Backend**: Current production backend (stable, tested)
+- **Official Anki Backend**: Alternative implementation (available, requires validation)
+- **Interface Compatibility**: Identical API across backends for seamless switching
 
-#### Method 1: Direct CSV Addition
-```bash
-# Add entries to appropriate CSV files in data/
-vim data/nouns.csv        # Add German nouns with gender
-vim data/adjectives.csv   # Add adjectives with comparison forms
-vim data/verbs.csv        # Add verbs with conjugation patterns
+### Key Design Principles
+- **Single Responsibility**: Each component has a clear, focused purpose
+- **Type Safety**: Full MyPy compliance with comprehensive type hints
+- **German Language Focus**: Specialized models and validation for German grammar
+- **Testability**: Comprehensive unit test coverage with mocked dependencies
+- **Configuration Driven**: Flexible backend and feature selection
 
-# Run validation
-hatch run test-unit       # Ensure Pydantic models validate
+## 🤝 Contributing
 
-# Generate enriched deck
-python examples/backend_demonstration.py
-```
+### Development Setup
+1. Read `docs/DESIGN-INDEX.md` for documentation navigation
+2. Review `docs/DESIGN-GUIDANCE.md` for development standards
+3. Check `docs/DESIGN-STATE.md` for current technical debt
+4. Follow quality gates and testing requirements
 
-#### Method 2: Programmatic Bulk Addition
-```python
-from langlearn.backends import AnkiBackend
+### Areas for Contribution
+- **German Content**: Expand vocabulary data with A1-level words
+- **Templates**: Enhance HTML/CSS card designs
+- **Testing**: Improve test coverage and add integration scenarios
+- **Documentation**: Update and maintain design documentation
+- **Multi-Language**: Extend architecture for other languages
 
-backend = AnkiBackend('Custom German Deck')
+## 📊 Technical Specifications
 
-# Bulk add with German optimization
-bulk_german_content = [
-    {'note_type_id': noun_id, 'fields': ['Baum', 'der', 'tree', 'die Bäume', ...], 'tags': ['noun', 'nature']},
-    {'note_type_id': verb_id, 'fields': ['laufen', 'to run', 'laufe', 'läufst', ...], 'tags': ['verb', 'movement']}
-]
+- **Python**: 3.11+ required
+- **Dependencies**: genanki, anki, pydantic, boto3, requests
+- **Testing**: pytest with 263 unit tests
+- **Type Checking**: mypy strict mode compliance
+- **Package Management**: Hatch for development environment
 
-created_ids = backend.add_notes_bulk(bulk_german_content, batch_size=50)
-print(f"Added {len(created_ids)} German notes with optimization")
-```
-
-### 🤝 Contributing
-
-#### Development Setup
-```bash
-git clone https://github.com/yourusername/anki-deutsch-a1.git
-cd anki-deutsch-a1
-hatch env create
-hatch run test-unit  # Ensure everything works
-```
-
-#### Contribution Areas
-1. **🇩🇪 German Content** - Expand A1 vocabulary, add B1/B2 levels
-2. **🎨 Templates** - Enhance responsive designs, add accessibility features
-3. **⚡ Performance** - Database optimization, media handling improvements
-4. **🧪 Testing** - Expand test coverage, add integration scenarios
-5. **🌍 Multi-Language** - Korean, Spanish, French language models
-6. **📱 Mobile** - Enhanced mobile experience and PWA features
-
-#### Quality Standards
-- ✅ All PRs must pass 107 unit tests
-- ✅ Maintain full mypy type safety compliance
-- ✅ Follow German language learning pedagogy
-- ✅ Include comprehensive documentation
-- ✅ Performance benchmarks for bulk operations
-
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🎉 Success Metrics
-
-### 📈 Performance Achievements
-- **3,900+ Notes/Second** bulk creation with transaction safety
-- **4.5MB+ Comprehensive Decks** with embedded media
-- **SHA-256 Deduplication** preventing duplicate media files
-- **107/107 Unit Tests** passing with full type safety
-- **German AI Categorization** across 5 learning categories
-
-### 🇩🇪 German Learning Excellence
-- **Gender-Specific Scheduling** (20% more frequent gender drills)
-- **Irregular Verb Detection** (30% more frequent pattern practice)
-- **Case System Emphasis** (25% more frequent case-dependent words)
-- **Cognate Optimization** (30% longer intervals for English-similar words)
-- **Audio Enhancement** (20% bonuses for pronunciation-rich cards)
-
-### 🏗️ Technical Innovation
-- **Backend Abstraction** - Seamless library switching architecture
-- **Official Anki Migration** - Complete transition from genanki to official library
-- **Responsive Templates** - Modern CSS with dark mode and mobile support
-- **Database Optimization** - Transaction handling, VACUUM, integrity checks
-- **Advanced Media** - Corruption detection, validation, smart management
-
-## 🙏 Acknowledgments
-
-### Technology Partners
-- **Anki (ankitects)** - Official library and flashcard platform excellence
-- **AWS Polly** - High-quality German text-to-speech synthesis
-- **Pexels** - Rich image library for visual learning association
-- **Anthropic Claude** - AI assistance for German language optimization
-
-### Technical Excellence
-- **Pydantic** - Robust data validation and type safety
-- **pytest** - Comprehensive testing framework
-- **mypy** - Static type checking for production reliability
-- **Hatch** - Modern Python project management
-
 ---
 
-## 📋 Project Status: ✅ PRODUCTION READY
+## 🎯 Project Goals
 
-**The German A1 Anki Deck Generator is complete and ready for production use, delivering world-class German language learning with advanced technical features that exceed all original specifications.**
+This German A1 Anki deck generator aims to:
+1. **Simplify German Learning**: Generate comprehensive, grammar-aware flashcards
+2. **Ensure Quality**: Maintain high code quality with comprehensive testing
+3. **Provide Flexibility**: Support multiple backends and configuration options
+4. **Enable Extension**: Clean architecture for adding new languages or features
 
-🚀 **Ready to revolutionize German language learning with AI-optimized spaced repetition!**
+**Current Status**: Functional application ready for German A1 vocabulary deck generation with comprehensive design documentation for future development.

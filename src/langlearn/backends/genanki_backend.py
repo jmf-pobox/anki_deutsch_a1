@@ -4,7 +4,7 @@ import os
 import random
 import shutil
 import tempfile
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import genanki  # type: ignore
 
@@ -130,8 +130,12 @@ class GenankiBackend(DeckBackend):
         dest_path = os.path.join(self._media_dir, filename)
         shutil.copy2(file_path, dest_path)
 
-        # Create MediaFile object
-        media_file = MediaFile(path=dest_path, reference=filename)
+        # Create MediaFile object with proper reference format
+        reference = filename
+        if filename.endswith((".mp3", ".wav", ".ogg")):
+            reference = f"[sound:{filename}]"
+
+        media_file = MediaFile(path=dest_path, reference=reference)
         self._media_files.append(media_file)
 
         return media_file
@@ -151,3 +155,16 @@ class GenankiBackend(DeckBackend):
 
         # Export the package
         package.write_to_file(output_path)
+
+    def get_stats(self) -> dict[str, Any]:
+        """Get deck statistics.
+
+        Returns:
+            Dictionary containing deck statistics
+        """
+        return {
+            "deck_name": self.deck_name,
+            "note_types_count": len(self._note_types),
+            "notes_count": len(self._deck.notes),
+            "media_files_count": len(self._media_files),
+        }

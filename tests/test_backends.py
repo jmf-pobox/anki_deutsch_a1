@@ -81,7 +81,9 @@ class TestBackendAbstraction:
         # Test with genanki backend
         genanki_backend = GenankiBackend("Media Test")
         media_file = genanki_backend.add_media_file(temp_audio_file)
-        assert media_file.reference == os.path.basename(temp_audio_file)
+        # Audio files should have [sound:filename] format in Anki
+        expected_reference = f"[sound:{os.path.basename(temp_audio_file)}]"
+        assert media_file.reference == expected_reference
         assert len(genanki_backend.get_media_files()) == 1
 
         # Test with Anki backend

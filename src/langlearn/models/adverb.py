@@ -31,6 +31,9 @@ class Adverb(BaseModel):
     english: str = Field(..., description="English translation")
     type: AdverbType = Field(..., description="Type of adverb")
     example: str = Field(..., description="Example sentence using the adverb")
+    word_audio: str = Field("", description="Path to audio file for the adverb")
+    example_audio: str = Field("", description="Path to audio file for the example")
+    image_path: str = Field("", description="Path to image file for the adverb")
 
     def validate_position(self) -> bool:
         """Validate that the adverb is in a valid position in the example sentence.

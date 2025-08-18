@@ -1,8 +1,23 @@
-"""Abstract base classes for deck generation backends."""
+"""Abstract base classes for deck generation backends.
+
+This module defines the minimal interface for deck backends, following the
+principle of keeping interfaces small and focused. The DeckBackend interface
+handles only core deck operations:
+
+- Note type creation and management
+- Note addition with fields and tags
+- Media file handling
+- Deck export to file format
+- Statistics reporting
+
+Higher-level functionality like media processing, German language features,
+and template management is handled by service classes that compose with
+deck backends rather than extending them.
+"""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
@@ -109,6 +124,14 @@ class DeckBackend(ABC):
 
         Args:
             output_path: Path where the deck should be saved
+        """
+
+    @abstractmethod
+    def get_stats(self) -> dict[str, Any]:
+        """Get deck statistics.
+
+        Returns:
+            Dictionary containing deck statistics like note counts, media files, etc.
         """
 
     def get_media_files(self) -> list[MediaFile]:

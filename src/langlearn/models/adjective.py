@@ -15,6 +15,25 @@ class Adjective(BaseModel):
     example: str = Field(..., description="Example sentence using the adjective")
     comparative: str = Field(..., description="Comparative form of the adjective")
     superlative: str = Field("", description="Superlative form of the adjective")
+    word_audio: str = Field("", description="Path to audio file for the word")
+    example_audio: str = Field("", description="Path to audio file for the example")
+    image_path: str = Field("", description="Path to image file for the adjective")
+
+    def get_combined_audio_text(self) -> str:
+        """Generate combined German adjective audio text.
+
+        Returns audio text for: base, comparative, superlative
+        Example: "schön, schöner, am schönsten"
+
+        Returns:
+            Combined text for audio generation
+        """
+        parts = [self.word]
+        if self.comparative:
+            parts.append(self.comparative)
+        if self.superlative:
+            parts.append(self.superlative)
+        return ", ".join(parts)
 
     def validate_comparative(self) -> bool:
         """Validate that the comparative form follows German grammar rules.

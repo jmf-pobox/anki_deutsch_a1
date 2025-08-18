@@ -17,7 +17,12 @@
       "Bash(PYTHONPATH=src python:*)",
       "Bash(rm:*)",
       "Bash(grep:*)",
-      "Bash(ruff check:*)"
+      "Bash(ruff check:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(unzip:*)",
+      "Bash(find:*)",
+      "Bash(hatch env:*)"
     ],
     "deny": []
   }
