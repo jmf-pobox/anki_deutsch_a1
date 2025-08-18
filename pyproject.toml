@@ -15,7 +15,6 @@ authors = [
 ]
 dependencies = [
     "anki>=25.07",  # Official Anki library for enhanced deck generation
-    "genanki>=0.13.0",  # Keep temporarily during migration
     "boto3>=1.28.0",
     "anthropic>=0.8.0",
     "requests>=2.31.0",
@@ -63,7 +62,7 @@ check-integration = ["lint", "type", "test-integration"]
 check-cov = ["lint", "type", "test-cov"]
 # Application scripts
 app = "PYTHONPATH=src python src/langlearn/main.py"
-run-sample = "python src/langlearn/examples/create_sample_deck.py"
+run-sample = "python examples/german_deck_builder_demo.py"
 run-adjectives = "python src/langlearn/create_deck.py"
 run-all = "python -c \"from langlearn.create_deck import main; main()\""
 encode-audio = "python -m langlearn.scripts.encode_audio {args}"
@@ -121,7 +120,6 @@ source = ["src"]
 omit = [
     "tests/*",
     "*/test_*.py",
-    "src/langlearn/genanki.pyi",
     "*/examples/*",
 ]
 

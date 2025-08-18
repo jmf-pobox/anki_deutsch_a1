@@ -2,7 +2,7 @@
 """Demonstration of the GermanDeckBuilder orchestrator.
 
 This script shows how to use the GermanDeckBuilder to create German language
-learning Anki decks with both genanki and official Anki library backends.
+learning Anki decks with the official Anki library backend.
 """
 
 import sys

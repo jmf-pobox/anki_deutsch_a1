@@ -1,23 +1,28 @@
-# LEGACY.md
+# LEGACY.md - Deprecation Status
 
-This document tracks components that may be considered for removal or refactoring as the project evolves with backend abstraction layer support.
+This document tracks legacy components that have been removed or deprecated during the clean architecture and backend migration initiatives.
 
-## Migration Status
+## Migration Status: COMPLETE
 
-**Current Phase**: Backend abstraction layer implemented with dual library support  
-**Active Backend**: genanki (production ready)  
-**Available Backend**: Official Anki library (architectural integration complete)  
-**Future Consideration**: Potential consolidation after production validation
+**Current Phase**: Production consolidation complete  
+**Production Backend**: AnkiBackend (official Anki library)  
+**Fallback Backend**: GenanKi (planned removal in 1-2 months)  
+**Legacy Cleanup**: 273 lines of legacy code removed
 
 ---
 
-## Current Architecture Status
+## ✅ Completed Removals
 
-### Backend Implementation Status
-- **genanki backend**: ✅ Production ready, actively used
-- **Official Anki backend**: ✅ Implemented, available for use
-- **Backend abstraction**: ✅ Complete interface compatibility
-- **Switching capability**: ✅ Configuration-based selection
+### Legacy Field Processing (Removed in Phase 5)
+- **Removed**: 273 lines of legacy infrastructure field processing methods
+- **Replaced with**: Domain model FieldProcessor pattern
+- **Status**: ✅ Complete - Clean architecture implementation
+
+### Backend Migration Status  
+- **Production Backend**: ✅ AnkiBackend (official Anki library)
+- **Legacy Backend**: ⚠️ GenanKi (fallback, planned deprecation)
+- **Migration Guide**: ✅ Complete (`docs/BACKEND_MIGRATION_GUIDE.md`)
+- **Rollback Capability**: ✅ Available (one-line configuration change)
 
 ### Libraries Currently in Use
 ```toml

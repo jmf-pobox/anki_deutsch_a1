@@ -12,7 +12,6 @@ from typing import Any, TypeVar
 
 from .backends.anki_backend import AnkiBackend
 from .backends.base import DeckBackend
-from .backends.genanki_backend import GenankiBackend
 from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
 from .models.adjective import Adjective
@@ -36,7 +35,7 @@ class GermanDeckBuilder:
     Anki decks. It orchestrates all necessary services, manages dependencies,
     and provides a clean API for deck generation workflows.
 
-    The builder supports both genanki and official Anki library backends,
+    The builder uses the official Anki library backend,
     comprehensive media generation, subdeck organization, and follows clean
     architecture principles throughout.
 
@@ -67,7 +66,7 @@ class GermanDeckBuilder:
 
         Args:
             deck_name: Name of the Anki deck to create
-            backend_type: Backend to use ("anki" or "genanki")
+            backend_type: Backend to use ("anki")
             enable_media_generation: Whether to enable media generation services
         """
         self.deck_name = deck_name
@@ -135,8 +134,10 @@ class GermanDeckBuilder:
                 german_service=self._german_service,
             )
         elif backend_type == "genanki":
-            return GenankiBackend(
-                deck_name=deck_name,
+            raise ValueError(
+                "GenanKi backend has been deprecated and removed. "
+                "Use backend_type='anki' for production (official Anki library). "
+                "See docs/BACKEND_MIGRATION_GUIDE.md for details."
             )
         else:
             raise ValueError(f"Unknown backend type: {backend_type}")

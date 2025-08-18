@@ -5,22 +5,17 @@ import tempfile
 
 import pytest
 
-from langlearn.backends import AnkiBackend, GenankiBackend
+from langlearn.backends import AnkiBackend
 from langlearn.backends.base import CardTemplate, DeckBackend, NoteType
 
 
 class TestDeckBackendInterface:
-    """Test that both backends implement the DeckBackend interface consistently."""
-
-    @pytest.fixture(params=[AnkiBackend, GenankiBackend])
-    def backend_class(self, request: pytest.FixtureRequest) -> type[DeckBackend]:
-        """Parametrized fixture to test both backend implementations."""
-        return request.param  # type: ignore
+    """Test that AnkiBackend implements the DeckBackend interface correctly."""
 
     @pytest.fixture
-    def backend(self, backend_class: type[DeckBackend]) -> DeckBackend:
+    def backend(self) -> DeckBackend:
         """Create a backend instance for testing."""
-        return backend_class("Test Deck", "Test description")
+        return AnkiBackend("Test Deck", "Test description")
 
     @pytest.fixture
     def sample_note_type(self) -> NoteType:
@@ -113,7 +108,7 @@ class TestDeckBackendInterface:
     def test_consistent_stats_tracking(
         self, backend: DeckBackend, sample_note_type: NoteType
     ) -> None:
-        """Test that both backends track statistics consistently."""
+        """Test that AnkiBackend tracks statistics correctly."""
         # Initial state
         initial_stats = backend.get_stats()
         assert initial_stats["note_types_count"] == 0
@@ -131,12 +126,9 @@ class TestDeckBackendInterface:
         assert stats_after_note["note_types_count"] == 1
         assert stats_after_note["notes_count"] == 1
 
-    def test_interface_polymorphism(self) -> None:
-        """Test that both backends can be used polymorphically."""
-        backends: list[DeckBackend] = [
-            AnkiBackend("Poly Test 1"),
-            GenankiBackend("Poly Test 2"),
-        ]
+    def test_interface_operations(self) -> None:
+        """Test that AnkiBackend supports all interface operations."""
+        backend = AnkiBackend("Interface Test")
 
         template = CardTemplate(
             name="Test Template", front_html="{{Field1}}", back_html="{{Field2}}"
@@ -145,20 +137,19 @@ class TestDeckBackendInterface:
             name="Test Note Type", fields=["Field1", "Field2"], templates=[template]
         )
 
-        for backend in backends:
-            # All backends should support the same operations
-            note_type_id = backend.create_note_type(note_type)
-            note_id = backend.add_note(note_type_id, ["Value1", "Value2"])
-            stats = backend.get_stats()
+        # Backend should support all operations
+        note_type_id = backend.create_note_type(note_type)
+        note_id = backend.add_note(note_type_id, ["Value1", "Value2"])
+        stats = backend.get_stats()
 
-            assert isinstance(note_type_id, str)
-            assert isinstance(note_id, int)
-            assert isinstance(stats, dict)
-            assert stats["note_types_count"] == 1
-            assert stats["notes_count"] == 1
+        assert isinstance(note_type_id, str)
+        assert isinstance(note_id, int)
+        assert isinstance(stats, dict)
+        assert stats["note_types_count"] == 1
+        assert stats["notes_count"] == 1
 
-    def test_error_consistency(self, backend: DeckBackend) -> None:
-        """Test that both backends handle errors consistently."""
+    def test_error_handling(self, backend: DeckBackend) -> None:
+        """Test that AnkiBackend handles errors correctly."""
         # Test adding note with invalid note type ID
         with pytest.raises(ValueError, match="Note type ID .* not found"):
             backend.add_note("nonexistent_id", ["field1", "field2"])

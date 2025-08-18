@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-Demonstration script showing the new backend abstraction layer.
-This shows how both genanki and the official Anki library can be used
-through the same interface.
+Demonstration script showing the backend abstraction layer.
+This shows how the official Anki library is used through the backend interface.
 """
 
 from pathlib import Path
 
-from langlearn.backends import AnkiBackend, CardTemplate, GenankiBackend, NoteType
+from langlearn.backends import AnkiBackend, CardTemplate, NoteType
 
 
 def create_sample_note_type() -> NoteType:
@@ -60,9 +59,7 @@ def create_sample_note_type() -> NoteType:
     )
 
 
-def demonstrate_backend(
-    backend_name: str, backend: GenankiBackend | AnkiBackend
-) -> None:
+def demonstrate_backend(backend_name: str, backend: AnkiBackend) -> None:
     """Demonstrate a backend by creating a small deck."""
     print(f"\n=== Demonstrating {backend_name} Backend ===")
 
@@ -104,13 +101,7 @@ def main() -> None:
     print("Backend Abstraction Layer Demonstration")
     print("=" * 50)
 
-    # Demonstrate genanki backend
-    genanki_backend = GenankiBackend(
-        "Demo Deck - genanki", "Created with genanki backend"
-    )
-    demonstrate_backend("Genanki", genanki_backend)
-
-    # Demonstrate official Anki backend
+    # Demonstrate official Anki backend (production default)
     anki_backend = AnkiBackend(
         "Demo Deck - Official", "Created with official Anki backend"
     )
@@ -119,10 +110,9 @@ def main() -> None:
     print("\n" + "=" * 50)
     print("Demonstration completed!")
     print("\nKey achievements:")
-    print("✅ Same interface works with both backends")
-    print("✅ genanki backend creates .apkg files")
-    print("✅ Official Anki backend creates .apkg files (Phase 2 complete!)")
-    print("✅ Abstraction layer is working correctly")
+    print("✅ Official Anki backend creates .apkg files")
+    print("✅ Backend abstraction layer is working correctly")
+    print("✅ Production-ready Anki library integration")
     print("✅ Real Collection-based deck generation working")
 
 
