@@ -12,9 +12,9 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
-from langlearn.models.adjective import Adjective
-from langlearn.models.noun import Noun
+from langlearn.models.model_factory import ModelFactory
 from langlearn.services.audio import AudioService
+from langlearn.services.domain_media_generator import DomainMediaGenerator
 from langlearn.services.german_language_service import GermanLanguageService
 from langlearn.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.services.pexels_service import PexelsService
@@ -83,6 +83,11 @@ class AnkiBackend(DeckBackend):
 
         self._media_service = media_service
         self._german_service = german_service
+
+        # Create domain media generator for field processing delegation
+        self._domain_media_generator = DomainMediaGenerator(
+            self._media_service, self._german_service
+        )
 
         # Media generation statistics (kept for backward compatibility)
         self._media_generation_stats = {
@@ -201,7 +206,7 @@ class AnkiBackend(DeckBackend):
     def _process_fields_with_media(
         self, note_type_input: str, fields: list[str]
     ) -> list[str]:
-        """Process fields to add media generation.
+        """Process fields using domain model delegation.
 
         Args:
             note_type_input: Either note type ID or note type name
@@ -223,268 +228,24 @@ class AnkiBackend(DeckBackend):
                 # It's already a note type name (for backward compatibility with tests)
                 note_type_name = note_type_input
 
-            # Create a copy to modify
-            processed_fields = fields.copy()
-
-            # Process based on note type - SKIP PROCESSING IF FIELDS ALREADY HAVE AUDIO
-            if "adjective" in note_type_name.lower() and len(fields) >= 8:
-                # Only process if audio fields are actually empty
-                if not (fields[6] and fields[7]):
-                    processed_fields = self._process_adjective_fields(processed_fields)
-                else:
-                    print(
-                        "DEBUG: Skipping adjective processing - audio already present"
-                    )
-            elif "noun" in note_type_name.lower() and len(fields) >= 9:
-                # Only process if audio fields are actually empty
-                if not (fields[7] and fields[8]):
-                    processed_fields = self._process_noun_fields(processed_fields)
-                else:
-                    print("DEBUG: Skipping noun processing - audio already present")
-            elif "adverb" in note_type_name.lower() and len(fields) >= 7:
-                # Only process if audio fields are actually empty
-                if not (fields[5] and fields[6]):
-                    processed_fields = self._process_adverb_fields(processed_fields)
-                else:
-                    print("DEBUG: Skipping adverb processing - audio already present")
-            elif "negation" in note_type_name.lower() and len(fields) >= 7:
-                # Only process if audio fields are actually empty
-                if not (fields[5] and fields[6]):
-                    processed_fields = self._process_negation_fields(processed_fields)
-                else:
-                    print("DEBUG: Skipping negation processing - audio already present")
-            elif "verb" in note_type_name.lower() and len(fields) >= 8:
-                processed_fields = self._process_verb_fields(processed_fields)
-            elif "preposition" in note_type_name.lower() and len(fields) >= 7:
-                processed_fields = self._process_preposition_fields(processed_fields)
-            elif "phrase" in note_type_name.lower() and len(fields) >= 5:
-                processed_fields = self._process_phrase_fields(processed_fields)
-
-            return processed_fields
-
-        except Exception as e:
-            print(f"Error processing media: {e}")
-            return fields
-
-    def _process_adjective_fields(self, fields: list[str]) -> list[str]:
-        """Process adjective fields with combined audio and image generation."""
-        print(
-            f"DEBUG: Processing adjective fields: "
-            f"{[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
-        )
-        try:
-            # Fields: [Word, English, Example, Comparative, Superlative, Image,
-            #          WordAudio, ExampleAudio]
-            word = fields[0]
-            english = fields[1]
-            example = fields[2]
-            comparative = fields[3]
-            superlative = fields[4]
-
-            # Only generate audio if fields are empty (avoid duplicate processing)
-            print(
-                f"DEBUG: Adjective WordAudio field (6): "
-                f"'{fields[6] if len(fields) > 6 else 'N/A'}'"
-            )
-            if len(fields) > 6 and not fields[6]:  # WordAudio field is empty
-                adjective = Adjective(
-                    word=word,
-                    english=english,
-                    example=example,
-                    comparative=comparative,
-                    superlative=superlative,
-                    word_audio="",
-                    example_audio="",
-                    image_path="",
+            # Try to create domain model using factory
+            field_processor = ModelFactory.create_field_processor(note_type_name)
+            if field_processor is None:
+                # No domain model available - unsupported note type
+                logger.warning(
+                    f"No domain model available for: {note_type_name}. "
+                    f"Returning fields unchanged."
                 )
-                # Use rich domain model method directly
-                combined_text = adjective.get_combined_audio_text()
-                combined_audio_path = self._generate_or_get_audio(combined_text)
-                if combined_audio_path:
-                    fields[6] = f"[sound:{os.path.basename(combined_audio_path)}]"
+                return fields
 
-            # Only generate example audio if field is empty
-            if len(fields) > 7 and not fields[7]:  # ExampleAudio field is empty
-                example_audio_path = self._generate_or_get_audio(example)
-                if example_audio_path:
-                    fields[7] = f"[sound:{os.path.basename(example_audio_path)}]"
-
-            # Only generate image if field is empty
-            if len(fields) > 5 and not fields[5]:  # Image field is empty
-                context_query = self._german_service.extract_context_from_sentence(
-                    example, word, english
-                )
-                image_path = self._generate_or_get_image(word, context_query, example)
-                if image_path:
-                    fields[5] = f'<img src="{os.path.basename(image_path)}">'
-
-            return fields
-        except Exception as e:
-            print(f"Error processing adjective fields: {e}")
-            return fields
-
-    def _process_noun_fields(self, fields: list[str]) -> list[str]:
-        """Process noun fields with combined audio generation."""
-        print(
-            f"DEBUG: Processing noun fields: "
-            f"{[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
-        )
-        try:
-            # Fields: [Noun, Article, English, Plural, Example, Related, Image,
-            #          WordAudio, ExampleAudio]
-            noun = fields[0]
-            article = fields[1]
-            plural = fields[3]
-            example = fields[4]
-
-            # Only generate audio if fields are empty (avoid duplicate processing)
-            print(
-                f"DEBUG: Noun WordAudio field (7): "
-                f"'{fields[7] if len(fields) > 7 else 'N/A'}'"
+            # Use domain model for field processing (all German word types supported)
+            logger.debug(f"Using domain model for: {note_type_name}")
+            return field_processor.process_fields_for_media_generation(
+                fields, self._domain_media_generator
             )
-            if len(fields) > 7 and not fields[7]:  # WordAudio field is empty
-                noun_obj = Noun(
-                    noun=noun,
-                    article=article,
-                    english=fields[2],
-                    plural=plural,
-                    example=example,
-                    related=fields[5] if len(fields) > 5 else "",
-                    word_audio="",
-                    example_audio="",
-                    image_path="",
-                )
-                # Use rich domain model method directly
-                combined_text = noun_obj.get_combined_audio_text()
-                combined_audio_path = self._generate_or_get_audio(combined_text)
-                if combined_audio_path:
-                    fields[7] = f"[sound:{os.path.basename(combined_audio_path)}]"
 
-            # Only generate example audio if field is empty
-            if len(fields) > 8 and not fields[8]:  # ExampleAudio field is empty
-                example_audio_path = self._generate_or_get_audio(example)
-                if example_audio_path:
-                    fields[8] = f"[sound:{os.path.basename(example_audio_path)}]"
-
-            return fields
         except Exception as e:
-            print(f"Error processing noun fields: {e}")
-            return fields
-
-    def _process_verb_fields(self, fields: list[str]) -> list[str]:
-        """Process verb fields with audio generation."""
-        try:
-            # Fields: [Verb, English, ich_form, du_form, er_form, perfect,
-            #          Example, ExampleAudio]
-            example = fields[6] if len(fields) > 6 else ""
-
-            # Generate example audio
-            if example:
-                example_audio_path = self._generate_or_get_audio(example)
-                if example_audio_path and len(fields) > 7:
-                    fields[7] = f"[sound:{os.path.basename(example_audio_path)}]"
-
-            return fields
-        except Exception as e:
-            print(f"Error processing verb fields: {e}")
-            return fields
-
-    def _process_preposition_fields(self, fields: list[str]) -> list[str]:
-        """Process preposition fields with audio generation."""
-        try:
-            # Fields: [Preposition, Case, English, Example1, Example2, Audio1, Audio2]
-            example1 = fields[3] if len(fields) > 3 else ""
-            example2 = fields[4] if len(fields) > 4 else ""
-
-            # Generate audio for both examples
-            if example1:
-                audio1_path = self._generate_or_get_audio(example1)
-                if audio1_path and len(fields) > 5:
-                    fields[5] = f"[sound:{os.path.basename(audio1_path)}]"
-
-            if example2:
-                audio2_path = self._generate_or_get_audio(example2)
-                if audio2_path and len(fields) > 6:
-                    fields[6] = f"[sound:{os.path.basename(audio2_path)}]"
-
-            return fields
-        except Exception as e:
-            print(f"Error processing preposition fields: {e}")
-            return fields
-
-    def _process_phrase_fields(self, fields: list[str]) -> list[str]:
-        """Process phrase fields with audio generation."""
-        try:
-            # Fields: [Phrase, English, Context, Related, PhraseAudio]
-            phrase = fields[0] if len(fields) > 0 else ""
-
-            # Generate phrase audio
-            if phrase:
-                phrase_audio_path = self._generate_or_get_audio(phrase)
-                if phrase_audio_path and len(fields) > 4:
-                    fields[4] = f"[sound:{os.path.basename(phrase_audio_path)}]"
-
-            return fields
-        except Exception as e:
-            print(f"Error processing phrase fields: {e}")
-            return fields
-
-    def _process_adverb_fields(self, fields: list[str]) -> list[str]:
-        """Process adverb fields with audio generation."""
-        print(
-            f"DEBUG: Processing adverb fields: "
-            f"{[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
-        )
-        try:
-            # Fields: [Word, English, Type, Example, Image, WordAudio,
-            #          ExampleAudio]
-            word = fields[0] if len(fields) > 0 else ""
-            example = fields[3] if len(fields) > 3 else ""
-
-            # Only generate word audio if field is empty (avoid duplicate processing)
-            print(
-                f"DEBUG: Adverb WordAudio field (5): "
-                f"'{fields[5] if len(fields) > 5 else 'N/A'}'"
-            )
-            if len(fields) > 5 and not fields[5]:  # WordAudio field is empty
-                word_audio_path = self._generate_or_get_audio(word)
-                if word_audio_path:
-                    fields[5] = f"[sound:{os.path.basename(word_audio_path)}]"
-
-            # Only generate example audio if field is empty
-            if len(fields) > 6 and not fields[6]:  # ExampleAudio field is empty
-                example_audio_path = self._generate_or_get_audio(example)
-                if example_audio_path:
-                    fields[6] = f"[sound:{os.path.basename(example_audio_path)}]"
-
-            return fields
-        except Exception as e:
-            print(f"Error processing adverb fields: {e}")
-            return fields
-
-    def _process_negation_fields(self, fields: list[str]) -> list[str]:
-        """Process negation fields with audio generation."""
-        try:
-            # Fields: [Word, English, Type, Example, Image, WordAudio,
-            #          ExampleAudio]
-            word = fields[0] if len(fields) > 0 else ""
-            example = fields[3] if len(fields) > 3 else ""
-
-            # Only generate word audio if field is empty (avoid duplicate processing)
-            if len(fields) > 5 and not fields[5]:  # WordAudio field is empty
-                word_audio_path = self._generate_or_get_audio(word)
-                if word_audio_path:
-                    fields[5] = f"[sound:{os.path.basename(word_audio_path)}]"
-
-            # Only generate example audio if field is empty
-            if len(fields) > 6 and not fields[6]:  # ExampleAudio field is empty
-                example_audio_path = self._generate_or_get_audio(example)
-                if example_audio_path:
-                    fields[6] = f"[sound:{os.path.basename(example_audio_path)}]"
-
-            return fields
-        except Exception as e:
-            print(f"Error processing negation fields: {e}")
+            logger.error(f"Error processing media for {note_type_input}: {e}")
             return fields
 
     def _generate_or_get_audio(self, text: str) -> str | None:
@@ -533,22 +294,6 @@ class AnkiBackend(DeckBackend):
             print(f"Error downloading image for '{word}': {e}")
             self._media_generation_stats["generation_errors"] += 1
             return None
-
-    def _is_concrete_noun(self, noun_str: str) -> bool:
-        """Basic heuristic to determine if a noun represents a concrete object.
-
-        DEPRECATED: This method is kept for backward compatibility.
-        New code should use Noun.is_concrete() method directly.
-
-        Args:
-            noun_str: German noun to evaluate
-
-        Returns:
-            True if likely concrete, False otherwise
-        """
-        # For backward compatibility, delegate to the service method
-        # which now uses the domain model internally
-        return self._german_service.is_concrete_noun(noun_str)
 
     def add_media_file(self, file_path: str) -> MediaFile:
         """Add a media file to the deck."""

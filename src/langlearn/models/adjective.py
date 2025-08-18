@@ -2,8 +2,15 @@
 
 from pydantic import BaseModel, Field
 
+from .field_processor import (
+    FieldProcessor,
+    MediaGenerator,
+    format_media_reference,
+    validate_minimum_fields,
+)
 
-class Adjective(BaseModel):
+
+class Adjective(BaseModel, FieldProcessor):
     """Model representing a German adjective with its properties.
 
     German adjectives have comparative and superlative forms, and follow
@@ -130,3 +137,163 @@ class Adjective(BaseModel):
                 return True
 
         return False
+
+    # FieldProcessor interface implementation
+    def process_fields_for_media_generation(
+        self, fields: list[str], media_generator: MediaGenerator
+    ) -> list[str]:
+        """Process adjective fields with combined audio and image generation.
+
+        Field Layout: [Word, English, Example, Comparative, Superlative, Image,
+                       WordAudio, ExampleAudio]
+
+        Args:
+            fields: List of field values for this adjective
+            media_generator: Interface for generating audio/image media
+
+        Returns:
+            Processed field list with media references added where appropriate
+        """
+        validate_minimum_fields(fields, 8, "Adjective")
+
+        # Extract field values
+        word = fields[0]
+        english = fields[1]
+        example = fields[2]
+        comparative = fields[3]
+        superlative = fields[4]
+
+        # Create working copy
+        processed_fields = fields.copy()
+
+        # Generate word audio (combined adjective forms) if empty
+        if not processed_fields[6]:  # WordAudio field
+            # Create adjective instance to use domain logic
+            adjective = Adjective(
+                word=word,
+                english=english,
+                example=example,
+                comparative=comparative,
+                superlative=superlative,
+                word_audio="",
+                example_audio="",
+                image_path="",
+            )
+            combined_text = adjective.get_combined_audio_text()
+            audio_path = media_generator.generate_audio(combined_text)
+            if audio_path:
+                processed_fields[6] = format_media_reference(audio_path, "audio")
+
+        # Generate example audio if empty
+        if not processed_fields[7]:  # ExampleAudio field
+            audio_path = media_generator.generate_audio(example)
+            if audio_path:
+                processed_fields[7] = format_media_reference(audio_path, "audio")
+
+        # Generate image if empty
+        if not processed_fields[5]:  # Image field
+            # Create adjective instance to use domain-specific search terms
+            temp_adjective = Adjective(
+                word=word,
+                english=english,
+                example=example,
+                comparative=comparative,
+                superlative=superlative,
+                word_audio="",
+                example_audio="",
+                image_path="",
+            )
+
+            # Use enhanced search terms for better image matching
+            search_terms = temp_adjective.get_image_search_terms()
+            image_path = media_generator.generate_image(search_terms, english)
+            if image_path:
+                processed_fields[5] = format_media_reference(image_path, "image")
+
+        return processed_fields
+
+    def get_expected_field_count(self) -> int:
+        """Return expected number of fields for adjective processing."""
+        return 8
+
+    def validate_field_structure(self, fields: list[str]) -> bool:
+        """Validate that fields match expected structure for adjectives."""
+        return len(fields) >= self.get_expected_field_count()
+
+    def _get_field_names(self) -> list[str]:
+        """Get human-readable names for each field position."""
+        return [
+            "Word",
+            "English",
+            "Example",
+            "Comparative",
+            "Superlative",
+            "Image",
+            "WordAudio",
+            "ExampleAudio",
+        ]
+
+    def get_image_search_terms(self) -> str:
+        """Get enhanced search terms for better image results.
+
+        Returns:
+            Enhanced search terms with concept mapping for abstract adjectives
+        """
+        # Enhanced concept mappings for difficult-to-visualize adjectives
+        concept_mappings = {
+            "impolite": "rude behavior angry person frown",
+            "polite": "courteous person handshake smile greeting",
+            "honest": "trustworthy person handshake truth",
+            "dishonest": "lying person finger crossed deception",
+            "patient": "calm waiting person meditation zen",
+            "impatient": "frustrated waiting person clock time",
+            "responsible": "reliable person checklist tasks organization",
+            "irresponsible": "careless person mess chaos disorganized",
+            "mature": "adult professional person business suit",
+            "immature": "childish person tantrum emotional",
+            "independent": "self-reliant person solo achievement success",
+            "dependent": "needy person help support assistance",
+            "confident": "assured person podium presentation speaking",
+            "insecure": "uncertain person hiding shy timid",
+            "generous": "giving person donation charity sharing",
+            "selfish": "greedy person hoarding money grabbing",
+            "humble": "modest person bowing respectful gesture",
+            "arrogant": "proud person nose up superior attitude",
+            "optimistic": "positive person sunrise thumbs up smile",
+            "pessimistic": "negative person storm clouds frown down",
+            "creative": "artistic person paintbrush palette art",
+            "boring": "dull person yawn sleep monotone gray",
+            "interesting": "engaging person books light bulb discovery",
+            "lazy": "inactive person couch sleep procrastination",
+            "hardworking": "diligent person desk work computer busy",
+            "organized": "neat person files folders clean desk",
+            "messy": "cluttered person chaos scattered papers disorder",
+            "punctual": "timely person clock watch schedule calendar",
+            "late": "delayed person running clock time pressure",
+            "friendly": "welcoming person handshake smile greeting",
+            "unfriendly": "cold person crossed arms rejection distance",
+            "helpful": "supportive person assistance helping hand",
+            "unhelpful": "uncooperative person refusal blocking gesture",
+            "kind": "compassionate person heart care gentle touch",
+            "cruel": "harsh person anger aggression violence",
+            "fair": "just person scales balance equality justice",
+            "unfair": "biased person unequal scales discrimination",
+            "logical": "rational person brain thinking analysis charts",
+            "illogical": "irrational person confusion question marks chaos",
+            "practical": "useful person tools hammer work utility",
+            "impractical": "useless person broken tools waste inefficient",
+        }
+
+        english_lower = self.english.lower().strip()
+
+        # Check for exact matches first
+        if english_lower in concept_mappings:
+            return concept_mappings[english_lower]
+
+        # Check for partial matches (for compound words)
+        for key, mapping in concept_mappings.items():
+            if key in english_lower or english_lower in key:
+                return mapping
+
+        # Default: use the English translation
+        return self.english

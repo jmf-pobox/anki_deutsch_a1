@@ -328,10 +328,11 @@ class GermanDeckBuilder:
                         image_found = True
 
             if not image_found and generate_media and self._media_service:
-                # Generate image only if no existing image found
+                # Generate image using domain model's enhanced search terms
+                enhanced_search_query = noun.get_image_search_terms()
                 image_file = self._media_manager.generate_and_add_image(
                     noun.noun,
-                    search_query=noun.english,
+                    search_query=enhanced_search_query,
                     example_sentence=noun.example,
                 )
                 if image_file:
@@ -429,10 +430,11 @@ class GermanDeckBuilder:
                     filename = image_file.reference
                     image_html = f'<img src="{filename}">'
             elif generate_media and self._media_service:
-                # Generate image only if no existing image
+                # Generate image using domain model's enhanced search terms
+                enhanced_search_query = adjective.get_image_search_terms()
                 image_file = self._media_manager.generate_and_add_image(
                     adjective.word,
-                    search_query=adjective.english,
+                    search_query=enhanced_search_query,
                     example_sentence=adjective.example,
                 )
                 if image_file:
@@ -547,10 +549,11 @@ class GermanDeckBuilder:
                         image_found = True
 
             if not image_found and generate_media and self._media_service:
-                # Generate image only if no existing image found
+                # Generate image using domain model's enhanced search terms
+                enhanced_search_query = adverb.get_image_search_terms()
                 image_file = self._media_manager.generate_and_add_image(
                     adverb.word,
-                    search_query=adverb.english,
+                    search_query=enhanced_search_query,
                     example_sentence=adverb.example,
                 )
                 if image_file:
@@ -660,10 +663,11 @@ class GermanDeckBuilder:
                         image_found = True
 
             if not image_found and generate_media and self._media_service:
-                # Generate image only if no existing image found
+                # Generate image using domain model's enhanced search terms
+                enhanced_search_query = negation.get_image_search_terms()
                 image_file = self._media_manager.generate_and_add_image(
                     negation.word,
-                    search_query=negation.english,
+                    search_query=enhanced_search_query,
                     example_sentence=negation.example,
                 )
                 if image_file:

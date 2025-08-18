@@ -22,7 +22,8 @@
       "Bash(mv:*)",
       "Bash(unzip:*)",
       "Bash(find:*)",
-      "Bash(hatch env:*)"
+      "Bash(hatch env:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

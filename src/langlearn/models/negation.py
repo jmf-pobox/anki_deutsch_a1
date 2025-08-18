@@ -1,8 +1,16 @@
 """Model for German negation words."""
 
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, Field
+
+from .field_processor import (
+    FieldProcessor,
+    MediaGenerator,
+    format_media_reference,
+    validate_minimum_fields,
+)
 
 
 class NegationType(str, Enum):
@@ -17,7 +25,7 @@ class NegationType(str, Enum):
     INTENSIFIER = "intensifier"  # gar nicht, überhaupt nicht
 
 
-class Negation(BaseModel):
+class Negation(BaseModel, FieldProcessor):
     """Model representing a German negation word with its properties.
 
     German negation words follow specific rules for their position and usage:
@@ -166,3 +174,140 @@ class Negation(BaseModel):
 
         print("No valid position found")
         return False
+
+    def get_image_search_terms(self) -> str:
+        """Generate contextual image search terms for this negation.
+
+        Returns:
+            Search terms optimized for finding relevant images
+        """
+        if not self.english.strip():
+            return ""
+
+        # Negation words are abstract concepts, so use enhanced search terms
+        # Check for exact matches first, then partial matches (longer first)
+        concept_mappings = [
+            ("nobody", "empty person silhouette nobody"),
+            ("nothing", "empty void blank nothing"),
+            ("nowhere", "empty space void location"),
+            ("neither", "choice rejection either"),
+            ("never", "infinity crossed out never"),
+            (
+                "no/not a",
+                "crossed out circle prohibition stop sign",
+            ),  # Better search terms
+            ("not", "prohibition stop sign red x"),
+            ("no", "negative denial no symbol"),
+        ]
+
+        english_lower = self.english.lower()
+        for key, enhanced_terms in concept_mappings:
+            if key in english_lower:
+                return enhanced_terms
+
+        # For different negation types, add context
+        type_mappings = {
+            NegationType.GENERAL: f"{self.english} prohibition stop sign",
+            NegationType.ARTICLE: f"{self.english} denial rejection symbol",
+            NegationType.PRONOUN: f"{self.english} empty void absence",
+            NegationType.TEMPORAL: f"{self.english} time crossed out never",
+            NegationType.SPATIAL: f"{self.english} location empty void",
+            NegationType.CORRELATIVE: f"{self.english} choice rejection neither",
+            NegationType.INTENSIFIER: f"{self.english} emphasis prohibition strong",
+        }
+        return type_mappings.get(
+            self.type, f"{self.english} negation prohibition symbol"
+        )
+
+    # FieldProcessor interface implementation
+    def process_fields_for_media_generation(
+        self, fields: list[str], media_generator: MediaGenerator
+    ) -> list[str]:
+        """Process negation fields with German-specific logic.
+
+        Field Layout: [Word, English, Type, Example, WordAudio, ExampleAudio, Image]
+
+        Args:
+            fields: Original field values
+            media_generator: Interface for generating media
+
+        Returns:
+            Processed field values with media
+        """
+        validate_minimum_fields(fields, 7, "Negation")
+
+        # Extract field values
+        word = fields[0]
+        english = fields[1]
+        # type_field = fields[2]  # NegationType as string
+        example = fields[3]
+
+        # Create a copy to modify
+        processed = fields.copy()
+
+        # Only generate word audio if WordAudio field (index 4) is empty
+        if not processed[4]:  # WordAudio field
+            audio_path = media_generator.generate_audio(word)
+            if audio_path:
+                processed[4] = format_media_reference(audio_path, "audio")
+
+        # Only generate example audio if ExampleAudio field (index 5) is empty
+        if not processed[5]:  # ExampleAudio field
+            audio_path = media_generator.generate_audio(example)
+            if audio_path:
+                processed[5] = format_media_reference(audio_path, "audio")
+
+        # Only generate image if Image field (index 6) is empty
+        if not processed[6]:  # Image field
+            # Create temporary negation instance to get search terms
+            try:
+                negation_type = NegationType(
+                    fields[2]
+                )  # Convert string to NegationType
+                temp_negation = Negation(
+                    word=word,
+                    english=english,
+                    type=negation_type,
+                    example=example,
+                    word_audio="",
+                    example_audio="",
+                    image_path="",
+                )
+                search_terms = temp_negation.get_image_search_terms()
+                image_path = media_generator.generate_image(search_terms, english)
+                if image_path:
+                    processed[6] = format_media_reference(image_path, "image")
+            except ValueError:
+                # If negation type is invalid, skip image generation
+                pass
+
+        return processed
+
+    def get_expected_field_count(self) -> int:
+        """Return expected number of fields for negation cards."""
+        return 7
+
+    def validate_field_structure(self, fields: list[str]) -> bool:
+        """Validate that fields match expected negation structure."""
+        return len(fields) >= 7
+
+    def get_field_layout_info(self) -> dict[str, Any]:
+        """Return information about the negation field layout."""
+        return {
+            "model_type": "Negation",
+            "expected_field_count": 7,
+            "field_names": self._get_field_names(),
+            "description": "German negation with type classification and examples",
+        }
+
+    def _get_field_names(self) -> list[str]:
+        """Return the field names for negation cards."""
+        return [
+            "Word",  # 0
+            "English",  # 1
+            "Type",  # 2
+            "Example",  # 3
+            "WordAudio",  # 4
+            "ExampleAudio",  # 5
+            "Image",  # 6
+        ]

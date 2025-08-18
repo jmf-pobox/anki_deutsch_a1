@@ -1,28 +1,49 @@
 """Genanki backend implementation for deck generation."""
 
+import logging
 import os
 import random
 import shutil
 import tempfile
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import genanki  # type: ignore
+
+from langlearn.models.model_factory import ModelFactory
+from langlearn.services.audio import AudioService
+from langlearn.services.domain_media_generator import DomainMediaGenerator
+from langlearn.services.german_language_service import GermanLanguageService
+from langlearn.services.media_service import MediaGenerationConfig, MediaService
+from langlearn.services.pexels_service import PexelsService
 
 from .base import DeckBackend, MediaFile, NoteType
 
 if TYPE_CHECKING:
     from genanki import Deck, Model
 
+logger = logging.getLogger(__name__)
+
 
 class GenankiBackend(DeckBackend):
     """Deck backend using the genanki library."""
 
-    def __init__(self, deck_name: str, description: str = "") -> None:
+    def __init__(
+        self,
+        deck_name: str,
+        description: str = "",
+        media_service: MediaService | None = None,
+        german_service: GermanLanguageService | None = None,
+        enable_field_processing: bool = False,
+    ) -> None:
         """Initialize the genanki backend.
 
         Args:
             deck_name: Name of the deck to create
             description: Optional description for the deck
+            media_service: Optional MediaService for media generation
+            german_service: Optional GermanLanguageService for German processing
+            enable_field_processing: Whether to enable field processing (default: False)
         """
         super().__init__(deck_name, description)
 
@@ -37,6 +58,35 @@ class GenankiBackend(DeckBackend):
 
         # Create temporary directory for media files
         self._media_dir = tempfile.mkdtemp()
+
+        # Optional field processing setup
+        self._enable_field_processing = enable_field_processing
+        self._domain_media_generator = None
+
+        if enable_field_processing:
+            # Project root for media directories
+            self._project_root = Path(
+                os.path.abspath(
+                    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+                )
+            )
+
+            # Initialize services with dependency injection
+            if media_service is None:
+                audio_service = AudioService(output_dir="data/audio")
+                pexels_service = PexelsService()
+                config = MediaGenerationConfig()
+                media_service = MediaService(
+                    audio_service, pexels_service, config, self._project_root
+                )
+
+            if german_service is None:
+                german_service = GermanLanguageService()
+
+            # Create domain media generator for field processing delegation
+            self._domain_media_generator = DomainMediaGenerator(
+                media_service, german_service
+            )
 
     def __del__(self) -> None:
         """Clean up temporary directory."""
@@ -104,12 +154,54 @@ class GenankiBackend(DeckBackend):
             raise ValueError(f"Note type ID {note_type_id} not found")
 
         model = self._note_types[note_type_id]
-        note = genanki.Note(model=model, fields=fields)
 
+        # Process fields if field processing is enabled
+        processed_fields = fields
+        if self._enable_field_processing and self._domain_media_generator:
+            processed_fields = self._process_fields_with_media(note_type_id, fields)
+
+        note = genanki.Note(model=model, fields=processed_fields)
         self._deck.add_note(note)
 
         # Generate a simple note ID for genanki compatibility
         return len(self._deck.notes)
+
+    def _process_fields_with_media(
+        self, note_type_id: str, fields: list[str]
+    ) -> list[str]:
+        """Process fields using domain model delegation.
+
+        This method provides the same field processing capabilities as AnkiBackend
+        to ensure consistent behavior between backends.
+
+        Args:
+            note_type_id: ID of the note type to process
+            fields: Original field values
+
+        Returns:
+            Processed field values with media
+        """
+        try:
+            # For GenanKiBackend, note_type_id is typically the note type name
+            # Try to create domain model using factory
+            field_processor = ModelFactory.create_field_processor(note_type_id)
+            if field_processor is None:
+                # No domain model available - return fields unchanged
+                logger.debug(f"No domain model available for: {note_type_id}")
+                return fields
+
+            # Use domain model for field processing
+            logger.debug(f"Using domain model for: {note_type_id}")
+            # Type assertion: we know _domain_media_generator is not None here
+            # because _enable_field_processing is True and we initialize it
+            assert self._domain_media_generator is not None
+            return field_processor.process_fields_for_media_generation(
+                fields, self._domain_media_generator
+            )
+
+        except Exception as e:
+            logger.error(f"Error processing media for {note_type_id}: {e}")
+            return fields
 
     def add_media_file(self, file_path: str) -> MediaFile:
         """Add a media file to the deck.
