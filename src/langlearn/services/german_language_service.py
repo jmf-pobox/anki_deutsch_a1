@@ -33,7 +33,8 @@ class GermanLanguageService:
     def extract_context_from_sentence(
         self, sentence: str, word: str, english_word: str
     ) -> str:
-        """Extract context from German example sentence to create better image search query.
+        """Extract context from German example sentence to create better
+        image search query.
 
         This method analyzes German sentence patterns to create more relevant
         image search queries that consider the linguistic and semantic context.
@@ -55,10 +56,13 @@ class GermanLanguageService:
         # Common German context patterns that improve image relevance
         context_patterns = {
             # People and actions
-            r"(er|sie|mann|frau|kind|junge|mädchen).*(ist|geht|arbeitet|spielt|läuft|sitzt|steht|kauft|liest)": "person",
-            r"(ich|du|wir).*(bin|bist|sind|gehe|arbeite|spiele|laufe|sitze|stehe|kaufe|lese)": "person",
+            r"(er|sie|mann|frau|kind|junge|mädchen).*"
+            r"(ist|geht|arbeitet|spielt|läuft|sitzt|steht|kauft|liest)": "person",
+            r"(ich|du|wir).*(bin|bist|sind|gehe|arbeite|spiele|laufe|sitze|steht"
+            r"e|kaufe|lese)": "person",
             # Locations and settings
-            r"(im|in der|in einem|auf dem|am).*(park|haus|küche|zimmer|büro|schule|restaurant|café)": "location",
+            r"(im|in der|in einem|auf dem|am).*"
+            r"(park|haus|küche|zimmer|büro|schule|restaurant|café)": "location",
             r"(zu|zur|nach).*(hause|arbeit|schule|stadt)": "location",
             # Objects and their contexts
             r"(das|ein|eine).*(haus|auto|buch|telefon|computer).*ist": "object",
@@ -346,9 +350,10 @@ class GermanLanguageService:
         if word in ["nicht", "kein", "keine"]:
             if "not" in english or "no" in english:
                 return "stop sign prohibition no red"
-        elif word in ["niemand", "nichts"]:
-            if "nobody" in english or "nothing" in english:
-                return "empty void nothing zero"
+        elif word in ["niemand", "nichts"] and (
+            "nobody" in english or "nothing" in english
+        ):
+            return "empty void nothing zero"
 
         return f"prohibition stop {english} negative"
 

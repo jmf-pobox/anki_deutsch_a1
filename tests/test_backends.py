@@ -72,7 +72,8 @@ class TestBackendAbstraction:
         assert stats["deck_name"] == "Test Deck"
         assert stats["note_types_count"] == 1
         assert stats["notes_count"] == 2
-        # Media files count is 0 because the note type has insufficient fields (3) for media generation
+        # Media files count is 0 because the note type has insufficient fields
+        # (3) for media generation
         # which requires at least 5 fields for adjective cards
         assert stats["media_files_count"] == 0
 

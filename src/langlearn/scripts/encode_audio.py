@@ -50,12 +50,12 @@ def read_text_file(file_path: Path) -> str:
         if not content:
             raise ValueError("Text file is empty")
         return content
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Text file not found: {file_path}")
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Text file not found: {file_path}") from e
     except UnicodeDecodeError as e:
         raise UnicodeDecodeError(
             "utf-8", b"", e.start, e.end, f"Failed to decode file as UTF-8: {e}"
-        )
+        ) from e
 
 
 def encode_text_to_audio(
@@ -99,7 +99,7 @@ def encode_text_to_audio(
 
     except Exception as e:
         logger.error("Failed to generate audio: %s", str(e))
-        raise RuntimeError(f"Audio generation failed: {e}")
+        raise RuntimeError(f"Audio generation failed: {e}") from e
 
 
 def main() -> None:

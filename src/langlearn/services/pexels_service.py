@@ -234,7 +234,8 @@ class PexelsService:
         Args:
             query: Search query
             output_path: Path to save the image
-            size: Image size to download (default: "medium" for good quality/size balance)
+            size: Image size to download (default: "medium" for good
+                quality/size balance)
 
         Returns:
             bool: True if successful, False otherwise

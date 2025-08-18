@@ -131,7 +131,8 @@ class AudioService:
                 "LanguageCode": self.language_code,
                 "OutputFormat": "mp3",
                 "Engine": "neural",  # Daniel requires neural
-                "SampleRate": "16000",  # Lower sample rate for smaller files (was 22050 default)
+                "SampleRate": "16000",  # Lower sample rate for smaller files
+                # (was 22050 default)
             }
             logger.debug("AWS Polly request parameters: %s", request_params)
 

@@ -1,5 +1,6 @@
 """Tests for the image enrichment service."""
 
+import contextlib
 from pathlib import Path
 
 import pytest
@@ -50,11 +51,9 @@ def test_enrich_adjectives_error_handling(
     )
 
     # Run the enrichment - this should handle errors gracefully without crashing
-    try:
-        image_enricher.enrich_adjectives(csv_file)
-    except Exception:
+    with contextlib.suppress(Exception):
         # Error handling test - enrichment may fail gracefully
-        pass
+        image_enricher.enrich_adjectives(csv_file)
 
     # Verify CSV was processed (may or may not have image depending on API)
     updated_content = csv_file.read_text()

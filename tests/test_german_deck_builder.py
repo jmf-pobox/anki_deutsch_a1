@@ -770,9 +770,7 @@ class TestGermanDeckBuilder:
                     ) as mock_gen_image:
                         mock_gen_image.return_value = mock_media_file
 
-                        with patch.object(
-                            builder._deck_manager, "add_note"
-                        ):
+                        with patch.object(builder._deck_manager, "add_note"):
                             result = builder.generate_negation_cards(
                                 generate_media=True
                             )

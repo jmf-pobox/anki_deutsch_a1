@@ -253,7 +253,8 @@ def create_adverb_note_type() -> NoteType:
                 {{/WordAudio}}
             </div>
             <div class="adverb-type-display">
-                <span class="type-label">Type:</span>\n                <span class="type-value">{{Type}}</span>
+                <span class="type-label">Type:</span>
+                <span class="type-value">{{Type}}</span>
             </div>
         </div>
 
@@ -473,7 +474,8 @@ def create_negation_note_type() -> NoteType:
                 {{/WordAudio}}
             </div>
             <div class="negation-type-display">
-                <span class="type-label">Type:</span>\n                <span class="type-value">{{Type}}</span>
+                <span class="type-label">Type:</span>
+                <span class="type-value">{{Type}}</span>
             </div>
         </div>
 
@@ -928,7 +930,8 @@ def load_adjectives_from_csv(
             if not row["word"].strip():  # Skip empty rows
                 continue
 
-            # Fields: [Word, English, Example, Comparative, Superlative, Image, WordAudio, ExampleAudio]
+            # Fields: [Word, English, Example, Comparative, Superlative, Image,
+            #          WordAudio, ExampleAudio]
             fields = [
                 row["word"],
                 row["english"],
@@ -1030,7 +1033,8 @@ def load_nouns_from_csv(backend: AnkiBackend, note_type_id: str, csv_path: Path)
             if not row.get("noun", "").strip():  # Skip empty rows
                 continue
 
-            # Fields: [Word, Article, English, Plural, Example, Related, Image, WordAudio, ExampleAudio]
+            # Fields: [Word, Article, English, Plural, Example, Related, Image,
+            #          WordAudio, ExampleAudio]
             fields = [
                 row["noun"],
                 row.get("article", ""),
@@ -1039,7 +1043,8 @@ def load_nouns_from_csv(backend: AnkiBackend, note_type_id: str, csv_path: Path)
                 row.get("example", ""),
                 row.get("related", ""),
                 "",  # Image - will be auto-generated for concrete nouns
-                "",  # WordAudio - will be auto-generated (combined article+noun, plural)
+                "",  # WordAudio - will be auto-generated
+                # (combined article+noun, plural)
                 "",  # ExampleAudio - will be auto-generated
             ]
 

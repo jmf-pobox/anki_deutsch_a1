@@ -300,7 +300,8 @@ class GermanDeckBuilder:
                 if example_audio_file:
                     example_audio_ref = example_audio_file.reference
 
-            # Check for existing image - first check CSV path, then check expected filename
+            # Check for existing image - first check CSV path,
+            # then check expected filename
             image_found = False
             if noun.image_path and Path(noun.image_path).exists():
                 image_file = self._media_manager.add_media_file(noun.image_path)
@@ -380,7 +381,8 @@ class GermanDeckBuilder:
         adjective_note_type = self._template_service.get_adjective_note_type()
         note_type_id = self._deck_manager.create_note_type(adjective_note_type)
         print(
-            f"DEBUG: Using adjective note type ID: {note_type_id} for {adjective_note_type.name}"
+            f"DEBUG: Using adjective note type ID: {note_type_id} "
+            f"for {adjective_note_type.name}"
         )
 
         cards_created = 0
@@ -477,7 +479,8 @@ class GermanDeckBuilder:
         adverb_note_type = self._template_service.get_adverb_note_type()
         note_type_id = self._deck_manager.create_note_type(adverb_note_type)
         print(
-            f"DEBUG: Using adverb note type ID: {note_type_id} for {adverb_note_type.name}"
+            f"DEBUG: Using adverb note type ID: {note_type_id} "
+            f"for {adverb_note_type.name}"
         )
 
         cards_created = 0
@@ -514,7 +517,8 @@ class GermanDeckBuilder:
                 if example_audio_file:
                     example_audio_ref = example_audio_file.reference
 
-            # Check for existing image - first check CSV path, then check expected filename
+            # Check for existing image - first check CSV path,
+            # then check expected filename
             image_found = False
             if adverb.image_path and Path(adverb.image_path).exists():
                 image_file = self._media_manager.add_media_file(adverb.image_path)
@@ -626,7 +630,8 @@ class GermanDeckBuilder:
                 if example_audio_file:
                     example_audio_ref = example_audio_file.reference
 
-            # Check for existing image - first check CSV path, then check expected filename
+            # Check for existing image - first check CSV path,
+            # then check expected filename
             image_found = False
             if negation.image_path and Path(negation.image_path).exists():
                 image_file = self._media_manager.add_media_file(negation.image_path)

@@ -61,7 +61,8 @@ class CSVService:
             with open(file_path, encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    # Keep empty strings as empty strings for media fields, only convert None for truly optional fields
+                    # Keep empty strings as empty strings for media fields,
+                    # only convert None for truly optional fields
                     cleaned_row = {k: v or "" for k, v in row.items()}
                     item = model_class(**cleaned_row)
                     items.append(item)
