@@ -7,7 +7,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict
 
 import boto3  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
-from botocore.exceptions import ClientError, NoCredentialsError  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+from botocore.exceptions import (  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+    ClientError,
+    NoCredentialsError,
+)
 from mypy_boto3_polly.literals import (
     EngineType,
     LanguageCodeType,

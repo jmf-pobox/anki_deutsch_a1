@@ -87,9 +87,9 @@ class AudioEnricher:
                         Path(word_audio_path_str) if word_audio_path_str else None
                     )
                     if not word_audio_path or not word_audio_path.exists():
-                        word_audio_path = Path(self.audio_service.generate_audio(
-                            str(row["word"])
-                        ))
+                        word_audio_path = Path(
+                            self.audio_service.generate_audio(str(row["word"]))
+                        )
                         df.at[index, "word_audio"] = str(word_audio_path)
                         logger.debug(
                             "Generated new word audio for: %s",
@@ -111,9 +111,9 @@ class AudioEnricher:
                         Path(example_audio_path_str) if example_audio_path_str else None
                     )
                     if not example_audio_path or not example_audio_path.exists():
-                        example_audio_path = Path(self.audio_service.generate_audio(
-                            str(row["example"])
-                        ))
+                        example_audio_path = Path(
+                            self.audio_service.generate_audio(str(row["example"]))
+                        )
                         df.at[index, "example_audio"] = str(example_audio_path)
                         logger.debug(
                             "Generated new example audio for: %s",

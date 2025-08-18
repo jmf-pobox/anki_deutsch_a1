@@ -10,8 +10,8 @@ import logging
 from pathlib import Path
 from typing import Any, NamedTuple
 
-from ..backends.base import DeckBackend, MediaFile
-from ..services.media_service import MediaService
+from langlearn.backends.base import DeckBackend, MediaFile
+from langlearn.services.media_service import MediaService
 
 logger = logging.getLogger(__name__)
 

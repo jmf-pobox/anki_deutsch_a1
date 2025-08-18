@@ -155,7 +155,8 @@ class TestGermanLanguageService:
         result = service.extract_context_from_sentence(
             "Das Kind spielt im Park.", "spielt", "plays"
         )
-        # The sentence contains both person pattern and activity - person pattern is checked first
+        # The sentence contains both person pattern and activity
+        # - person pattern is checked first
         assert "person" in result or "plays" in result
 
     # Test context extraction with location patterns (lines 92-93)
@@ -256,7 +257,8 @@ class TestGermanLanguageService:
         self, service: GermanLanguageService
     ) -> None:
         """Test activity context for woman shopping."""
-        # Due to bug: "man" in "woman" is True, so this goes to man context, then falls through to default
+        # Due to bug: "man" in "woman" is True, so this goes to man context,
+        # then falls through to default
         result = service._enhance_activity_context("frau", "woman", "die frau kauft")
         assert result == "woman activity"
 
@@ -264,7 +266,8 @@ class TestGermanLanguageService:
         self, service: GermanLanguageService
     ) -> None:
         """Test activity context for woman cooking."""
-        # Due to bug: "man" in "woman" is True, so this goes to man context, then falls through to default
+        # Due to bug: "man" in "woman" is True, so this goes to man context,
+        # then falls through to default
         result = service._enhance_activity_context("frau", "woman", "die frau kocht")
         assert result == "woman activity"
 
@@ -278,7 +281,8 @@ class TestGermanLanguageService:
     def test_enhance_activity_context_frau_shopping_actual(
         self, service: GermanLanguageService
     ) -> None:
-        """Test activity context for frau shopping - avoiding the 'man' in 'woman' bug."""
+        """Test activity context for frau shopping - avoiding the 'man' in
+        'woman' bug."""
         # The method hardcodes "woman" in the return value, doesn't use the variable
         result = service._enhance_activity_context("frau", "female", "die frau kauft")
         assert result == "woman shopping"
@@ -286,7 +290,8 @@ class TestGermanLanguageService:
     def test_enhance_activity_context_frau_cooking_actual(
         self, service: GermanLanguageService
     ) -> None:
-        """Test activity context for frau cooking - avoiding the 'man' in 'woman' bug."""
+        """Test activity context for frau cooking - avoiding the 'man' in
+        'woman' bug."""
         # The method hardcodes "woman" in the return value, doesn't use the variable
         result = service._enhance_activity_context("frau", "female", "die frau kocht")
         assert result == "woman cooking kitchen"
@@ -497,7 +502,8 @@ class TestGermanLanguageService:
     def test_enhance_specific_combinations_businesswoman_working_actual(
         self, service: GermanLanguageService
     ) -> None:
-        """Test specific combination for businesswoman working - avoiding the 'man' in 'woman' bug."""
+        """Test specific combination for businesswoman working - avoiding the
+        'man' in 'woman' bug."""
         # This falls through to the default case (just returns english_word)
         result = service._enhance_specific_combinations(
             "frau", "female", "die frau arbeitet"

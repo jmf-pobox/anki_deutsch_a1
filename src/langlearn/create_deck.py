@@ -16,14 +16,14 @@ def create_adjective_note_type() -> NoteType:
         name="German Adjective with Media",
         front_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="part-of-speech">Adjektiv</div>
-        
+
         <div class="hint-container">
             <button class="hint-button" onclick="showHint()">💡 Hint</button>
             <div id="hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showHint() {
             var hint = document.getElementById('hint-content');
@@ -35,28 +35,33 @@ def create_adjective_note_type() -> NoteType:
         """,
         back_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="adjective-forms">
             <div class="word-with-audio">
                 <span class="german">{{Word}}</span>
-                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>
+                {{/WordAudio}}
             </div>
             {{#Comparative}}<div class="comparative-forms">
-                <div class="form-item"><strong>Comparative:</strong> {{Comparative}}</div>
-                <div class="form-item"><strong>Superlative:</strong> {{Superlative}}</div>
+                <div class="form-item"><strong>Comparative:</strong>
+                {{Comparative}}</div>
+                <div class="form-item"><strong>Superlative:</strong>
+                {{Superlative}}</div>
             </div>{{/Comparative}}
         </div>
-        
+
         <div class="example-with-audio">
             <span class="example-sentence">{{Example}}</span>
-            {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+            {{#ExampleAudio}}
+            <span class="inline-audio">🔊 {{ExampleAudio}}</span>
+            {{/ExampleAudio}}
         </div>
-        
+
         <div class="back-hint-container">
             <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
             <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showBackHint() {
             var hint = document.getElementById('back-hint-content');
@@ -219,16 +224,16 @@ def create_adverb_note_type() -> NoteType:
         name="German Adverb with Media",
         front_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="part-of-speech">Adverb</div>
-        
+
         <div class="adverb-type">{{Type}}</div>
-        
+
         <div class="hint-container">
             <button class="hint-button" onclick="showHint()">💡 Hint</button>
             <div id="hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showHint() {
             var hint = document.getElementById('hint-content');
@@ -240,27 +245,30 @@ def create_adverb_note_type() -> NoteType:
         """,
         back_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="adverb-section">
             <div class="word-with-audio">
                 <span class="german">{{Word}}</span>
-                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>
+                {{/WordAudio}}
             </div>
             <div class="adverb-type-display">
-                <span class="type-label">Type:</span> <span class="type-value">{{Type}}</span>
+                <span class="type-label">Type:</span>\n                <span class="type-value">{{Type}}</span>
             </div>
         </div>
-        
+
         <div class="example-with-audio">
             <span class="example-sentence">{{Example}}</span>
-            {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+            {{#ExampleAudio}}
+            <span class="inline-audio">🔊 {{ExampleAudio}}</span>
+            {{/ExampleAudio}}
         </div>
-        
+
         <div class="back-hint-container">
             <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
             <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showBackHint() {
             var hint = document.getElementById('back-hint-content');
@@ -436,16 +444,16 @@ def create_negation_note_type() -> NoteType:
         name="German Negation with Media",
         front_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="part-of-speech">Negation</div>
-        
+
         <div class="negation-type">{{Type}}</div>
-        
+
         <div class="hint-container">
             <button class="hint-button" onclick="showHint()">💡 Hint</button>
             <div id="hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showHint() {
             var hint = document.getElementById('hint-content');
@@ -457,27 +465,30 @@ def create_negation_note_type() -> NoteType:
         """,
         back_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="negation-section">
             <div class="word-with-audio">
                 <span class="german">{{Word}}</span>
-                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>
+                {{/WordAudio}}
             </div>
             <div class="negation-type-display">
-                <span class="type-label">Type:</span> <span class="type-value">{{Type}}</span>
+                <span class="type-label">Type:</span>\n                <span class="type-value">{{Type}}</span>
             </div>
         </div>
-        
+
         <div class="example-with-audio">
             <span class="example-sentence">{{Example}}</span>
-            {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+            {{#ExampleAudio}}
+            <span class="inline-audio">🔊 {{ExampleAudio}}</span>
+            {{/ExampleAudio}}
         </div>
-        
+
         <div class="back-hint-container">
             <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
             <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showBackHint() {
             var hint = document.getElementById('back-hint-content');
@@ -653,14 +664,14 @@ def create_noun_note_type() -> NoteType:
         name="German Noun with Media",
         front_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="part-of-speech">Substantiv</div>
-        
+
         <div class="hint-container">
             <button class="hint-button" onclick="showHint()">💡 Hint</button>
             <div id="hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showHint() {
             var hint = document.getElementById('hint-content');
@@ -672,31 +683,34 @@ def create_noun_note_type() -> NoteType:
         """,
         back_html="""
         {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
-        
+
         <div class="noun-section">
             <div class="word-with-audio">
                 <span class="german">{{Article}} {{Word}}</span>
-                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+                {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>
+                {{/WordAudio}}
             </div>
             {{#Plural}}<div class="plural-forms">
                 <div class="form-item"><strong>Plural:</strong> die {{Plural}}</div>
             </div>{{/Plural}}
         </div>
-        
+
         <div class="example-with-audio">
             <span class="example-sentence">{{Example}}</span>
-            {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+            {{#ExampleAudio}}
+            <span class="inline-audio">🔊 {{ExampleAudio}}</span>
+            {{/ExampleAudio}}
         </div>
-        
+
         {{#Related}}<div class="related-words">
             <strong>Related:</strong> {{Related}}
         </div>{{/Related}}
-        
+
         <div class="back-hint-container">
             <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
             <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
         </div>
-        
+
         <script>
         function showBackHint() {
             var hint = document.getElementById('back-hint-content');
@@ -1147,7 +1161,7 @@ def main() -> None:
     print("\n📁 Deck Structure:")
     print(f"   Main deck: {backend.deck_name}")
     if hasattr(backend, "_subdecks") and backend._subdecks:
-        for subdeck_name in backend._subdecks.keys():
+        for subdeck_name in backend._subdecks:
             print(f"   └── {subdeck_name}")
 
     # Export deck

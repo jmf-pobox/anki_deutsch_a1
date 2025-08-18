@@ -713,30 +713,24 @@ class TestGermanDeckBuilder:
             path="/fake/audio.mp3", reference="[sound:audio.mp3]"
         )
 
-        with patch.object(Path, "exists", return_value=True):
-            with patch.object(
+        with (
+            patch.object(Path, "exists", return_value=True),
+            patch.object(
                 builder._template_service, "get_adverb_note_type"
-            ) as mock_get_template:
-                mock_get_template.return_value = mock_note_type
+            ) as mock_get_template,
+            patch.object(builder._deck_manager, "create_note_type") as mock_create_type,
+            patch.object(builder._media_manager, "add_media_file") as mock_add_media,
+            patch.object(builder._deck_manager, "add_note"),
+        ):
+            mock_get_template.return_value = mock_note_type
+            mock_create_type.return_value = "note_type_1"
+            mock_add_media.return_value = mock_media_file
 
-                with patch.object(
-                    builder._deck_manager, "create_note_type"
-                ) as mock_create_type:
-                    mock_create_type.return_value = "note_type_1"
+            result = builder.generate_adverb_cards(generate_media=True)
 
-                    with patch.object(
-                        builder._media_manager, "add_media_file"
-                    ) as mock_add_media:
-                        mock_add_media.return_value = mock_media_file
-
-                        with patch.object(
-                            builder._deck_manager, "add_note"
-                        ) as mock_add_note:
-                            result = builder.generate_adverb_cards(generate_media=True)
-
-                            assert result == 1
-                            # Should call add_media_file for existing audio and image
-                            assert mock_add_media.call_count >= 1
+            assert result == 1
+            # Should call add_media_file for existing audio and image
+            assert mock_add_media.call_count >= 1
 
     @patch("langlearn.german_deck_builder.GenankiBackend")
     def test_generate_negation_cards_with_media_generation(
@@ -778,7 +772,7 @@ class TestGermanDeckBuilder:
 
                         with patch.object(
                             builder._deck_manager, "add_note"
-                        ) as mock_add_note:
+                        ):
                             result = builder.generate_negation_cards(
                                 generate_media=True
                             )

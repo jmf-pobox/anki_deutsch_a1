@@ -8,7 +8,7 @@ coupling to specific backend implementations.
 
 from typing import Any
 
-from ..backends.base import DeckBackend, NoteType
+from langlearn.backends.base import DeckBackend, NoteType
 
 
 class DeckManager:
@@ -116,7 +116,7 @@ class DeckManager:
         # Add current subdeck as a tag if we're in a subdeck
         note_tags = tags or []
         if self._current_subdeck:
-            note_tags = note_tags + [f"subdeck:{self._current_subdeck}"]
+            note_tags = [*note_tags, f"subdeck:{self._current_subdeck}"]
 
         return self._backend.add_note(note_type_id, fields, note_tags)
 

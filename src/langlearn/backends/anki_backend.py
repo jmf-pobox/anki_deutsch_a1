@@ -12,12 +12,13 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
-from ..models.adjective import Adjective
-from ..models.noun import Noun
-from ..services.audio import AudioService
-from ..services.german_language_service import GermanLanguageService
-from ..services.media_service import MediaGenerationConfig, MediaService
-from ..services.pexels_service import PexelsService
+from langlearn.models.adjective import Adjective
+from langlearn.models.noun import Noun
+from langlearn.services.audio import AudioService
+from langlearn.services.german_language_service import GermanLanguageService
+from langlearn.services.media_service import MediaGenerationConfig, MediaService
+from langlearn.services.pexels_service import PexelsService
+
 from .base import DeckBackend, MediaFile, NoteType
 
 logger = logging.getLogger(__name__)
@@ -176,7 +177,8 @@ class AnkiBackend(DeckBackend):
         # Process fields for media generation
         processed_fields = self._process_fields_with_media(note_type_id, fields)
         print(
-            f"DEBUG: Final processed fields: {[f[:30] + '...' if len(f) > 30 else f for f in processed_fields]}"
+            f"DEBUG: Final processed fields: "
+            f"{[f[:30] + '...' if len(f) > 30 else f for f in processed_fields]}"
         )
 
         # Create note - need to get the notetype dict first
@@ -267,10 +269,12 @@ class AnkiBackend(DeckBackend):
     def _process_adjective_fields(self, fields: list[str]) -> list[str]:
         """Process adjective fields with combined audio and image generation."""
         print(
-            f"DEBUG: Processing adjective fields: {[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
+            f"DEBUG: Processing adjective fields: "
+            f"{[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
         )
         try:
-            # Fields: [Word, English, Example, Comparative, Superlative, Image, WordAudio, ExampleAudio]
+            # Fields: [Word, English, Example, Comparative, Superlative, Image,
+            #          WordAudio, ExampleAudio]
             word = fields[0]
             english = fields[1]
             example = fields[2]
@@ -279,7 +283,8 @@ class AnkiBackend(DeckBackend):
 
             # Only generate audio if fields are empty (avoid duplicate processing)
             print(
-                f"DEBUG: Adjective WordAudio field (6): '{fields[6] if len(fields) > 6 else 'N/A'}'"
+                f"DEBUG: Adjective WordAudio field (6): "
+                f"'{fields[6] if len(fields) > 6 else 'N/A'}'"
             )
             if len(fields) > 6 and not fields[6]:  # WordAudio field is empty
                 adjective = Adjective(
@@ -321,10 +326,12 @@ class AnkiBackend(DeckBackend):
     def _process_noun_fields(self, fields: list[str]) -> list[str]:
         """Process noun fields with combined audio generation."""
         print(
-            f"DEBUG: Processing noun fields: {[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
+            f"DEBUG: Processing noun fields: "
+            f"{[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
         )
         try:
-            # Fields: [Noun, Article, English, Plural, Example, Related, Image, WordAudio, ExampleAudio]
+            # Fields: [Noun, Article, English, Plural, Example, Related, Image,
+            #          WordAudio, ExampleAudio]
             noun = fields[0]
             article = fields[1]
             plural = fields[3]
@@ -332,7 +339,8 @@ class AnkiBackend(DeckBackend):
 
             # Only generate audio if fields are empty (avoid duplicate processing)
             print(
-                f"DEBUG: Noun WordAudio field (7): '{fields[7] if len(fields) > 7 else 'N/A'}'"
+                f"DEBUG: Noun WordAudio field (7): "
+                f"'{fields[7] if len(fields) > 7 else 'N/A'}'"
             )
             if len(fields) > 7 and not fields[7]:  # WordAudio field is empty
                 noun_obj = Noun(
@@ -366,7 +374,8 @@ class AnkiBackend(DeckBackend):
     def _process_verb_fields(self, fields: list[str]) -> list[str]:
         """Process verb fields with audio generation."""
         try:
-            # Fields: [Verb, English, ich_form, du_form, er_form, perfect, Example, ExampleAudio]
+            # Fields: [Verb, English, ich_form, du_form, er_form, perfect,
+            #          Example, ExampleAudio]
             example = fields[6] if len(fields) > 6 else ""
 
             # Generate example audio
@@ -423,16 +432,19 @@ class AnkiBackend(DeckBackend):
     def _process_adverb_fields(self, fields: list[str]) -> list[str]:
         """Process adverb fields with audio generation."""
         print(
-            f"DEBUG: Processing adverb fields: {[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
+            f"DEBUG: Processing adverb fields: "
+            f"{[f[:20] + '...' if len(f) > 20 else f for f in fields]}"
         )
         try:
-            # Fields: [Word, English, Type, Example, Image, WordAudio, ExampleAudio]
+            # Fields: [Word, English, Type, Example, Image, WordAudio,
+            #          ExampleAudio]
             word = fields[0] if len(fields) > 0 else ""
             example = fields[3] if len(fields) > 3 else ""
 
             # Only generate word audio if field is empty (avoid duplicate processing)
             print(
-                f"DEBUG: Adverb WordAudio field (5): '{fields[5] if len(fields) > 5 else 'N/A'}'"
+                f"DEBUG: Adverb WordAudio field (5): "
+                f"'{fields[5] if len(fields) > 5 else 'N/A'}'"
             )
             if len(fields) > 5 and not fields[5]:  # WordAudio field is empty
                 word_audio_path = self._generate_or_get_audio(word)
@@ -453,7 +465,8 @@ class AnkiBackend(DeckBackend):
     def _process_negation_fields(self, fields: list[str]) -> list[str]:
         """Process negation fields with audio generation."""
         try:
-            # Fields: [Word, English, Type, Example, Image, WordAudio, ExampleAudio]
+            # Fields: [Word, English, Type, Example, Image, WordAudio,
+            #          ExampleAudio]
             word = fields[0] if len(fields) > 0 else ""
             example = fields[3] if len(fields) > 3 else ""
 

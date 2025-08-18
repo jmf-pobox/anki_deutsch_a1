@@ -3,8 +3,8 @@
 import re
 from typing import Protocol
 
-from ..models.adjective import Adjective
-from ..models.noun import Noun
+from langlearn.models.adjective import Adjective
+from langlearn.models.noun import Noun
 
 
 class GermanWordModel(Protocol):
@@ -366,7 +366,7 @@ class GermanLanguageService:
         """
         # For backward compatibility, create a temporary Noun model
         # In practice, callers should use the Noun.is_concrete() method directly
-        from ..models.noun import Noun
+        from langlearn.models.noun import Noun
 
         # Create minimal noun for classification
         temp_noun = Noun(

@@ -1,5 +1,6 @@
 """Service for interacting with the Pexels API."""
 
+import contextlib
 import logging
 import logging.handlers
 import random
@@ -171,10 +172,8 @@ class PexelsService:
                     # Get server-suggested retry delay
                     retry_after = None
                     if "Retry-After" in e.response.headers:
-                        try:
+                        with contextlib.suppress(ValueError):
                             retry_after = int(e.response.headers["Retry-After"])
-                        except ValueError:
-                            pass
 
                     # Calculate exponential backoff delay
                     delay = self._calculate_backoff_delay(attempt, retry_after)

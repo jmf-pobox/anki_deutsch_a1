@@ -58,7 +58,7 @@ def test_new_media_generation() -> None:
         if media_gen["total_media_generated"] > 0:
             print("✅ New media generation working!")
         else:
-            print("ℹ️ No new media generated (files may already exist)")
+            print("i No new media generated (files may already exist)")
 
 
 if __name__ == "__main__":

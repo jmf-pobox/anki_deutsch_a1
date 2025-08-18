@@ -1,9 +1,9 @@
 """Card generator for adjectives."""
 
-from ..backends.base import DeckBackend
-from ..cards.base import BaseCardGenerator
-from ..models.adjective import Adjective
-from ..services.template_service import TemplateService
+from langlearn.backends.base import DeckBackend
+from langlearn.cards.base import BaseCardGenerator
+from langlearn.models.adjective import Adjective
+from langlearn.services.template_service import TemplateService
 
 
 class AdjectiveCardGenerator(BaseCardGenerator[Adjective]):

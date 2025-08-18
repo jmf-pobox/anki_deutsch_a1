@@ -23,7 +23,9 @@ def create_german_adjective_note_type() -> NoteType:
         <hr>
         <div class="english">{{English}}</div>
         <div class="example">{{Example}}</div>
-        {{#Comparative}}<div class="comparative">Comparative: {{Comparative}}</div>{{/Comparative}}
+        {{#Comparative}}
+        <div class="comparative">Comparative: {{Comparative}}</div>
+        {{/Comparative}}
         """,
         css="""
         .card {
@@ -87,7 +89,8 @@ def demonstrate_media_integration() -> None:
     print(f"Created note type with ID: {note_type_id}")
 
     # Test adjectives (some should already have images in data/images/)
-    # Fields: [Word, English, Example, Comparative, Superlative, Image, WordAudio, ExampleAudio]
+    # Fields: [Word, English, Example, Comparative, Superlative, Image,
+    #          WordAudio, ExampleAudio]
     test_adjectives = [
         [
             "gut",
@@ -132,7 +135,8 @@ def demonstrate_media_integration() -> None:
     ]
 
     print(
-        f"\nAdding {len(test_adjectives)} adjective cards with automatic media generation..."
+        f"\nAdding {len(test_adjectives)} adjective cards with automatic "
+        f"media generation..."
     )
 
     for i, adj_data in enumerate(test_adjectives):

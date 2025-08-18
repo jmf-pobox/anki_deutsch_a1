@@ -7,7 +7,10 @@ from pathlib import Path
 from unittest.mock import Mock, mock_open, patch
 
 import pytest
-from botocore.exceptions import ClientError, NoCredentialsError  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+from botocore.exceptions import (  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+    ClientError,
+    NoCredentialsError,
+)
 
 from langlearn.services.audio import AudioService
 
@@ -151,9 +154,11 @@ class TestAudioService:
         mock_client.synthesize_speech.return_value = mock_response
 
         # Mock _save_audio_file to return None (simulate failure)
-        with patch.object(audio_service, "_save_audio_file", return_value=None):
-            with pytest.raises(RuntimeError, match="Failed to save audio file"):
-                audio_service.generate_audio("test text")
+        with (
+            patch.object(audio_service, "_save_audio_file", return_value=None),
+            pytest.raises(RuntimeError, match="Failed to save audio file"),
+        ):
+            audio_service.generate_audio("test text")
 
     def test_save_audio_file_success(self, audio_service: AudioService) -> None:
         """Test successful audio file saving."""

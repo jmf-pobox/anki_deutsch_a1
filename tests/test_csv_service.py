@@ -79,10 +79,12 @@ class TestCSVService:
     def test_read_csv_csv_error(self, csv_service: CSVService) -> None:
         """Test csv.Error exception handling."""
         # Mock csv.DictReader to raise a CSV error
-        with patch("csv.DictReader", side_effect=csv.Error("CSV parsing error")):
-            with patch("builtins.open", mock_open()):
-                with pytest.raises(csv.Error):
-                    csv_service.read_csv(Path("test.csv"), SimpleModel)
+        with (
+            patch("csv.DictReader", side_effect=csv.Error("CSV parsing error")),
+            patch("builtins.open", mock_open()),
+            pytest.raises(csv.Error),
+        ):
+            csv_service.read_csv(Path("test.csv"), SimpleModel)
 
     def test_read_csv_validation_error(self, csv_service: CSVService) -> None:
         """Test ValidationError exception handling for invalid model data."""
@@ -148,13 +150,15 @@ class TestCSVService:
             }  # None name should become empty and fail validation
         ]
 
-        with patch("csv.DictReader") as mock_reader:
+        with (
+            patch("csv.DictReader") as mock_reader,
+            patch("builtins.open", mock_open()),
+            pytest.raises(ValidationError),
+        ):
             mock_reader.return_value = mock_csv_data
-
-            with patch("builtins.open", mock_open()):
-                # This should fail validation because name is None -> empty string -> validation error
-                with pytest.raises(ValidationError):
-                    csv_service.read_csv(Path("test.csv"), SimpleModel)
+            # This should fail validation because name is None -> empty string
+            # -> validation error
+            csv_service.read_csv(Path("test.csv"), SimpleModel)
 
     def test_read_csv_unicode_handling(self, csv_service: CSVService) -> None:
         """Test reading CSV files with Unicode characters."""

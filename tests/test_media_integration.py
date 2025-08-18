@@ -26,7 +26,10 @@ class TestMediaIntegration:
         template = CardTemplate(
             name="German Adjective with Media",
             front_html="{{Word}} {{#Image}}{{Image}}{{/Image}}",
-            back_html="{{Word}} {{#Image}}{{Image}}{{/Image}}<hr>{{English}}<br>{{Example}}<br>{{Comparative}}, {{Superlative}}",
+            back_html=(
+                "{{Word}} {{#Image}}{{Image}}{{/Image}}<hr>{{English}}<br>"
+                "{{Example}}<br>{{Comparative}}, {{Superlative}}"
+            ),
             css=".card { font-family: Arial; }",
         )
 
@@ -195,7 +198,8 @@ class TestMediaIntegration:
             "",
         ]
 
-        # Mock media generation - AnkiBackend now generates combined audio for adjective forms
+        # Mock media generation - AnkiBackend now generates combined audio
+        # for adjective forms
         fake_combined_audio_path = "/fake/combined_audio.mp3"
         fake_example_audio_path = "/fake/example_audio.mp3"
         fake_image_path = "/fake/image.jpg"
@@ -534,7 +538,8 @@ class TestMediaIntegration:
         assert "schön.jpg" in result
 
     def test_enhanced_adjective_audio_generation(self, backend: AnkiBackend) -> None:
-        """Test that all three adjective forms (base, comparative, superlative) generate audio."""
+        """Test that all three adjective forms (base, comparative,
+        superlative) generate audio."""
         note_type_name = "German Adjective with Media"
         fields = [
             "gut",
@@ -633,7 +638,8 @@ class TestMediaIntegration:
         ):
             result = backend._process_fields_with_media(note_type_name, fields)
 
-            # Should call audio generation for combined forms and example (2 calls total)
+            # Should call audio generation for combined forms and example
+            # (2 calls total)
             assert backend._generate_or_get_audio.call_count == 2  # type: ignore[attr-defined]  # Mock boundary
             backend._generate_or_get_audio.assert_any_call(  # type: ignore[attr-defined]  # Mock boundary
                 "schnell, schneller"

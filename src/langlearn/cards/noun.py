@@ -1,9 +1,9 @@
 """Card generator for nouns."""
 
-from ..backends.base import DeckBackend
-from ..cards.base import BaseCardGenerator
-from ..models.noun import Noun
-from ..services.template_service import TemplateService
+from langlearn.backends.base import DeckBackend
+from langlearn.cards.base import BaseCardGenerator
+from langlearn.models.noun import Noun
+from langlearn.services.template_service import TemplateService
 
 
 class NounCardGenerator(BaseCardGenerator[Noun]):

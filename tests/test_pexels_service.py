@@ -203,9 +203,11 @@ class TestPexelsService:
         http_error = HTTPError()
         http_error.response = mock_error_response
 
-        with patch("requests.get", side_effect=http_error):
-            with pytest.raises(HTTPError):
-                service._make_request("https://test.com", {"query": "test"})
+        with (
+            patch("requests.get", side_effect=http_error),
+            pytest.raises(HTTPError),
+        ):
+            service._make_request("https://test.com", {"query": "test"})
 
     def test_make_request_generic_exception_with_retries(
         self, service: PexelsService
@@ -251,9 +253,9 @@ class TestPexelsService:
         with (
             patch("requests.get", side_effect=ConnectionError("Network error")),
             patch("time.sleep"),
+            pytest.raises(ConnectionError, match="Network error"),
         ):
-            with pytest.raises(ConnectionError, match="Network error"):
-                service._make_request("https://test.com", {"query": "test"})
+            service._make_request("https://test.com", {"query": "test"})
 
     def test_search_photos_success(
         self, service: PexelsService, sample_photo: Photo
@@ -408,31 +410,29 @@ class TestPexelsService:
         mock_download_response.content = b"fake image data"
         mock_download_response.raise_for_status.return_value = None
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            with (
-                patch.object(service, "search_photos", return_value=[sample_photo]),
-                patch("requests.get", return_value=mock_download_response),
-                patch("random.choice", return_value=sample_photo),
-            ):
-                sizes: list[PhotoSize] = [
-                    "original",
-                    "large2x",
-                    "large",
-                    "medium",
-                    "small",
-                    "portrait",
-                    "landscape",
-                    "tiny",
-                ]
+        with (
+            tempfile.TemporaryDirectory() as temp_dir,
+            patch.object(service, "search_photos", return_value=[sample_photo]),
+            patch("requests.get", return_value=mock_download_response),
+            patch("random.choice", return_value=sample_photo),
+        ):
+            sizes: list[PhotoSize] = [
+                "original",
+                "large2x",
+                "large",
+                "medium",
+                "small",
+                "portrait",
+                "landscape",
+                "tiny",
+            ]
 
-                for size in sizes:
-                    output_path = Path(temp_dir) / f"test_{size}.jpg"
-                    result = service.download_image(
-                        "test query", str(output_path), size
-                    )
+            for size in sizes:
+                output_path = Path(temp_dir) / f"test_{size}.jpg"
+                result = service.download_image("test query", str(output_path), size)
 
-                    assert result is True
-                    assert output_path.exists()
+                assert result is True
+                assert output_path.exists()
 
     def test_download_image_creates_parent_directories(
         self, service: PexelsService, sample_photo: Photo
@@ -488,14 +488,14 @@ class TestPexelsService:
     ) -> None:
         """Test the unreachable fallback HTTPError (defensive programming)."""
         # This tests the defensive HTTPError at the end of _make_request
-        # While it's technically unreachable given current logic, it's good defensive programming
+        # While it's technically unreachable given current logic, it's good
+        # defensive programming
 
-        # We'll mock the range function to return an empty range, simulating loop completion
+        # We'll mock the range function to return an empty range, simulating
+        # loop completion
         with (
             patch("builtins.range", return_value=[]),
-            patch("requests.get"),
-        ):  # Should never be called
-            with pytest.raises(
-                HTTPError, match="Failed to make request after all retries"
-            ):
-                service._make_request("https://test.com", {"query": "test"})
+            patch("requests.get"),  # Should never be called
+            pytest.raises(HTTPError, match="Failed to make request after all retries"),
+        ):
+            service._make_request("https://test.com", {"query": "test"})

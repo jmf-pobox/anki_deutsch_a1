@@ -165,7 +165,7 @@ def demo_with_csv_loading() -> None:
             if sum(stats["loaded_data"].values()) > 0:
                 print("✅ CSV data loaded successfully")
             else:
-                print("ℹ️  No CSV data found")
+                print("i No CSV data found")
 
         except Exception as e:
             print(f"❌ CSV loading failed: {e}")

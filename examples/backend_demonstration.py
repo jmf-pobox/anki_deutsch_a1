@@ -24,7 +24,9 @@ def create_sample_note_type() -> NoteType:
         <hr>
         <div class="english">{{English}}</div>
         <div class="example">{{Example}}</div>
-        {{#Comparative}}<div class="comparative">Comparative: {{Comparative}}</div>{{/Comparative}}
+        {{#Comparative}}
+        <div class="comparative">Comparative: {{Comparative}}</div>
+        {{/Comparative}}
         """,
         css="""
         .card {
