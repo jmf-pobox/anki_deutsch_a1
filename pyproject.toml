@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 [project]
 name = "langlearn"
 version = "0.1.0"
-description = "A Python tool for generating customized German language Anki decks"
+description = "Language Learn - An Anki Card Generator for multiple languages and proficiency levels"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

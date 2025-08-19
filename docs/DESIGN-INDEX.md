@@ -1,6 +1,6 @@
 # Design Documentation Index
 
-This directory contains design documentation for the German A1 vocabulary learning application. The application generates Anki decks with German vocabulary, grammar patterns, and integrated media.
+This directory contains design documentation for Language Learn - An Anki Card Generator. The application generates Anki decks with vocabulary, grammar patterns, and integrated media for multiple languages and proficiency levels.
 
 **Status**: Production Ready ✅  
 **Test Coverage**: 73.84% with 401 tests (562 unit + 24 integration)
@@ -37,7 +37,7 @@ This directory contains design documentation for the German A1 vocabulary learni
 **Content**:
 - Application data flow (CSV → Models → Services → Anki cards)
 - Component responsibilities
-- German language processing pipeline
+- Multi-language processing pipeline
 - Media integration details
 
 ---

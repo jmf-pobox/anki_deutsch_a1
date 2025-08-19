@@ -1,6 +1,6 @@
-# 🎓 German A1 Anki Deck Generator
+# 🎓 Language Learn - An Anki Card Generator
 
-A German language learning application that generates customized Anki decks for A1-level learners, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
+A language learning application that generates customized Anki decks with vocabulary, grammar patterns, and multimedia content. Supports multiple languages and proficiency levels with specialized handling for language-specific grammatical features.
 
 ## 📊 Project Status
 
@@ -10,7 +10,7 @@ A German language learning application that generates customized Anki decks for 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Code Quality](https://img.shields.io/badge/Code%20Quality-MyPy%20%7C%20Ruff-success)](#quality)
 [![Platform](https://img.shields.io/badge/Platform-Anki-blue)](#usage)
-[![Language](https://img.shields.io/badge/German-A1%20Level-orange)](#german-features)
+[![Languages](https://img.shields.io/badge/Languages-Multi--Language-orange)](#language-features)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ### 🚀 Current State
@@ -30,9 +30,10 @@ A German language learning application that generates customized Anki decks for 
 - **Architecture**: Clean Pipeline Architecture with service layer separation
 
 ### Core Functionality ✅
-- **Deck Generation**: Creates Anki decks (.apkg files) with German vocabulary
-- **German Language Support**: Specialized handling for nouns, verbs, adjectives, adverbs, negations
-- **Media Integration**: AWS Polly audio generation and Pexels image integration  
+- **Deck Generation**: Creates Anki decks (.apkg files) with vocabulary and grammar patterns
+- **Multi-Language Support**: Extensible architecture supporting multiple languages and proficiency levels
+- **Media Integration**: AWS Polly audio generation and Pexels image integration for enhanced learning
+- **Grammar-Aware Processing**: Specialized handling for language-specific grammatical features
 - **Code Quality**: 100% MyPy strict mode compliance, comprehensive linting, enterprise-grade standards
 
 ## 📚 Documentation
@@ -110,28 +111,32 @@ Detailed testing plan for official Anki backend validation:
 - Performance and error recovery testing
 - Success criteria and deliverables
 
-## 🇩🇪 German Language Features
+## 🌍 Language Features
 
-### Grammar-Specific Handling
-- **Noun Cards**: Article recall with gender and plural forms
+### Grammar-Aware Card Generation
+- **Noun Cards**: Article recall, gender, and plural forms (language-specific)
 - **Verb Cards**: Conjugation patterns with irregular verb detection
-- **Adjective Cards**: Comparison forms (positive, comparative, superlative)
-- **Preposition Cards**: Case requirements with example contexts
-- **Phrase Cards**: Common expressions with contextual usage
+- **Adjective Cards**: Comparison forms and declension patterns
+- **Preposition Cards**: Case requirements and usage contexts
+- **Phrase Cards**: Common expressions with contextual examples
 
 ### Language Learning Optimizations
-- **Gender Validation**: Proper article-noun combinations (der/die/das)
-- **Case System**: Nominative, Accusative, Dative, Genitive handling
-- **Irregular Patterns**: Special handling for irregular verbs and plurals
-- **Audio Integration**: German pronunciation using AWS Polly
-- **Visual Learning**: Contextual images from Pexels API
+- **Grammar Validation**: Language-specific grammatical rule enforcement
+- **Pattern Recognition**: Specialized handling for irregular forms and exceptions
+- **Contextual Learning**: Example sentences demonstrating proper usage
+- **Audio Integration**: Native pronunciation using AWS Polly (multiple language voices)
+- **Visual Learning**: Contextual images from Pexels API for vocabulary retention
+
+### Current Language Support
+- **German**: Full A1-level vocabulary with gender, case, and conjugation support
+- **Extensible Architecture**: Ready for additional languages and proficiency levels
 
 ## 🏗️ Project Structure
 
 ```
-anki-deutsch-a1/
-├── 📊 data/                    # German A1 vocabulary data (CSV format)
-│   ├── nouns.csv              # German nouns with gender and plurals
+language-learn/
+├── 📊 data/                    # Language vocabulary data (CSV format)
+│   ├── nouns.csv              # Nouns with language-specific attributes
 │   ├── adjectives.csv         # Adjectives with comparison forms
 │   ├── verbs.csv              # Regular and irregular verbs
 │   ├── adverbs.csv            # Adverbs with usage examples
@@ -139,16 +144,16 @@ anki-deutsch-a1/
 │
 ├── 🏗️ src/langlearn/
 │   ├── 🎯 backends/            # Anki integration layer
-│   ├── 📝 models/              # Pydantic German language models
+│   ├── 📝 models/              # Pydantic language models (extensible)
 │   ├── 🔌 services/            # External API integrations (AWS, Pexels, CSV)
 │   ├── 🛠️ utils/               # API key management and utilities
 │   ├── 🎨 templates/           # HTML/CSS templates for card designs
 │   ├── main.py                 # Main application entry point
-│   └── german_deck_builder.py  # Primary deck orchestrator
+│   └── deck_builder.py         # Primary deck orchestrator
 │
 ├── 🧪 tests/                   # 263 comprehensive unit tests
 ├── 📦 output/                  # Generated Anki decks (.apkg files)
-├── 🌍 languages/               # German grammar documentation
+├── 🌍 languages/               # Language-specific grammar documentation
 ├── 📋 examples/                # Usage demonstrations
 └── 📖 docs/                    # Comprehensive design documentation
 ```
@@ -158,7 +163,7 @@ anki-deutsch-a1/
 1. **Clone the repository:**
 ```bash
 git clone <repository-url>
-cd anki-deutsch-a1
+cd language-learn
 ```
 
 2. **Install dependencies using Hatch:**
@@ -182,7 +187,7 @@ export AWS_DEFAULT_REGION=us-east-1
 # Run comprehensive test suite
 hatch run test-unit
 
-# Test deck generation
+# Test deck generation  
 PYTHONPATH=src python src/langlearn/main.py
 ```
 
@@ -190,13 +195,13 @@ PYTHONPATH=src python src/langlearn/main.py
 
 ### Basic Deck Generation
 ```bash
-# Create German A1 vocabulary deck
+# Create language learning deck
 python src/langlearn/main.py
 ```
 
-This generates a complete German A1 Anki deck with:
-- All vocabulary types (nouns, verbs, adjectives, adverbs, negations)
-- Proper German grammar validation
+This generates a complete language learning Anki deck with:
+- Multiple vocabulary types (nouns, verbs, adjectives, adverbs, negations)
+- Language-specific grammar validation
 - Optional media integration (audio/images)
 - Export to `.apkg` format ready for Anki import
 
@@ -204,14 +209,14 @@ This generates a complete German A1 Anki deck with:
 ```python
 from langlearn.deck_builder import DeckBuilder
 
-# Create German A1 vocabulary deck
+# Create language learning deck
 with DeckBuilder(
-    deck_name="My German Deck",
+    deck_name="My Language Deck",
     enable_media_generation=True
 ) as builder:
     builder.load_data_from_directory("data/")
     builder.generate_all_cards(generate_media=True)
-    builder.export_deck("output/german_deck.apkg")
+    builder.export_deck("output/language_deck.apkg")
 ```
 
 ## 🧪 Development & Testing
@@ -260,7 +265,8 @@ Following the mandatory development workflow from `CLAUDE.md`:
 ## 🔧 Architecture
 
 ### Key Design Principles
-- **German Language Focus**: Specialized handling for German grammar and vocabulary patterns
+- **Multi-Language Architecture**: Extensible framework supporting multiple languages and proficiency levels
+- **Grammar-Aware Processing**: Specialized handling for language-specific grammatical patterns
 - **Media-Rich Learning**: Optional audio pronunciation and visual learning aids
 - **Type Safety**: Full MyPy compliance with comprehensive type hints
 - **Clean Pipeline**: CSV data → Domain models → Enriched content → Anki cards
@@ -287,11 +293,11 @@ See **`docs/MVP_REINTEGRATION_PLAN.md`** for detailed implementation roadmap.
 4. Follow quality gates and testing requirements
 
 ### Areas for Contribution
-- **German Content**: Expand vocabulary data with A1-level words
-- **Templates**: Enhance HTML/CSS card designs
+- **Language Content**: Add vocabulary data for new languages and proficiency levels
+- **Templates**: Enhance HTML/CSS card designs for different languages
+- **Language Models**: Implement grammar validation for additional languages
 - **Testing**: Improve test coverage and add integration scenarios
 - **Documentation**: Update and maintain design documentation
-- **Multi-Language**: Extend architecture for other languages
 
 ## 📊 Technical Specifications
 
@@ -309,10 +315,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🎯 Project Goals
 
-This German A1 Anki deck generator aims to:
-1. **Simplify German Learning**: Generate comprehensive, grammar-aware flashcards
-2. **Ensure Quality**: Maintain high code quality with comprehensive testing
-3. **Provide Flexibility**: Support multiple backends and configuration options
-4. **Enable Extension**: Clean architecture for adding new languages or features
+Language Learn aims to:
+1. **Simplify Language Learning**: Generate comprehensive, grammar-aware flashcards for multiple languages
+2. **Enable Multi-Language Support**: Extensible architecture supporting various languages and proficiency levels  
+3. **Ensure Quality**: Maintain high code quality with comprehensive testing
+4. **Provide Rich Media**: Integrate audio pronunciation and visual learning aids
+5. **Support Scalability**: Clean architecture for adding new languages, features, and card types
 
-**Current Status**: Functional application ready for German A1 vocabulary deck generation with comprehensive design documentation for future development.
+**Current Status**: Production-ready application with German A1 support, designed for multi-language expansion.
