@@ -29,7 +29,9 @@
       "Bash(touch:*)",
       "Bash(hatch:*)",
       "Bash(git add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)"
     ],
     "deny": []
   }
