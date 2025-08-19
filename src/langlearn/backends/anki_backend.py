@@ -13,8 +13,10 @@ from anki.decks import DeckId
 from anki.models import NotetypeId
 
 from langlearn.models.model_factory import ModelFactory
+from langlearn.models.records import create_record
 from langlearn.services.audio import AudioService
 from langlearn.services.domain_media_generator import DomainMediaGenerator
+from langlearn.services.media_enricher import StandardMediaEnricher
 from langlearn.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.services.pexels_service import PexelsService
 
@@ -85,6 +87,13 @@ class AnkiBackend(DeckBackend):
 
         # Create domain media generator for field processing delegation
         self._domain_media_generator = DomainMediaGenerator(self._media_service)
+
+        # Create MediaEnricher for Clean Pipeline Architecture
+        self._media_enricher = StandardMediaEnricher(
+            self._media_service,
+            audio_base_path=self._project_root / "data" / "audio",
+            image_base_path=self._project_root / "data" / "images",
+        )
 
         # Media generation statistics (kept for backward compatibility)
         self._media_generation_stats = {
@@ -268,25 +277,146 @@ class AnkiBackend(DeckBackend):
                 # It's already a note type name (for backward compatibility with tests)
                 note_type_name = note_type_input
 
-            # Try to create domain model using factory
+            # Map note type name to record type for Clean Pipeline Architecture
+            note_type_to_record_type = {
+                "German Noun": "noun",
+                "German Noun with Media": "noun",
+                "German Adjective": "adjective",
+                "German Adjective with Media": "adjective",
+                "German Adverb": "adverb",
+                "German Adverb with Media": "adverb",
+                "German Negation": "negation",
+                "German Negation with Media": "negation",
+            }
+
+            # Check if we support this note type with new architecture
+            record_type = None
+            for note_pattern, rec_type in note_type_to_record_type.items():
+                if note_pattern.lower() in note_type_name.lower():
+                    record_type = rec_type
+                    break
+
+            if record_type is not None:
+                # Use Clean Pipeline Architecture
+                logger.debug(f"Using Clean Pipeline Architecture for: {note_type_name}")
+                try:
+                    # Create record from fields
+                    record = create_record(record_type, fields)
+
+                    # Create domain model for business logic validation
+                    domain_model = self._create_domain_model_from_record(
+                        record, record_type
+                    )
+
+                    # Enrich record using MediaEnricher
+                    enriched_record_dict = self._media_enricher.enrich_record(
+                        record.to_dict(), domain_model
+                    )
+
+                    # Convert back to field list format for backward compatibility
+                    # The specific field order depends on the record type
+                    if record_type == "noun":
+                        return [
+                            enriched_record_dict["noun"],
+                            enriched_record_dict["article"],
+                            enriched_record_dict["english"],
+                            enriched_record_dict["plural"],
+                            enriched_record_dict["example"],
+                            enriched_record_dict["related"],
+                            enriched_record_dict.get("image", ""),
+                            enriched_record_dict.get("word_audio", ""),
+                            enriched_record_dict.get("example_audio", ""),
+                        ]
+                    elif record_type == "adjective":
+                        return [
+                            enriched_record_dict["word"],
+                            enriched_record_dict["english"],
+                            enriched_record_dict["example"],
+                            enriched_record_dict["comparative"],
+                            enriched_record_dict["superlative"],
+                            enriched_record_dict.get("image", ""),
+                            enriched_record_dict.get("word_audio", ""),
+                            enriched_record_dict.get("example_audio", ""),
+                        ]
+                    elif record_type in ["adverb", "negation"]:
+                        return [
+                            enriched_record_dict["word"],
+                            enriched_record_dict["english"],
+                            enriched_record_dict["type"],
+                            enriched_record_dict["example"],
+                            enriched_record_dict.get("image", ""),
+                            enriched_record_dict.get("word_audio", ""),
+                            enriched_record_dict.get("example_audio", ""),
+                        ]
+
+                except Exception as record_error:
+                    logger.warning(
+                        f"Clean Pipeline Architecture failed for {note_type_name}: "
+                        f"{record_error}"
+                    )
+                    # Fall back to old approach for backward compatibility
+
+            # Fall back to old FieldProcessor approach for unsupported types or failures
             field_processor = ModelFactory.create_field_processor(note_type_name)
-            if field_processor is None:
-                # No domain model available - unsupported note type
+            if field_processor is not None and hasattr(
+                field_processor, "process_fields_for_media_generation"
+            ):
+                logger.debug(f"Using legacy FieldProcessor for: {note_type_name}")
+                return field_processor.process_fields_for_media_generation(
+                    fields, self._domain_media_generator
+                )
+            else:
+                # No processing available - unsupported note type
                 logger.warning(
-                    f"No domain model available for: {note_type_name}. "
+                    f"No processing available for: {note_type_name}. "
                     f"Returning fields unchanged."
                 )
                 return fields
 
-            # Use domain model for field processing (all German word types supported)
-            logger.debug(f"Using domain model for: {note_type_name}")
-            return field_processor.process_fields_for_media_generation(
-                fields, self._domain_media_generator
-            )
-
         except Exception as e:
             logger.error(f"Error processing media for {note_type_input}: {e}")
             return fields
+
+    def _create_domain_model_from_record(self, record, record_type: str):
+        """Create domain model instance from record data."""
+        from langlearn.models.adjective import Adjective
+        from langlearn.models.adverb import Adverb, AdverbType
+        from langlearn.models.negation import Negation, NegationType
+        from langlearn.models.noun import Noun
+
+        if record_type == "noun":
+            return Noun(
+                noun=record.noun,
+                article=record.article,
+                english=record.english,
+                plural=record.plural,
+                example=record.example,
+                related=record.related,
+            )
+        elif record_type == "adjective":
+            return Adjective(
+                word=record.word,
+                english=record.english,
+                example=record.example,
+                comparative=record.comparative,
+                superlative=record.superlative,
+            )
+        elif record_type == "adverb":
+            return Adverb(
+                word=record.word,
+                english=record.english,
+                type=AdverbType(record.type),
+                example=record.example,
+            )
+        elif record_type == "negation":
+            return Negation(
+                word=record.word,
+                english=record.english,
+                type=NegationType(record.type),
+                example=record.example,
+            )
+        else:
+            raise ValueError(f"Unsupported record type: {record_type}")
 
     def _generate_or_get_audio(self, text: str) -> str | None:
         """Generate audio for text or return existing audio file path."""

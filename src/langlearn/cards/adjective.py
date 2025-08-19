@@ -151,13 +151,16 @@ class AdjectiveCardGenerator(BaseCardGenerator[Adjective]):
 
         # Check if image already exists before making expensive AI calls
         from pathlib import Path
+
         expected_image_path = Path(f"data/images/{adjective.word.lower()}.jpg")
-        
+
         if expected_image_path.exists():
             # Image already exists, just add it without AI enhancement
-            image_file = self._media_manager.add_media_file(str(expected_image_path), media_type="image")
+            image_file = self._media_manager.add_media_file(
+                str(expected_image_path), media_type="image"
+            )
         else:
-            # Image doesn't exist, use AI-enhanced search terms for generation  
+            # Image doesn't exist, use AI-enhanced search terms for generation
             enhanced_search_query = adjective.get_image_search_terms()
             image_file = self._media_manager.generate_and_add_image(
                 adjective.word,

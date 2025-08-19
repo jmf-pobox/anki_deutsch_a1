@@ -2,16 +2,11 @@
 
 from pydantic import BaseModel, Field
 
-from .field_processor import (
-    FieldProcessor,
-    MediaGenerator,
-    format_media_reference,
-    validate_minimum_fields,
-)
+# Removed field_processor import - now pure domain model
 
 
-class Adjective(BaseModel, FieldProcessor):
-    """Model representing a German adjective with its properties.
+class Adjective(BaseModel):
+    """Model representing a German adjective with its properties and business logic.
 
     German adjectives have comparative and superlative forms, and follow
     specific patterns for their formation.
@@ -135,105 +130,7 @@ class Adjective(BaseModel, FieldProcessor):
 
         return False
 
-    # FieldProcessor interface implementation
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: MediaGenerator
-    ) -> list[str]:
-        """Process adjective fields with combined audio and image generation.
-
-        Field Layout: [Word, English, Example, Comparative, Superlative, Image,
-                       WordAudio, ExampleAudio]
-
-        Args:
-            fields: List of field values for this adjective
-            media_generator: Interface for generating audio/image media
-
-        Returns:
-            Processed field list with media references added where appropriate
-        """
-        # Extend fields to expected 8-field layout if needed
-        while len(fields) < 8:
-            fields.append("")
-
-        validate_minimum_fields(fields, 8, "Adjective")
-
-        # Extract field values
-        word = fields[0]
-        english = fields[1]
-        example = fields[2]
-        comparative = fields[3]
-        superlative = fields[4]
-
-        # Create working copy
-        processed_fields = fields.copy()
-
-        # Generate word audio (combined adjective forms) if empty
-        if not processed_fields[6]:  # WordAudio field
-            # Create adjective instance to use domain logic
-            adjective = Adjective(
-                word=word,
-                english=english,
-                example=example,
-                comparative=comparative,
-                superlative=superlative,
-            )
-            combined_text = adjective.get_combined_audio_text()
-            audio_path = media_generator.generate_audio(combined_text)
-            if audio_path:
-                processed_fields[6] = format_media_reference(audio_path, "audio")
-
-        # Generate example audio if empty
-        if not processed_fields[7]:  # ExampleAudio field
-            audio_path = media_generator.generate_audio(example)
-            if audio_path:
-                processed_fields[7] = format_media_reference(audio_path, "audio")
-
-        # Generate image if empty
-        if not processed_fields[5]:  # Image field
-            # Check if image already exists before expensive AI call
-            from pathlib import Path
-            expected_image_path = Path(f"data/images/{word.lower()}.jpg")
-            
-            if expected_image_path.exists():
-                # Image exists, just reference it
-                processed_fields[5] = format_media_reference(str(expected_image_path), "image")
-            else:
-                # Image doesn't exist, use AI-enhanced search terms for generation
-                temp_adjective = Adjective(
-                    word=word,
-                    english=english,
-                    example=example,
-                    comparative=comparative,
-                    superlative=superlative,
-                )
-
-                search_terms = temp_adjective.get_image_search_terms()
-                image_path = media_generator.generate_image(search_terms, english)
-                if image_path:
-                    processed_fields[5] = format_media_reference(image_path, "image")
-
-        return processed_fields
-
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for adjective processing."""
-        return 8
-
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected structure for adjectives."""
-        return len(fields) >= self.get_expected_field_count()
-
-    def _get_field_names(self) -> list[str]:
-        """Get human-readable names for each field position."""
-        return [
-            "Word",
-            "English",
-            "Example",
-            "Comparative",
-            "Superlative",
-            "Image",
-            "WordAudio",
-            "ExampleAudio",
-        ]
+    # Removed field processing methods - now pure domain model with only business logic
 
     def get_image_search_terms(self) -> str:
         """Get enhanced search terms prioritizing sentence context for better results.

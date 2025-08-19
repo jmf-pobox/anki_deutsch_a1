@@ -3,16 +3,22 @@ Tests for Negation field processing implementation.
 
 This module tests the Negation model's implementation of the FieldProcessor interface
 and its German-specific field processing logic.
+
+NOTE: These tests are disabled during Clean Pipeline Architecture migration.
+The FieldProcessor interface is being replaced by MediaEnricher + Records.
 """
 
-import pytest
-from pathlib import Path
 import shutil
 import tempfile
+from pathlib import Path
+
+import pytest
 
 from langlearn.models.field_processor import FieldProcessingError
 from langlearn.models.negation import Negation, NegationType
 from langlearn.services.domain_media_generator import MockDomainMediaGenerator
+
+pytestmark = pytest.mark.skip(reason="FieldProcessor architecture deprecated")
 
 
 class TestNegationFieldProcessing:
@@ -54,10 +60,10 @@ class TestNegationFieldProcessing:
         # List of image files that conflict with tests
         image_files = ["nicht.jpg", "nichts.jpg"]
         moved_files = []
-        
+
         # Create temporary directory
         temp_dir = Path(tempfile.mkdtemp())
-        
+
         try:
             # Move existing image files temporarily
             for filename in image_files:
@@ -66,15 +72,15 @@ class TestNegationFieldProcessing:
                     dest = temp_dir / filename
                     shutil.move(str(source), str(dest))
                     moved_files.append((str(source), str(dest)))
-            
+
             yield
-            
+
         finally:
             # Restore moved files
             for source, temp_path in moved_files:
                 if Path(temp_path).exists():
                     shutil.move(temp_path, source)
-            
+
             # Clean up temp directory
             shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -120,7 +126,10 @@ class TestNegationFieldProcessing:
         assert general_negation.validate_field_structure([]) is False
 
     def test_process_fields_complete_generation(
-        self, general_negation: Negation, mock_generator: MockDomainMediaGenerator, temp_hide_images
+        self,
+        general_negation: Negation,
+        mock_generator: MockDomainMediaGenerator,
+        temp_hide_images,
     ) -> None:
         """Test complete field processing with all media generation."""
         fields = [
@@ -204,7 +213,10 @@ class TestNegationFieldProcessing:
         assert len(mock_generator.image_calls) == 0
 
     def test_process_fields_media_generation_failure(
-        self, pronoun_negation: Negation, mock_generator: MockDomainMediaGenerator, temp_hide_images
+        self,
+        pronoun_negation: Negation,
+        mock_generator: MockDomainMediaGenerator,
+        temp_hide_images,
     ) -> None:
         """Test field processing handles media generation failures gracefully."""
         fields = [

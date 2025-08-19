@@ -1,16 +1,10 @@
 """Model for German adverbs."""
 
 from enum import Enum
-from typing import Any
 
 from pydantic import BaseModel, Field
 
-from .field_processor import (
-    FieldProcessor,
-    MediaGenerator,
-    format_media_reference,
-    validate_minimum_fields,
-)
+# Removed field_processor import - now pure domain model
 
 
 class AdverbType(str, Enum):
@@ -27,8 +21,8 @@ class AdverbType(str, Enum):
     PROBABILITY = "probability"  # vielleicht, wahrscheinlich
 
 
-class Adverb(BaseModel, FieldProcessor):
-    """Model representing a German adverb with its properties.
+class Adverb(BaseModel):
+    """Model representing a German adverb with its properties and business logic.
 
     German adverbs are words that modify verbs, adjectives, or other adverbs.
     They provide information about time, place, manner, degree, etc.
@@ -190,100 +184,5 @@ class Adverb(BaseModel, FieldProcessor):
         # Default to the English translation with concept indicator
         return f"{self.english} concept symbol"
 
-    # FieldProcessor interface implementation
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: MediaGenerator
-    ) -> list[str]:
-        """Process adverb fields with German-specific logic.
 
-        Field Layout: [Word, English, Type, Example]
-
-        Args:
-            fields: Original field values
-            media_generator: Interface for generating media
-
-        Returns:
-            Processed field values with media fields appended
-        """
-        validate_minimum_fields(fields, 4, "Adverb")
-
-        # Extract field values
-        word = fields[0]
-        english = fields[1]
-        # type_field = fields[2]  # AdverbType as string
-        example = fields[3]
-
-        # Create a copy and extend with media fields
-        processed = fields.copy()
-
-        # Ensure we have exactly 7 fields (4 original + 3 media)
-        while len(processed) < 7:
-            processed.append("")
-
-        # Generate word audio if not present
-        if not processed[4]:  # WordAudio field
-            audio_path = media_generator.generate_audio(word)
-            if audio_path:
-                processed[4] = format_media_reference(audio_path, "audio")
-
-        # Generate example audio if not present
-        if not processed[5]:  # ExampleAudio field
-            audio_path = media_generator.generate_audio(example)
-            if audio_path:
-                processed[5] = format_media_reference(audio_path, "audio")
-
-        # Generate image if not present
-        if not processed[6]:  # Image field
-            # Create temporary adverb instance to get search terms
-            try:
-                adverb_type = AdverbType(fields[2])  # Convert string to AdverbType
-                temp_adverb = Adverb(
-                    word=word,
-                    english=english,
-                    type=adverb_type,
-                    example=example,
-                )
-                # Check if image already exists before expensive AI call
-                from pathlib import Path
-                expected_image_path = Path(f"data/images/{word.lower()}.jpg")
-                
-                if expected_image_path.exists():
-                    # Image exists, just reference it
-                    processed[6] = format_media_reference(str(expected_image_path), "image")
-                else:
-                    # Image doesn't exist, use AI-enhanced search terms
-                    search_terms = temp_adverb.get_image_search_terms()
-                    image_path = media_generator.generate_image(search_terms, english)
-                    if image_path:
-                        processed[6] = format_media_reference(image_path, "image")
-            except ValueError:
-                # If adverb type is invalid, skip image generation
-                pass
-
-        return processed
-
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for adverb cards."""
-        return 4
-
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected adverb structure."""
-        return len(fields) >= 4
-
-    def get_field_layout_info(self) -> dict[str, Any]:
-        """Return information about the adverb field layout."""
-        return {
-            "model_type": "Adverb",
-            "expected_field_count": 4,
-            "field_names": self._get_field_names(),
-            "description": "German adverb with type classification and examples",
-        }
-
-    def _get_field_names(self) -> list[str]:
-        """Return the field names for adverb cards."""
-        return [
-            "Word",  # 0
-            "English",  # 1
-            "Type",  # 2
-            "Example",  # 3
-        ]
+# Removed field processing methods - now pure domain model with only business logic

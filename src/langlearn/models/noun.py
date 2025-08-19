@@ -1,19 +1,12 @@
 """Model for German nouns."""
 
-from typing import Any
-
 from pydantic import BaseModel, Field
 
-from .field_processor import (
-    FieldProcessor,
-    MediaGenerator,
-    format_media_reference,
-    validate_minimum_fields,
-)
+# Removed field_processor import - now pure domain model
 
 
-class Noun(BaseModel, FieldProcessor):
-    """Model representing a German noun with its properties and field processing."""
+class Noun(BaseModel):
+    """Model representing a German noun with its properties and business logic."""
 
     noun: str = Field(..., description="The German noun")
     article: str = Field(..., description="The definite article (der/die/das)")
@@ -212,129 +205,5 @@ class Noun(BaseModel, FieldProcessor):
 
         return f"{self.english} concept symbol"
 
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: MediaGenerator
-    ) -> list[str]:
-        """Process noun fields with German-specific logic.
 
-        Field Layout: [Noun, Article, English, Plural, Example, Related]
-
-        Args:
-            fields: Original field values
-            media_generator: Interface for generating media
-
-        Returns:
-            Processed field values with media fields appended
-        """
-        validate_minimum_fields(fields, 6, "Noun")
-
-        # Extract field values
-        noun = fields[0]
-        article = fields[1]
-        english = fields[2]
-        plural = fields[3]
-        example = fields[4]
-        related = fields[5]
-
-        # Create a copy and extend with media fields
-        processed = fields.copy()
-
-        # Ensure we have exactly 9 fields (6 original + 3 media)
-        while len(processed) < 9:
-            processed.append("")
-
-        # Generate audio for word if not present
-        if not processed[7]:  # WordAudio field
-            combined_text = self._get_combined_audio_text_from_fields(
-                article, noun, plural
-            )
-            audio_path = media_generator.generate_audio(combined_text)
-            if audio_path:
-                processed[7] = format_media_reference(audio_path, "audio")
-
-        # Generate example audio if not present
-        if not processed[8]:  # ExampleAudio field
-            audio_path = media_generator.generate_audio(example)
-            if audio_path:
-                processed[8] = format_media_reference(audio_path, "audio")
-
-        # Generate image if not present AND noun is concrete
-        if not processed[6]:  # Image field
-            # Create temporary noun instance to check if concrete
-            temp_noun = Noun(
-                noun=noun,
-                article=article,
-                english=english,
-                plural=plural,
-                example=example,
-                related=related,
-            )
-            if temp_noun.is_concrete():
-                # Check if image already exists before expensive AI call
-                from pathlib import Path
-                safe_filename = "".join(
-                    c for c in noun if c.isalnum() or c in (" ", "-", "_")
-                ).rstrip().replace(" ", "_").lower()
-                expected_image_path = Path(f"data/images/{safe_filename}.jpg")
-                
-                if expected_image_path.exists():
-                    # Image exists, just reference it
-                    processed[6] = format_media_reference(str(expected_image_path), "image")
-                else:
-                    # Image doesn't exist, use AI-enhanced search terms
-                    search_terms = temp_noun.get_image_search_terms()
-                    image_path = media_generator.generate_image(search_terms, english)
-                    if image_path:
-                        processed[6] = format_media_reference(image_path, "image")
-
-        return processed
-
-    def _get_combined_audio_text_from_fields(
-        self, article: str, noun: str, plural: str
-    ) -> str:
-        """Generate combined German noun audio text from field values.
-
-        Returns audio text for: article + singular, article + plural
-        Example: "die Katze, die Katzen"
-
-        Args:
-            article: The definite article (der/die/das)
-            noun: The German noun
-            plural: Plural form of the noun
-
-        Returns:
-            Combined text for audio generation
-        """
-        # Check if plural already includes article
-        if plural.startswith(("der ", "die ", "das ")):
-            return f"{article} {noun}, {plural}"
-        else:
-            return f"{article} {noun}, die {plural}"
-
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for noun cards."""
-        return 6
-
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected noun structure."""
-        return len(fields) >= 6
-
-    def get_field_layout_info(self) -> dict[str, Any]:
-        """Return information about the noun field layout."""
-        return {
-            "model_type": "Noun",
-            "expected_field_count": 6,
-            "field_names": self._get_field_names(),
-            "description": "German noun with article, plural, and examples",
-        }
-
-    def _get_field_names(self) -> list[str]:
-        """Return the field names for noun cards."""
-        return [
-            "Noun",  # 0
-            "Article",  # 1
-            "English",  # 2
-            "Plural",  # 3
-            "Example",  # 4
-            "Related",  # 5
-        ]
+# Removed field processing methods - now pure domain model with only business logic

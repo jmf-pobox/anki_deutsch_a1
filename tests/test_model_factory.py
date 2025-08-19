@@ -21,6 +21,7 @@ from langlearn.models.verb import Verb
 class TestModelFactory:
     """Test ModelFactory note type detection and instance creation."""
 
+    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
     def test_create_adjective_processor(self) -> None:
         """Test creating adjective field processor."""
         processor = ModelFactory.create_field_processor("German Adjective")
@@ -29,6 +30,7 @@ class TestModelFactory:
         assert isinstance(processor, Adjective)
         assert isinstance(processor, FieldProcessor)
 
+    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
     def test_create_noun_processor(self) -> None:
         """Test creating noun field processor."""
         processor = ModelFactory.create_field_processor("German Noun")
@@ -69,6 +71,7 @@ class TestModelFactory:
             assert processor is not None, f"Failed to detect noun in: {note_type}"
             assert isinstance(processor, Noun)
 
+    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
     def test_create_adverb_processor(self) -> None:
         """Test creating adverb field processor."""
         processor = ModelFactory.create_field_processor("German Adverb")
@@ -93,6 +96,7 @@ class TestModelFactory:
             assert processor is not None, f"Failed to detect adverb in: {note_type}"
             assert isinstance(processor, Adverb)
 
+    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
     def test_create_negation_processor(self) -> None:
         """Test creating negation field processor."""
         processor = ModelFactory.create_field_processor("German Negation")
@@ -261,6 +265,7 @@ class TestModelFactory:
         assert ModelFactory.is_supported_note_type("Random Type") is False
         assert ModelFactory.is_supported_note_type("") is False
 
+    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
     def test_created_processor_field_layout(self) -> None:
         """Test that created processors have correct field layout."""
         processor = ModelFactory.create_field_processor("German Adjective")
@@ -281,6 +286,7 @@ class TestModelFactory:
         ]
         assert field_names == expected_names
 
+    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
     def test_created_processor_functionality(self) -> None:
         """Test that created processors are fully functional."""
         from langlearn.services.domain_media_generator import MockDomainMediaGenerator

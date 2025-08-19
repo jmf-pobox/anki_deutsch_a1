@@ -1,16 +1,10 @@
 """Model for German negation words."""
 
 from enum import Enum
-from typing import Any
 
 from pydantic import BaseModel, Field
 
-from .field_processor import (
-    FieldProcessor,
-    MediaGenerator,
-    format_media_reference,
-    validate_minimum_fields,
-)
+# Removed field_processor import - now pure domain model
 
 
 class NegationType(str, Enum):
@@ -25,8 +19,8 @@ class NegationType(str, Enum):
     INTENSIFIER = "intensifier"  # gar nicht, überhaupt nicht
 
 
-class Negation(BaseModel, FieldProcessor):
-    """Model representing a German negation word with its properties.
+class Negation(BaseModel):
+    """Model representing a German negation word with its properties and business logic.
 
     German negation words follow specific rules for their position and usage:
     - 'nicht' typically comes at the end of the clause or before adjectives/adverbs
@@ -230,102 +224,5 @@ class Negation(BaseModel, FieldProcessor):
             self.type, f"{self.english} negation prohibition symbol"
         )
 
-    # FieldProcessor interface implementation
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: MediaGenerator
-    ) -> list[str]:
-        """Process negation fields with German-specific logic.
 
-        Field Layout: [Word, English, Type, Example]
-
-        Args:
-            fields: Original field values
-            media_generator: Interface for generating media
-
-        Returns:
-            Processed field values with media fields appended
-        """
-        validate_minimum_fields(fields, 4, "Negation")
-
-        # Extract field values
-        word = fields[0]
-        english = fields[1]
-        # type_field = fields[2]  # NegationType as string
-        example = fields[3]
-
-        # Create a copy and extend with media fields
-        processed = fields.copy()
-
-        # Ensure we have exactly 7 fields (4 original + 3 media)
-        while len(processed) < 7:
-            processed.append("")
-
-        # Generate word audio if not present
-        if not processed[4]:  # WordAudio field
-            audio_path = media_generator.generate_audio(word)
-            if audio_path:
-                processed[4] = format_media_reference(audio_path, "audio")
-
-        # Generate example audio if not present
-        if not processed[5]:  # ExampleAudio field
-            audio_path = media_generator.generate_audio(example)
-            if audio_path:
-                processed[5] = format_media_reference(audio_path, "audio")
-
-        # Generate image if not present
-        if not processed[6]:  # Image field
-            # Create temporary negation instance to get search terms
-            try:
-                negation_type = NegationType(
-                    fields[2]
-                )  # Convert string to NegationType
-                temp_negation = Negation(
-                    word=word,
-                    english=english,
-                    type=negation_type,
-                    example=example,
-                )
-                # Check if image already exists before expensive AI call
-                from pathlib import Path
-                expected_image_path = Path(f"data/images/{word.lower()}.jpg")
-                
-                if expected_image_path.exists():
-                    # Image exists, just reference it
-                    processed[6] = format_media_reference(str(expected_image_path), "image")
-                else:
-                    # Image doesn't exist, use AI-enhanced search terms
-                    search_terms = temp_negation.get_image_search_terms()
-                    image_path = media_generator.generate_image(search_terms, english)
-                    if image_path:
-                        processed[6] = format_media_reference(image_path, "image")
-            except ValueError:
-                # If negation type is invalid, skip image generation
-                pass
-
-        return processed
-
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for negation cards."""
-        return 4
-
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected negation structure."""
-        return len(fields) >= 4
-
-    def get_field_layout_info(self) -> dict[str, Any]:
-        """Return information about the negation field layout."""
-        return {
-            "model_type": "Negation",
-            "expected_field_count": 4,
-            "field_names": self._get_field_names(),
-            "description": "German negation with type classification and examples",
-        }
-
-    def _get_field_names(self) -> list[str]:
-        """Return the field names for negation cards."""
-        return [
-            "Word",  # 0
-            "English",  # 1
-            "Type",  # 2
-            "Example",  # 3
-        ]
+# Removed field processing methods - now pure domain model with only business logic

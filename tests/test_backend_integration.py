@@ -5,15 +5,14 @@ This module tests the implementation where AnkiBackend uses ModelFactory
 to delegate field processing to domain models.
 """
 
-from unittest.mock import Mock, patch
-from pathlib import Path
 import shutil
 import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch
 
 import pytest
 
 from langlearn.backends.anki_backend import AnkiBackend
-from langlearn.services.domain_media_generator import MockDomainMediaGenerator
 
 
 class TestBackendIntegration:
@@ -25,10 +24,10 @@ class TestBackendIntegration:
         # List of image files that conflict with tests
         image_files = ["schön.jpg"]
         moved_files = []
-        
+
         # Create temporary directory
         temp_dir = Path(tempfile.mkdtemp())
-        
+
         try:
             # Move existing image files temporarily
             for filename in image_files:
@@ -37,15 +36,15 @@ class TestBackendIntegration:
                     dest = temp_dir / filename
                     shutil.move(str(source), str(dest))
                     moved_files.append((str(source), str(dest)))
-            
+
             yield
-            
+
         finally:
             # Restore moved files
             for source, temp_path in moved_files:
                 if Path(temp_path).exists():
                     shutil.move(temp_path, source)
-            
+
             # Clean up temp directory
             shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -110,14 +109,18 @@ class TestBackendIntegration:
         # Create backend
         anki_backend = AnkiBackend("Test Deck")
 
-        # Mock media generation
-        mock_media_generator = MockDomainMediaGenerator()
-        mock_media_generator.set_responses(
-            audio="/fake/audio.mp3", image="/fake/image.jpg", context="beautiful scene"
-        )
+        # Mock the new MediaEnricher for Clean Pipeline Architecture
+        class MockMediaEnricher:
+            def enrich_record(self, record_dict, domain_model):
+                # Return predictable mock responses
+                enriched = record_dict.copy()
+                enriched["image"] = '<img src="image.jpg">'
+                enriched["word_audio"] = "[sound:audio.mp3]"
+                enriched["example_audio"] = "[sound:audio.mp3]"
+                return enriched
 
-        # Replace domain media generator with mock
-        anki_backend._domain_media_generator = mock_media_generator  # type: ignore[assignment]
+        # Replace MediaEnricher with mock
+        anki_backend._media_enricher = MockMediaEnricher()  # type: ignore[assignment]
 
         # Process fields
         result = anki_backend._process_fields_with_media(

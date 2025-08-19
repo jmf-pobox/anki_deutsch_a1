@@ -25,7 +25,8 @@
       "Bash(hatch env:*)",
       "Bash(sed:*)",
       "Bash(pkill:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

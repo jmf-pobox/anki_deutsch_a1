@@ -233,3 +233,215 @@ class TestCSVServiceOptionalFields:
         finally:
             if temp_path.exists():
                 temp_path.unlink()
+
+
+class TestCSVServiceRecords:
+    """Test CSVService Record-based functionality for Clean Pipeline Architecture."""
+
+    @pytest.fixture
+    def csv_service(self) -> CSVService:
+        """Create CSVService instance for testing."""
+        return CSVService()
+
+    @pytest.fixture
+    def temp_noun_csv(self) -> Generator[Path, None, None]:
+        """Create temporary noun CSV file for testing."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+            f.write("noun,article,english,plural,example,related\n")
+            f.write("Katze,die,cat,Katzen,Die Katze ist süß.,Tier\n")
+            f.write("Hund,der,dog,Hunde,Der Hund bellt.,Tier\n")
+            temp_path = Path(f.name)
+
+        try:
+            yield temp_path
+        finally:
+            if temp_path.exists():
+                temp_path.unlink()
+
+    @pytest.fixture
+    def temp_adjective_csv(self) -> Generator[Path, None, None]:
+        """Create temporary adjective CSV file for testing."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+            f.write("word,english,example,comparative,superlative\n")
+            f.write("schön,beautiful,Das ist schön.,schöner,am schönsten\n")
+            f.write("gut,good,Das ist gut.,besser,am besten\n")
+            temp_path = Path(f.name)
+
+        try:
+            yield temp_path
+        finally:
+            if temp_path.exists():
+                temp_path.unlink()
+
+    def test_read_csv_as_records_noun(
+        self, csv_service: CSVService, temp_noun_csv: Path
+    ) -> None:
+        """Test reading noun CSV as records."""
+        from langlearn.models.records import NounRecord
+
+        records = csv_service.read_csv_as_records(temp_noun_csv, "noun")
+
+        assert len(records) == 2
+        assert all(isinstance(r, NounRecord) for r in records)
+
+        first_record = records[0]
+        assert first_record.noun == "Katze"
+        assert first_record.article == "die"
+        assert first_record.english == "cat"
+        assert first_record.plural == "Katzen"
+
+    def test_read_csv_as_records_adjective(
+        self, csv_service: CSVService, temp_adjective_csv: Path
+    ) -> None:
+        """Test reading adjective CSV as records."""
+        from langlearn.models.records import AdjectiveRecord
+
+        records = csv_service.read_csv_as_records(temp_adjective_csv, "adjective")
+
+        assert len(records) == 2
+        assert all(isinstance(r, AdjectiveRecord) for r in records)
+
+        first_record = records[0]
+        assert first_record.word == "schön"
+        assert first_record.english == "beautiful"
+        assert first_record.comparative == "schöner"
+
+    def test_read_csv_as_records_unsupported_type(
+        self, csv_service: CSVService, temp_noun_csv: Path
+    ) -> None:
+        """Test reading CSV with unsupported record type."""
+        with pytest.raises(ValueError, match="Unsupported record type: unknown"):
+            csv_service.read_csv_as_records(temp_noun_csv, "unknown")
+
+    def test_read_csv_as_records_file_not_found(self, csv_service: CSVService) -> None:
+        """Test reading CSV file that doesn't exist."""
+        nonexistent_path = Path("nonexistent.csv")
+
+        with pytest.raises(FileNotFoundError):
+            csv_service.read_csv_as_records(nonexistent_path, "noun")
+
+    def test_read_csv_as_records_malformed_row(self, csv_service: CSVService) -> None:
+        """Test reading CSV with malformed rows."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+            f.write("noun,article,english,plural,example,related\n")
+            f.write("Katze,die,cat,Katzen,Die Katze ist süß.,Tier\n")
+            f.write("BadRow,only_two_fields\n")  # Malformed row - will be skipped
+            f.write("Hund,der,dog,Hunde,Der Hund bellt.,Tier\n")
+            temp_path = Path(f.name)
+
+        try:
+            records = csv_service.read_csv_as_records(temp_path, "noun")
+
+            # Should have 2 records (malformed row skipped)
+            assert len(records) == 2
+            assert records[0].noun == "Katze"
+            assert records[1].noun == "Hund"
+
+        finally:
+            if temp_path.exists():
+                temp_path.unlink()
+
+    def test_read_noun_records(
+        self, csv_service: CSVService, temp_noun_csv: Path
+    ) -> None:
+        """Test convenience method for reading noun records."""
+        from langlearn.models.records import NounRecord
+
+        records = csv_service.read_noun_records(temp_noun_csv)
+
+        assert len(records) == 2
+        assert all(isinstance(r, NounRecord) for r in records)
+
+    def test_read_adjective_records(
+        self, csv_service: CSVService, temp_adjective_csv: Path
+    ) -> None:
+        """Test convenience method for reading adjective records."""
+        from langlearn.models.records import AdjectiveRecord
+
+        records = csv_service.read_adjective_records(temp_adjective_csv)
+
+        assert len(records) == 2
+        assert all(isinstance(r, AdjectiveRecord) for r in records)
+
+    def test_get_supported_record_types(self, csv_service: CSVService) -> None:
+        """Test getting supported record types."""
+        types = csv_service.get_supported_record_types()
+
+        expected_types = {"noun", "adjective", "adverb", "negation"}
+        assert set(types) == expected_types
+
+    def test_validate_csv_structure_valid(
+        self, csv_service: CSVService, temp_noun_csv: Path
+    ) -> None:
+        """Test CSV structure validation with valid file."""
+        is_valid = csv_service.validate_csv_structure_for_record_type(
+            temp_noun_csv, "noun"
+        )
+
+        assert is_valid is True
+
+    def test_validate_csv_structure_missing_fields(
+        self, csv_service: CSVService
+    ) -> None:
+        """Test CSV structure validation with missing fields."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+            f.write("noun,article\n")  # Missing required fields for noun
+            f.write("Katze,die\n")
+            temp_path = Path(f.name)
+
+        try:
+            is_valid = csv_service.validate_csv_structure_for_record_type(
+                temp_path, "noun"
+            )
+
+            assert is_valid is False
+
+        finally:
+            if temp_path.exists():
+                temp_path.unlink()
+
+    def test_validate_csv_structure_unsupported_type(
+        self, csv_service: CSVService, temp_noun_csv: Path
+    ) -> None:
+        """Test CSV structure validation with unsupported record type."""
+        with pytest.raises(ValueError, match="Unsupported record type: unknown"):
+            csv_service.validate_csv_structure_for_record_type(temp_noun_csv, "unknown")
+
+    def test_validate_csv_structure_file_not_found(
+        self, csv_service: CSVService
+    ) -> None:
+        """Test CSV structure validation with non-existent file."""
+        nonexistent_path = Path("nonexistent.csv")
+
+        with pytest.raises(FileNotFoundError):
+            csv_service.validate_csv_structure_for_record_type(nonexistent_path, "noun")
+
+
+class TestCSVServiceIntegration:
+    """Test CSVService integration with real CSV files."""
+
+    def test_load_real_csv_files_as_records(self) -> None:
+        """Test loading actual project CSV files as records."""
+        csv_service = CSVService()
+        project_root = Path.cwd()
+
+        # Test with actual CSV files if they exist
+        test_files = [
+            ("data/nouns.csv", "noun"),
+            ("data/adjectives.csv", "adjective"),
+            ("data/adverbs.csv", "adverb"),
+            ("data/negations.csv", "negation"),
+        ]
+
+        for csv_file, record_type in test_files:
+            csv_path = project_root / csv_file
+            if csv_path.exists():
+                # Test that we can read the file without errors
+                records = csv_service.read_csv_as_records(csv_path, record_type)
+                assert len(records) > 0
+
+                # Test that structure validation passes
+                is_valid = csv_service.validate_csv_structure_for_record_type(
+                    csv_path, record_type
+                )
+                assert is_valid is True
