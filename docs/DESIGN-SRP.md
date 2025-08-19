@@ -154,9 +154,8 @@ See `docs/MVP_REINTEGRATION_PLAN.md` for detailed implementation plan.
 
 | **Component** | **File** | **Single Responsibility** |
 |---------------|----------|---------------------------|
-| **`GermanDeckBuilder`** | `german_deck_builder.py:20` | High-level orchestrator and main public API for comprehensive German vocabulary deck creation. Coordinates all subsystems while providing a clean, user-friendly interface. |
+| **`GermanDeckBuilder`** | `deck_builder.py:20` | High-level orchestrator and main public API for comprehensive German vocabulary deck creation. Coordinates all subsystems while providing a clean, user-friendly interface. |
 | **`AnkiDeckGenerator`** | `generator.py:25` | Legacy deck generator class (being phased out). Provides backward compatibility during migration to the new architecture. |
-| **`create_deck`** | `create_deck.py:15` | Direct deck creation functions with embedded templates. Provides simple, function-based API for basic deck generation needs. |
 | **`main`** | `main.py:10` | Application entry point and command-line interface. Coordinates initialization, configuration, and execution of the deck building process. |
 
 ---

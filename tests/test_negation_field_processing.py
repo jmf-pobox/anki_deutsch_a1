@@ -234,7 +234,7 @@ class TestNegationFieldProcessing:
     def test_ai_enhanced_image_search_integration(
         self, mock_generator: MockDomainMediaGenerator
     ) -> None:
-        """Test that AI-enhanced image search terms are generated for different negation types."""
+        """Test AI-enhanced image search terms for different negation types."""
         # Test different negation types with AI-generated contextual search terms
         test_cases = [
             ("nicht", "not", "general"),
@@ -263,7 +263,8 @@ class TestNegationFieldProcessing:
             # Verify AI-enhanced search terms were generated
             if mock_generator.image_calls:
                 actual_search = mock_generator.image_calls[0][0]
-                # Should generate contextual terms that are more detailed than the basic English
+                # Should generate contextual terms that are more detailed
+                # than the basic English
                 assert len(actual_search) >= len(
                     english.split("/")[0]
                 )  # At least as long as the main English meaning
@@ -393,7 +394,8 @@ class TestNegationFieldProcessing:
 
             search_terms = negation.get_image_search_terms()
             # Check that AI-generated terms are contextual and relevant
-            # AI may generate very contextual terms that don't literally contain the word but are visually relevant
+            # AI may generate very contextual terms that don't literally
+            # contain the word but are visually relevant
             assert isinstance(search_terms, str)
             assert len(search_terms) > 0  # Should generate some search terms
             assert len(search_terms) > 3  # Should be more than just a single short word

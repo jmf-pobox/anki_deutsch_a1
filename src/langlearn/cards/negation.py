@@ -123,7 +123,8 @@ class NegationCardGenerator(BaseCardGenerator[Negation]):
 
         logger.info(f"🎯 MEDIA ENHANCEMENT COMPLETE: negation='{negation.word}'")
         logger.info(
-            f"   Final fields: {[f[:50] + '...' if len(f) > 50 else f for f in enhanced_fields]}"
+            f"   Final fields: "
+            f"{[f[:50] + '...' if len(f) > 50 else f for f in enhanced_fields]}"
         )
 
         return enhanced_fields

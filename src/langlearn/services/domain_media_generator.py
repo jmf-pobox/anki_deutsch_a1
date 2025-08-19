@@ -97,9 +97,11 @@ class DomainMediaGenerator:
             logger.debug("Missing data for context enhancement, using English fallback")
             return english or word or "concept"
 
-        # Legacy method - now just returns English fallback since legacy service is removed
+        # Legacy method - now just returns English fallback
+        # since legacy service is removed
         logger.debug(
-            "Context enhancement not available (legacy service removed), using English fallback"
+            "Context enhancement not available (legacy service removed), "
+            "using English fallback"
         )
         return english or word or "concept"
 
@@ -120,9 +122,11 @@ class DomainMediaGenerator:
             logger.debug("Missing data for conceptual search, using English fallback")
             return english or word or "abstract concept"
 
-        # Legacy method - now provides basic conceptual terms since legacy service is removed
+        # Legacy method - now provides basic conceptual terms
+        # since legacy service is removed
         logger.debug(
-            "Conceptual search not available (legacy service removed), using basic terms"
+            "Conceptual search not available (legacy service removed), "
+            "using basic terms"
         )
         return f"{english} concept abstract" if english else "abstract concept"
 

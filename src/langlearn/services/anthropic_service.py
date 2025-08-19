@@ -121,7 +121,7 @@ class AnthropicService:
             return str(model)
 
     def generate_pexels_query(self, model: Any) -> str:
-        """Generate a Pexels query prioritizing the sentence context for more relevant images."""
+        """Generate a Pexels query prioritizing sentence context for relevant images."""
         prompt = f"""You are a helpful assistant that generates search queries
 for finding relevant images based on sentence context.
 
@@ -135,7 +135,8 @@ isolated word meaning.
 
 Guidelines:
 - PRIORITIZE the visual context from the example sentence over the bare word meaning
-- Extract concrete, visual elements from the sentence (people, objects, actions, settings)
+- Extract concrete, visual elements from the sentence
+  (people, objects, actions, settings)
 - Keep the query between 2-5 words
 - Focus on what someone would actually see in the situation described
 - If the sentence shows the word in action/context, capture that action

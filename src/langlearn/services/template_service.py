@@ -130,7 +130,7 @@ class TemplateService:
         """Create modern template files with enhanced styling.
 
         This method creates template files with the modern responsive
-        styling from create_deck.py, preserving all the improvements
+        styling from legacy templates, preserving all the improvements
         made to the templates.
         """
         # Create modern templates for each card type
@@ -145,9 +145,9 @@ class TemplateService:
         Args:
             card_type: Type of card to create templates for
         """
-        # This would contain the modern templates from create_deck.py
+        # This would contain the modern templates
         # For now, we'll use the templates that are already embedded
-        # in create_deck.py functions as the source of truth
+        # in template files as the source of truth
         pass
 
     def clear_cache(self) -> None:

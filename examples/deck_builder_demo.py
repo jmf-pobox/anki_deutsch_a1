@@ -11,7 +11,7 @@ from pathlib import Path
 # Add src to path to import langlearn modules
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from langlearn.german_deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import GermanDeckBuilder
 from langlearn.models.adjective import Adjective
 from langlearn.models.noun import Noun
 

@@ -172,7 +172,8 @@ class AnkiBackend(DeckBackend):
 
         anki_notetype_id = self._note_type_map[note_type_id]
 
-        # Process fields for media generation (skip if already processed by card generators)
+        # Process fields for media generation
+        # (skip if already processed by card generators)
         if skip_media_processing:
             processed_fields = fields
             logger.info(

@@ -69,11 +69,14 @@ class MediaManager:
         try:
             # Add to backend with media type context
             logger.info(
-                f"   🔧 Calling backend.add_media_file('{file_path}', media_type='{media_type}')"
+                f"   🔧 Calling backend.add_media_file('{file_path}', "
+                f"media_type='{media_type}')"
             )
             media_file = self._backend.add_media_file(file_path, media_type=media_type)
             logger.info(
-                f"   ✅ Backend returned MediaFile: path='{media_file.path}', reference='{media_file.reference}', media_type='{media_file.media_type}'"
+                f"   ✅ Backend returned MediaFile: path='{media_file.path}', "
+                f"reference='{media_file.reference}', "
+                f"media_type='{media_file.media_type}'"
             )
 
             # Update statistics

@@ -234,7 +234,7 @@ class Adjective(BaseModel, FieldProcessor):
         ]
 
     def get_image_search_terms(self) -> str:
-        """Get enhanced search terms prioritizing sentence context for better image results.
+        """Get enhanced search terms prioritizing sentence context for better results.
 
         Returns:
             Context-aware search terms generated from the example sentence,

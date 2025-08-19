@@ -215,7 +215,7 @@ class TestAdverbFieldProcessing:
     def test_ai_enhanced_search_terms_integration(
         self, mock_generator: MockDomainMediaGenerator
     ) -> None:
-        """Test that AI-enhanced search terms are generated for different adverb types."""
+        """Test AI-enhanced search terms for different adverb types."""
         # Test different adverb types with AI-generated contextual search terms
         test_cases = [
             ("hier", "here", "location"),

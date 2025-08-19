@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Main application entry point using GermanDeckBuilder.
 
-This replaces the legacy create_deck.py with a modern implementation
+This provides the modern implementation for deck generation
 using the GermanDeckBuilder orchestrator.
 """
 
@@ -9,7 +9,7 @@ import logging
 import sys
 from pathlib import Path
 
-from langlearn.german_deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import GermanDeckBuilder
 
 # Set up logging
 logging.basicConfig(

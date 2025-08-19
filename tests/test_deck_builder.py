@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from langlearn.backends.base import DeckBackend, MediaFile, NoteType
-from langlearn.german_deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import GermanDeckBuilder
 from langlearn.models.adjective import Adjective
 from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.negation import Negation, NegationType
@@ -144,7 +144,7 @@ class TestGermanDeckBuilder:
 
     def test_initialization_anki_backend(self) -> None:
         """Test GermanDeckBuilder initialization with official Anki backend."""
-        with patch("langlearn.german_deck_builder.AnkiBackend") as mock_anki:
+        with patch("langlearn.deck_builder.AnkiBackend") as mock_anki:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
@@ -160,7 +160,7 @@ class TestGermanDeckBuilder:
 
     def test_initialization_media_disabled(self) -> None:
         """Test GermanDeckBuilder initialization with media generation disabled."""
-        with patch("langlearn.german_deck_builder.AnkiBackend") as mock_anki:
+        with patch("langlearn.deck_builder.AnkiBackend") as mock_anki:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
@@ -171,7 +171,7 @@ class TestGermanDeckBuilder:
             assert builder._media_service is None
             assert builder.enable_media_generation is False
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_nouns_from_csv(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
@@ -190,7 +190,7 @@ class TestGermanDeckBuilder:
             assert builder._loaded_nouns[0].noun == "Katze"
             mock_read.assert_called_once()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_adjectives_from_csv(
         self, mock_anki: Mock, sample_adjective_data: list[Adjective]
     ) -> None:
@@ -209,7 +209,7 @@ class TestGermanDeckBuilder:
             assert builder._loaded_adjectives[0].word == "schön"
             mock_read.assert_called_once()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
@@ -235,7 +235,7 @@ class TestGermanDeckBuilder:
                 # Should not call load_adjectives_from_csv since file doesn't exist
                 mock_load_adj.assert_not_called()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_create_subdeck(self, mock_anki: Mock) -> None:
         """Test creating subdecks."""
         mock_backend = Mock(spec=DeckBackend)
@@ -247,7 +247,7 @@ class TestGermanDeckBuilder:
             builder.create_subdeck("Nouns")
             mock_set.assert_called_once_with("Nouns")
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_reset_to_main_deck(self, mock_anki: Mock) -> None:
         """Test resetting to main deck."""
         mock_backend = Mock(spec=DeckBackend)
@@ -259,7 +259,7 @@ class TestGermanDeckBuilder:
             builder.reset_to_main_deck()
             mock_reset.assert_called_once()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_noun_cards_no_data(self, mock_anki: Mock) -> None:
         """Test generating noun cards when no data is loaded."""
         mock_backend = Mock(spec=DeckBackend)
@@ -270,7 +270,7 @@ class TestGermanDeckBuilder:
         result = builder.generate_noun_cards()
         assert result == 0
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_noun_cards_with_data(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
@@ -298,7 +298,7 @@ class TestGermanDeckBuilder:
             mock_factory.assert_called_once()
             assert mock_generator.add_card.call_count == 2
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_noun_cards_with_media(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
@@ -328,7 +328,7 @@ class TestGermanDeckBuilder:
                 sample_noun_data[0], generate_media=True
             )
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_adjective_cards_with_data(
         self, mock_anki: Mock, sample_adjective_data: list[Adjective]
     ) -> None:
@@ -356,7 +356,7 @@ class TestGermanDeckBuilder:
             mock_factory.assert_called_once()
             assert mock_generator.add_card.call_count == 2
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_all_cards(
         self,
         mock_anki: Mock,
@@ -383,7 +383,7 @@ class TestGermanDeckBuilder:
                 mock_noun_cards.assert_called_once_with(False)
                 mock_adj_cards.assert_called_once_with(False)
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_export_deck(self, mock_anki: Mock) -> None:
         """Test exporting deck to file."""
         mock_backend = Mock(spec=DeckBackend)
@@ -395,7 +395,7 @@ class TestGermanDeckBuilder:
             builder.export_deck("output/test.apkg")
             mock_export.assert_called_once_with("output/test.apkg")
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_get_statistics(self, mock_anki: Mock) -> None:
         """Test getting comprehensive statistics."""
         mock_backend = Mock(spec=DeckBackend)
@@ -424,7 +424,7 @@ class TestGermanDeckBuilder:
                 assert stats["deck_stats"] == mock_deck_stats
                 assert stats["files_added"] == 5
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_get_subdeck_info(self, mock_anki: Mock) -> None:
         """Test getting subdeck information."""
         mock_backend = Mock(spec=DeckBackend)
@@ -454,7 +454,7 @@ class TestGermanDeckBuilder:
                     assert info["subdeck_names"] == ["Nouns", "Adjectives"]
                     assert len(info["full_subdeck_names"]) == 2
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_clear_loaded_data(self, mock_anki: Mock) -> None:
         """Test clearing loaded data."""
         mock_backend = Mock(spec=DeckBackend)
@@ -469,7 +469,7 @@ class TestGermanDeckBuilder:
         assert len(builder._loaded_nouns) == 0
         assert len(builder._loaded_adjectives) == 0
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_context_manager_support(self, mock_anki: Mock) -> None:
         """Test context manager support."""
         mock_backend = Mock(spec=DeckBackend)
@@ -479,7 +479,7 @@ class TestGermanDeckBuilder:
             assert isinstance(builder, GermanDeckBuilder)
             assert builder.deck_name == "Test Deck"
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_all_media_no_service(self, mock_anki: Mock) -> None:
         """Test generate_all_media when media service is disabled."""
         mock_backend = Mock(spec=DeckBackend)
@@ -492,7 +492,7 @@ class TestGermanDeckBuilder:
         result = builder.generate_all_media()
         assert result == {}
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_all_media_with_service(self, mock_anki: Mock) -> None:
         """Test generate_all_media when media service is enabled."""
         mock_backend = Mock(spec=DeckBackend)
@@ -509,7 +509,7 @@ class TestGermanDeckBuilder:
             result = builder.generate_all_media()
             assert result == mock_stats
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_adverbs_from_csv(
         self, mock_anki: Mock, sample_adverb_data: list[Adverb]
     ) -> None:
@@ -528,7 +528,7 @@ class TestGermanDeckBuilder:
             assert builder._loaded_adverbs[0].word == "schnell"
             mock_read.assert_called_once()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_negations_from_csv(
         self, mock_anki: Mock, sample_negation_data: list[Negation]
     ) -> None:
@@ -547,7 +547,7 @@ class TestGermanDeckBuilder:
             assert builder._loaded_negations[0].word == "nicht"
             mock_read.assert_called_once()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_adverb_cards_no_data(self, mock_anki: Mock) -> None:
         """Test generating adverb cards when no data is loaded."""
         mock_backend = Mock(spec=DeckBackend)
@@ -558,7 +558,7 @@ class TestGermanDeckBuilder:
         result = builder.generate_adverb_cards()
         assert result == 0
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_adverb_cards_with_data(
         self, mock_anki: Mock, sample_adverb_data: list[Adverb]
     ) -> None:
@@ -586,7 +586,7 @@ class TestGermanDeckBuilder:
             mock_factory.assert_called_once()
             assert mock_generator.add_card.call_count == 2
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_negation_cards_no_data(self, mock_anki: Mock) -> None:
         """Test generating negation cards when no data is loaded."""
         mock_backend = Mock(spec=DeckBackend)
@@ -597,7 +597,7 @@ class TestGermanDeckBuilder:
         result = builder.generate_negation_cards()
         assert result == 0
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_negation_cards_with_data(
         self, mock_anki: Mock, sample_negation_data: list[Negation]
     ) -> None:
@@ -625,7 +625,7 @@ class TestGermanDeckBuilder:
             mock_factory.assert_called_once()
             assert mock_generator.add_card.call_count == 2
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_adverb_cards_with_existing_media(
         self, mock_anki: Mock, sample_adverb_data: list[Adverb]
     ) -> None:
@@ -666,7 +666,7 @@ class TestGermanDeckBuilder:
             # Should call add_media_file for existing audio and image
             assert mock_add_media.call_count >= 1
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_negation_cards_with_media_generation(
         self, mock_anki: Mock, sample_negation_data: list[Negation]
     ) -> None:
@@ -713,7 +713,7 @@ class TestGermanDeckBuilder:
                             # Should generate audio for the negation word and example
                             assert mock_gen_audio.call_count >= 1
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
         """Test loading data from directory with all file types."""
         mock_backend = Mock(spec=DeckBackend)
@@ -743,7 +743,7 @@ class TestGermanDeckBuilder:
                 mock_load_adv.assert_called_once()
                 mock_load_neg.assert_called_once()
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_all_cards_with_all_types(
         self,
         mock_anki: Mock,
@@ -787,7 +787,7 @@ class TestGermanDeckBuilder:
             mock_adv_cards.assert_called_once_with(False)
             mock_neg_cards.assert_called_once_with(False)
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_get_statistics_comprehensive(
         self,
         mock_anki: Mock,
@@ -827,7 +827,7 @@ class TestGermanDeckBuilder:
                 assert stats["deck_stats"] == mock_deck_stats
                 assert stats["files_added"] == 15
 
-    @patch("langlearn.german_deck_builder.AnkiBackend")
+    @patch("langlearn.deck_builder.AnkiBackend")
     def test_clear_loaded_data_comprehensive(
         self,
         mock_anki: Mock,
