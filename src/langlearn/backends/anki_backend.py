@@ -72,7 +72,9 @@ class AnkiBackend(DeckBackend):
 
         # Initialize services with dependency injection
         if media_service is None:
-            audio_service = AudioService(output_dir="data/audio")
+            audio_service = AudioService(
+                output_dir=str(self._project_root / "data" / "audio")
+            )
             pexels_service = PexelsService()
             config = MediaGenerationConfig()
             media_service = MediaService(

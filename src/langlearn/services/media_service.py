@@ -103,14 +103,14 @@ class MediaService:
             # Check if audio already exists (deduplication)
             if audio_path.exists():
                 self._stats["audio_reused"] += 1
-                logger.debug(f"Reusing existing audio: {audio_path}")
+                logger.info(f"🔄 Reusing existing audio: {audio_path}")
                 return str(audio_path)
 
             # Generate new audio using injected service
             generated_path = self._audio_service.generate_audio(text)
             if generated_path:
                 self._stats["audio_generated"] += 1
-                logger.info(f"Generated new audio: {generated_path}")
+                logger.info(f"🆕 Generated new audio: {generated_path}")
                 return generated_path
             else:
                 self._stats["generation_errors"] += 1

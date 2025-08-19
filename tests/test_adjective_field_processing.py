@@ -6,6 +6,10 @@ implements the FieldProcessor interface and handles its own field processing.
 """
 
 import pytest
+from pathlib import Path
+import shutil
+import tempfile
+from unittest.mock import patch
 
 from langlearn.models.adjective import Adjective
 from langlearn.services.domain_media_generator import MockDomainMediaGenerator
@@ -23,10 +27,37 @@ class TestAdjectiveFieldProcessing:
             example="Das ist schön.",
             comparative="schöner",
             superlative="am schönsten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
+
+    @pytest.fixture
+    def temp_hide_images(self):
+        """Temporarily move existing image files so tests can check generation paths."""
+        # List of image files that conflict with tests
+        image_files = ["schön.jpg"]
+        moved_files = []
+        
+        # Create temporary directory
+        temp_dir = Path(tempfile.mkdtemp())
+        
+        try:
+            # Move existing image files temporarily
+            for filename in image_files:
+                source = Path(f"data/images/{filename}")
+                if source.exists():
+                    dest = temp_dir / filename
+                    shutil.move(str(source), str(dest))
+                    moved_files.append((str(source), str(dest)))
+            
+            yield
+            
+        finally:
+            # Restore moved files
+            for source, temp_path in moved_files:
+                if Path(temp_path).exists():
+                    shutil.move(temp_path, source)
+            
+            # Clean up temp directory
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
     @pytest.fixture
     def mock_generator(self) -> MockDomainMediaGenerator:
@@ -70,10 +101,13 @@ class TestAdjectiveFieldProcessing:
         assert adjective.validate_field_structure([""] * 7) is False
         assert adjective.validate_field_structure([]) is False
 
+    @patch('langlearn.services.service_container.get_anthropic_service')
     def test_process_fields_complete_generation(
-        self, adjective: Adjective, mock_generator: MockDomainMediaGenerator
+        self, mock_anthropic_service, adjective: Adjective, mock_generator: MockDomainMediaGenerator, temp_hide_images
     ) -> None:
         """Test complete field processing with all media generation."""
+        # Mock anthropic service to return None so test uses fallback logic
+        mock_anthropic_service.return_value = None
         fields = [
             "schön",  # 0: Word
             "beautiful",  # 1: English
@@ -156,7 +190,7 @@ class TestAdjectiveFieldProcessing:
         assert len(mock_generator.context_calls) == 0
 
     def test_process_fields_media_generation_failure(
-        self, adjective: Adjective, mock_generator: MockDomainMediaGenerator
+        self, adjective: Adjective, mock_generator: MockDomainMediaGenerator, temp_hide_images
     ) -> None:
         """Test field processing handles media generation failures gracefully."""
         fields = [

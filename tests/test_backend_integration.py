@@ -6,6 +6,9 @@ to delegate field processing to domain models.
 """
 
 from unittest.mock import Mock, patch
+from pathlib import Path
+import shutil
+import tempfile
 
 import pytest
 
@@ -15,6 +18,36 @@ from langlearn.services.domain_media_generator import MockDomainMediaGenerator
 
 class TestBackendIntegration:
     """Test backend integration with domain model delegation."""
+
+    @pytest.fixture
+    def temp_hide_images(self):
+        """Temporarily move existing image files so tests can check generation paths."""
+        # List of image files that conflict with tests
+        image_files = ["schön.jpg"]
+        moved_files = []
+        
+        # Create temporary directory
+        temp_dir = Path(tempfile.mkdtemp())
+        
+        try:
+            # Move existing image files temporarily
+            for filename in image_files:
+                source = Path(f"data/images/{filename}")
+                if source.exists():
+                    dest = temp_dir / filename
+                    shutil.move(str(source), str(dest))
+                    moved_files.append((str(source), str(dest)))
+            
+            yield
+            
+        finally:
+            # Restore moved files
+            for source, temp_path in moved_files:
+                if Path(temp_path).exists():
+                    shutil.move(temp_path, source)
+            
+            # Clean up temp directory
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
     def test_anki_backend_uses_domain_delegation(self) -> None:
         """Test that AnkiBackend delegates to domain models when available."""
@@ -60,7 +93,7 @@ class TestBackendIntegration:
             mock_factory.assert_called_once_with("Unsupported Type")
             assert result == fields
 
-    def test_adjective_processing(self) -> None:
+    def test_adjective_processing(self, temp_hide_images) -> None:
         """Test that AnkiBackend processes adjectives correctly."""
         # Set up adjective fields
         fields = [

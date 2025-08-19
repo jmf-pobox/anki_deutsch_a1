@@ -1,5 +1,6 @@
 """Unit tests for MediaService."""
 
+import hashlib
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
@@ -124,3 +125,45 @@ class TestMediaService:
 
         assert stats.audio_generated == 0
         assert stats.audio_reused == 0
+
+    def test_audio_caching_behavior(self, tmp_path: Path) -> None:
+        """Test that audio files are reused when they already exist."""
+        # Setup services with real temp directory
+        audio_dir = tmp_path / "audio"
+        audio_dir.mkdir()
+
+        mock_audio_service = Mock(spec=AudioService)
+        mock_audio_service.generate_audio.return_value = str(audio_dir / "test.mp3")
+
+        mock_pexels_service = Mock(spec=PexelsService)
+        config = MediaGenerationConfig(audio_dir=str(audio_dir))
+
+        media_service = MediaService(
+            mock_audio_service, mock_pexels_service, config, tmp_path
+        )
+
+        # Create a fake existing audio file
+        test_text = "Hello, world!"
+        filename = f"{hashlib.md5(test_text.encode()).hexdigest()}.mp3"
+        existing_file = audio_dir / filename
+        existing_file.write_text("fake audio data")
+
+        # First call should reuse existing file (no AudioService call)
+        result1 = media_service.generate_audio(test_text)
+        assert result1 == str(existing_file)
+        mock_audio_service.generate_audio.assert_not_called()
+
+        # Stats should show reuse
+        stats = media_service.get_stats()
+        assert stats.audio_reused == 1
+        assert stats.audio_generated == 0
+
+        # Second call should also reuse (still no AudioService call)
+        result2 = media_service.generate_audio(test_text)
+        assert result2 == str(existing_file)
+        mock_audio_service.generate_audio.assert_not_called()
+
+        # Stats should show second reuse
+        stats = media_service.get_stats()
+        assert stats.audio_reused == 2
+        assert stats.audio_generated == 0

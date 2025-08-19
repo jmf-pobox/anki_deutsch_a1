@@ -149,13 +149,21 @@ class AdjectiveCardGenerator(BaseCardGenerator[Adjective]):
         # Check for existing image (field no longer exists on model)
         # Image generation now handled by field processor during CSV processing
 
-        # Generate image using domain model's enhanced search terms
-        enhanced_search_query = adjective.get_image_search_terms()
-        image_file = self._media_manager.generate_and_add_image(
-            adjective.word,
-            search_query=enhanced_search_query,
-            example_sentence=adjective.example,
-        )
+        # Check if image already exists before making expensive AI calls
+        from pathlib import Path
+        expected_image_path = Path(f"data/images/{adjective.word.lower()}.jpg")
+        
+        if expected_image_path.exists():
+            # Image already exists, just add it without AI enhancement
+            image_file = self._media_manager.add_media_file(str(expected_image_path), media_type="image")
+        else:
+            # Image doesn't exist, use AI-enhanced search terms for generation  
+            enhanced_search_query = adjective.get_image_search_terms()
+            image_file = self._media_manager.generate_and_add_image(
+                adjective.word,
+                search_query=enhanced_search_query,
+                example_sentence=adjective.example,
+            )
         if image_file:
             return f'<img src="{image_file.reference}">'
 

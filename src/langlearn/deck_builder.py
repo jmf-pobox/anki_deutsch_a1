@@ -88,10 +88,12 @@ class DeckBuilder:
             from .services.pexels_service import PexelsService
 
             # Initialize dependencies for media service
-            audio_service = AudioService(output_dir="data/audio")
+            project_root = Path(__file__).parent.parent.parent  # Go up to project root
+            audio_service = AudioService(
+                output_dir=str(project_root / "data" / "audio")
+            )
             pexels_service = PexelsService()
             media_config = MediaGenerationConfig()
-            project_root = Path(__file__).parent.parent.parent  # Go up to project root
 
             self._media_service = MediaService(
                 audio_service=audio_service,

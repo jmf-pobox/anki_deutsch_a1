@@ -184,12 +184,13 @@ class Negation(BaseModel, FieldProcessor):
 
         # Try to use Anthropic service for context-aware query generation
         try:
-            from langlearn.services.anthropic_service import AnthropicService
+            from langlearn.services.service_container import get_anthropic_service
 
-            service = AnthropicService()
-            context_query = service.generate_pexels_query(self)
-            if context_query and context_query.strip():
-                return context_query.strip()
+            service = get_anthropic_service()
+            if service:
+                context_query = service.generate_pexels_query(self)
+                if context_query and context_query.strip():
+                    return context_query.strip()
         except Exception:
             # Fall back to negation concept mappings if Anthropic service fails
             pass
@@ -284,10 +285,19 @@ class Negation(BaseModel, FieldProcessor):
                     type=negation_type,
                     example=example,
                 )
-                search_terms = temp_negation.get_image_search_terms()
-                image_path = media_generator.generate_image(search_terms, english)
-                if image_path:
-                    processed[6] = format_media_reference(image_path, "image")
+                # Check if image already exists before expensive AI call
+                from pathlib import Path
+                expected_image_path = Path(f"data/images/{word.lower()}.jpg")
+                
+                if expected_image_path.exists():
+                    # Image exists, just reference it
+                    processed[6] = format_media_reference(str(expected_image_path), "image")
+                else:
+                    # Image doesn't exist, use AI-enhanced search terms
+                    search_terms = temp_negation.get_image_search_terms()
+                    image_path = media_generator.generate_image(search_terms, english)
+                    if image_path:
+                        processed[6] = format_media_reference(image_path, "image")
             except ValueError:
                 # If negation type is invalid, skip image generation
                 pass

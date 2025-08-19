@@ -168,12 +168,13 @@ class Noun(BaseModel, FieldProcessor):
 
         # Try to use Anthropic service for context-aware query generation
         try:
-            from langlearn.services.anthropic_service import AnthropicService
+            from langlearn.services.service_container import get_anthropic_service
 
-            service = AnthropicService()
-            context_query = service.generate_pexels_query(self)
-            if context_query and context_query.strip():
-                return context_query.strip()
+            service = get_anthropic_service()
+            if service:
+                context_query = service.generate_pexels_query(self)
+                if context_query and context_query.strip():
+                    return context_query.strip()
         except Exception:
             # Fall back to concrete/abstract handling if Anthropic service fails
             pass
@@ -269,11 +270,22 @@ class Noun(BaseModel, FieldProcessor):
                 related=related,
             )
             if temp_noun.is_concrete():
-                # Use context-enhanced search terms for better image results
-                search_terms = temp_noun.get_image_search_terms()
-                image_path = media_generator.generate_image(search_terms, english)
-                if image_path:
-                    processed[6] = format_media_reference(image_path, "image")
+                # Check if image already exists before expensive AI call
+                from pathlib import Path
+                safe_filename = "".join(
+                    c for c in noun if c.isalnum() or c in (" ", "-", "_")
+                ).rstrip().replace(" ", "_").lower()
+                expected_image_path = Path(f"data/images/{safe_filename}.jpg")
+                
+                if expected_image_path.exists():
+                    # Image exists, just reference it
+                    processed[6] = format_media_reference(str(expected_image_path), "image")
+                else:
+                    # Image doesn't exist, use AI-enhanced search terms
+                    search_terms = temp_noun.get_image_search_terms()
+                    image_path = media_generator.generate_image(search_terms, english)
+                    if image_path:
+                        processed[6] = format_media_reference(image_path, "image")
 
         return processed
 

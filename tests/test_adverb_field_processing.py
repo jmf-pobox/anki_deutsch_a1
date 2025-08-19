@@ -6,6 +6,9 @@ and its German-specific field processing logic.
 """
 
 import pytest
+from pathlib import Path
+import shutil
+import tempfile
 
 from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.field_processor import FieldProcessingError
@@ -34,6 +37,36 @@ class TestAdverbFieldProcessing:
             type=AdverbType.TIME,
             example="Heute ist es sonnig.",
         )
+
+    @pytest.fixture
+    def temp_hide_images(self):
+        """Temporarily move existing image files so tests can check generation paths."""
+        # List of image files that conflict with tests
+        image_files = ["hier.jpg", "dort.jpg"]
+        moved_files = []
+        
+        # Create temporary directory
+        temp_dir = Path(tempfile.mkdtemp())
+        
+        try:
+            # Move existing image files temporarily
+            for filename in image_files:
+                source = Path(f"data/images/{filename}")
+                if source.exists():
+                    dest = temp_dir / filename
+                    shutil.move(str(source), str(dest))
+                    moved_files.append((str(source), str(dest)))
+            
+            yield
+            
+        finally:
+            # Restore moved files
+            for source, temp_path in moved_files:
+                if Path(temp_path).exists():
+                    shutil.move(temp_path, source)
+            
+            # Clean up temp directory
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
     @pytest.fixture
     def mock_generator(self) -> MockDomainMediaGenerator:
@@ -75,7 +108,7 @@ class TestAdverbFieldProcessing:
         assert location_adverb.validate_field_structure([]) is False
 
     def test_process_fields_complete_generation(
-        self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator
+        self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator, temp_hide_images
     ) -> None:
         """Test complete field processing with all media generation."""
         fields = [
@@ -152,7 +185,7 @@ class TestAdverbFieldProcessing:
         assert len(mock_generator.image_calls) == 0
 
     def test_process_fields_media_generation_failure(
-        self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator
+        self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator, temp_hide_images
     ) -> None:
         """Test field processing handles media generation failures gracefully."""
         fields = [
