@@ -101,7 +101,7 @@ class DeckBuilder:
                 audio_service = AudioService(
                     output_dir=str(project_root / "data" / "audio")
                 )
-            pexels_service = PexelsService()
+                pexels_service = PexelsService()
             media_config = MediaGenerationConfig()
 
             self._media_service = MediaService(
