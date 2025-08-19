@@ -9,7 +9,7 @@ A German language learning application that generates customized Anki decks for 
 [![Coverage](https://img.shields.io/badge/Coverage-73.84%25-yellow)](#testing)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Code Quality](https://img.shields.io/badge/Code%20Quality-MyPy%20%7C%20Ruff-success)](#quality)
-[![Backend](https://img.shields.io/badge/Backend-Dual%20Support-blue)](#architecture)
+[![Platform](https://img.shields.io/badge/Platform-Anki-blue)](#usage)
 [![Language](https://img.shields.io/badge/German-A1%20Level-orange)](#german-features)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -20,8 +20,7 @@ A German language learning application that generates customized Anki decks for 
 | **Build Status** | ![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg) | Automated testing on every push |
 | **Code Quality** | ✅ **Excellent** | 100% MyPy compliance, zero linting violations |
 | **Test Coverage** | 📊 **73.84%** | 401 comprehensive tests (562 unit + 24 integration) |
-| **Active Backend** | 🟢 **genanki** | Production ready, fully tested |
-| **Alternative Backend** | 🟡 **Official Anki** | Architecture complete, validation pending |
+| **Output Format** | 🟢 **Anki Decks** | .apkg files ready for import |
 | **Documentation** | 📖 **Comprehensive** | Complete design docs in `docs/` directory |
 
 ### 📈 Quality Metrics
@@ -33,8 +32,7 @@ A German language learning application that generates customized Anki decks for 
 ### Core Functionality ✅
 - **Deck Generation**: Creates Anki decks (.apkg files) with German vocabulary
 - **German Language Support**: Specialized handling for nouns, verbs, adjectives, adverbs, negations
-- **Media Integration**: AWS Polly audio generation and Pexels image integration
-- **Backend Flexibility**: Support for both genanki and official Anki library backends
+- **Media Integration**: AWS Polly audio generation and Pexels image integration  
 - **Code Quality**: 100% MyPy strict mode compliance, comprehensive linting, enterprise-grade standards
 
 ## 📚 Documentation
@@ -140,10 +138,7 @@ anki-deutsch-a1/
 │   └── negations.csv          # Negation words and phrases
 │
 ├── 🏗️ src/langlearn/
-│   ├── 🎯 backends/            # Backend abstraction layer
-│   │   ├── base.py             # Abstract interfaces
-│   │   ├── genanki_backend.py  # genanki implementation
-│   │   └── anki_backend.py     # Official Anki library implementation
+│   ├── 🎯 backends/            # Anki integration layer
 │   ├── 📝 models/              # Pydantic German language models
 │   ├── 🔌 services/            # External API integrations (AWS, Pexels, CSV)
 │   ├── 🛠️ utils/               # API key management and utilities
@@ -205,22 +200,18 @@ This generates a complete German A1 Anki deck with:
 - Optional media integration (audio/images)
 - Export to `.apkg` format ready for Anki import
 
-### Backend Selection
+### Usage Example
 ```python
-from langlearn.german_deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import DeckBuilder
 
-# Use genanki backend (current default)
-with GermanDeckBuilder(
+# Create German A1 vocabulary deck
+with DeckBuilder(
     deck_name="My German Deck",
-    backend_type="genanki",
     enable_media_generation=True
 ) as builder:
     builder.load_data_from_directory("data/")
     builder.generate_all_cards(generate_media=True)
     builder.export_deck("output/german_deck.apkg")
-
-# Alternative: Use official Anki library backend
-# backend_type="anki"  # (requires additional validation)
 ```
 
 ## 🧪 Development & Testing
@@ -268,18 +259,12 @@ Following the mandatory development workflow from `CLAUDE.md`:
 
 ## 🔧 Architecture
 
-### Backend Abstraction
-The application uses a backend abstraction layer supporting multiple Anki libraries:
-- **genanki Backend**: Current production backend (stable, tested)
-- **Official Anki Backend**: Alternative implementation (available, requires validation)
-- **Interface Compatibility**: Identical API across backends for seamless switching
-
 ### Key Design Principles
-- **Single Responsibility**: Each component has a clear, focused purpose
+- **German Language Focus**: Specialized handling for German grammar and vocabulary patterns
+- **Media-Rich Learning**: Optional audio pronunciation and visual learning aids
 - **Type Safety**: Full MyPy compliance with comprehensive type hints
-- **German Language Focus**: Specialized models and validation for German grammar
+- **Clean Pipeline**: CSV data → Domain models → Enriched content → Anki cards
 - **Testability**: Comprehensive unit test coverage with mocked dependencies
-- **Configuration Driven**: Flexible backend and feature selection
 
 ### Upcoming MVP Architecture (Planned)
 The codebase is planned for evolution to a clean **MVP (Model-View-Presenter)** architecture:

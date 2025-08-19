@@ -1,56 +1,55 @@
 # Design Documentation Index
 
-This directory contains comprehensive design documentation for the **Clean Pipeline Architecture** German A1 vocabulary learning application. The architecture reflects enterprise-grade clean architecture implementation with complete separation of concerns.
+This directory contains design documentation for the German A1 vocabulary learning application. The application generates Anki decks with German vocabulary, grammar patterns, and integrated media.
 
-**Status**: Clean Pipeline Architecture Migration Complete ✅  
-**Quality Score**: 10/10 Enterprise-grade implementation with 81.70% coverage
+**Status**: Production Ready ✅  
+**Test Coverage**: 73.84% with 401 tests (562 unit + 24 integration)
 
 ---
 
 ## 🚀 **Quick Start Guide**
 
-### **New to the Clean Pipeline Architecture?**
-1. **Start here**: [DESIGN-STATE.md](./DESIGN-STATE.md) - Current architecture status and metrics
-2. **Architecture overview**: [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md) - Clean Pipeline implementation
-3. **Component reference**: [DESIGN-SRP.md](./DESIGN-SRP.md) - Complete system inventory
+### **New Developer Setup**
+1. **Start here**: [DESIGN-STATE.md](./DESIGN-STATE.md) - Current implementation status
+2. **Development standards**: [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md) - Coding standards and workflow
+3. **Component reference**: [DESIGN-SRP.md](./DESIGN-SRP.md) - System components overview
 
 ### **Need Something Specific?**
-- 🎯 **Current architecture status?** → [DESIGN-STATE.md](./DESIGN-STATE.md)
-- 🔧 **Clean Pipeline details?** → [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md)
-- 📝 **Development workflow?** → [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md)
-- 🔍 **Component lookup?** → [DESIGN-SRP.md](./DESIGN-SRP.md)
-- 📊 **Quality metrics?** → Run `hatch run test` (586 tests) and coverage at 81.70%
-- 🏗️ **Architecture flow?** → [DESIGN.md](./DESIGN.md)
+- 🎯 **Implementation status?** → [DESIGN-STATE.md](./DESIGN-STATE.md)
+- 🔧 **Development workflow?** → [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md)  
+- 🔍 **Component overview?** → [DESIGN-SRP.md](./DESIGN-SRP.md)
+- 📊 **Quality metrics?** → Run `hatch run test-cov` for coverage report
+- 🏗️ **System design?** → [DESIGN.md](./DESIGN.md)
 
 ---
 
 ## 📋 **Document Descriptions**
 
-### **[DESIGN-SRP.md](./DESIGN-SRP.md)** - System Reference
+### **[DESIGN-SRP.md](./DESIGN-SRP.md)** - System Components
 **Target Audience**: All Engineers  
-**Purpose**: Comprehensive inventory of Clean Pipeline Architecture components  
+**Purpose**: Overview of system components and their responsibilities  
 **When to Use**: 
-- Understanding Clean Pipeline flow and responsibilities
-- Finding the right service for a task
-- Onboarding to Clean Architecture patterns
+- Understanding application architecture
+- Finding the right component for a task
+- Onboarding to the codebase
 - Component integration reference
 
 **Content**:
-- Clean Pipeline Architecture flow (CSV → Records → MediaEnricher → CardBuilder)
-- Service responsibilities matrix
-- Legacy compatibility layer documentation
-- Performance optimization details
+- Application data flow (CSV → Models → Services → Anki cards)
+- Component responsibilities
+- German language processing pipeline
+- Media integration details
 
 ---
 
 ### **[DESIGN-STATE.md](./DESIGN-STATE.md)** - Current Status  
 **Target Audience**: Technical Leadership, Senior Engineers  
-**Purpose**: Clean Pipeline Architecture implementation status and quality metrics  
+**Purpose**: Implementation status and quality metrics  
 **When to Use**:
-- Understanding migration completion status
-- Reviewing quality improvements achieved
+- Understanding current application state
+- Reviewing code quality metrics
 - Planning future enhancements
-- Demonstrating architectural excellence
+- Technical assessment reference
 
 **Content**:
 - Clean Pipeline Architecture migration completion status (5 phases complete)

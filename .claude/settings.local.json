@@ -26,7 +26,10 @@
       "Bash(sed:*)",
       "Bash(pkill:*)",
       "Bash(sqlite3:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(hatch:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }
