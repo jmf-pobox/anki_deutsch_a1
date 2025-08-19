@@ -1,8 +1,9 @@
 """Test utilities for mocking external services."""
 
-import pytest
 from collections.abc import Generator
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from langlearn.backends.anki_backend import AnkiBackend
 

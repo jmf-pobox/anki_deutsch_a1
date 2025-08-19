@@ -89,7 +89,7 @@ class DeckBuilder:
 
             # Initialize dependencies for media service
             project_root = Path(__file__).parent.parent.parent  # Go up to project root
-            
+
             # Check if we're running under pytest (avoid AWS in unit tests)
             import sys
             if 'pytest' in sys.modules:
