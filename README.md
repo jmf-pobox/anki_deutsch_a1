@@ -2,19 +2,33 @@
 
 A German language learning application that generates customized Anki decks for A1-level learners, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
 
+## 📊 Project Status
+
+[![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/Tests-401%20Passing-brightgreen)](#testing)
-[![Type Safety](https://img.shields.io/badge/MyPy-0%20Errors-success)](#quality)
-[![Linting](https://img.shields.io/badge/Ruff-Compliant-success)](#quality)
+[![Coverage](https://img.shields.io/badge/Coverage-73.84%25-yellow)](#testing)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-MyPy%20%7C%20Ruff-success)](#quality)
 [![Backend](https://img.shields.io/badge/Backend-Dual%20Support-blue)](#architecture)
 [![Language](https://img.shields.io/badge/German-A1%20Level-orange)](#german-features)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-## 📋 Project Status
+### 🚀 Current State
 
-**Current State**: High-quality German A1 deck generator with enterprise-grade code quality  
-**Code Quality**: 100% MyPy compliance, zero linting violations, 73.84% test coverage  
-**Active Backend**: genanki (production ready)  
-**Available Backend**: Official Anki library (architectural integration complete)  
-**Test Coverage**: 401 unit tests passing
+| **Aspect** | **Status** | **Details** |
+|------------|------------|-------------|
+| **Build Status** | ![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg) | Automated testing on every push |
+| **Code Quality** | ✅ **Excellent** | 100% MyPy compliance, zero linting violations |
+| **Test Coverage** | 📊 **73.84%** | 401 comprehensive tests (562 unit + 24 integration) |
+| **Active Backend** | 🟢 **genanki** | Production ready, fully tested |
+| **Alternative Backend** | 🟡 **Official Anki** | Architecture complete, validation pending |
+| **Documentation** | 📖 **Comprehensive** | Complete design docs in `docs/` directory |
+
+### 📈 Quality Metrics
+- **Static Analysis**: MyPy strict mode with zero errors
+- **Linting**: Ruff compliance with comprehensive rule set  
+- **Test Suite**: 401 tests covering core functionality
+- **Architecture**: Clean Pipeline Architecture with service layer separation
 
 ### Core Functionality ✅
 - **Deck Generation**: Creates Anki decks (.apkg files) with German vocabulary
@@ -211,26 +225,46 @@ with GermanDeckBuilder(
 
 ## 🧪 Development & Testing
 
-### Running Tests
+### CI/CD Pipeline
+The project uses GitHub Actions for automated testing and quality assurance:
+
+| **Trigger** | **Jobs** | **Status** |
+|-------------|----------|------------|
+| **Push/PR** | Lint, Type Check, Unit Tests (Python 3.10-3.12) | ![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg) |
+| **PR to Main** | Integration Tests (with API keys) | Automated on PRs |
+| **Manual** | Full test suite with coverage reporting | On-demand workflow |
+
+### Running Tests Locally
 ```bash
 # All unit tests (offline, no API calls)
-hatch run test-unit
+hatch run test-unit           # 562 unit tests
 
 # Integration tests (requires API keys)  
-hatch run test-integration
+hatch run test-integration    # 24 integration tests
+
+# Full test suite with coverage
+hatch run test-cov           # All 586 tests + coverage report
 
 # Code quality checks
-hatch run format     # Code formatting
-hatch run lint       # Linting
-hatch run type       # Type checking
+hatch run format     # Code formatting (Ruff)
+hatch run lint       # Linting (Ruff)
+hatch run type       # Type checking (MyPy strict)
+hatch run check      # All quality checks + tests
 ```
 
 ### Development Workflow
 Following the mandatory development workflow from `CLAUDE.md`:
-1. Run unit tests: `hatch run test-unit`
-2. Fix linting: `hatch run ruff check --fix`
-3. Format code: `hatch run format`
-4. Verify tests still pass: `hatch run test-unit`
+1. **Run unit tests**: `hatch run test-unit`
+2. **Fix linting**: `hatch run ruff check --fix`
+3. **Format code**: `hatch run format`
+4. **Verify tests still pass**: `hatch run test-unit`
+
+### Quality Gates
+- ✅ **All tests must pass** (586 tests total)
+- ✅ **Coverage must not decrease** (currently 73.84%, target 85%+)
+- ✅ **Zero linting violations** (Ruff compliance required)
+- ✅ **Zero type errors** (MyPy strict mode required)
+- ✅ **Integration tests pass** (on PRs to main branch)
 
 ## 🔧 Architecture
 

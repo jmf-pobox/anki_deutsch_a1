@@ -1,0 +1,105 @@
+name: Manual Integration Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_all_tests:
+        description: 'Run all tests including integration'
+        required: true
+        default: 'true'
+        type: boolean
+      test_type:
+        description: 'Test type to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - 'all'
+          - 'unit'
+          - 'integration'
+          - 'coverage'
+
+jobs:
+  manual-tests:
+    name: Manual Test Run
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    
+    - name: Install Hatch
+      run: pip install hatch
+    
+    - name: Configure AWS credentials
+      if: inputs.test_type == 'integration' || inputs.test_type == 'all'
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+    
+    - name: Run linting
+      if: inputs.test_type == 'all'
+      run: hatch run lint
+    
+    - name: Run type checking  
+      if: inputs.test_type == 'all'
+      run: hatch run type
+    
+    - name: Run unit tests only
+      if: inputs.test_type == 'unit'
+      run: hatch run test-unit
+    
+    - name: Run integration tests only
+      if: inputs.test_type == 'integration'
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      run: hatch run test-integration
+    
+    - name: Run all tests with coverage
+      if: inputs.test_type == 'all' || inputs.test_type == 'coverage'
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      run: hatch run test-cov
+    
+    - name: Upload coverage reports
+      if: inputs.test_type == 'all' || inputs.test_type == 'coverage'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+    
+    - name: Generate summary
+      run: |
+        echo "## Test Run Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Test Type**: ${{ inputs.test_type }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Python Version**: 3.10" >> $GITHUB_STEP_SUMMARY
+        echo "- **Timestamp**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ inputs.test_type }}" == "coverage" ] || [ "${{ inputs.test_type }}" == "all" ]; then
+          echo "- **Coverage Report**: Available in artifacts" >> $GITHUB_STEP_SUMMARY
+        fi
+    
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ inputs.test_type }}
+        path: |
+          htmlcov/
+          .coverage
+          pytest-results.xml
+        retention-days: 30
