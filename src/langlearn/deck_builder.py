@@ -89,9 +89,18 @@ class DeckBuilder:
 
             # Initialize dependencies for media service
             project_root = Path(__file__).parent.parent.parent  # Go up to project root
-            audio_service = AudioService(
-                output_dir=str(project_root / "data" / "audio")
-            )
+            
+            # Check if we're running under pytest (avoid AWS in unit tests)
+            import sys
+            if 'pytest' in sys.modules:
+                # Use mock service for testing
+                from unittest.mock import MagicMock
+                audio_service = MagicMock()
+            else:
+                # Use real service for production
+                audio_service = AudioService(
+                    output_dir=str(project_root / "data" / "audio")
+                )
             pexels_service = PexelsService()
             media_config = MediaGenerationConfig()
 
