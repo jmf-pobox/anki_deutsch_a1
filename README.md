@@ -247,6 +247,18 @@ The application uses a backend abstraction layer supporting multiple Anki librar
 - **Testability**: Comprehensive unit test coverage with mocked dependencies
 - **Configuration Driven**: Flexible backend and feature selection
 
+### Upcoming MVP Architecture (Planned)
+The codebase is planned for evolution to a clean **MVP (Model-View-Presenter)** architecture:
+
+- **Models**: Domain objects with validation (`Noun`, `Adjective`, etc.)
+- **Views**: HTML/CSS templates for Anki cards (`noun_front.html`, etc.)
+- **Presenters**: Card generators handling data binding between models and views
+- **Orchestrator**: Slimmed-down `GermanDeckBuilder` focusing only on coordination
+
+**Benefits**: 90% reduction in code duplication, easy grammar extensibility, cleaner separation of concerns.
+
+See **`docs/MVP_REINTEGRATION_PLAN.md`** for detailed implementation roadmap.
+
 ## 🤝 Contributing
 
 ### Development Setup

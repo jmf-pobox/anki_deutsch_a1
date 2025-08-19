@@ -24,7 +24,8 @@
       "Bash(find:*)",
       "Bash(hatch env:*)",
       "Bash(sed:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": []
   }

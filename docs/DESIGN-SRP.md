@@ -114,6 +114,18 @@ The langlearn codebase follows clean architecture with clear separation of conce
 | **`NounCardGenerator`** | `noun.py:8` | Specialized card generation for German nouns with proper article display, plural forms, case information, and noun-specific media integration. |
 | **`AdjectiveCardGenerator`** | `adjective.py:8` | Specialized card generation for German adjectives with comparative/superlative forms, declension examples, and adjective-specific formatting. |
 
+#### 🔄 **Planned MVP Reintegration**
+
+**Status**: Currently unused (bypassed by GermanDeckBuilder direct implementation)  
+**Plan**: Reintegrate as MVP Presenter layer to eliminate god class anti-pattern
+
+**Benefits of Reintegration**:
+- **Eliminate Code Duplication**: 90% reduction in GermanDeckBuilder method sizes
+- **Grammar Extensibility**: Add new word types with minimal code
+- **Clean Architecture**: Proper separation between Models (domain), Views (templates), and Presenters (card generators)
+
+See `docs/MVP_REINTEGRATION_PLAN.md` for detailed implementation plan.
+
 ---
 
 ### 🛠️ `/src/langlearn/utils/` - Cross-Cutting Concerns

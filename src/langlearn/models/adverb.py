@@ -128,13 +128,26 @@ class Adverb(BaseModel, FieldProcessor):
         return self.validate_position()
 
     def get_image_search_terms(self) -> str:
-        """Generate contextual image search terms for this adverb.
+        """Generate contextual image search terms prioritizing sentence context.
 
         Returns:
-            Search terms optimized for finding relevant images
+            Context-aware search terms generated from the example sentence,
+            with fallback to adverb concept mappings
         """
         if not self.english.strip():
             return ""
+
+        # Try to use Anthropic service for context-aware query generation
+        try:
+            from langlearn.services.anthropic_service import AnthropicService
+
+            service = AnthropicService()
+            context_query = service.generate_pexels_query(self)
+            if context_query and context_query.strip():
+                return context_query.strip()
+        except Exception:
+            # Fall back to concept mappings if Anthropic service fails
+            pass
 
         # Most adverbs are abstract concepts, so use enhanced search terms
         concept_mappings = {

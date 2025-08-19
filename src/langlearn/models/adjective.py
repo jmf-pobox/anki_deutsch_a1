@@ -234,11 +234,24 @@ class Adjective(BaseModel, FieldProcessor):
         ]
 
     def get_image_search_terms(self) -> str:
-        """Get enhanced search terms for better image results.
+        """Get enhanced search terms prioritizing sentence context for better image results.
 
         Returns:
-            Enhanced search terms with concept mapping for abstract adjectives
+            Context-aware search terms generated from the example sentence,
+            with fallback to concept mappings for abstract adjectives
         """
+        # Try to use Anthropic service for context-aware query generation
+        try:
+            from langlearn.services.anthropic_service import AnthropicService
+
+            service = AnthropicService()
+            context_query = service.generate_pexels_query(self)
+            if context_query and context_query.strip():
+                return context_query.strip()
+        except Exception:
+            # Fall back to concept mappings if Anthropic service fails
+            pass
+
         # Enhanced concept mappings for difficult-to-visualize adjectives
         concept_mappings = {
             "impolite": "rude behavior angry person frown",

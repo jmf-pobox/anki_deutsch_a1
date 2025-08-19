@@ -1,11 +1,10 @@
 """Media file management and coordination functionality.
 
-The MediaManager handles media file lifecycle, deduplication, caching strategies,
+The MediaManager handles media file lifecycle, caching strategies,
 and provides statistics tracking. It coordinates between media generation services
 and deck backends while maintaining separation of concerns.
 """
 
-import hashlib
 import logging
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -20,17 +19,15 @@ class MediaStats(NamedTuple):
     """Media management statistics."""
 
     files_added: int
-    duplicates_skipped: int
     total_size_bytes: int
-    unique_files: int
 
 
 class MediaManager:
-    """Manages media file lifecycle and deduplication across deck generation.
+    """Manages media file lifecycle across deck generation.
 
     The MediaManager provides a coordinated interface for handling media files
-    including deduplication, caching, and statistics tracking. It composes
-    with MediaService for generation and DeckBackend for storage.
+    including statistics tracking. It composes with MediaService for generation
+    and DeckBackend for storage.
     """
 
     def __init__(
@@ -45,49 +42,39 @@ class MediaManager:
         self._backend = backend
         self._media_service = media_service
 
-        # Track added files to prevent duplicates
-        self._added_files: set[str] = set()  # Set of file hashes
-        self._file_paths: dict[str, str] = {}  # hash -> original file path
-
         # Statistics
         self._stats = {
             "files_added": 0,
-            "duplicates_skipped": 0,
             "total_size_bytes": 0,
         }
 
-    def add_media_file(
-        self, file_path: str, allow_duplicates: bool = False
-    ) -> MediaFile | None:
-        """Add a media file to the deck with deduplication.
+    def add_media_file(self, file_path: str, media_type: str = "") -> MediaFile | None:
+        """Add a media file to the deck.
 
         Args:
             file_path: Path to the media file
-            allow_duplicates: If True, skip deduplication check
+            media_type: Expected media type ('audio', 'image', or '' for auto-detect)
 
         Returns:
-            MediaFile object if added, None if skipped as duplicate
+            MediaFile object if added successfully, None if failed
         """
+        logger.info(
+            f"📁 MediaManager.add_media_file: '{file_path}' (type='{media_type}')"
+        )
+
         if not Path(file_path).exists():
-            logger.warning(f"Media file does not exist: {file_path}")
-            return None
-
-        # Calculate file hash for deduplication
-        file_hash = self._calculate_file_hash(file_path)
-
-        # Check for duplicates unless explicitly allowed
-        if not allow_duplicates and file_hash in self._added_files:
-            logger.debug(f"Skipping duplicate media file: {file_path}")
-            self._stats["duplicates_skipped"] += 1
+            logger.warning(f"❌ Media file does not exist: {file_path}")
             return None
 
         try:
-            # Add to backend
-            media_file = self._backend.add_media_file(file_path)
-
-            # Track the file
-            self._added_files.add(file_hash)
-            self._file_paths[file_hash] = file_path
+            # Add to backend with media type context
+            logger.info(
+                f"   🔧 Calling backend.add_media_file('{file_path}', media_type='{media_type}')"
+            )
+            media_file = self._backend.add_media_file(file_path, media_type=media_type)
+            logger.info(
+                f"   ✅ Backend returned MediaFile: path='{media_file.path}', reference='{media_file.reference}', media_type='{media_file.media_type}'"
+            )
 
             # Update statistics
             self._stats["files_added"] += 1
@@ -120,7 +107,7 @@ class MediaManager:
         try:
             audio_path = self._media_service.generate_audio(text)
             if audio_path:
-                return self.add_media_file(audio_path)
+                return self.add_media_file(audio_path, media_type="audio")
             return None
         except Exception as e:
             logger.error(f"Failed to generate audio for '{text}': {e}")
@@ -151,7 +138,7 @@ class MediaManager:
                 word, search_query, example_sentence
             )
             if image_path:
-                return self.add_media_file(image_path)
+                return self.add_media_file(image_path, media_type="image")
             return None
         except Exception as e:
             logger.error(f"Failed to generate image for '{word}': {e}")
@@ -165,40 +152,8 @@ class MediaManager:
         """
         return MediaStats(
             files_added=self._stats["files_added"],
-            duplicates_skipped=self._stats["duplicates_skipped"],
             total_size_bytes=self._stats["total_size_bytes"],
-            unique_files=len(self._added_files),
         )
-
-    def get_added_files(self) -> list[str]:
-        """Get list of all added file paths.
-
-        Returns:
-            List of file paths that have been added to the deck
-        """
-        return list(self._file_paths.values())
-
-    def is_file_added(self, file_path: str) -> bool:
-        """Check if a file has already been added.
-
-        Args:
-            file_path: Path to check
-
-        Returns:
-            True if file has been added, False otherwise
-        """
-        file_hash = self._calculate_file_hash(file_path)
-        return file_hash in self._added_files
-
-    def clear_cache(self) -> None:
-        """Clear the internal deduplication cache.
-
-        This allows previously added files to be added again.
-        Use with caution as it may result in duplicate files.
-        """
-        self._added_files.clear()
-        self._file_paths.clear()
-        logger.info("Media manager cache cleared")
 
     def get_detailed_stats(self) -> dict[str, Any]:
         """Get detailed media statistics including service stats.
@@ -224,23 +179,3 @@ class MediaManager:
             )
 
         return stats
-
-    def _calculate_file_hash(self, file_path: str) -> str:
-        """Calculate SHA-256 hash of a file for deduplication.
-
-        Args:
-            file_path: Path to the file
-
-        Returns:
-            Hexadecimal hash string
-        """
-        try:
-            hasher = hashlib.sha256()
-            with open(file_path, "rb") as f:
-                for chunk in iter(lambda: f.read(4096), b""):
-                    hasher.update(chunk)
-            return hasher.hexdigest()
-        except Exception as e:
-            logger.warning(f"Could not hash file {file_path}: {e}")
-            # Fallback to path-based hash for basic deduplication
-            return hashlib.sha256(file_path.encode()).hexdigest()

@@ -121,27 +121,32 @@ class AnthropicService:
             return str(model)
 
     def generate_pexels_query(self, model: Any) -> str:
-        """Generate a Pexels query for the given model."""
+        """Generate a Pexels query prioritizing the sentence context for more relevant images."""
         prompt = f"""You are a helpful assistant that generates search queries
-for finding relevant images.
-Given a German word '{model.word}' meaning '{model.english}' with example
-'{model.example}',
-generate a short, specific Pexels search query in English that would find
-a relevant image.
+for finding relevant images based on sentence context.
+
+German word: '{model.word}' (meaning: '{model.english}')
+Example sentence: '{model.example}'
+
+Your task is to analyze the EXAMPLE SENTENCE FIRST to understand the visual context 
+and situation where this word is used. Generate a Pexels search query that captures 
+the scene, action, or visual concept from the example sentence rather than just the 
+isolated word meaning.
 
 Guidelines:
-- Keep the query between 2-4 words
-- Focus on concrete, visual aspects
-- Include size/scale descriptors when relevant
-- Use common synonyms if helpful
-- Ensure query relates directly to the word meaning and example
+- PRIORITIZE the visual context from the example sentence over the bare word meaning
+- Extract concrete, visual elements from the sentence (people, objects, actions, settings)
+- Keep the query between 2-5 words
+- Focus on what someone would actually see in the situation described
+- If the sentence shows the word in action/context, capture that action
+- Use specific, searchable terms that photographers would tag their images with
 
 Output only the search query, nothing else."""
 
         try:
             response = self._generate_response(
                 prompt,
-                max_tokens=50,  # Reduced since we only need a short query
+                max_tokens=75,  # Increased slightly for context-based queries
                 temperature=0.3,  # Lower temperature for more consistent results
             )
             return response.strip()

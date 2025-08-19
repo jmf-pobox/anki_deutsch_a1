@@ -23,7 +23,6 @@ langsam,slow,Die Schildkröte ist langsam.,langsamer,am langsamsten,data/audio/8
 früh,early,Ich stehe früh auf.,früher,am frühesten,data/audio/2242e3ceb7a34bb966804d0c73fcc949.mp3,data/audio/07c0ceac99ee4eec6fc13559dbbce333.mp3,data/images/früh.jpg
 spät,late,Es ist schon spät.,später,am spätesten,data/audio/5d67a4850a7e800ebcecb909281d7ed2.mp3,data/audio/deef8f6e2084a179c795eb0598ae910c.mp3,data/images/spät.jpg
 richtig,right/correct,Deine Antwort ist richtig.,richtiger,am richtigsten,data/audio/3c4e3ebba9a52d084e900697fe42f0cc.mp3,data/audio/19b9ebcfc5bdb2e72038608fd2284074.mp3,data/images/richtig.jpg
-falsch,wrong/false,Das ist falsch.,falscher,am falschesten,data/audio/8042c2ef76e94fb1b546ec621c46c769.mp3,data/audio/9209a13ad63402d37c78608f297b9075.mp3,data/images/falsch.jpg
 hell,bright,Das Zimmer ist hell.,heller,am hellsten,data/audio/4229d691b07b13341da53f17ab9f2416.mp3,data/audio/5d2842cc82473338667a5c5d6292c9c8.mp3,data/images/hell.jpg
 dunkel,dark,Es wird draußen dunkel.,dunkler,am dunkelsten,data/audio/fc4ee1ac6b737dc8ba92f88212b72a49.mp3,data/audio/0f8cd12e0b27544e9aa939cabc5dbfbc.mp3,data/images/dunkel.jpg
 stark,strong,Er ist sehr stark.,stärker,am stärksten,data/audio/2fbb71b04b02738300427866d6e3181a.mp3,data/audio/95f878ba42fef0deb99b327df9481965.mp3,data/images/stark.jpg
@@ -74,7 +73,6 @@ fertig,ready/done,Ich bin fertig mit der Arbeit.,fertiger,am fertigsten,data/aud
 deutlich,clear,Seine Aussprache ist sehr deutlich.,deutlicher,am deutlichsten,data/audio/75fe97fa4c78da742ade0c08851d1633.mp3,data/audio/a8437538d75ef534f263414e02d5d53e.mp3,data/images/deutlich.jpg
 genau,exact/precise,Das ist die genaue Zeit.,genauer,am genauesten,data/audio/3565952569560090f758c9cf0ae2bfce.mp3,data/audio/f68136a38f1d96a172487c8c5c9d009f.mp3,data/images/genau.jpg
 ähnlich,similar,Die beiden Schwestern sehen ähnlich aus.,ähnlicher,am ähnlichsten,data/audio/bb854039201f457fa5007ea9f2738535.mp3,data/audio/9a5059905ef36ef347b0ce72aa78e132.mp3,data/images/ähnlich.jpg
-verschieden,different,Die Sprachen sind sehr verschieden.,verschiedener,am verschiedensten,data/audio/c26c6cb2a2aed058b49efde189d284bf.mp3,data/audio/0e1e9d775b861e3ac21dbe7471e6f59b.mp3,data/images/verschieden.jpg
 wunderbar,wonderful,Das war ein wunderbarer Tag.,wunderbarer,am wunderbarsten,data/audio/213ff08c960c9d2f7b405886a6e2a98a.mp3,data/audio/2032ace77d4ae4e700fb1f0c6a987fca.mp3,data/images/wunderbar.jpg
 schrecklich,terrible,Der Film war schrecklich.,schrecklicher,am schrecklichsten,data/audio/db7b31bca16daba13256a1909e7b2e4f.mp3,data/audio/07055e56851a1d98412470a29fe5876c.mp3,data/images/schrecklich.jpg
 weit,far,Die Schule ist weit von hier.,weiter,am weitesten,data/audio/8290c29bcd88cef122f67d57ccfa328e.mp3,data/audio/1692e8d34a7021268226f30a0a7b4567.mp3,data/images/weit.jpg
@@ -93,7 +91,6 @@ komisch,funny/strange,Das ist komisch.,komischer,am komischsten,data/audio/1dcea
 seltsam,strange,Das ist ein seltsames Geräusch.,seltsamer,am seltsamsten,data/audio/cf804be14e639a37e24117041514cf9e.mp3,data/audio/01643caa9b40b30f458a66d7a2eb1325.mp3,data/images/seltsam.jpg
 bereit,ready,Ich bin bereit.,bereiter,am bereitesten,data/audio/2a3432b6cbdcff7efadfac4490ead9bb.mp3,data/audio/063ff3becef34e3b5bcb4512fa5298e0.mp3,data/images/bereit.jpg
 böse,angry/evil,Er ist böse auf mich.,böser,am bösesten,data/audio/ece40577fee0833e87ee83a4c168f6f7.mp3,data/audio/aaa366c5676d056014456c57f7ea6f1c.mp3,data/images/böse.jpg
-freundlich,friendly,Sie ist sehr freundlich.,freundlicher,am freundlichsten,data/audio/c876eeac1ebf1fd5c677d2d23ffbe891.mp3,data/audio/1503f118a84c8efa5137ec05e6713503.mp3,data/images/freundlich.jpg
 fleißig,hardworking/diligent,Sie ist eine fleißige Studentin.,fleißiger,am fleißigsten,data/audio/d4a9df140dab0266d5cfa3d40ee42a4a.mp3,data/audio/8e57f7830d929ddf9534b9e00fc1c45d.mp3,data/images/fleißig.jpg
 faul,lazy,Er ist faul.,fauler,am faulsten,data/audio/334e551d99252d243a8f6aed8b6c5435.mp3,data/audio/792bab7d4717110ac73688882d47e4f9.mp3,data/images/faul.jpg
 geduldig,patient,Der Lehrer ist sehr geduldig.,geduldiger,am geduldigsten,data/audio/c0d656105a803701b03eb5f839ce4312.mp3,data/audio/357ab8d6955472e4c11895db4d5d481f.mp3,data/images/geduldig.jpg

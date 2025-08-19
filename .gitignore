@@ -164,3 +164,4 @@ data/images
 data/audio
 logs/
 output/
+/.claude/

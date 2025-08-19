@@ -32,6 +32,9 @@ class MediaFile:
     reference: str
     """Reference string to use in card content (e.g., 'audio.mp3')."""
 
+    media_type: str = ""
+    """Type of media: 'audio', 'image', or '' for automatic detection."""
+
 
 @dataclass
 class CardTemplate:
@@ -95,6 +98,7 @@ class DeckBackend(ABC):
         note_type_id: str,
         fields: list[str],
         tags: list[str] | None = None,
+        skip_media_processing: bool = False,
     ) -> int:
         """Add a note to the deck.
 
@@ -102,17 +106,19 @@ class DeckBackend(ABC):
             note_type_id: ID of the note type to use
             fields: List of field values for the note
             tags: Optional list of tags for the note
+            skip_media_processing: Skip media processing if fields are already processed
 
         Returns:
             The note ID
         """
 
     @abstractmethod
-    def add_media_file(self, file_path: str) -> MediaFile:
+    def add_media_file(self, file_path: str, media_type: str = "") -> MediaFile:
         """Add a media file to the deck.
 
         Args:
             file_path: Path to the media file
+            media_type: Expected media type ('audio', 'image', or '' for auto-detect)
 
         Returns:
             MediaFile object with reference information

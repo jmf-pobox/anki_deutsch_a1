@@ -163,6 +163,7 @@ class AnkiBackend(DeckBackend):
         note_type_id: str,
         fields: list[str],
         tags: list[str] | None = None,
+        skip_media_processing: bool = False,
     ) -> int:
         """Add a note to the deck.
 
@@ -170,6 +171,7 @@ class AnkiBackend(DeckBackend):
             note_type_id: ID of the note type to use
             fields: List of field values for the note
             tags: Optional list of tags for the note
+            skip_media_processing: Skip media processing if fields are already processed
 
         Returns:
             The note ID
@@ -179,8 +181,14 @@ class AnkiBackend(DeckBackend):
 
         anki_notetype_id = self._note_type_map[note_type_id]
 
-        # Process fields for media generation
-        processed_fields = self._process_fields_with_media(note_type_id, fields)
+        # Process fields for media generation (skip if already processed by card generators)
+        if skip_media_processing:
+            processed_fields = fields
+            logger.info(
+                "🔄 Skipping media processing (already processed by card generator)"
+            )
+        else:
+            processed_fields = self._process_fields_with_media(note_type_id, fields)
         print(
             f"DEBUG: Final processed fields: "
             f"{[f[:30] + '...' if len(f) > 30 else f for f in processed_fields]}"
@@ -295,22 +303,67 @@ class AnkiBackend(DeckBackend):
             self._media_generation_stats["generation_errors"] += 1
             return None
 
-    def add_media_file(self, file_path: str) -> MediaFile:
+    def add_media_file(self, file_path: str, media_type: str = "") -> MediaFile:
         """Add a media file to the deck."""
+        logger.info(
+            f"🔧 AnkiBackend.add_media_file: '{file_path}' (media_type='{media_type}')"
+        )
+
         if not os.path.exists(file_path):
+            logger.error(f"❌ Media file not found: {file_path}")
             raise FileNotFoundError(f"Media file not found: {file_path}")
 
         # Copy to collection media directory
         filename = os.path.basename(file_path)
+        logger.info(f"   📂 Copying to Anki collection: {filename}")
         self._collection.media.add_file(file_path)
 
-        # For Anki backend, wrap audio files in [sound:] format
+        # Generate reference based on expected media type and file extension
         reference = filename
-        if filename.endswith((".mp3", ".wav", ".ogg")):
-            reference = f"[sound:{filename}]"
+        file_ext = Path(file_path).suffix.lower()
+        logger.info(f"   📄 File extension: '{file_ext}'")
 
-        media_file = MediaFile(path=file_path, reference=reference)
+        # Use media_type context to determine proper reference format
+        audio_exts = [".mp3", ".wav", ".ogg"]
+        image_exts = [".jpg", ".jpeg", ".png", ".gif"]
+
+        if media_type == "audio" or (media_type == "" and file_ext in audio_exts):
+            # Audio files should be wrapped in [sound:] format
+            reference = f"[sound:{filename}]"
+            logger.info(f"   🔊 Audio reference: '{reference}'")
+        elif media_type == "image" or (media_type == "" and file_ext in image_exts):
+            # Image files should be plain filename for <img> tags
+            reference = filename
+            logger.info(f"   🖼️ Image reference: '{reference}'")
+        else:
+            # Fallback: use extension-based detection but log warning
+            if file_ext in audio_exts:
+                reference = f"[sound:{filename}]"
+                logger.warning(f"⚠️ Fallback to audio: '{reference}'")
+                if media_type and media_type != "audio":
+                    logger.warning(
+                        f"Media type mismatch: expected '{media_type}', "
+                        f"got audio file: {file_path}"
+                    )
+            elif file_ext in image_exts:
+                reference = filename
+                logger.warning(f"⚠️ Fallback to image: '{reference}'")
+                if media_type and media_type != "image":
+                    logger.warning(
+                        f"Media type mismatch: expected '{media_type}', "
+                        f"got image file: {file_path}"
+                    )
+
+        media_file = MediaFile(
+            path=file_path, reference=reference, media_type=media_type
+        )
         self._media_files.append(media_file)
+
+        logger.info(
+            f"   ✅ Created MediaFile: path='{media_file.path}', "
+            f"reference='{media_file.reference}', "
+            f"media_type='{media_file.media_type}'"
+        )
         return media_file
 
     def export_deck(self, output_path: str) -> None:

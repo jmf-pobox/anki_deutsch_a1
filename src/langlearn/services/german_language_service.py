@@ -1,4 +1,5 @@
 """German language service for context-aware processing and text generation."""
+# FIXME: This entire module should be removed as this code is not used.
 
 import re
 from typing import Protocol
@@ -25,6 +26,7 @@ class GermanNounModel(Protocol):
 
 class GermanLanguageService:
     """Handles German-specific language patterns and context extraction.
+
 
     This service encapsulates German grammar rules, context analysis,
     and text generation for audio and image search queries.

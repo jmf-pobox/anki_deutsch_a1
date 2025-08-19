@@ -62,7 +62,6 @@ class TestMediaManager:
 
         assert manager._backend is mock_backend
         assert manager._media_service is None
-        assert len(manager._added_files) == 0
 
     def test_initialization_with_media_service(
         self, mock_backend: Mock, mock_media_service: Mock
@@ -83,13 +82,11 @@ class TestMediaManager:
         assert media_file.path == "/fake/file.mp3"
         assert media_file.reference == "[sound:file.mp3]"
 
-        mock_backend.add_media_file.assert_called_once_with(temp_file)
+        mock_backend.add_media_file.assert_called_once_with(temp_file, media_type="")
 
         # Check statistics
         stats = media_manager.get_media_stats()
         assert stats.files_added == 1
-        assert stats.duplicates_skipped == 0
-        assert stats.unique_files == 1
 
     def test_add_media_file_nonexistent(self, media_manager: MediaManager) -> None:
         """Test adding nonexistent media file."""
@@ -101,34 +98,16 @@ class TestMediaManager:
         stats = media_manager.get_media_stats()
         assert stats.files_added == 0
 
-    def test_add_media_file_duplicate_prevention(
-        self, media_manager: MediaManager, temp_file: str
-    ) -> None:
-        """Test that duplicate files are prevented."""
-        # Add file first time
-        media_file1 = media_manager.add_media_file(temp_file)
-        assert media_file1 is not None
-
-        # Try to add same file again
-        media_file2 = media_manager.add_media_file(temp_file)
-        assert media_file2 is None
-
-        # Check statistics
-        stats = media_manager.get_media_stats()
-        assert stats.files_added == 1
-        assert stats.duplicates_skipped == 1
-        assert stats.unique_files == 1
-
-    def test_add_media_file_allow_duplicates(
+    def test_add_media_file_multiple_times(
         self, media_manager: MediaManager, mock_backend: Mock, temp_file: str
     ) -> None:
-        """Test allowing duplicates when explicitly requested."""
+        """Test that same file can be added multiple times."""
         # Add file first time
         media_file1 = media_manager.add_media_file(temp_file)
         assert media_file1 is not None
 
-        # Add same file again with allow_duplicates=True
-        media_file2 = media_manager.add_media_file(temp_file, allow_duplicates=True)
+        # Add same file again - should succeed
+        media_file2 = media_manager.add_media_file(temp_file)
         assert media_file2 is not None
 
         # Backend should be called twice
@@ -137,7 +116,6 @@ class TestMediaManager:
         # Check statistics
         stats = media_manager.get_media_stats()
         assert stats.files_added == 2
-        assert stats.duplicates_skipped == 0
 
     def test_generate_and_add_audio_success(
         self, media_manager: MediaManager, mock_media_service: Mock, mock_backend: Mock
@@ -148,7 +126,9 @@ class TestMediaManager:
 
         assert media_file is not None
         mock_media_service.generate_audio.assert_called_once_with("test text")
-        mock_backend.add_media_file.assert_called_once_with("/fake/audio.mp3")
+        mock_backend.add_media_file.assert_called_once_with(
+            "/fake/audio.mp3", media_type="audio"
+        )
 
     def test_generate_and_add_audio_no_service(self, mock_backend: Mock) -> None:
         """Test audio generation when no MediaService is available."""
@@ -182,7 +162,9 @@ class TestMediaManager:
         mock_media_service.generate_image.assert_called_once_with(
             "test", "search query", "example sentence"
         )
-        mock_backend.add_media_file.assert_called_once_with("/fake/image.jpg")
+        mock_backend.add_media_file.assert_called_once_with(
+            "/fake/image.jpg", media_type="image"
+        )
 
     def test_get_media_stats(self, media_manager: MediaManager, temp_file: str) -> None:
         """Test media statistics reporting."""
@@ -193,43 +175,7 @@ class TestMediaManager:
 
         assert isinstance(stats, MediaStats)
         assert stats.files_added == 1
-        assert stats.duplicates_skipped == 0
-        assert stats.unique_files == 1
         assert stats.total_size_bytes > 0  # File has content
-
-    def test_get_added_files(self, media_manager: MediaManager, temp_file: str) -> None:
-        """Test getting list of added files."""
-        # Initially empty
-        assert media_manager.get_added_files() == []
-
-        # Add a file
-        media_manager.add_media_file(temp_file)
-        added_files = media_manager.get_added_files()
-
-        assert len(added_files) == 1
-        assert temp_file in added_files
-
-    def test_is_file_added(self, media_manager: MediaManager, temp_file: str) -> None:
-        """Test checking if file has been added."""
-        # Initially not added
-        assert media_manager.is_file_added(temp_file) is False
-
-        # Add file
-        media_manager.add_media_file(temp_file)
-
-        # Now should be detected as added
-        assert media_manager.is_file_added(temp_file) is True
-
-    def test_clear_cache(self, media_manager: MediaManager, temp_file: str) -> None:
-        """Test clearing the deduplication cache."""
-        # Add file
-        media_manager.add_media_file(temp_file)
-        assert media_manager.is_file_added(temp_file) is True
-
-        # Clear cache
-        media_manager.clear_cache()
-        assert media_manager.is_file_added(temp_file) is False
-        assert media_manager.get_added_files() == []
 
     def test_get_detailed_stats_with_service(
         self, media_manager: MediaManager, mock_media_service: Mock, temp_file: str
@@ -261,28 +207,3 @@ class TestMediaManager:
         # Should only include media manager stats
         assert "media_stats" in stats
         assert "media_generation_stats" not in stats
-
-    def test_file_hash_calculation(
-        self, media_manager: MediaManager, temp_file: str
-    ) -> None:
-        """Test that file hashing works for deduplication."""
-        # Create another file with same content
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as f2:
-            f2.write(b"fake audio content")  # Same content
-            temp_file2 = f2.name
-
-        try:
-            # Add first file
-            media_file1 = media_manager.add_media_file(temp_file)
-            assert media_file1 is not None
-
-            # Try to add second file with same content - should be detected as duplicate
-            media_file2 = media_manager.add_media_file(temp_file2)
-            assert media_file2 is None
-
-            stats = media_manager.get_media_stats()
-            assert stats.files_added == 1
-            assert stats.duplicates_skipped == 1
-
-        finally:
-            Path(temp_file2).unlink(missing_ok=True)

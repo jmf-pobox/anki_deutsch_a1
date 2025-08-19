@@ -274,118 +274,87 @@ class TestGermanDeckBuilder:
     def test_generate_noun_cards_with_data(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
-        """Test generating noun cards with loaded data."""
+        """Test generating noun cards with loaded data using MVP architecture."""
         mock_backend = Mock(spec=DeckBackend)
         mock_backend.deck_name = "Test Deck"
+        mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
         builder = GermanDeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data
 
-        # Mock the template service
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Noun Note Type"
+        # Mock the card generator's add_card method
         with patch.object(
-            builder._template_service, "get_noun_note_type"
-        ) as mock_get_template:
-            mock_get_template.return_value = mock_note_type
+            builder._card_factory, "create_noun_generator"
+        ) as mock_factory:
+            mock_generator = Mock()
+            mock_generator.add_card = Mock()
+            mock_factory.return_value = mock_generator
 
-            with patch.object(
-                builder._deck_manager, "create_note_type"
-            ) as mock_create_type:
-                mock_create_type.return_value = "note_type_1"
+            result = builder.generate_noun_cards(generate_media=False)
 
-                with patch.object(builder._deck_manager, "add_note") as mock_add_note:
-                    result = builder.generate_noun_cards(generate_media=False)
-
-                    assert result == 2
-                    assert mock_add_note.call_count == 2
+            assert result == 2
+            # Verify the generator was created and add_card was called for each noun
+            mock_factory.assert_called_once()
+            assert mock_generator.add_card.call_count == 2
 
     @patch("langlearn.german_deck_builder.AnkiBackend")
     def test_generate_noun_cards_with_media(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
-        """Test generating noun cards with media generation."""
+        """Test generating noun cards with media generation using MVP architecture."""
         mock_backend = Mock(spec=DeckBackend)
         mock_backend.deck_name = "Test Deck"
+        mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
         builder = GermanDeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data[:1]  # Just one noun for simplicity
 
-        # Mock services and managers
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Noun Note Type"
-        mock_media_file = MediaFile(
-            path="/fake/audio.mp3", reference="[sound:audio.mp3]"
-        )
-
+        # Mock the card generator's add_card method
         with patch.object(
-            builder._template_service, "get_noun_note_type"
-        ) as mock_get_template:
-            mock_get_template.return_value = mock_note_type
+            builder._card_factory, "create_noun_generator"
+        ) as mock_factory:
+            mock_generator = Mock()
+            mock_generator.add_card = Mock()
+            mock_factory.return_value = mock_generator
 
-            with patch.object(
-                builder._deck_manager, "create_note_type"
-            ) as mock_create_type:
-                mock_create_type.return_value = "note_type_1"
+            result = builder.generate_noun_cards(generate_media=True)
 
-                with patch.object(
-                    builder._media_manager, "generate_and_add_audio"
-                ) as mock_gen_audio:
-                    mock_gen_audio.return_value = mock_media_file
-
-                    with patch.object(
-                        builder._media_manager, "generate_and_add_image"
-                    ) as mock_gen_image:
-                        mock_gen_image.return_value = mock_media_file
-
-                        with patch.object(
-                            builder._deck_manager, "add_note"
-                        ) as mock_add_note:
-                            result = builder.generate_noun_cards(generate_media=True)
-
-                            assert result == 1
-                            # Should call audio generation twice: noun forms + example
-                            assert mock_gen_audio.call_count == 2
-                            mock_gen_audio.assert_any_call("die Katze, die Katzen")
-                            mock_gen_audio.assert_any_call("Die Katze schläft.")
-
-                            # Check that the audio reference was included in the fields
-                            call_args = mock_add_note.call_args[0]
-                            fields = call_args[1]
-                            assert "[sound:audio.mp3]" in fields
+            assert result == 1
+            # Verify generator was created and add_card called with media enabled
+            mock_factory.assert_called_once()
+            mock_generator.add_card.assert_called_once_with(
+                sample_noun_data[0], generate_media=True
+            )
 
     @patch("langlearn.german_deck_builder.AnkiBackend")
     def test_generate_adjective_cards_with_data(
         self, mock_anki: Mock, sample_adjective_data: list[Adjective]
     ) -> None:
-        """Test generating adjective cards with loaded data."""
+        """Test generating adjective cards with loaded data using MVP architecture."""
         mock_backend = Mock(spec=DeckBackend)
         mock_backend.deck_name = "Test Deck"
+        mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
         builder = GermanDeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_adjectives = sample_adjective_data
 
-        # Mock the template service
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Adjective Note Type"
+        # Mock the card generator's add_card method
         with patch.object(
-            builder._template_service, "get_adjective_note_type"
-        ) as mock_get_template:
-            mock_get_template.return_value = mock_note_type
+            builder._card_factory, "create_adjective_generator"
+        ) as mock_factory:
+            mock_generator = Mock()
+            mock_generator.add_card = Mock()
+            mock_factory.return_value = mock_generator
 
-            with patch.object(
-                builder._deck_manager, "create_note_type"
-            ) as mock_create_type:
-                mock_create_type.return_value = "note_type_1"
+            result = builder.generate_adjective_cards(generate_media=False)
 
-                with patch.object(builder._deck_manager, "add_note") as mock_add_note:
-                    result = builder.generate_adjective_cards(generate_media=False)
-
-                    assert result == 2
-                    assert mock_add_note.call_count == 2
+            assert result == 2
+            # Verify generator was created and add_card called for each adjective
+            mock_factory.assert_called_once()
+            assert mock_generator.add_card.call_count == 2
 
     @patch("langlearn.german_deck_builder.AnkiBackend")
     def test_generate_all_cards(
@@ -501,18 +470,6 @@ class TestGermanDeckBuilder:
         assert len(builder._loaded_adjectives) == 0
 
     @patch("langlearn.german_deck_builder.AnkiBackend")
-    def test_clear_media_cache(self, mock_anki: Mock) -> None:
-        """Test clearing media cache."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
-
-        with patch.object(builder._media_manager, "clear_cache") as mock_clear:
-            builder.clear_media_cache()
-            mock_clear.assert_called_once()
-
-    @patch("langlearn.german_deck_builder.AnkiBackend")
     def test_context_manager_support(self, mock_anki: Mock) -> None:
         """Test context manager support."""
         mock_backend = Mock(spec=DeckBackend)
@@ -605,32 +562,29 @@ class TestGermanDeckBuilder:
     def test_generate_adverb_cards_with_data(
         self, mock_anki: Mock, sample_adverb_data: list[Adverb]
     ) -> None:
-        """Test generating adverb cards with loaded data."""
+        """Test generating adverb cards with loaded data using MVP architecture."""
         mock_backend = Mock(spec=DeckBackend)
         mock_backend.deck_name = "Test Deck"
+        mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
         builder = GermanDeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_adverbs = sample_adverb_data
 
-        # Mock the template service
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Adverb Note Type"
+        # Mock the card generator's add_card method
         with patch.object(
-            builder._template_service, "get_adverb_note_type"
-        ) as mock_get_template:
-            mock_get_template.return_value = mock_note_type
+            builder._card_factory, "create_adverb_generator"
+        ) as mock_factory:
+            mock_generator = Mock()
+            mock_generator.add_card = Mock()
+            mock_factory.return_value = mock_generator
 
-            with patch.object(
-                builder._deck_manager, "create_note_type"
-            ) as mock_create_type:
-                mock_create_type.return_value = "note_type_1"
+            result = builder.generate_adverb_cards(generate_media=False)
 
-                with patch.object(builder._deck_manager, "add_note") as mock_add_note:
-                    result = builder.generate_adverb_cards(generate_media=False)
-
-                    assert result == 2
-                    assert mock_add_note.call_count == 2
+            assert result == 2
+            # Verify generator was created and add_card called for each adverb
+            mock_factory.assert_called_once()
+            assert mock_generator.add_card.call_count == 2
 
     @patch("langlearn.german_deck_builder.AnkiBackend")
     def test_generate_negation_cards_no_data(self, mock_anki: Mock) -> None:
@@ -647,32 +601,29 @@ class TestGermanDeckBuilder:
     def test_generate_negation_cards_with_data(
         self, mock_anki: Mock, sample_negation_data: list[Negation]
     ) -> None:
-        """Test generating negation cards with loaded data."""
+        """Test generating negation cards with loaded data using MVP architecture."""
         mock_backend = Mock(spec=DeckBackend)
         mock_backend.deck_name = "Test Deck"
+        mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
         builder = GermanDeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_negations = sample_negation_data
 
-        # Mock the template service
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Negation Note Type"
+        # Mock the card generator's add_card method
         with patch.object(
-            builder._template_service, "get_negation_note_type"
-        ) as mock_get_template:
-            mock_get_template.return_value = mock_note_type
+            builder._card_factory, "create_negation_generator"
+        ) as mock_factory:
+            mock_generator = Mock()
+            mock_generator.add_card = Mock()
+            mock_factory.return_value = mock_generator
 
-            with patch.object(
-                builder._deck_manager, "create_note_type"
-            ) as mock_create_type:
-                mock_create_type.return_value = "note_type_1"
+            result = builder.generate_negation_cards(generate_media=False)
 
-                with patch.object(builder._deck_manager, "add_note") as mock_add_note:
-                    result = builder.generate_negation_cards(generate_media=False)
-
-                    assert result == 2
-                    assert mock_add_note.call_count == 2
+            assert result == 2
+            # Verify generator was created and add_card called for each negation
+            mock_factory.assert_called_once()
+            assert mock_generator.add_card.call_count == 2
 
     @patch("langlearn.german_deck_builder.AnkiBackend")
     def test_generate_adverb_cards_with_existing_media(

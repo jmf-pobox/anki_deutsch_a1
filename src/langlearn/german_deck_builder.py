@@ -12,6 +12,7 @@ from typing import Any, TypeVar
 
 from .backends.anki_backend import AnkiBackend
 from .backends.base import DeckBackend
+from .cards.factory import CardGeneratorFactory
 from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
 from .models.adjective import Adjective
@@ -107,6 +108,14 @@ class GermanDeckBuilder:
         # Initialize managers with dependency injection
         self._deck_manager = DeckManager(self._backend)
         self._media_manager = MediaManager(self._backend, self._media_service)
+
+        # Initialize card generator factory
+        self._card_factory = CardGeneratorFactory(
+            backend=self._backend,
+            template_service=self._template_service,
+            media_manager=self._media_manager,
+            german_service=self._german_service,
+        )
 
         # Track loaded data
         self._loaded_nouns: list[Noun] = []
@@ -244,7 +253,7 @@ class GermanDeckBuilder:
     # Card Generation Methods
 
     def generate_noun_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded nouns.
+        """Generate Anki cards for loaded nouns using MVP architecture.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -259,102 +268,12 @@ class GermanDeckBuilder:
         # Create subdeck for nouns
         self.create_subdeck("Nouns")
 
-        # Get or create noun note type
-        noun_note_type = self._template_service.get_noun_note_type()
-        note_type_id = self._deck_manager.create_note_type(noun_note_type)
-        print(
-            f"DEBUG: Using noun note type ID: {note_type_id} for {noun_note_type.name}"
-        )
+        # Use the card generator factory to create a properly configured generator
+        noun_generator = self._card_factory.create_noun_generator()
 
         cards_created = 0
-
         for noun in self._loaded_nouns:
-            # Use existing media paths from CSV or generate new media
-            audio_ref = ""
-            image_html = ""
-            example_audio_ref = ""
-
-            # Check for existing word audio
-            if noun.word_audio and Path(noun.word_audio).exists():
-                audio_file = self._media_manager.add_media_file(noun.word_audio)
-                if audio_file:
-                    audio_ref = audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate audio for combined noun forms only if no existing audio
-                audio_text = self._german_service.get_combined_noun_audio_text(noun)
-                audio_file = self._media_manager.generate_and_add_audio(audio_text)
-                if audio_file:
-                    audio_ref = audio_file.reference
-
-            # Check for existing example audio
-            if noun.example_audio and Path(noun.example_audio).exists():
-                example_audio_file = self._media_manager.add_media_file(
-                    noun.example_audio
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate example sentence audio if no existing audio
-                example_audio_file = self._media_manager.generate_and_add_audio(
-                    noun.example
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-
-            # Check for existing image - first check CSV path,
-            # then check expected filename
-            image_found = False
-            if noun.image_path and Path(noun.image_path).exists():
-                image_file = self._media_manager.add_media_file(noun.image_path)
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-                    image_found = True
-            else:
-                # Check for existing image by expected filename pattern
-                safe_filename = (
-                    "".join(c for c in noun.noun if c.isalnum() or c in (" ", "-", "_"))
-                    .rstrip()
-                    .replace(" ", "_")
-                    .lower()
-                )
-                expected_image_path = Path("data/images") / f"{safe_filename}.jpg"
-                if expected_image_path.exists():
-                    image_file = self._media_manager.add_media_file(
-                        str(expected_image_path)
-                    )
-                    if image_file:
-                        filename = image_file.reference
-                        image_html = f'<img src="{filename}">'
-                        image_found = True
-
-            if not image_found and generate_media and self._media_service:
-                # Generate image using domain model's enhanced search terms
-                enhanced_search_query = noun.get_image_search_terms()
-                image_file = self._media_manager.generate_and_add_image(
-                    noun.noun,
-                    search_query=enhanced_search_query,
-                    example_sentence=noun.example,
-                )
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-
-            # Prepare fields for the card (matching noun note type field order)
-            fields = [
-                noun.noun,
-                noun.article,
-                noun.english,
-                noun.plural,
-                noun.example,
-                noun.related,
-                image_html,
-                audio_ref,
-                example_audio_ref,
-            ]
-
-            # Add note to deck
-            self._deck_manager.add_note(note_type_id, fields, ["noun"])
+            noun_generator.add_card(noun, generate_media=generate_media)
             cards_created += 1
 
         self.reset_to_main_deck()
@@ -362,7 +281,7 @@ class GermanDeckBuilder:
         return cards_created
 
     def generate_adjective_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded adjectives.
+        """Generate Anki cards for loaded adjectives using MVP architecture.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -379,83 +298,12 @@ class GermanDeckBuilder:
         # Create subdeck for adjectives
         self.create_subdeck("Adjectives")
 
-        # Get or create adjective note type
-        adjective_note_type = self._template_service.get_adjective_note_type()
-        note_type_id = self._deck_manager.create_note_type(adjective_note_type)
-        print(
-            f"DEBUG: Using adjective note type ID: {note_type_id} "
-            f"for {adjective_note_type.name}"
-        )
+        # Use the card generator factory to create a properly configured generator
+        adjective_generator = self._card_factory.create_adjective_generator()
 
         cards_created = 0
-
         for adjective in self._loaded_adjectives:
-            # Use existing media paths from CSV or generate new media
-            audio_ref = ""
-            image_html = ""
-            example_audio_ref = ""
-
-            # Check for existing word audio
-            if adjective.word_audio and Path(adjective.word_audio).exists():
-                audio_file = self._media_manager.add_media_file(adjective.word_audio)
-                if audio_file:
-                    audio_ref = audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate audio for combined adjective forms only if no existing audio
-                audio_text = self._german_service.get_combined_adjective_audio_text(
-                    adjective
-                )
-                audio_file = self._media_manager.generate_and_add_audio(audio_text)
-                if audio_file:
-                    audio_ref = audio_file.reference
-
-            # Check for existing example audio
-            if adjective.example_audio and Path(adjective.example_audio).exists():
-                example_audio_file = self._media_manager.add_media_file(
-                    adjective.example_audio
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate example sentence audio if no existing audio
-                example_audio_file = self._media_manager.generate_and_add_audio(
-                    adjective.example
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-
-            # Check for existing image
-            if adjective.image_path and Path(adjective.image_path).exists():
-                image_file = self._media_manager.add_media_file(adjective.image_path)
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-            elif generate_media and self._media_service:
-                # Generate image using domain model's enhanced search terms
-                enhanced_search_query = adjective.get_image_search_terms()
-                image_file = self._media_manager.generate_and_add_image(
-                    adjective.word,
-                    search_query=enhanced_search_query,
-                    example_sentence=adjective.example,
-                )
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-
-            # Prepare fields for the card
-            fields = [
-                adjective.word,
-                adjective.english,
-                adjective.example,
-                adjective.comparative,
-                adjective.superlative,
-                image_html,
-                audio_ref,
-                example_audio_ref,
-            ]
-
-            # Add note to deck
-            self._deck_manager.add_note(note_type_id, fields, ["adjective"])
+            adjective_generator.add_card(adjective, generate_media=generate_media)
             cards_created += 1
 
         self.reset_to_main_deck()
@@ -463,7 +311,7 @@ class GermanDeckBuilder:
         return cards_created
 
     def generate_adverb_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded adverbs.
+        """Generate Anki cards for loaded adverbs using MVP architecture.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -478,102 +326,12 @@ class GermanDeckBuilder:
         # Create subdeck for adverbs
         self.create_subdeck("Adverbs")
 
-        # Get or create adverb note type
-        adverb_note_type = self._template_service.get_adverb_note_type()
-        note_type_id = self._deck_manager.create_note_type(adverb_note_type)
-        print(
-            f"DEBUG: Using adverb note type ID: {note_type_id} "
-            f"for {adverb_note_type.name}"
-        )
+        # Use the card generator factory to create a properly configured generator
+        adverb_generator = self._card_factory.create_adverb_generator()
 
         cards_created = 0
-
         for adverb in self._loaded_adverbs:
-            # Use existing media paths from CSV or generate new media
-            audio_ref = ""
-            image_html = ""
-            example_audio_ref = ""
-
-            # Check for existing word audio
-            if adverb.word_audio and Path(adverb.word_audio).exists():
-                audio_file = self._media_manager.add_media_file(adverb.word_audio)
-                if audio_file:
-                    audio_ref = audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate audio for adverb only if no existing audio
-                audio_file = self._media_manager.generate_and_add_audio(adverb.word)
-                if audio_file:
-                    audio_ref = audio_file.reference
-
-            # Check for existing example audio
-            if adverb.example_audio and Path(adverb.example_audio).exists():
-                example_audio_file = self._media_manager.add_media_file(
-                    adverb.example_audio
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate example sentence audio if no existing audio
-                example_audio_file = self._media_manager.generate_and_add_audio(
-                    adverb.example
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-
-            # Check for existing image - first check CSV path,
-            # then check expected filename
-            image_found = False
-            if adverb.image_path and Path(adverb.image_path).exists():
-                image_file = self._media_manager.add_media_file(adverb.image_path)
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-                    image_found = True
-            else:
-                # Check for existing image by expected filename pattern
-                safe_filename = (
-                    "".join(
-                        c for c in adverb.word if c.isalnum() or c in (" ", "-", "_")
-                    )
-                    .rstrip()
-                    .replace(" ", "_")
-                    .lower()
-                )
-                expected_image_path = Path("data/images") / f"{safe_filename}.jpg"
-                if expected_image_path.exists():
-                    image_file = self._media_manager.add_media_file(
-                        str(expected_image_path)
-                    )
-                    if image_file:
-                        filename = image_file.reference
-                        image_html = f'<img src="{filename}">'
-                        image_found = True
-
-            if not image_found and generate_media and self._media_service:
-                # Generate image using domain model's enhanced search terms
-                enhanced_search_query = adverb.get_image_search_terms()
-                image_file = self._media_manager.generate_and_add_image(
-                    adverb.word,
-                    search_query=enhanced_search_query,
-                    example_sentence=adverb.example,
-                )
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-
-            # Prepare fields for the card
-            fields = [
-                adverb.word,
-                adverb.english,
-                adverb.type.value,
-                adverb.example,
-                image_html,
-                audio_ref,
-                example_audio_ref,
-            ]
-
-            # Add note to deck
-            self._deck_manager.add_note(note_type_id, fields, ["adverb"])
+            adverb_generator.add_card(adverb, generate_media=generate_media)
             cards_created += 1
 
         self.reset_to_main_deck()
@@ -581,7 +339,7 @@ class GermanDeckBuilder:
         return cards_created
 
     def generate_negation_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded negations.
+        """Generate Anki cards for loaded negations using MVP architecture.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -596,98 +354,12 @@ class GermanDeckBuilder:
         # Create subdeck for negations
         self.create_subdeck("Negations")
 
-        # Get or create negation note type
-        negation_note_type = self._template_service.get_negation_note_type()
-        note_type_id = self._deck_manager.create_note_type(negation_note_type)
+        # Use the card generator factory to create a properly configured generator
+        negation_generator = self._card_factory.create_negation_generator()
 
         cards_created = 0
-
         for negation in self._loaded_negations:
-            # Use existing media paths from CSV or generate new media
-            audio_ref = ""
-            image_html = ""
-            example_audio_ref = ""
-
-            # Check for existing word audio
-            if negation.word_audio and Path(negation.word_audio).exists():
-                audio_file = self._media_manager.add_media_file(negation.word_audio)
-                if audio_file:
-                    audio_ref = audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate audio for negation only if no existing audio
-                audio_file = self._media_manager.generate_and_add_audio(negation.word)
-                if audio_file:
-                    audio_ref = audio_file.reference
-
-            # Check for existing example audio
-            if negation.example_audio and Path(negation.example_audio).exists():
-                example_audio_file = self._media_manager.add_media_file(
-                    negation.example_audio
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-            elif generate_media and self._media_service:
-                # Generate example sentence audio if no existing audio
-                example_audio_file = self._media_manager.generate_and_add_audio(
-                    negation.example
-                )
-                if example_audio_file:
-                    example_audio_ref = example_audio_file.reference
-
-            # Check for existing image - first check CSV path,
-            # then check expected filename
-            image_found = False
-            if negation.image_path and Path(negation.image_path).exists():
-                image_file = self._media_manager.add_media_file(negation.image_path)
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-                    image_found = True
-            else:
-                # Check for existing image by expected filename pattern
-                safe_filename = (
-                    "".join(
-                        c for c in negation.word if c.isalnum() or c in (" ", "-", "_")
-                    )
-                    .rstrip()
-                    .replace(" ", "_")
-                    .lower()
-                )
-                expected_image_path = Path("data/images") / f"{safe_filename}.jpg"
-                if expected_image_path.exists():
-                    image_file = self._media_manager.add_media_file(
-                        str(expected_image_path)
-                    )
-                    if image_file:
-                        filename = image_file.reference
-                        image_html = f'<img src="{filename}">'
-                        image_found = True
-
-            if not image_found and generate_media and self._media_service:
-                # Generate image using domain model's enhanced search terms
-                enhanced_search_query = negation.get_image_search_terms()
-                image_file = self._media_manager.generate_and_add_image(
-                    negation.word,
-                    search_query=enhanced_search_query,
-                    example_sentence=negation.example,
-                )
-                if image_file:
-                    filename = image_file.reference
-                    image_html = f'<img src="{filename}">'
-
-            # Prepare fields for the card
-            fields = [
-                negation.word,
-                negation.english,
-                negation.type.value,
-                negation.example,
-                image_html,
-                audio_ref,
-                example_audio_ref,
-            ]
-
-            # Add note to deck
-            self._deck_manager.add_note(note_type_id, fields, ["negation"])
+            negation_generator.add_card(negation, generate_media=generate_media)
             cards_created += 1
 
         self.reset_to_main_deck()
@@ -801,12 +473,6 @@ class GermanDeckBuilder:
         self._loaded_adverbs.clear()
         self._loaded_negations.clear()
         logger.info("Cleared all loaded data")
-
-    def clear_media_cache(self) -> None:
-        """Clear media generation cache."""
-        if self._media_manager:
-            self._media_manager.clear_cache()
-            logger.info("Cleared media cache")
 
     # Context Manager Support
 
