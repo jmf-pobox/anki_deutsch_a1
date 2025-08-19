@@ -9,7 +9,7 @@ import logging
 import sys
 from pathlib import Path
 
-from langlearn.deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import DeckBuilder
 
 # Set up logging
 logging.basicConfig(
@@ -37,7 +37,7 @@ def main() -> None:
 
     try:
         # Create the deck using GermanDeckBuilder
-        with GermanDeckBuilder(
+        with DeckBuilder(
             deck_name=deck_name,
             backend_type="anki",  # Use AnkiBackend for production
             enable_media_generation=True,  # Enable media generation

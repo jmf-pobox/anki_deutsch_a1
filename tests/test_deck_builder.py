@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from langlearn.backends.base import DeckBackend, MediaFile, NoteType
-from langlearn.deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import DeckBuilder
 from langlearn.models.adjective import Adjective
 from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.negation import Negation, NegationType
@@ -140,7 +140,7 @@ class TestGermanDeckBuilder:
     def test_initialization_genanki_backend_deprecated(self) -> None:
         """Test GermanDeckBuilder properly rejects deprecated genanki backend."""
         with pytest.raises(ValueError, match="GenanKi backend has been deprecated"):
-            GermanDeckBuilder("Test Deck", backend_type="genanki")
+            DeckBuilder("Test Deck", backend_type="genanki")
 
     def test_initialization_anki_backend(self) -> None:
         """Test GermanDeckBuilder initialization with official Anki backend."""
@@ -148,7 +148,7 @@ class TestGermanDeckBuilder:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
-            builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+            builder = DeckBuilder("Test Deck", backend_type="anki")
 
             assert builder.backend_type == "anki"
             mock_anki.assert_called_once()
@@ -156,7 +156,7 @@ class TestGermanDeckBuilder:
     def test_initialization_invalid_backend(self) -> None:
         """Test GermanDeckBuilder initialization with invalid backend."""
         with pytest.raises(ValueError, match="Unknown backend type: invalid"):
-            GermanDeckBuilder("Test Deck", backend_type="invalid")
+            DeckBuilder("Test Deck", backend_type="invalid")
 
     def test_initialization_media_disabled(self) -> None:
         """Test GermanDeckBuilder initialization with media generation disabled."""
@@ -164,7 +164,7 @@ class TestGermanDeckBuilder:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
-            builder = GermanDeckBuilder(
+            builder = DeckBuilder(
                 "Test Deck", backend_type="anki", enable_media_generation=False
             )
 
@@ -179,7 +179,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._csv_service, "read_csv") as mock_read:
             mock_read.return_value = sample_noun_data
@@ -198,7 +198,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._csv_service, "read_csv") as mock_read:
             mock_read.return_value = sample_adjective_data
@@ -217,7 +217,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create fake CSV files
@@ -241,7 +241,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._deck_manager, "set_current_subdeck") as mock_set:
             builder.create_subdeck("Nouns")
@@ -253,7 +253,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._deck_manager, "reset_to_main_deck") as mock_reset:
             builder.reset_to_main_deck()
@@ -265,7 +265,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         result = builder.generate_noun_cards()
         assert result == 0
@@ -280,7 +280,7 @@ class TestGermanDeckBuilder:
         mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data
 
         # Mock the card generator's add_card method
@@ -308,7 +308,7 @@ class TestGermanDeckBuilder:
         mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data[:1]  # Just one noun for simplicity
 
         # Mock the card generator's add_card method
@@ -338,7 +338,7 @@ class TestGermanDeckBuilder:
         mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_adjectives = sample_adjective_data
 
         # Mock the card generator's add_card method
@@ -367,7 +367,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data
         builder._loaded_adjectives = sample_adjective_data
 
@@ -389,7 +389,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._deck_manager, "export_deck") as mock_export:
             builder.export_deck("output/test.apkg")
@@ -401,7 +401,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = [Mock()]
         builder._loaded_adjectives = [Mock(), Mock()]
 
@@ -430,7 +430,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(
             builder._deck_manager, "get_current_deck_name"
@@ -460,7 +460,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = [Mock()]
         builder._loaded_adjectives = [Mock()]
 
@@ -475,8 +475,8 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        with GermanDeckBuilder("Test Deck", backend_type="anki") as builder:
-            assert isinstance(builder, GermanDeckBuilder)
+        with DeckBuilder("Test Deck", backend_type="anki") as builder:
+            assert isinstance(builder, DeckBuilder)
             assert builder.deck_name == "Test Deck"
 
     @patch("langlearn.deck_builder.AnkiBackend")
@@ -485,7 +485,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder(
+        builder = DeckBuilder(
             "Test Deck", backend_type="anki", enable_media_generation=False
         )
 
@@ -498,7 +498,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         mock_stats = {"files_added": 10}
         with patch.object(
@@ -517,7 +517,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._csv_service, "read_csv") as mock_read:
             mock_read.return_value = sample_adverb_data
@@ -536,7 +536,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with patch.object(builder._csv_service, "read_csv") as mock_read:
             mock_read.return_value = sample_negation_data
@@ -553,7 +553,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         result = builder.generate_adverb_cards()
         assert result == 0
@@ -568,7 +568,7 @@ class TestGermanDeckBuilder:
         mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_adverbs = sample_adverb_data
 
         # Mock the card generator's add_card method
@@ -592,7 +592,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         result = builder.generate_negation_cards()
         assert result == 0
@@ -607,7 +607,7 @@ class TestGermanDeckBuilder:
         mock_backend.add_note.return_value = None
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_negations = sample_negation_data
 
         # Mock the card generator's add_card method
@@ -634,7 +634,7 @@ class TestGermanDeckBuilder:
         mock_backend.deck_name = "Test Deck"
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         # Modify adverb data to have existing media paths
         adverb_with_media = sample_adverb_data[0]
         adverb_with_media.word_audio = "/fake/existing_audio.mp3"
@@ -675,7 +675,7 @@ class TestGermanDeckBuilder:
         mock_backend.deck_name = "Test Deck"
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_negations = sample_negation_data[:1]  # Just one for simplicity
 
         mock_note_type = Mock(spec=NoteType)
@@ -719,7 +719,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
 
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create all CSV files
@@ -756,7 +756,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data
         builder._loaded_adjectives = sample_adjective_data
         builder._loaded_adverbs = sample_adverb_data
@@ -800,7 +800,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data
         builder._loaded_adjectives = sample_adjective_data
         builder._loaded_adverbs = sample_adverb_data
@@ -840,7 +840,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = GermanDeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", backend_type="anki")
         builder._loaded_nouns = sample_noun_data
         builder._loaded_adjectives = sample_adjective_data
         builder._loaded_adverbs = sample_adverb_data

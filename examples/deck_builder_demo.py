@@ -11,7 +11,7 @@ from pathlib import Path
 # Add src to path to import langlearn modules
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from langlearn.deck_builder import GermanDeckBuilder
+from langlearn.deck_builder import DeckBuilder
 from langlearn.models.adjective import Adjective
 from langlearn.models.noun import Noun
 
@@ -23,7 +23,7 @@ def demo_german_deck_builder() -> None:
 
     # Create builder with AnkiBackend (production default)
     print("\n📦 Creating GermanDeckBuilder with AnkiBackend...")
-    with GermanDeckBuilder(
+    with DeckBuilder(
         deck_name="Demo German A1 Vocabulary",
         backend_type="anki",  # Use production AnkiBackend
         enable_media_generation=False,  # Disable to avoid API dependencies
@@ -146,7 +146,7 @@ def demo_with_csv_loading() -> None:
         print("❌ Data directory not found, skipping CSV demo")
         return
 
-    with GermanDeckBuilder(
+    with DeckBuilder(
         deck_name="CSV Demo Deck",
         backend_type="anki",  # Use production AnkiBackend
         enable_media_generation=False,

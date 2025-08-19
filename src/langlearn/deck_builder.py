@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")
 
 
-class GermanDeckBuilder:
+class DeckBuilder:
     """High-level orchestrator for German Anki deck generation.
 
     This class provides the main interface for creating German language learning
@@ -472,7 +472,7 @@ class GermanDeckBuilder:
 
     # Context Manager Support
 
-    def __enter__(self) -> "GermanDeckBuilder":
+    def __enter__(self) -> "DeckBuilder":
         """Context manager entry."""
         return self
 
