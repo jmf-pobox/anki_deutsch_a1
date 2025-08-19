@@ -23,9 +23,6 @@ class TestAdverbFieldProcessing:
             english="here",
             type=AdverbType.LOCATION,
             example="Ich wohne hier.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -36,9 +33,6 @@ class TestAdverbFieldProcessing:
             english="today",
             type=AdverbType.TIME,
             example="Heute ist es sonnig.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -61,26 +55,23 @@ class TestAdverbFieldProcessing:
         info = location_adverb.get_field_layout_info()
 
         assert info["model_type"] == "Adverb"
-        assert info["expected_field_count"] == 7
+        assert info["expected_field_count"] == 4
         assert info["field_names"] == [
             "Word",
             "English",
             "Type",
             "Example",
-            "WordAudio",
-            "ExampleAudio",
-            "Image",
         ]
 
     def test_field_validation(self, location_adverb: Adverb) -> None:
         """Test field structure validation."""
         # Valid field counts
-        assert location_adverb.validate_field_structure([""] * 7) is True
+        assert location_adverb.validate_field_structure([""] * 4) is True
         # Extra fields OK
-        assert location_adverb.validate_field_structure([""] * 8) is True
+        assert location_adverb.validate_field_structure([""] * 5) is True
 
         # Invalid field counts
-        assert location_adverb.validate_field_structure([""] * 6) is False
+        assert location_adverb.validate_field_structure([""] * 3) is False
         assert location_adverb.validate_field_structure([]) is False
 
     def test_process_fields_complete_generation(
@@ -92,9 +83,6 @@ class TestAdverbFieldProcessing:
             "here",  # 1: English
             "location",  # 2: Type
             "Ich wohne hier.",  # 3: Example
-            "",  # 4: WordAudio (empty - should generate)
-            "",  # 5: ExampleAudio (empty - should generate)
-            "",  # 6: Image (empty - should generate)
         ]
 
         # Set up mock responses
@@ -199,7 +187,7 @@ class TestAdverbFieldProcessing:
         self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator
     ) -> None:
         """Test error handling for insufficient fields."""
-        short_fields = ["hier", "here", "location"]  # Only 3 fields, need 7
+        short_fields = ["hier", "here", "location"]  # Only 3 fields, need 4
 
         with pytest.raises(FieldProcessingError) as exc_info:
             location_adverb.process_fields_for_media_generation(
@@ -208,7 +196,7 @@ class TestAdverbFieldProcessing:
 
         error = exc_info.value
         assert "Insufficient fields" in str(error)
-        assert "got 3, need at least 7" in str(error)
+        assert "got 3, need at least 4" in str(error)
         assert error.model_type == "Adverb"
         assert error.original_fields == short_fields
 

@@ -107,11 +107,8 @@ class NounCardGenerator(BaseCardGenerator[Noun]):
         if not self._media_manager:
             return ""
 
-        # Check for existing word audio
-        if noun.word_audio and Path(noun.word_audio).exists():
-            audio_file = self._media_manager.add_media_file(noun.word_audio)
-            if audio_file:
-                return audio_file.reference
+        # Check for existing word audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate audio for combined noun forms using domain model
         audio_text = noun.get_combined_audio_text()
@@ -130,11 +127,8 @@ class NounCardGenerator(BaseCardGenerator[Noun]):
         if not self._media_manager:
             return ""
 
-        # Check for existing example audio
-        if noun.example_audio and Path(noun.example_audio).exists():
-            example_audio_file = self._media_manager.add_media_file(noun.example_audio)
-            if example_audio_file:
-                return example_audio_file.reference
+        # Check for existing example audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate example sentence audio
         example_audio_file = self._media_manager.generate_and_add_audio(noun.example)
@@ -152,11 +146,8 @@ class NounCardGenerator(BaseCardGenerator[Noun]):
         if not self._media_manager:
             return ""
 
-        # Check for existing image from CSV path
-        if noun.image_path and Path(noun.image_path).exists():
-            image_file = self._media_manager.add_media_file(noun.image_path)
-            if image_file:
-                return f'<img src="{image_file.reference}">'
+        # Check for existing image from CSV path (field no longer exists on model)
+        # Image generation now handled by field processor during CSV processing
 
         # Check for existing image by expected filename pattern
         safe_filename = (

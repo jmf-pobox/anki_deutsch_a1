@@ -1,7 +1,5 @@
 """Card generator for adjectives."""
 
-from pathlib import Path
-
 from langlearn.backends.base import DeckBackend
 from langlearn.cards.base import BaseCardGenerator
 from langlearn.managers.media_manager import MediaManager
@@ -107,11 +105,8 @@ class AdjectiveCardGenerator(BaseCardGenerator[Adjective]):
         if not self._media_manager:
             return ""
 
-        # Check for existing word audio
-        if adjective.word_audio and Path(adjective.word_audio).exists():
-            audio_file = self._media_manager.add_media_file(adjective.word_audio)
-            if audio_file:
-                return audio_file.reference
+        # Check for existing word audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate audio for combined adjective forms using domain model
         audio_text = adjective.get_combined_audio_text()
@@ -130,13 +125,8 @@ class AdjectiveCardGenerator(BaseCardGenerator[Adjective]):
         if not self._media_manager:
             return ""
 
-        # Check for existing example audio
-        if adjective.example_audio and Path(adjective.example_audio).exists():
-            example_audio_file = self._media_manager.add_media_file(
-                adjective.example_audio
-            )
-            if example_audio_file:
-                return example_audio_file.reference
+        # Check for existing example audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate example sentence audio
         example_audio_file = self._media_manager.generate_and_add_audio(
@@ -156,11 +146,8 @@ class AdjectiveCardGenerator(BaseCardGenerator[Adjective]):
         if not self._media_manager:
             return ""
 
-        # Check for existing image
-        if adjective.image_path and Path(adjective.image_path).exists():
-            image_file = self._media_manager.add_media_file(adjective.image_path)
-            if image_file:
-                return f'<img src="{image_file.reference}">'
+        # Check for existing image (field no longer exists on model)
+        # Image generation now handled by field processor during CSV processing
 
         # Generate image using domain model's enhanced search terms
         enhanced_search_query = adjective.get_image_search_terms()

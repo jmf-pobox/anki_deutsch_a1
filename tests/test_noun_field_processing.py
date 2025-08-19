@@ -25,9 +25,6 @@ class TestNounFieldProcessing:
             plural="Katzen",
             example="Die Katze ist sehr süß.",
             related="Tier, Haustier",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -40,9 +37,6 @@ class TestNounFieldProcessing:
             plural="Freiheiten",
             example="Freiheit ist wichtig.",
             related="Recht, Demokratie",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -65,7 +59,7 @@ class TestNounFieldProcessing:
         info = concrete_noun.get_field_layout_info()
 
         assert info["model_type"] == "Noun"
-        assert info["expected_field_count"] == 9
+        assert info["expected_field_count"] == 6
         assert info["field_names"] == [
             "Noun",
             "Article",
@@ -73,21 +67,18 @@ class TestNounFieldProcessing:
             "Plural",
             "Example",
             "Related",
-            "Image",
-            "WordAudio",
-            "ExampleAudio",
         ]
 
     def test_field_validation(self, concrete_noun: Noun) -> None:
         """Test field structure validation."""
         # Valid field counts
-        assert concrete_noun.validate_field_structure([""] * 9) is True
+        assert concrete_noun.validate_field_structure([""] * 6) is True
         assert (
-            concrete_noun.validate_field_structure([""] * 10) is True
+            concrete_noun.validate_field_structure([""] * 7) is True
         )  # Extra fields OK
 
         # Invalid field counts
-        assert concrete_noun.validate_field_structure([""] * 8) is False
+        assert concrete_noun.validate_field_structure([""] * 5) is False
         assert concrete_noun.validate_field_structure([]) is False
 
     def test_process_fields_complete_generation_concrete(
@@ -261,7 +252,7 @@ class TestNounFieldProcessing:
 
         error = exc_info.value
         assert "Insufficient fields" in str(error)
-        assert "got 3, need at least 9" in str(error)
+        assert "got 3, need at least 6" in str(error)
         assert error.model_type == "Noun"
         assert error.original_fields == short_fields
 
@@ -303,9 +294,6 @@ class TestNounFieldProcessing:
             plural="Tische",
             example="Der Tisch ist braun.",
             related="Möbel",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         # Abstract noun (unused - field processing uses field data, not instances)

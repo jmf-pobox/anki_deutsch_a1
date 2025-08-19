@@ -39,9 +39,6 @@ class Adverb(BaseModel, FieldProcessor):
     english: str = Field(..., description="English translation")
     type: AdverbType = Field(..., description="Type of adverb")
     example: str = Field(..., description="Example sentence using the adverb")
-    word_audio: str = Field("", description="Path to audio file for the adverb")
-    example_audio: str = Field("", description="Path to audio file for the example")
-    image_path: str = Field("", description="Path to image file for the adverb")
 
     def validate_position(self) -> bool:
         """Validate that the adverb is in a valid position in the example sentence.
@@ -198,16 +195,16 @@ class Adverb(BaseModel, FieldProcessor):
     ) -> list[str]:
         """Process adverb fields with German-specific logic.
 
-        Field Layout: [Word, English, Type, Example, WordAudio, ExampleAudio, Image]
+        Field Layout: [Word, English, Type, Example]
 
         Args:
             fields: Original field values
             media_generator: Interface for generating media
 
         Returns:
-            Processed field values with media
+            Processed field values with media fields appended
         """
-        validate_minimum_fields(fields, 7, "Adverb")
+        validate_minimum_fields(fields, 4, "Adverb")
 
         # Extract field values
         word = fields[0]
@@ -215,22 +212,26 @@ class Adverb(BaseModel, FieldProcessor):
         # type_field = fields[2]  # AdverbType as string
         example = fields[3]
 
-        # Create a copy to modify
+        # Create a copy and extend with media fields
         processed = fields.copy()
 
-        # Only generate word audio if WordAudio field (index 4) is empty
+        # Ensure we have exactly 7 fields (4 original + 3 media)
+        while len(processed) < 7:
+            processed.append("")
+
+        # Generate word audio if not present
         if not processed[4]:  # WordAudio field
             audio_path = media_generator.generate_audio(word)
             if audio_path:
                 processed[4] = format_media_reference(audio_path, "audio")
 
-        # Only generate example audio if ExampleAudio field (index 5) is empty
+        # Generate example audio if not present
         if not processed[5]:  # ExampleAudio field
             audio_path = media_generator.generate_audio(example)
             if audio_path:
                 processed[5] = format_media_reference(audio_path, "audio")
 
-        # Only generate image if Image field (index 6) is empty
+        # Generate image if not present
         if not processed[6]:  # Image field
             # Create temporary adverb instance to get search terms
             try:
@@ -240,9 +241,6 @@ class Adverb(BaseModel, FieldProcessor):
                     english=english,
                     type=adverb_type,
                     example=example,
-                    word_audio="",
-                    example_audio="",
-                    image_path="",
                 )
                 search_terms = temp_adverb.get_image_search_terms()
                 image_path = media_generator.generate_image(search_terms, english)
@@ -256,17 +254,17 @@ class Adverb(BaseModel, FieldProcessor):
 
     def get_expected_field_count(self) -> int:
         """Return expected number of fields for adverb cards."""
-        return 7
+        return 4
 
     def validate_field_structure(self, fields: list[str]) -> bool:
         """Validate that fields match expected adverb structure."""
-        return len(fields) >= 7
+        return len(fields) >= 4
 
     def get_field_layout_info(self) -> dict[str, Any]:
         """Return information about the adverb field layout."""
         return {
             "model_type": "Adverb",
-            "expected_field_count": 7,
+            "expected_field_count": 4,
             "field_names": self._get_field_names(),
             "description": "German adverb with type classification and examples",
         }
@@ -278,7 +276,4 @@ class Adverb(BaseModel, FieldProcessor):
             "English",  # 1
             "Type",  # 2
             "Example",  # 3
-            "WordAudio",  # 4
-            "ExampleAudio",  # 5
-            "Image",  # 6
         ]

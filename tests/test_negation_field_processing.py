@@ -23,9 +23,6 @@ class TestNegationFieldProcessing:
             english="not",
             type=NegationType.GENERAL,
             example="Ich verstehe das nicht.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -36,9 +33,6 @@ class TestNegationFieldProcessing:
             english="no/not a",
             type=NegationType.ARTICLE,
             example="Ich habe kein Auto.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -49,9 +43,6 @@ class TestNegationFieldProcessing:
             english="nothing",
             type=NegationType.PRONOUN,
             example="Ich verstehe nichts.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     @pytest.fixture
@@ -76,26 +67,23 @@ class TestNegationFieldProcessing:
         info = general_negation.get_field_layout_info()
 
         assert info["model_type"] == "Negation"
-        assert info["expected_field_count"] == 7
+        assert info["expected_field_count"] == 4
         assert info["field_names"] == [
             "Word",
             "English",
             "Type",
             "Example",
-            "WordAudio",
-            "ExampleAudio",
-            "Image",
         ]
 
     def test_field_validation(self, general_negation: Negation) -> None:
         """Test field structure validation."""
         # Valid field counts
-        assert general_negation.validate_field_structure([""] * 7) is True
+        assert general_negation.validate_field_structure([""] * 4) is True
         # Extra fields OK
-        assert general_negation.validate_field_structure([""] * 8) is True
+        assert general_negation.validate_field_structure([""] * 5) is True
 
         # Invalid field counts
-        assert general_negation.validate_field_structure([""] * 6) is False
+        assert general_negation.validate_field_structure([""] * 3) is False
         assert general_negation.validate_field_structure([]) is False
 
     def test_process_fields_complete_generation(
@@ -218,7 +206,7 @@ class TestNegationFieldProcessing:
         self, general_negation: Negation, mock_generator: MockDomainMediaGenerator
     ) -> None:
         """Test error handling for insufficient fields."""
-        short_fields = ["nicht", "not", "general"]  # Only 3 fields, need 7
+        short_fields = ["nicht", "not", "general"]  # Only 3 fields, need 4
 
         with pytest.raises(FieldProcessingError) as exc_info:
             general_negation.process_fields_for_media_generation(
@@ -227,7 +215,7 @@ class TestNegationFieldProcessing:
 
         error = exc_info.value
         assert "Insufficient fields" in str(error)
-        assert "got 3, need at least 7" in str(error)
+        assert "got 3, need at least 4" in str(error)
         assert error.model_type == "Negation"
         assert error.original_fields == short_fields
 
@@ -321,9 +309,6 @@ class TestNegationFieldProcessing:
             english="neither",
             type=NegationType.CORRELATIVE,
             example="Weder Hans noch Maria.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         correlative_negation.process_fields_for_media_generation(fields, mock_generator)

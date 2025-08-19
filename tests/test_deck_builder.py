@@ -635,11 +635,8 @@ class TestGermanDeckBuilder:
         mock_anki.return_value = mock_backend
 
         builder = DeckBuilder("Test Deck", backend_type="anki")
-        # Modify adverb data to have existing media paths
-        adverb_with_media = sample_adverb_data[0]
-        adverb_with_media.word_audio = "/fake/existing_audio.mp3"
-        adverb_with_media.image_path = "/fake/existing_image.jpg"
-        builder._loaded_adverbs = [adverb_with_media]
+        # Use adverb data without legacy fields
+        builder._loaded_adverbs = sample_adverb_data[:1]
 
         mock_note_type = Mock(spec=NoteType)
         mock_note_type.name = "Test Adverb Note Type"

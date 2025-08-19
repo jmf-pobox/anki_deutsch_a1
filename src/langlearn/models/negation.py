@@ -39,9 +39,6 @@ class Negation(BaseModel, FieldProcessor):
     english: str = Field(..., description="English translation")
     type: NegationType = Field(..., description="Type of negation")
     example: str = Field(..., description="Example sentence using the negation")
-    word_audio: str = Field("", description="Path to audio file for the negation")
-    example_audio: str = Field("", description="Path to audio file for the example")
-    image_path: str = Field("", description="Path to image file for the negation")
 
     def validate_example(self) -> bool:
         """Validate that the example contains the negation and follows basic rules.
@@ -238,16 +235,16 @@ class Negation(BaseModel, FieldProcessor):
     ) -> list[str]:
         """Process negation fields with German-specific logic.
 
-        Field Layout: [Word, English, Type, Example, WordAudio, ExampleAudio, Image]
+        Field Layout: [Word, English, Type, Example]
 
         Args:
             fields: Original field values
             media_generator: Interface for generating media
 
         Returns:
-            Processed field values with media
+            Processed field values with media fields appended
         """
-        validate_minimum_fields(fields, 7, "Negation")
+        validate_minimum_fields(fields, 4, "Negation")
 
         # Extract field values
         word = fields[0]
@@ -255,22 +252,26 @@ class Negation(BaseModel, FieldProcessor):
         # type_field = fields[2]  # NegationType as string
         example = fields[3]
 
-        # Create a copy to modify
+        # Create a copy and extend with media fields
         processed = fields.copy()
 
-        # Only generate word audio if WordAudio field (index 4) is empty
+        # Ensure we have exactly 7 fields (4 original + 3 media)
+        while len(processed) < 7:
+            processed.append("")
+
+        # Generate word audio if not present
         if not processed[4]:  # WordAudio field
             audio_path = media_generator.generate_audio(word)
             if audio_path:
                 processed[4] = format_media_reference(audio_path, "audio")
 
-        # Only generate example audio if ExampleAudio field (index 5) is empty
+        # Generate example audio if not present
         if not processed[5]:  # ExampleAudio field
             audio_path = media_generator.generate_audio(example)
             if audio_path:
                 processed[5] = format_media_reference(audio_path, "audio")
 
-        # Only generate image if Image field (index 6) is empty
+        # Generate image if not present
         if not processed[6]:  # Image field
             # Create temporary negation instance to get search terms
             try:
@@ -282,9 +283,6 @@ class Negation(BaseModel, FieldProcessor):
                     english=english,
                     type=negation_type,
                     example=example,
-                    word_audio="",
-                    example_audio="",
-                    image_path="",
                 )
                 search_terms = temp_negation.get_image_search_terms()
                 image_path = media_generator.generate_image(search_terms, english)
@@ -298,17 +296,17 @@ class Negation(BaseModel, FieldProcessor):
 
     def get_expected_field_count(self) -> int:
         """Return expected number of fields for negation cards."""
-        return 7
+        return 4
 
     def validate_field_structure(self, fields: list[str]) -> bool:
         """Validate that fields match expected negation structure."""
-        return len(fields) >= 7
+        return len(fields) >= 4
 
     def get_field_layout_info(self) -> dict[str, Any]:
         """Return information about the negation field layout."""
         return {
             "model_type": "Negation",
-            "expected_field_count": 7,
+            "expected_field_count": 4,
             "field_names": self._get_field_names(),
             "description": "German negation with type classification and examples",
         }
@@ -320,7 +318,4 @@ class Negation(BaseModel, FieldProcessor):
             "English",  # 1
             "Type",  # 2
             "Example",  # 3
-            "WordAudio",  # 4
-            "ExampleAudio",  # 5
-            "Image",  # 6
         ]

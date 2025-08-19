@@ -22,9 +22,6 @@ class Adjective(BaseModel, FieldProcessor):
     example: str = Field(..., description="Example sentence using the adjective")
     comparative: str = Field(..., description="Comparative form of the adjective")
     superlative: str = Field("", description="Superlative form of the adjective")
-    word_audio: str = Field("", description="Path to audio file for the word")
-    example_audio: str = Field("", description="Path to audio file for the example")
-    image_path: str = Field("", description="Path to image file for the adjective")
 
     def get_combined_audio_text(self) -> str:
         """Generate combined German adjective audio text.
@@ -154,6 +151,10 @@ class Adjective(BaseModel, FieldProcessor):
         Returns:
             Processed field list with media references added where appropriate
         """
+        # Extend fields to expected 8-field layout if needed
+        while len(fields) < 8:
+            fields.append("")
+
         validate_minimum_fields(fields, 8, "Adjective")
 
         # Extract field values
@@ -175,9 +176,6 @@ class Adjective(BaseModel, FieldProcessor):
                 example=example,
                 comparative=comparative,
                 superlative=superlative,
-                word_audio="",
-                example_audio="",
-                image_path="",
             )
             combined_text = adjective.get_combined_audio_text()
             audio_path = media_generator.generate_audio(combined_text)
@@ -199,9 +197,6 @@ class Adjective(BaseModel, FieldProcessor):
                 example=example,
                 comparative=comparative,
                 superlative=superlative,
-                word_audio="",
-                example_audio="",
-                image_path="",
             )
 
             # Use enhanced search terms for better image matching

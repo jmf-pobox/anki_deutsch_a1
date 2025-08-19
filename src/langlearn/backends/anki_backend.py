@@ -57,6 +57,10 @@ class AnkiBackend(DeckBackend):
         self._main_deck_id: DeckId = DeckId(main_deck_id)
         self._deck_id: DeckId = self._main_deck_id
 
+        # Track subdecks and current deck
+        self._subdeck_map: dict[str, DeckId] = {}  # full_deck_name -> DeckId
+        self._current_subdeck_name: str | None = None
+
         # Track note types
         self._note_type_map: dict[str, NotetypeId] = {}
         self._next_note_type_id = 1
@@ -148,6 +152,40 @@ class AnkiBackend(DeckBackend):
         self._next_note_type_id += 1
 
         return our_id
+
+    def create_subdeck(self, full_deck_name: str) -> DeckId:
+        """Create a subdeck and return its ID.
+
+        Args:
+            full_deck_name: Full deck name with "::" separator (e.g., "Main::Nouns")
+
+        Returns:
+            DeckId of the created subdeck
+        """
+        if full_deck_name not in self._subdeck_map:
+            subdeck_id = self._collection.decks.add_normal_deck_with_name(
+                full_deck_name
+            ).id
+            self._subdeck_map[full_deck_name] = DeckId(subdeck_id)
+            logger.info(f"Created subdeck: {full_deck_name}")
+
+        return self._subdeck_map[full_deck_name]
+
+    def set_current_subdeck(self, full_deck_name: str | None) -> None:
+        """Set the current subdeck for note additions.
+
+        Args:
+            full_deck_name: Full deck name, or None for main deck
+        """
+        if full_deck_name is None:
+            # Reset to main deck
+            self._deck_id = self._main_deck_id
+            self._current_subdeck_name = None
+        else:
+            # Create subdeck if it doesn't exist and switch to it
+            subdeck_id = self.create_subdeck(full_deck_name)
+            self._deck_id = subdeck_id
+            self._current_subdeck_name = full_deck_name
 
     def add_note(
         self,

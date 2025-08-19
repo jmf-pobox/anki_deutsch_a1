@@ -105,11 +105,8 @@ class AdverbCardGenerator(BaseCardGenerator[Adverb]):
         if not self._media_manager:
             return ""
 
-        # Check for existing word audio
-        if adverb.word_audio and Path(adverb.word_audio).exists():
-            audio_file = self._media_manager.add_media_file(adverb.word_audio)
-            if audio_file:
-                return audio_file.reference
+        # Check for existing word audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate audio for adverb word only (no special forms like nouns/adjectives)
         audio_file = self._media_manager.generate_and_add_audio(adverb.word)
@@ -127,13 +124,8 @@ class AdverbCardGenerator(BaseCardGenerator[Adverb]):
         if not self._media_manager:
             return ""
 
-        # Check for existing example audio
-        if adverb.example_audio and Path(adverb.example_audio).exists():
-            example_audio_file = self._media_manager.add_media_file(
-                adverb.example_audio
-            )
-            if example_audio_file:
-                return example_audio_file.reference
+        # Check for existing example audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate example sentence audio
         example_audio_file = self._media_manager.generate_and_add_audio(adverb.example)
@@ -151,11 +143,8 @@ class AdverbCardGenerator(BaseCardGenerator[Adverb]):
         if not self._media_manager:
             return ""
 
-        # Check for existing image from CSV path
-        if adverb.image_path and Path(adverb.image_path).exists():
-            image_file = self._media_manager.add_media_file(adverb.image_path)
-            if image_file:
-                return f'<img src="{image_file.reference}">'
+        # Check for existing image from CSV path (field no longer exists on model)
+        # Image generation now handled by field processor during CSV processing
 
         # Check for existing image by expected filename pattern
         safe_filename = (

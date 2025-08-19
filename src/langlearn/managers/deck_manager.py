@@ -54,6 +54,10 @@ class DeckManager:
         full_deck_name = f"{self._backend.deck_name}::{subdeck_name}"
         self._subdecks[subdeck_name] = full_deck_name
 
+        # Create the subdeck in the backend if it supports subdecks
+        if hasattr(self._backend, "set_current_subdeck"):
+            self._backend.set_current_subdeck(full_deck_name)
+
     def get_current_deck_name(self) -> str:
         """Get the current active deck name (including subdeck if set).
 
@@ -83,6 +87,10 @@ class DeckManager:
     def reset_to_main_deck(self) -> None:
         """Reset the current context to the main deck (no subdeck)."""
         self._current_subdeck = None
+
+        # Reset backend to main deck if it supports subdecks
+        if hasattr(self._backend, "set_current_subdeck"):
+            self._backend.set_current_subdeck(None)
 
     # Delegate core deck operations to backend
 

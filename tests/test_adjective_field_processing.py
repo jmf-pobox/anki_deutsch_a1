@@ -8,7 +8,6 @@ implements the FieldProcessor interface and handles its own field processing.
 import pytest
 
 from langlearn.models.adjective import Adjective
-from langlearn.models.field_processor import FieldProcessingError
 from langlearn.services.domain_media_generator import MockDomainMediaGenerator
 
 
@@ -185,20 +184,24 @@ class TestAdjectiveFieldProcessing:
         assert len(mock_generator.audio_calls) == 2
         assert len(mock_generator.image_calls) == 1
 
-    def test_process_fields_insufficient_fields_error(
+    def test_process_fields_insufficient_fields_extended(
         self, adjective: Adjective, mock_generator: MockDomainMediaGenerator
     ) -> None:
-        """Test error handling for insufficient fields."""
-        short_fields = ["schön", "beautiful"]  # Only 2 fields, need 8
+        """Test that insufficient fields are extended to required length."""
+        short_fields = ["schön", "beautiful"]  # Only 2 fields, will be extended to 8
 
-        with pytest.raises(FieldProcessingError) as exc_info:
-            adjective.process_fields_for_media_generation(short_fields, mock_generator)
+        result = adjective.process_fields_for_media_generation(
+            short_fields, mock_generator
+        )
 
-        error = exc_info.value
-        assert "Insufficient fields" in str(error)
-        assert "got 2, need at least 8" in str(error)
-        assert error.model_type == "Adjective"
-        assert error.original_fields == short_fields
+        # Should extend to 8 fields and process successfully
+        assert len(result) == 8
+        assert result[0] == "schön"  # Original word
+        assert result[1] == "beautiful"  # Original english
+        assert result[2] == ""  # Extended empty field (example)
+        assert result[3] == ""  # Extended empty field (comparative)
+        assert result[4] == ""  # Extended empty field (superlative)
+        # Fields 5-7 should have media content or empty strings
 
     def test_combined_audio_text_integration(
         self, adjective: Adjective, mock_generator: MockDomainMediaGenerator

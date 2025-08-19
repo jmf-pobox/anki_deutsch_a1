@@ -138,13 +138,8 @@ class NegationCardGenerator(BaseCardGenerator[Negation]):
         if not self._media_manager:
             return ""
 
-        # Check for existing word audio
-        if negation.word_audio and Path(negation.word_audio).exists():
-            audio_file = self._media_manager.add_media_file(
-                negation.word_audio, media_type="audio"
-            )
-            if audio_file:
-                return audio_file.reference
+        # Check for existing word audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate audio for negation word only (no special forms like nouns/adjectives)
         # Add debug logging for problematic words
@@ -172,13 +167,8 @@ class NegationCardGenerator(BaseCardGenerator[Negation]):
         if not self._media_manager:
             return ""
 
-        # Check for existing example audio
-        if negation.example_audio and Path(negation.example_audio).exists():
-            example_audio_file = self._media_manager.add_media_file(
-                negation.example_audio, media_type="audio"
-            )
-            if example_audio_file:
-                return example_audio_file.reference
+        # Check for existing example audio (field no longer exists on model)
+        # Audio generation now handled by field processor during CSV processing
 
         # Generate example sentence audio
         # Add debug logging for problematic words
@@ -207,13 +197,8 @@ class NegationCardGenerator(BaseCardGenerator[Negation]):
         if not self._media_manager:
             return ""
 
-        # Check for existing image from CSV path
-        if negation.image_path and Path(negation.image_path).exists():
-            image_file = self._media_manager.add_media_file(
-                negation.image_path, media_type="image"
-            )
-            if image_file:
-                return f'<img src="{image_file.reference}">'
+        # Check for existing image from CSV path (field no longer exists on model)
+        # Image generation now handled by field processor during CSV processing
 
         # Check for existing image by expected filename pattern
         safe_filename = (

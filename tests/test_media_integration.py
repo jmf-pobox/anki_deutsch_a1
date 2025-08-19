@@ -217,14 +217,25 @@ class TestMediaIntegration:
         note_type_name = "German Adjective with Media"
         fields = ["test", "test", "test", "test", ""]
 
-        # Mock media generation to raise exception
-        with patch.object(
-            backend, "_generate_or_get_audio", side_effect=Exception("Test error")
+        # Mock both audio and image generation to raise exceptions
+        with (
+            patch.object(
+                backend, "_generate_or_get_audio", side_effect=Exception("Test error")
+            ),
+            patch.object(
+                backend, "_generate_or_get_image", side_effect=Exception("Test error")
+            ),
         ):
             result = backend._process_fields_with_media(note_type_name, fields)
 
-            # Should return original fields when processing fails
-            assert result == fields
+            # Should extend fields but fail gracefully on media generation
+            # The extended fields may not match original since fields get extended
+            assert len(result) >= 8  # Fields get extended to minimum required length
+            assert result[0] == "test"  # Original field values preserved
+            assert result[1] == "test"
+            assert result[2] == "test"
+            assert result[3] == "test"
+            assert result[4] == ""  # Original empty field
 
     def test_add_note_with_media_integration(
         self, backend: AnkiBackend, adjective_note_type: NoteType
@@ -335,7 +346,7 @@ class TestMediaIntegration:
         assert result == fields
 
     def test_field_processing_insufficient_fields(self, backend: AnkiBackend) -> None:
-        """Test _process_fields_with_media with insufficient fields does nothing."""
+        """Test _process_fields_with_media with insufficient fields extends them."""
         note_type_name = "German Adjective with Media"
         fields = [
             "word",
@@ -343,12 +354,18 @@ class TestMediaIntegration:
             "example",
             "comparative",
             "superlative",
-        ]  # Only 5 fields, need 8+
+        ]  # Only 5 fields, will be extended to 8+
 
         result = backend._process_fields_with_media(note_type_name, fields)
 
-        # Should return unchanged fields
-        assert result == fields
+        # Should extend fields and process media
+        assert len(result) >= 8  # Should be extended
+        assert result[0] == "word"  # Original fields preserved
+        assert result[1] == "english"
+        assert result[2] == "example"
+        assert result[3] == "comparative"
+        assert result[4] == "superlative"
+        # Fields 5+ may have media content
 
     def test_media_path_construction(self, backend: AnkiBackend) -> None:
         """Test that media paths are constructed correctly."""

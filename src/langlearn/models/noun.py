@@ -21,9 +21,6 @@ class Noun(BaseModel, FieldProcessor):
     plural: str = Field(..., description="Plural form of the noun")
     example: str = Field(..., description="Example sentence using the noun")
     related: str = Field(default="", description="Related words or phrases")
-    word_audio: str = Field("", description="Path to audio file for the noun")
-    example_audio: str = Field("", description="Path to audio file for the example")
-    image_path: str = Field("", description="Path to image file for the noun")
 
     def get_combined_audio_text(self) -> str:
         """Generate combined German noun audio text.
@@ -219,17 +216,16 @@ class Noun(BaseModel, FieldProcessor):
     ) -> list[str]:
         """Process noun fields with German-specific logic.
 
-        Field Layout: [Noun, Article, English, Plural, Example, Related, Image,
-                      WordAudio, ExampleAudio]
+        Field Layout: [Noun, Article, English, Plural, Example, Related]
 
         Args:
             fields: Original field values
             media_generator: Interface for generating media
 
         Returns:
-            Processed field values with media
+            Processed field values with media fields appended
         """
-        validate_minimum_fields(fields, 9, "Noun")
+        validate_minimum_fields(fields, 6, "Noun")
 
         # Extract field values
         noun = fields[0]
@@ -239,10 +235,14 @@ class Noun(BaseModel, FieldProcessor):
         example = fields[4]
         related = fields[5]
 
-        # Create a copy to modify
+        # Create a copy and extend with media fields
         processed = fields.copy()
 
-        # Only generate audio if WordAudio field (index 7) is empty
+        # Ensure we have exactly 9 fields (6 original + 3 media)
+        while len(processed) < 9:
+            processed.append("")
+
+        # Generate audio for word if not present
         if not processed[7]:  # WordAudio field
             combined_text = self._get_combined_audio_text_from_fields(
                 article, noun, plural
@@ -251,13 +251,13 @@ class Noun(BaseModel, FieldProcessor):
             if audio_path:
                 processed[7] = format_media_reference(audio_path, "audio")
 
-        # Only generate example audio if ExampleAudio field (index 8) is empty
+        # Generate example audio if not present
         if not processed[8]:  # ExampleAudio field
             audio_path = media_generator.generate_audio(example)
             if audio_path:
                 processed[8] = format_media_reference(audio_path, "audio")
 
-        # Only generate image if Image field (index 6) is empty AND noun is concrete
+        # Generate image if not present AND noun is concrete
         if not processed[6]:  # Image field
             # Create temporary noun instance to check if concrete
             temp_noun = Noun(
@@ -267,9 +267,6 @@ class Noun(BaseModel, FieldProcessor):
                 plural=plural,
                 example=example,
                 related=related,
-                word_audio="",
-                example_audio="",
-                image_path="",
             )
             if temp_noun.is_concrete():
                 # Use context-enhanced search terms for better image results
@@ -304,17 +301,17 @@ class Noun(BaseModel, FieldProcessor):
 
     def get_expected_field_count(self) -> int:
         """Return expected number of fields for noun cards."""
-        return 9
+        return 6
 
     def validate_field_structure(self, fields: list[str]) -> bool:
         """Validate that fields match expected noun structure."""
-        return len(fields) >= 9
+        return len(fields) >= 6
 
     def get_field_layout_info(self) -> dict[str, Any]:
         """Return information about the noun field layout."""
         return {
             "model_type": "Noun",
-            "expected_field_count": 9,
+            "expected_field_count": 6,
             "field_names": self._get_field_names(),
             "description": "German noun with article, plural, and examples",
         }
@@ -328,7 +325,4 @@ class Noun(BaseModel, FieldProcessor):
             "Plural",  # 3
             "Example",  # 4
             "Related",  # 5
-            "Image",  # 6
-            "WordAudio",  # 7
-            "ExampleAudio",  # 8
         ]
