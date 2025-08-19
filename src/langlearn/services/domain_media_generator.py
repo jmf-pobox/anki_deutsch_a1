@@ -98,7 +98,9 @@ class DomainMediaGenerator:
             return english or word or "concept"
 
         # Legacy method - now just returns English fallback since legacy service is removed
-        logger.debug("Context enhancement not available (legacy service removed), using English fallback")
+        logger.debug(
+            "Context enhancement not available (legacy service removed), using English fallback"
+        )
         return english or word or "concept"
 
     def get_conceptual_search_terms(
@@ -119,7 +121,9 @@ class DomainMediaGenerator:
             return english or word or "abstract concept"
 
         # Legacy method - now provides basic conceptual terms since legacy service is removed
-        logger.debug("Conceptual search not available (legacy service removed), using basic terms")
+        logger.debug(
+            "Conceptual search not available (legacy service removed), using basic terms"
+        )
         return f"{english} concept abstract" if english else "abstract concept"
 
     def get_stats(self) -> dict[str, Any]:

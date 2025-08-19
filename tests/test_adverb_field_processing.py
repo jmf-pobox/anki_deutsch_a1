@@ -128,7 +128,9 @@ class TestAdverbFieldProcessing:
         assert len(mock_generator.image_calls) == 1
         # Check that AI-enhanced search terms were generated (now uses AnthropicService)
         primary_query, backup_query = mock_generator.image_calls[0]
-        assert len(primary_query) > len("here")  # Should be more detailed than just "here"
+        assert len(primary_query) > len(
+            "here"
+        )  # Should be more detailed than just "here"
         assert backup_query == "here"  # Backup is always the English fallback
 
     def test_process_fields_partial_generation(
@@ -242,9 +244,16 @@ class TestAdverbFieldProcessing:
             if mock_generator.image_calls:
                 actual_search = mock_generator.image_calls[0][0]
                 # Should contain the English meaning or be contextually relevant
-                assert len(actual_search) > len(english)  # More detailed than just the English word
-                assert english in actual_search or word in actual_search or \
-                       any(term in actual_search.lower() for term in ["test", adverb_type])
+                assert len(actual_search) > len(
+                    english
+                )  # More detailed than just the English word
+                assert (
+                    english in actual_search
+                    or word in actual_search
+                    or any(
+                        term in actual_search.lower() for term in ["test", adverb_type]
+                    )
+                )
 
     def test_invalid_adverb_type_handling(
         self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator
@@ -300,7 +309,10 @@ class TestAdverbFieldProcessing:
             search_terms = mock_generator.image_calls[0][0]
             # Should generate contextual terms based on the German sentence
             assert len(search_terms) > len("above")  # More detailed than just "above"
-            assert any(word in search_terms.lower() for word in ["above", "cat", "high", "up", "over"])
+            assert any(
+                word in search_terms.lower()
+                for word in ["above", "cat", "high", "up", "over"]
+            )
 
     def test_preserve_field_order_and_structure(
         self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator

@@ -494,7 +494,6 @@ class TestAnkiBackendErrorHandling:
 
             # Provide custom services (one working, one failing)
             mock_media_service = Mock()
-            mock_german_service = Mock()
 
             # Media service works but audio generation fails
             mock_media_service.generate_or_get_audio.side_effect = Exception(

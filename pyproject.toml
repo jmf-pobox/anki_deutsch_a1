@@ -65,7 +65,6 @@ app = "PYTHONPATH=src python src/langlearn/main.py"
 run-sample = "python examples/german_deck_builder_demo.py"
 run-adjectives = "python src/langlearn/create_deck.py"
 run-all = "python -c \"from langlearn.create_deck import main; main()\""
-encode-audio = "python -m langlearn.scripts.encode_audio {args}"
 
 [tool.ruff]
 line-length = 88

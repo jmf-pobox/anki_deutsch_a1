@@ -137,8 +137,6 @@ See `docs/MVP_REINTEGRATION_PLAN.md` for detailed implementation plan.
 | **Utility** | **File** | **Single Responsibility** |
 |-------------|----------|---------------------------|
 | **`CredentialManager`** | `api_keyring.py:15` | Secure API key management using the system keyring. Provides encrypted credential storage for AWS, Pexels, and other external services. |
-| **`AudioEnricher`** | `audio_enricher.py:10` | CSV data enrichment pipeline specifically for adding audio file paths and metadata to vocabulary datasets. |
-| **`ImageEnricher`** | `image_enricher.py:10` | CSV data enrichment pipeline specifically for adding image file paths and visual metadata to vocabulary datasets. |
 
 #### Support Scripts
 
@@ -149,17 +147,6 @@ See `docs/MVP_REINTEGRATION_PLAN.md` for detailed implementation plan.
 
 ---
 
-### 📋 `/src/langlearn/scripts/` - Automation Scripts
-
-**Package Responsibility**: Standalone automation scripts for data processing, enrichment, and maintenance tasks.
-
-| **Script** | **Purpose** |
-|------------|-------------|
-| **`enrich_audio.py`** | Batch processes CSV files to generate and add German audio pronunciations using AWS Polly. |
-| **`enrich_images.py`** | Batch processes CSV files to search, download, and add relevant images using Pexels API. |
-| **`encode_audio.py`** | Audio file format conversion and optimization for Anki compatibility. |
-
----
 
 ## 🏛️ Root Level Components
 

@@ -145,7 +145,9 @@ class TestNegationFieldProcessing:
         assert len(mock_generator.image_calls) == 1
         # Check that AI-enhanced search terms were generated (now uses AnthropicService)
         primary_query, backup_query = mock_generator.image_calls[0]
-        assert len(primary_query) > len("not")  # Should be more detailed than just "not"
+        assert len(primary_query) > len(
+            "not"
+        )  # Should be more detailed than just "not"
         assert backup_query == "not"  # Backup is always the English fallback
 
     def test_process_fields_partial_generation(
@@ -262,7 +264,9 @@ class TestNegationFieldProcessing:
             if mock_generator.image_calls:
                 actual_search = mock_generator.image_calls[0][0]
                 # Should generate contextual terms that are more detailed than the basic English
-                assert len(actual_search) >= len(english.split("/")[0])  # At least as long as the main English meaning
+                assert len(actual_search) >= len(
+                    english.split("/")[0]
+                )  # At least as long as the main English meaning
                 # Should be contextual and relevant to the negation concept
                 assert actual_search != ""  # Should not be empty
 
@@ -328,7 +332,10 @@ class TestNegationFieldProcessing:
             search_terms = mock_generator.image_calls[0][0]
             # Should contain contextual terms related to the German sentence meaning
             assert len(search_terms) > len("neither")  # Should be more detailed
-            assert any(word in search_terms.lower() for word in ["neither", "choice", "people", "excluded"])
+            assert any(
+                word in search_terms.lower()
+                for word in ["neither", "choice", "people", "excluded"]
+            )
 
     def test_preserve_field_order_and_structure(
         self, general_negation: Negation, mock_generator: MockDomainMediaGenerator
