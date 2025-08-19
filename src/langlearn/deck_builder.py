@@ -96,6 +96,7 @@ class DeckBuilder:
                 # Use mock service for testing
                 from unittest.mock import MagicMock
                 audio_service = MagicMock()
+                pexels_service = MagicMock()
             else:
                 # Use real service for production
                 audio_service = AudioService(
