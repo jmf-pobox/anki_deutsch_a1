@@ -1,325 +1,207 @@
-# 🎓 Language Learn - An Anki Card Generator
+# 🎓 Language Learn - Smart Flashcard Generator
 
-A language learning application that generates customized Anki decks with vocabulary, grammar patterns, and multimedia content. Supports multiple languages and proficiency levels with specialized handling for language-specific grammatical features.
+**Create personalized Anki flashcards that adapt to your target language's unique grammar challenges.**
 
-## 📊 Project Status
+Language Learn automatically generates intelligent flashcards designed for the specific grammar patterns and learning challenges of your target language. Instead of generic vocabulary cards, you get cards that understand noun genders, verb conjugations, and other language-specific features that make learning more effective.
 
 [![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-401%20Passing-brightgreen)](#testing)
-[![Coverage](https://img.shields.io/badge/Coverage-73.84%25-yellow)](#testing)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/downloads/)
-[![Code Quality](https://img.shields.io/badge/Code%20Quality-MyPy%20%7C%20Ruff-success)](#quality)
-[![Platform](https://img.shields.io/badge/Platform-Anki-blue)](#usage)
-[![Languages](https://img.shields.io/badge/Languages-Multi--Language-orange)](#language-features)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-### 🚀 Current State
+## 🎯 What This Does For You
 
-| **Aspect** | **Status** | **Details** |
-|------------|------------|-------------|
-| **Build Status** | ![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg) | Automated testing on every push |
-| **Code Quality** | ✅ **Excellent** | 100% MyPy compliance, zero linting violations |
-| **Test Coverage** | 📊 **73.84%** | 401 comprehensive tests (562 unit + 24 integration) |
-| **Output Format** | 🟢 **Anki Decks** | .apkg files ready for import |
-| **Documentation** | 📖 **Comprehensive** | Complete design docs in `docs/` directory |
+**Transform simple vocabulary lists into smart learning experiences:**
+- **German nouns** → Cards that test article recall (der/die/das) separately from meaning
+- **Verb conjugations** → Cards that practice irregular patterns and separable verbs  
+- **Adjective forms** → Cards covering comparative and superlative forms
+- **Pronunciation** → Audio files for proper pronunciation practice
+- **Visual memory** → Images to reinforce vocabulary retention
 
-### 📈 Quality Metrics
-- **Static Analysis**: MyPy strict mode with zero errors
-- **Linting**: Ruff compliance with comprehensive rule set  
-- **Test Suite**: 401 tests covering core functionality
-- **Architecture**: Clean Pipeline Architecture with service layer separation
+## 🚀 Quick Start
 
-### Core Functionality ✅
-- **Deck Generation**: Creates Anki decks (.apkg files) with vocabulary and grammar patterns
-- **Multi-Language Support**: Extensible architecture supporting multiple languages and proficiency levels
-- **Media Integration**: AWS Polly audio generation and Pexels image integration for enhanced learning
-- **Grammar-Aware Processing**: Specialized handling for language-specific grammatical features
-- **Code Quality**: 100% MyPy strict mode compliance, comprehensive linting, enterprise-grade standards
-
-## 📚 Documentation
-
-This project includes comprehensive design documentation in the `docs/` directory:
-
-### 🎯 **Primary Documentation**
-
-#### **[docs/DESIGN-INDEX.md](docs/DESIGN-INDEX.md)** - Documentation Navigator
-**Start here** for navigation of all design documents. Provides:
-- Quick start guide for new developers
-- Document descriptions and use cases
-- Cross-reference guide between documents
-- Maintenance guidelines and update procedures
-
-### 🏗️ **Architecture Documentation**
-
-#### **[docs/DESIGN-SRP.md](docs/DESIGN-SRP.md)** - System Component Inventory
-Complete codebase inventory organized by Single Responsibility Principle:
-- Package hierarchy with responsibility matrix
-- Class-by-class functionality breakdown
-- Component relationship mapping
-- Code organization reference
-
-#### **[docs/DESIGN-STATE.md](docs/DESIGN-STATE.md)** - Current Quality Assessment
-Critical analysis of current codebase state:
-- Measured code quality metrics
-- Technical debt assessment
-- Multi-language readiness evaluation
-- Implementation priority matrix
-
-#### **[docs/DESIGN-GUIDANCE.md](docs/DESIGN-GUIDANCE.md)** - Development Standards
-Prescriptive guidance for development work:
-- Architectural principles and patterns
-- Code quality requirements and gates
-- Import structure and testing standards
-- Anti-patterns and prohibited practices
-
-#### **[docs/DESIGN.md](docs/DESIGN.md)** - Original Architecture Analysis
-Historical context and intended design patterns:
-- Original architectural intentions
-- Intended design patterns analysis
-- Clean architecture principles documentation
-- Abstract base class designs
-
-### 🔄 **Migration Documentation**
-
-#### **[docs/MIGRATION_PLAN.md](docs/ANKI_MIGRATION_PLAN.md)** - Backend Migration Status
-Current status of genanki to official Anki library migration:
-- Phase-by-phase migration progress
-- Current implementation status
-- Risk assessment and mitigation strategies
-- Timeline and success criteria
-
-#### **[docs/LIBRARY_REFACTOR.md](docs/ANKI_LIBRARY_REFACTOR.md)** - Integration Architecture
-Technical achievements in backend integration:
-- Dual backend architecture implementation
-- Interface consistency and switching capability
-- Performance characteristics and testing status
-- Benefits realized and future considerations
-
-#### **[docs/LEGACY.md](docs/LEGACY.md)** - Component Evolution
-Analysis of components for potential refactoring:
-- Current backend architecture assessment
-- Future consolidation scenarios
-- Decision framework and evaluation criteria
-- Maintenance recommendations
-
-### 🧪 **Testing Documentation**
-
-#### **[docs/ANKI_API_TESTPLAN.md](docs/ANKI_API_TESTPLAN.md)** - Comprehensive Test Strategy
-Detailed testing plan for official Anki backend validation:
-- Phase-by-phase test coverage plan
-- German language integration testing
-- Performance and error recovery testing
-- Success criteria and deliverables
-
-## 🌍 Language Features
-
-### Grammar-Aware Card Generation
-- **Noun Cards**: Article recall, gender, and plural forms (language-specific)
-- **Verb Cards**: Conjugation patterns with irregular verb detection
-- **Adjective Cards**: Comparison forms and declension patterns
-- **Preposition Cards**: Case requirements and usage contexts
-- **Phrase Cards**: Common expressions with contextual examples
-
-### Language Learning Optimizations
-- **Grammar Validation**: Language-specific grammatical rule enforcement
-- **Pattern Recognition**: Specialized handling for irregular forms and exceptions
-- **Contextual Learning**: Example sentences demonstrating proper usage
-- **Audio Integration**: Native pronunciation using AWS Polly (multiple language voices)
-- **Visual Learning**: Contextual images from Pexels API for vocabulary retention
-
-### Current Language Support
-- **German**: Full A1-level vocabulary with gender, case, and conjugation support
-- **Extensible Architecture**: Ready for additional languages and proficiency levels
-
-## 🏗️ Project Structure
+### 1. Get Your Vocabulary Data Ready
+Create CSV files with your target language vocabulary. The software currently includes German vocabulary, but you can use any language by providing your own CSV files:
 
 ```
-language-learn/
-├── 📊 data/                    # Language vocabulary data (CSV format)
-│   ├── nouns.csv              # Nouns with language-specific attributes
-│   ├── adjectives.csv         # Adjectives with comparison forms
-│   ├── verbs.csv              # Regular and irregular verbs
-│   ├── adverbs.csv            # Adverbs with usage examples
-│   └── negations.csv          # Negation words and phrases
-│
-├── 🏗️ src/langlearn/
-│   ├── 🎯 backends/            # Anki integration layer
-│   ├── 📝 models/              # Pydantic language models (extensible)
-│   ├── 🔌 services/            # External API integrations (AWS, Pexels, CSV)
-│   ├── 🛠️ utils/               # API key management and utilities
-│   ├── 🎨 templates/           # HTML/CSS templates for card designs
-│   ├── main.py                 # Main application entry point
-│   └── deck_builder.py         # Primary deck orchestrator
-│
-├── 🧪 tests/                   # 263 comprehensive unit tests
-├── 📦 output/                  # Generated Anki decks (.apkg files)
-├── 🌍 languages/               # Language-specific grammar documentation
-├── 📋 examples/                # Usage demonstrations
-└── 📖 docs/                    # Comprehensive design documentation
+data/
+├── nouns.csv        # Your nouns with language-specific info
+├── adjectives.csv   # Adjectives with comparison forms  
+├── verbs.csv        # Verbs with conjugation patterns
+├── adverbs.csv      # Adverbs and examples
+└── phrases.csv      # Common phrases and expressions
 ```
 
-## 🚀 Installation & Setup
-
-1. **Clone the repository:**
+### 2. Install the Software
 ```bash
+# Clone the repository
 git clone <repository-url>
 cd language-learn
-```
 
-2. **Install dependencies using Hatch:**
-```bash
+# Install dependencies
+pip install hatch
 hatch env create
 ```
 
-3. **Configure API keys (optional for media generation):**
+### 3. Generate Your Flashcard Deck
 ```bash
-# Store API keys securely using keyring
-python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_pexels_key
+# Basic deck generation (no audio/images)
+python src/langlearn/main.py
 
-# Configure AWS credentials for German audio
-export AWS_ACCESS_KEY_ID=your_aws_key
-export AWS_SECRET_ACCESS_KEY=your_aws_secret
+# Advanced: With audio and images (requires API keys)
+python src/langlearn/main.py --with-media
+```
+
+### 4. Import to Anki
+1. Open Anki on your computer
+2. Click "Import" 
+3. Select the generated `.apkg` file from the `output/` folder
+4. Start studying your personalized cards!
+
+## 📝 Using Your Own Vocabulary
+
+The software works with any vocabulary in CSV format. Here's how to create cards for your target language:
+
+### Basic CSV Format Example (nouns.csv):
+```csv
+noun,article,english,plural,example,related
+Hund,der,dog,Hunde,Der Hund bellt laut,Tier
+Katze,die,cat,Katzen,Die Katze schläft,Tier  
+Auto,das,car,Autos,Das Auto ist schnell,Fahrzeug
+```
+
+### Run with Your Data:
+```bash
+# Point to your data directory
+python src/langlearn/main.py --data-dir /path/to/your/csv/files
+
+# Specify output location  
+python src/langlearn/main.py --output output/my_deck.apkg
+```
+
+## 🎨 Card Types Generated
+
+### 🏠 **Noun Cards** (for languages with genders)
+- **Front:** "dog" → **Back:** "der Hund" (tests article + word together)
+- **Front:** "_____ Hund" → **Back:** "der" (tests article recall specifically)  
+- **Front:** "Hund → Plural" → **Back:** "Hunde" (tests plural forms)
+
+### ⚡ **Verb Cards** (for conjugated languages)
+- **Front:** "to speak (ich)" → **Back:** "ich spreche" (tests conjugation)
+- **Front:** "speak up (separable)" → **Back:** "ich stehe auf" (tests separable verbs)
+
+### 🎯 **Smart Features**
+- **Grammar-aware:** Cards adapt to your target language's specific challenges
+- **Audio pronunciation:** Hear correct pronunciation (with API keys configured)
+- **Visual learning:** Images help with vocabulary retention
+- **Example sentences:** Learn words in context, not isolation
+
+## ⚙️ Configuration
+
+### Basic Usage (No Setup Required)
+The software works out of the box with the included German vocabulary data.
+
+### Enhanced Features (Optional Setup)
+For audio and images, configure these services:
+
+#### Audio Pronunciation (AWS Polly)
+```bash
+export AWS_ACCESS_KEY_ID=your_key
+export AWS_SECRET_ACCESS_KEY=your_secret  
 export AWS_DEFAULT_REGION=us-east-1
 ```
 
-4. **Verify installation:**
+#### Visual Learning (Pexels Images)
 ```bash
-# Run comprehensive test suite
-hatch run test-unit
-
-# Test deck generation  
-PYTHONPATH=src python src/langlearn/main.py
+python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_key
 ```
 
-## 💻 Usage
+## 🗂️ Organizing Your Deck
 
-### Basic Deck Generation
+The software automatically organizes cards into logical subdecks:
+```
+My German Deck
+├── Nouns
+├── Verbs  
+├── Adjectives
+├── Adverbs
+└── Phrases
+```
+
+You can customize the main deck name:
 ```bash
-# Create language learning deck
-python src/langlearn/main.py
+python src/langlearn/main.py --deck-name "My French A1 Vocabulary"
 ```
 
-This generates a complete language learning Anki deck with:
-- Multiple vocabulary types (nouns, verbs, adjectives, adverbs, negations)
-- Language-specific grammar validation
-- Optional media integration (audio/images)
-- Export to `.apkg` format ready for Anki import
+## 🔄 Planned Features
 
-### Usage Example
-```python
-from langlearn.deck_builder import DeckBuilder
+**Coming Soon:**
+- **Multi-deck support:** Generate separate decks for different topics
+- **Multi-language support:** Built-in support for Spanish, French, Italian, etc.
+- **Voice recording:** Record yourself to compare with native pronunciation
+- **Quiz modes:** Multiple choice for articles, verb forms, etc.
+- **Progress tracking:** See which grammar patterns you've mastered
 
-# Create language learning deck
-with DeckBuilder(
-    deck_name="My Language Deck",
-    enable_media_generation=True
-) as builder:
-    builder.load_data_from_directory("data/")
-    builder.generate_all_cards(generate_media=True)
-    builder.export_deck("output/language_deck.apkg")
-```
+## 🆘 Getting Help
 
-## 🧪 Development & Testing
+### Common Issues
 
-### CI/CD Pipeline
-The project uses GitHub Actions for automated testing and quality assurance:
+**"No cards generated":** 
+- Check that your CSV files are in the correct format
+- Verify the data directory path is correct
 
-| **Trigger** | **Jobs** | **Status** |
-|-------------|----------|------------|
-| **Push/PR** | Lint, Type Check, Unit Tests (Python 3.10-3.12) | ![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg) |
-| **PR to Main** | Integration Tests (with API keys) | Automated on PRs |
-| **Manual** | Full test suite with coverage reporting | On-demand workflow |
+**"Import failed in Anki":**
+- Make sure you're using Anki desktop (not AnkiWeb)
+- Try importing a smaller test deck first
 
-### Running Tests Locally
-```bash
-# All unit tests (offline, no API calls)
-hatch run test-unit           # 562 unit tests
+**"Audio/images not working":**
+- This feature requires API keys (see Configuration section)
+- Cards will still work without media - only text will be shown
 
-# Integration tests (requires API keys)  
-hatch run test-integration    # 24 integration tests
+### Support
+- 📧 **Issues:** [Report problems here](https://github.com/jmf-pobox/anki_deutsch_a1/issues)
+- 📖 **Documentation:** See `docs/` folder for technical details
+- 💬 **Discussions:** Ask questions in GitHub Discussions
 
-# Full test suite with coverage
-hatch run test-cov           # All 586 tests + coverage report
+## 🎓 Example: German Learning
 
-# Code quality checks
-hatch run format     # Code formatting (Ruff)
-hatch run lint       # Linting (Ruff)
-hatch run type       # Type checking (MyPy strict)
-hatch run check      # All quality checks + tests
-```
+The included German dataset demonstrates how Language Learn adapts to German's specific challenges:
 
-### Development Workflow
-Following the mandatory development workflow from `CLAUDE.md`:
-1. **Run unit tests**: `hatch run test-unit`
-2. **Fix linting**: `hatch run ruff check --fix`
-3. **Format code**: `hatch run format`
-4. **Verify tests still pass**: `hatch run test-unit`
+**German Challenge:** *Noun genders (der/die/das) are arbitrary and must be memorized*
+**Language Learn Solution:** *Separate cards test article recall vs. word meaning*
 
-### Quality Gates
-- ✅ **All tests must pass** (586 tests total)
-- ✅ **Coverage must not decrease** (currently 73.84%, target 85%+)
-- ✅ **Zero linting violations** (Ruff compliance required)
-- ✅ **Zero type errors** (MyPy strict mode required)
-- ✅ **Integration tests pass** (on PRs to main branch)
+**German Challenge:** *Separable verbs work differently than English phrasal verbs*  
+**Language Learn Solution:** *Cards specifically practice separable verb patterns*
 
-## 🔧 Architecture
+**German Challenge:** *Adjective endings change based on case, gender, and definiteness*
+**Language Learn Solution:** *Cards show adjectives in various contexts and declensions*
 
-### Key Design Principles
-- **Multi-Language Architecture**: Extensible framework supporting multiple languages and proficiency levels
-- **Grammar-Aware Processing**: Specialized handling for language-specific grammatical patterns
-- **Media-Rich Learning**: Optional audio pronunciation and visual learning aids
-- **Type Safety**: Full MyPy compliance with comprehensive type hints
-- **Clean Pipeline**: CSV data → Domain models → Enriched content → Anki cards
-- **Testability**: Comprehensive unit test coverage with mocked dependencies
-
-### Upcoming MVP Architecture (Planned)
-The codebase is planned for evolution to a clean **MVP (Model-View-Presenter)** architecture:
-
-- **Models**: Domain objects with validation (`Noun`, `Adjective`, etc.)
-- **Views**: HTML/CSS templates for Anki cards (`noun_front.html`, etc.)
-- **Presenters**: Card generators handling data binding between models and views
-- **Orchestrator**: Slimmed-down `GermanDeckBuilder` focusing only on coordination
-
-**Benefits**: 90% reduction in code duplication, easy grammar extensibility, cleaner separation of concerns.
-
-See **`docs/MVP_REINTEGRATION_PLAN.md`** for detailed implementation roadmap.
-
-## 🤝 Contributing
-
-### Development Setup
-1. Read `docs/DESIGN-INDEX.md` for documentation navigation
-2. Review `docs/DESIGN-GUIDANCE.md` for development standards
-3. Check `docs/DESIGN-STATE.md` for current technical debt
-4. Follow quality gates and testing requirements
-
-### Areas for Contribution
-- **Language Content**: Add vocabulary data for new languages and proficiency levels
-- **Templates**: Enhance HTML/CSS card designs for different languages
-- **Language Models**: Implement grammar validation for additional languages
-- **Testing**: Improve test coverage and add integration scenarios
-- **Documentation**: Update and maintain design documentation
-
-## 📊 Technical Specifications
-
-- **Python**: 3.11+ required
-- **Dependencies**: genanki, anki, pydantic, boto3, requests
-- **Testing**: pytest with 263 unit tests
-- **Type Checking**: mypy strict mode compliance
-- **Package Management**: Hatch for development environment
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+This same adaptive approach will extend to other languages as multi-language support is added.
 
 ---
 
-## 🎯 Project Goals
+## 🏗️ For Developers
 
-Language Learn aims to:
-1. **Simplify Language Learning**: Generate comprehensive, grammar-aware flashcards for multiple languages
-2. **Enable Multi-Language Support**: Extensible architecture supporting various languages and proficiency levels  
-3. **Ensure Quality**: Maintain high code quality with comprehensive testing
-4. **Provide Rich Media**: Integrate audio pronunciation and visual learning aids
-5. **Support Scalability**: Clean architecture for adding new languages, features, and card types
+<details>
+<summary>Click to view technical details</summary>
 
-**Current Status**: Production-ready application with German A1 support, designed for multi-language expansion.
+### Development Setup
+```bash
+hatch env create
+hatch run test        # Run tests
+hatch run lint        # Check code quality  
+```
+
+### Architecture
+- **Clean Pipeline:** CSV → Domain Models → Cards → Anki Deck
+- **Language Agnostic:** Core engine supports any language with proper CSV data
+- **Quality:** 401 tests, MyPy strict mode, comprehensive linting
+
+### Contributing
+1. Check `docs/DESIGN-INDEX.md` for navigation
+2. Review `docs/DESIGN-GUIDANCE.md` for standards  
+3. Add vocabulary data for new languages
+4. Enhance card templates for different grammar patterns
+
+</details>
+
+---
+
+**Transform your vocabulary lists into intelligent flashcards that understand your target language's unique challenges.**
