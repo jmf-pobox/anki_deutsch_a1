@@ -1,8 +1,8 @@
 """Test utilities for mocking external services."""
 
-from unittest.mock import patch, MagicMock
 import pytest
-from typing import Generator
+from collections.abc import Generator
+from unittest.mock import MagicMock, patch
 
 from langlearn.backends.anki_backend import AnkiBackend
 
@@ -19,18 +19,19 @@ def mock_aws_services():
 @pytest.fixture
 def mock_external_services():
     """Mock all external services for unit testing."""
-    with patch('langlearn.services.audio.boto3.client') as mock_boto3, \
-         patch('langlearn.services.pexels_service.PexelsService') as mock_pexels, \
-         patch('langlearn.services.anthropic_service.AnthropicService') as mock_anthropic:
-        
+    with (
+        patch("langlearn.services.audio.boto3.client") as mock_boto3,
+        patch("langlearn.services.pexels_service.PexelsService") as mock_pexels,
+        patch("langlearn.services.anthropic_service.AnthropicService") as mock_anthropic,
+    ):
         # Configure mock boto3 client
         mock_polly = MagicMock()
         mock_boto3.return_value = mock_polly
-        
+
         yield {
-            'polly': mock_polly,
-            'pexels': mock_pexels,
-            'anthropic': mock_anthropic
+            "polly": mock_polly,
+            "pexels": mock_pexels,
+            "anthropic": mock_anthropic,
         }
 
 
