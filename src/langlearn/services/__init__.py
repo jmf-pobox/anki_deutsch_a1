@@ -2,7 +2,6 @@
 
 from .audio import AudioService
 from .domain_media_generator import DomainMediaGenerator, MockDomainMediaGenerator
-from .german_language_service import GermanLanguageService
 from .media_service import MediaGenerationConfig, MediaService
 from .pexels_service import PexelsService
 from .template_service import TemplateService
@@ -10,7 +9,6 @@ from .template_service import TemplateService
 __all__ = [
     "AudioService",
     "DomainMediaGenerator",
-    "GermanLanguageService",
     "MediaGenerationConfig",
     "MediaService",
     "MockDomainMediaGenerator",

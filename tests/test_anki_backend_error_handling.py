@@ -507,7 +507,6 @@ class TestAnkiBackendErrorHandling:
             backend = AnkiBackend(
                 "Test Deck",
                 media_service=mock_media_service,
-                german_service=mock_german_service,
             )
 
             # Audio should fail gracefully

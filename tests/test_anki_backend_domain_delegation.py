@@ -283,7 +283,6 @@ class TestAnkiBackendDomainDelegation:
                 )
                 # Verify the domain media generator exists and has expected services
                 assert hasattr(backend._domain_media_generator, "_media_service")
-                assert hasattr(backend._domain_media_generator, "_german_service")
 
     def test_error_handling_during_delegation(self) -> None:
         """Test error handling when field processor raises exception."""

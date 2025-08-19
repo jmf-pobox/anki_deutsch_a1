@@ -7,7 +7,6 @@ from langlearn.backends.base import DeckBackend
 from langlearn.cards.base import BaseCardGenerator
 from langlearn.managers.media_manager import MediaManager
 from langlearn.models.negation import Negation
-from langlearn.services.german_language_service import GermanLanguageService
 from langlearn.services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,6 @@ class NegationCardGenerator(BaseCardGenerator[Negation]):
         backend: DeckBackend,
         template_service: TemplateService,
         media_manager: MediaManager | None = None,
-        german_service: GermanLanguageService | None = None,
     ) -> None:
         """Initialize the negation card generator.
 
@@ -29,10 +27,8 @@ class NegationCardGenerator(BaseCardGenerator[Negation]):
             backend: Backend implementation for deck operations
             template_service: Service for loading card templates
             media_manager: Optional media manager for audio/image generation
-            german_service: Optional German language service for audio text generation
         """
         super().__init__(backend, template_service, "negation", media_manager)
-        self._german_service = german_service
 
     def _get_field_names(self) -> list[str]:
         """Get the list of field names for negation cards.

@@ -126,7 +126,10 @@ class TestAdverbFieldProcessing:
         assert mock_generator.audio_calls[1] == "Ich wohne hier."  # Example audio
 
         assert len(mock_generator.image_calls) == 1
-        assert mock_generator.image_calls[0] == ("location place here", "here")
+        # Check that AI-enhanced search terms were generated (now uses AnthropicService)
+        primary_query, backup_query = mock_generator.image_calls[0]
+        assert len(primary_query) > len("here")  # Should be more detailed than just "here"
+        assert backup_query == "here"  # Backup is always the English fallback
 
     def test_process_fields_partial_generation(
         self, time_adverb: Adverb, mock_generator: MockDomainMediaGenerator
@@ -207,19 +210,19 @@ class TestAdverbFieldProcessing:
         assert error.model_type == "Adverb"
         assert error.original_fields == short_fields
 
-    def test_image_search_terms_integration(
+    def test_ai_enhanced_search_terms_integration(
         self, mock_generator: MockDomainMediaGenerator
     ) -> None:
-        """Test that domain-specific image search terms are used."""
-        # Test different adverb types
+        """Test that AI-enhanced search terms are generated for different adverb types."""
+        # Test different adverb types with AI-generated contextual search terms
         test_cases = [
-            ("hier", "here", "location", "location place here"),
-            ("heute", "today", "time", "calendar today current day"),
-            ("langsam", "slowly", "manner", "slow motion turtle snail"),
-            ("sehr", "very", "intensity", "intensity emphasis very"),
+            ("hier", "here", "location"),
+            ("heute", "today", "time"),
+            ("langsam", "slowly", "manner"),
+            ("sehr", "very", "intensity"),
         ]
 
-        for word, english, adverb_type, expected_search in test_cases:
+        for word, english, adverb_type in test_cases:
             adverb = Adverb(
                 word=word,
                 english=english,
@@ -235,10 +238,13 @@ class TestAdverbFieldProcessing:
 
             adverb.process_fields_for_media_generation(fields, mock_generator)
 
-            # Verify enhanced search terms were used
+            # Verify AI-enhanced search terms were generated
             if mock_generator.image_calls:
                 actual_search = mock_generator.image_calls[0][0]
-                assert actual_search == expected_search
+                # Should contain the English meaning or be contextually relevant
+                assert len(actual_search) > len(english)  # More detailed than just the English word
+                assert english in actual_search or word in actual_search or \
+                       any(term in actual_search.lower() for term in ["test", adverb_type])
 
     def test_invalid_adverb_type_handling(
         self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator
@@ -289,13 +295,12 @@ class TestAdverbFieldProcessing:
 
         location_adverb.process_fields_for_media_generation(fields, mock_generator)
 
-        # Should use location-specific fallback
+        # Check that AI-enhanced contextual search terms were generated
         if mock_generator.image_calls:
             search_terms = mock_generator.image_calls[0][0]
-            assert (
-                "location place" in search_terms
-                or search_terms == "up arrow above over"
-            )
+            # Should generate contextual terms based on the German sentence
+            assert len(search_terms) > len("above")  # More detailed than just "above"
+            assert any(word in search_terms.lower() for word in ["above", "cat", "high", "up", "over"])
 
     def test_preserve_field_order_and_structure(
         self, location_adverb: Adverb, mock_generator: MockDomainMediaGenerator

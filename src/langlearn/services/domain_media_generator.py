@@ -2,15 +2,14 @@
 Domain media generator implementation.
 
 This module provides the DomainMediaGenerator class that adapts the existing
-MediaService and GermanLanguageService to provide the MediaGenerator interface
-that domain models require for field processing.
+MediaService to provide the MediaGenerator interface that domain models require
+for field processing.
 """
 
 import logging
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from langlearn.services.german_language_service import GermanLanguageService
     from langlearn.services.media_service import MediaService
 
 logger = logging.getLogger(__name__)
@@ -20,21 +19,17 @@ class DomainMediaGenerator:
     """Adapter that provides MediaGenerator interface to domain models.
 
     This class bridges the gap between domain models (which need clean interfaces)
-    and the existing service layer (MediaService, GermanLanguageService).
-    It implements the MediaGenerator protocol while maintaining separation of concerns.
+    and the existing service layer (MediaService). It implements the MediaGenerator
+    protocol while maintaining separation of concerns.
     """
 
-    def __init__(
-        self, media_service: "MediaService", german_service: "GermanLanguageService"
-    ):
+    def __init__(self, media_service: "MediaService"):
         """Initialize domain media generator.
 
         Args:
             media_service: Service for generating audio and images
-            german_service: Service for German language processing
         """
         self._media_service = media_service
-        self._german_service = german_service
 
     def generate_audio(self, text: str) -> str | None:
         """Generate audio file for the given text.
@@ -102,13 +97,9 @@ class DomainMediaGenerator:
             logger.debug("Missing data for context enhancement, using English fallback")
             return english or word or "concept"
 
-        try:
-            return self._german_service.extract_context_from_sentence(
-                example, word, english
-            )
-        except Exception as e:
-            logger.warning(f"Context enhancement failed for '{word}': {e}")
-            return english or word or "concept"
+        # Legacy method - now just returns English fallback since legacy service is removed
+        logger.debug("Context enhancement not available (legacy service removed), using English fallback")
+        return english or word or "concept"
 
     def get_conceptual_search_terms(
         self, word_type: str, word: str, english: str
@@ -127,13 +118,9 @@ class DomainMediaGenerator:
             logger.debug("Missing data for conceptual search, using English fallback")
             return english or word or "abstract concept"
 
-        try:
-            return self._german_service.get_conceptual_image_search_terms(
-                word_type, word, english
-            )
-        except Exception as e:
-            logger.warning(f"Conceptual search failed for '{word_type}' '{word}': {e}")
-            return f"{english} concept abstract" if english else "abstract concept"
+        # Legacy method - now provides basic conceptual terms since legacy service is removed
+        logger.debug("Conceptual search not available (legacy service removed), using basic terms")
+        return f"{english} concept abstract" if english else "abstract concept"
 
     def get_stats(self) -> dict[str, Any]:
         """Get statistics about media generation for debugging/monitoring.

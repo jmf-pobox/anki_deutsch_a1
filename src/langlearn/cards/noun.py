@@ -6,7 +6,6 @@ from langlearn.backends.base import DeckBackend
 from langlearn.cards.base import BaseCardGenerator
 from langlearn.managers.media_manager import MediaManager
 from langlearn.models.noun import Noun
-from langlearn.services.german_language_service import GermanLanguageService
 from langlearn.services.template_service import TemplateService
 
 
@@ -18,7 +17,6 @@ class NounCardGenerator(BaseCardGenerator[Noun]):
         backend: DeckBackend,
         template_service: TemplateService,
         media_manager: MediaManager | None = None,
-        german_service: GermanLanguageService | None = None,
     ) -> None:
         """Initialize the noun card generator.
 
@@ -26,10 +24,8 @@ class NounCardGenerator(BaseCardGenerator[Noun]):
             backend: Backend implementation for deck operations
             template_service: Service for loading card templates
             media_manager: Optional media manager for audio/image generation
-            german_service: Optional German language service for audio text generation
         """
         super().__init__(backend, template_service, "noun", media_manager)
-        self._german_service = german_service
 
     def _get_field_names(self) -> list[str]:
         """Get the list of field names for noun cards.
@@ -117,12 +113,11 @@ class NounCardGenerator(BaseCardGenerator[Noun]):
             if audio_file:
                 return audio_file.reference
 
-        # Generate audio for combined noun forms if German service available
-        if self._german_service:
-            audio_text = self._german_service.get_combined_noun_audio_text(noun)
-            audio_file = self._media_manager.generate_and_add_audio(audio_text)
-            if audio_file:
-                return audio_file.reference
+        # Generate audio for combined noun forms using domain model
+        audio_text = noun.get_combined_audio_text()
+        audio_file = self._media_manager.generate_and_add_audio(audio_text)
+        if audio_file:
+            return audio_file.reference
 
         return ""
 

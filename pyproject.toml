@@ -47,7 +47,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-test = "pytest {args:tests tests/integration}"
+test = ["test-unit", "test-integration"]
 test-unit = "pytest {args:tests --ignore=tests/integration}"
 test-integration = "pytest {args:tests/integration}"
 test-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests tests/integration}"

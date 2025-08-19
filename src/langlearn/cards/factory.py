@@ -6,7 +6,6 @@ from langlearn.cards.adverb import AdverbCardGenerator
 from langlearn.cards.negation import NegationCardGenerator
 from langlearn.cards.noun import NounCardGenerator
 from langlearn.managers.media_manager import MediaManager
-from langlearn.services.german_language_service import GermanLanguageService
 from langlearn.services.template_service import TemplateService
 
 
@@ -23,7 +22,6 @@ class CardGeneratorFactory:
         backend: DeckBackend,
         template_service: TemplateService,
         media_manager: MediaManager | None = None,
-        german_service: GermanLanguageService | None = None,
     ) -> None:
         """Initialize the card generator factory.
 
@@ -31,12 +29,10 @@ class CardGeneratorFactory:
             backend: Backend implementation for deck operations
             template_service: Service for loading card templates
             media_manager: Optional media manager for audio/image generation
-            german_service: Optional German language service for audio text generation
         """
         self._backend = backend
         self._template_service = template_service
         self._media_manager = media_manager
-        self._german_service = german_service
 
     def create_noun_generator(self) -> NounCardGenerator:
         """Create a noun card generator with all dependencies.
@@ -48,7 +44,6 @@ class CardGeneratorFactory:
             backend=self._backend,
             template_service=self._template_service,
             media_manager=self._media_manager,
-            german_service=self._german_service,
         )
 
     def create_adjective_generator(self) -> AdjectiveCardGenerator:
@@ -61,7 +56,6 @@ class CardGeneratorFactory:
             backend=self._backend,
             template_service=self._template_service,
             media_manager=self._media_manager,
-            german_service=self._german_service,
         )
 
     def create_adverb_generator(self) -> AdverbCardGenerator:
@@ -74,7 +68,6 @@ class CardGeneratorFactory:
             backend=self._backend,
             template_service=self._template_service,
             media_manager=self._media_manager,
-            german_service=self._german_service,
         )
 
     def create_negation_generator(self) -> NegationCardGenerator:
@@ -87,5 +80,4 @@ class CardGeneratorFactory:
             backend=self._backend,
             template_service=self._template_service,
             media_manager=self._media_manager,
-            german_service=self._german_service,
         )

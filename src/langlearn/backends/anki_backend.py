@@ -15,7 +15,6 @@ from anki.models import NotetypeId
 from langlearn.models.model_factory import ModelFactory
 from langlearn.services.audio import AudioService
 from langlearn.services.domain_media_generator import DomainMediaGenerator
-from langlearn.services.german_language_service import GermanLanguageService
 from langlearn.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.services.pexels_service import PexelsService
 
@@ -36,7 +35,6 @@ class AnkiBackend(DeckBackend):
         deck_name: str,
         description: str = "",
         media_service: MediaService | None = None,
-        german_service: GermanLanguageService | None = None,
     ) -> None:
         """Initialize the official Anki backend.
 
@@ -44,7 +42,6 @@ class AnkiBackend(DeckBackend):
             deck_name: Name of the deck to create
             description: Optional description for the deck
             media_service: Optional MediaService for media generation
-            german_service: Optional GermanLanguageService for German processing
         """
         super().__init__(deck_name, description)
 
@@ -78,16 +75,10 @@ class AnkiBackend(DeckBackend):
                 audio_service, pexels_service, config, self._project_root
             )
 
-        if german_service is None:
-            german_service = GermanLanguageService()
-
         self._media_service = media_service
-        self._german_service = german_service
 
         # Create domain media generator for field processing delegation
-        self._domain_media_generator = DomainMediaGenerator(
-            self._media_service, self._german_service
-        )
+        self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
         # Media generation statistics (kept for backward compatibility)
         self._media_generation_stats = {

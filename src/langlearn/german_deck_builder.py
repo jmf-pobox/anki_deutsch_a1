@@ -20,7 +20,6 @@ from .models.adverb import Adverb
 from .models.negation import Negation
 from .models.noun import Noun
 from .services.csv_service import CSVService
-from .services.german_language_service import GermanLanguageService
 from .services.media_service import MediaService
 from .services.template_service import TemplateService
 
@@ -76,7 +75,6 @@ class GermanDeckBuilder:
 
         # Initialize services
         self._csv_service = CSVService()
-        self._german_service = GermanLanguageService()
 
         # Initialize template service with templates directory
         template_dir = Path(__file__).parent / "templates"
@@ -114,7 +112,6 @@ class GermanDeckBuilder:
             backend=self._backend,
             template_service=self._template_service,
             media_manager=self._media_manager,
-            german_service=self._german_service,
         )
 
         # Track loaded data
@@ -140,7 +137,6 @@ class GermanDeckBuilder:
             return AnkiBackend(
                 deck_name=deck_name,
                 media_service=self._media_service,
-                german_service=self._german_service,
             )
         elif backend_type == "genanki":
             raise ValueError(

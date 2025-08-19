@@ -116,10 +116,10 @@ class TestAdjectiveFieldProcessing:
         assert mock_generator.audio_calls[1] == "Das ist schön."  # Example audio
 
         assert len(mock_generator.image_calls) == 1
-        assert mock_generator.image_calls[0] == (
-            "beautiful",
-            "beautiful",
-        )  # Enhanced search terms from domain model
+        # Check that AI-enhanced search terms were generated (now uses AnthropicService)
+        primary_query, backup_query = mock_generator.image_calls[0]
+        assert "beautiful" in primary_query  # Should contain the English meaning
+        assert backup_query == "beautiful"  # Backup is always the English fallback
 
         # Context calls are no longer used - we now use domain-specific search terms
         assert len(mock_generator.context_calls) == 0

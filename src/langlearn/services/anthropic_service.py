@@ -128,9 +128,9 @@ for finding relevant images based on sentence context.
 German word: '{model.word}' (meaning: '{model.english}')
 Example sentence: '{model.example}'
 
-Your task is to analyze the EXAMPLE SENTENCE FIRST to understand the visual context 
-and situation where this word is used. Generate a Pexels search query that captures 
-the scene, action, or visual concept from the example sentence rather than just the 
+Your task is to analyze the EXAMPLE SENTENCE FIRST to understand the visual context
+and situation where this word is used. Generate a Pexels search query that captures
+the scene, action, or visual concept from the example sentence rather than just the
 isolated word meaning.
 
 Guidelines:
