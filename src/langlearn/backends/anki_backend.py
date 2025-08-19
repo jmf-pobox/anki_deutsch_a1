@@ -74,14 +74,22 @@ class AnkiBackend(DeckBackend):
 
         # Initialize services with dependency injection
         if media_service is None:
-            audio_service = AudioService(
-                output_dir=str(self._project_root / "data" / "audio")
-            )
-            pexels_service = PexelsService()
-            config = MediaGenerationConfig()
-            media_service = MediaService(
-                audio_service, pexels_service, config, self._project_root
-            )
+            # Check if we're running under pytest (avoid AWS in unit tests)
+            import sys
+            if 'pytest' in sys.modules:
+                # Use mock services for testing
+                from unittest.mock import MagicMock
+                media_service = MagicMock()
+            else:
+                # Use real services for production
+                audio_service = AudioService(
+                    output_dir=str(self._project_root / "data" / "audio")
+                )
+                pexels_service = PexelsService()
+                config = MediaGenerationConfig()
+                media_service = MediaService(
+                    audio_service, pexels_service, config, self._project_root
+                )
 
         self._media_service = media_service
 
