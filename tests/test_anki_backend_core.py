@@ -126,15 +126,21 @@ class TestAnkiBackendCore:
         ):
             backend = AnkiBackend("Test Deck")
 
-            # Mock the nested service properties
+            # Mock the nested service properties using patch.object
             mock_audio_service = Mock()
             mock_pexels_service = Mock()
-            backend._media_service._audio_service = mock_audio_service
-            backend._media_service._pexels_service = mock_pexels_service
 
-            # Test properties return the correct services
-            assert backend._audio_service is mock_audio_service
-            assert backend._pexels_service is mock_pexels_service
+            with (
+                patch.object(
+                    backend._media_service, "_audio_service", mock_audio_service
+                ),
+                patch.object(
+                    backend._media_service, "_pexels_service", mock_pexels_service
+                ),
+            ):
+                # Test properties return the correct services
+                assert backend._audio_service is mock_audio_service
+                assert backend._pexels_service is mock_pexels_service
 
     def test_cleanup_on_deletion(self) -> None:
         """Test temporary directory cleanup functionality exists."""

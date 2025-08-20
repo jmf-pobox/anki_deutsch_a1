@@ -16,9 +16,7 @@ class TestNounDomainBehavior:
             english="cat",
             plural="Katzen",
             example="Die Katze schläft.",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
 
         result = noun.get_combined_audio_text()
@@ -32,9 +30,7 @@ class TestNounDomainBehavior:
             english="chair",
             plural="die Stühle",  # Already includes article
             example="Der Stuhl ist bequem.",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
 
         result = noun.get_combined_audio_text()
@@ -49,9 +45,7 @@ class TestNounDomainBehavior:
             english="cat",
             plural="Katzen",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         assert concrete.is_concrete() is True
 
@@ -62,9 +56,7 @@ class TestNounDomainBehavior:
             english="freedom",
             plural="",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         assert abstract_suffix.is_concrete() is False
 
@@ -75,9 +67,7 @@ class TestNounDomainBehavior:
             english="love",
             plural="",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         assert abstract_word.is_concrete() is False
 
@@ -103,9 +93,7 @@ class TestNounDomainBehavior:
                 english="test",
                 plural="",
                 example="",
-                word_audio="",
-                example_audio="",
-                image_path="",
+                related="",
             )
             assert noun.is_concrete() == expected, (
                 f"{noun_text} should be {'concrete' if expected else 'abstract'}"
@@ -119,9 +107,7 @@ class TestNounDomainBehavior:
             english="cat",
             plural="Katzen",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         assert noun.get_image_search_terms() == "cat"
 
@@ -134,9 +120,7 @@ class TestNounDomainBehavior:
             english="love",
             plural="",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         result = love_noun.get_image_search_terms()
         assert "heart symbol" in result and "family together" in result
@@ -147,9 +131,7 @@ class TestNounDomainBehavior:
             english="freedom",
             plural="",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         result = freedom_noun.get_image_search_terms()
         assert "person celebrating independence" in result
@@ -161,9 +143,7 @@ class TestNounDomainBehavior:
             english="wisdom",
             plural="",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         result = abstract_noun.get_image_search_terms()
         assert result == "wisdom concept symbol"
@@ -177,9 +157,7 @@ class TestNounDomainBehavior:
             english="dog",
             plural="Hunde",
             example="Der Hund bellt laut.",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
 
         # All methods should work
@@ -194,9 +172,7 @@ class TestNounDomainBehavior:
             english="hope",
             plural="",
             example="Die Hoffnung stirbt zuletzt.",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
 
         assert abstract_noun.is_concrete() is False
@@ -222,9 +198,7 @@ class TestNounDomainBehavior:
             english=english,
             plural=plural,
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         assert noun_obj.get_combined_audio_text() == expected_audio
 
@@ -237,9 +211,7 @@ class TestNounDomainBehavior:
             english="",
             plural="",
             example="",
-            word_audio="",
-            example_audio="",
-            image_path="",
+            related="",
         )
         assert empty_noun.is_concrete() is False  # Empty noun is not concrete
 

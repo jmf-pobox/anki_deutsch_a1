@@ -9,6 +9,7 @@ from unittest.mock import mock_open, patch
 import pytest
 from pydantic import BaseModel, ValidationError, field_validator
 
+from langlearn.models.records import AdjectiveRecord, NounRecord
 from langlearn.services.csv_service import CSVService
 
 
@@ -284,6 +285,7 @@ class TestCSVServiceRecords:
         assert len(records) == 2
         assert all(isinstance(r, NounRecord) for r in records)
 
+        assert isinstance(records[0], NounRecord)
         first_record = records[0]
         assert first_record.noun == "Katze"
         assert first_record.article == "die"
@@ -294,13 +296,13 @@ class TestCSVServiceRecords:
         self, csv_service: CSVService, temp_adjective_csv: Path
     ) -> None:
         """Test reading adjective CSV as records."""
-        from langlearn.models.records import AdjectiveRecord
 
         records = csv_service.read_csv_as_records(temp_adjective_csv, "adjective")
 
         assert len(records) == 2
         assert all(isinstance(r, AdjectiveRecord) for r in records)
 
+        assert isinstance(records[0], AdjectiveRecord)
         first_record = records[0]
         assert first_record.word == "schön"
         assert first_record.english == "beautiful"
@@ -334,8 +336,11 @@ class TestCSVServiceRecords:
 
             # Should have 2 records (malformed row skipped)
             assert len(records) == 2
-            assert records[0].noun == "Katze"
-            assert records[1].noun == "Hund"
+            # Cast to NounRecords after filtering
+            noun_records = [r for r in records if isinstance(r, NounRecord)]
+            assert len(noun_records) == 2
+            assert noun_records[0].noun == "Katze"
+            assert noun_records[1].noun == "Hund"
 
         finally:
             if temp_path.exists():
@@ -356,7 +361,6 @@ class TestCSVServiceRecords:
         self, csv_service: CSVService, temp_adjective_csv: Path
     ) -> None:
         """Test convenience method for reading adjective records."""
-        from langlearn.models.records import AdjectiveRecord
 
         records = csv_service.read_adjective_records(temp_adjective_csv)
 
@@ -367,7 +371,14 @@ class TestCSVServiceRecords:
         """Test getting supported record types."""
         types = csv_service.get_supported_record_types()
 
-        expected_types = {"noun", "adjective", "adverb", "negation"}
+        expected_types = {
+            "noun",
+            "adjective",
+            "adverb",
+            "negation",
+            "verb_conjugation",
+            "verb_imperative",
+        }
         assert set(types) == expected_types
 
     def test_validate_csv_structure_valid(

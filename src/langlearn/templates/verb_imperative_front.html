@@ -1,0 +1,33 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Verb - Imperativ</div>
+
+<div class="imperative-prompt">
+    <div class="infinitive-with-audio">
+        <span class="german">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="imperative-challenge">
+        <div class="imperative-label">Give commands using this verb:</div>
+        <div class="command-prompts">
+            <div class="command-item">To a friend (du): ___</div>
+            <div class="command-item">To friends (ihr): ___</div>
+            <div class="command-item">Formal (Sie): ___</div>
+        </div>
+    </div>
+</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Hint</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

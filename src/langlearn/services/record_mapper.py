@@ -4,6 +4,7 @@ This service handles the conversion from CSV field arrays to Record instances,
 providing clean separation between CSV parsing and domain logic.
 """
 
+import csv
 import logging
 from pathlib import Path
 from typing import Any
@@ -109,6 +110,35 @@ class RecordMapper:
                     csv_row.get("type", ""),
                     csv_row.get("example", ""),
                 ]
+            elif record_type == "verb_conjugation":
+                fields = [
+                    csv_row.get("infinitive", ""),
+                    csv_row.get("meaning", ""),
+                    csv_row.get("classification", ""),
+                    csv_row.get("separable", ""),
+                    csv_row.get("auxiliary", ""),
+                    csv_row.get("tense", ""),
+                    csv_row.get("ich", ""),
+                    csv_row.get("du", ""),
+                    csv_row.get("er", ""),
+                    csv_row.get("wir", ""),
+                    csv_row.get("ihr", ""),
+                    csv_row.get("sie", ""),
+                    csv_row.get("example", ""),
+                ]
+            elif record_type == "verb_imperative":
+                fields = [
+                    csv_row.get("infinitive", ""),
+                    csv_row.get("meaning", ""),
+                    csv_row.get("classification", ""),
+                    csv_row.get("separable", ""),
+                    csv_row.get("du_form", ""),
+                    csv_row.get("ihr_form", ""),
+                    csv_row.get("sie_form", ""),
+                    csv_row.get("example_du", ""),
+                    csv_row.get("example_ihr", ""),
+                    csv_row.get("example_sie", ""),
+                ]
             else:
                 raise ValueError(f"Unsupported record type: {record_type}")
 
@@ -124,7 +154,14 @@ class RecordMapper:
         Returns:
             List of supported record type names
         """
-        return ["noun", "adjective", "adverb", "negation"]
+        return [
+            "noun",
+            "adjective",
+            "adverb",
+            "negation",
+            "verb_conjugation",
+            "verb_imperative",
+        ]
 
     def is_supported_record_type(self, record_type: str) -> bool:
         """Check if record type is supported.
@@ -182,7 +219,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_field_names()
+        return record_class.get_field_names()  # type: ignore[no-any-return, attr-defined]
 
     def get_expected_field_count_for_record_type(self, record_type: str) -> int:
         """Get expected field count for a record type.
@@ -203,4 +240,201 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_expected_field_count()
+        return record_class.get_expected_field_count()  # type: ignore[no-any-return, attr-defined]
+
+    def detect_csv_record_type(self, csv_path: str | Path) -> str:
+        """Detect the record type from CSV file headers.
+
+        Args:
+            csv_path: Path to the CSV file
+
+        Returns:
+            Detected record type (verb_conjugation, verb_imperative, etc.)
+
+        Raises:
+            ValueError: If record type cannot be detected
+            FileNotFoundError: If CSV file doesn't exist
+        """
+        csv_path = Path(csv_path)
+        if not csv_path.exists():
+            raise FileNotFoundError(f"CSV file not found: {csv_path}")
+
+        logger.debug("Detecting record type for CSV: %s", csv_path)
+
+        try:
+            with open(csv_path, encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                headers = set(reader.fieldnames or [])
+
+            logger.debug("Found CSV headers: %s", headers)
+
+            # Detect verb conjugation format
+            conjugation_indicators = {"tense", "ich", "du", "er", "wir", "ihr", "sie"}
+            if conjugation_indicators.issubset(headers):
+                logger.debug("Detected verb conjugation CSV format")
+                return "verb_conjugation"
+
+            # Detect verb imperative format
+            imperative_indicators = {"du_form", "ihr_form", "sie_form"}
+            if imperative_indicators.issubset(headers):
+                logger.debug("Detected verb imperative CSV format")
+                return "verb_imperative"
+
+            # Detect other record types by key indicators
+            if {"noun", "article"}.issubset(headers):
+                logger.debug("Detected noun CSV format")
+                return "noun"
+
+            if {"word", "comparative"}.issubset(headers):
+                logger.debug("Detected adjective CSV format")
+                return "adjective"
+
+            if {"word", "type"}.issubset(headers) and "comparative" not in headers:
+                # Distinguish between adverb and negation by typical patterns
+                if any(word in str(csv_path).lower() for word in ["adverb"]):
+                    logger.debug("Detected adverb CSV format")
+                    return "adverb"
+                elif any(word in str(csv_path).lower() for word in ["negation"]):
+                    logger.debug("Detected negation CSV format")
+                    return "negation"
+                else:
+                    # Default to adverb if ambiguous
+                    logger.debug("Detected adverb CSV format (default)")
+                    return "adverb"
+
+            # If no patterns match, raise error
+            raise ValueError(
+                f"Cannot detect record type for CSV with headers: {headers}. "
+                f"Supported formats: verb conjugation (with tense/ich/du/er/wir/ihr/sie), "  # noqa: E501
+                f"verb imperative (with du_form/ihr_form/sie_form), "
+                f"noun (with noun/article), adjective (with word/comparative), "
+                f"adverb/negation (with word/type)"
+            )
+
+        except Exception as e:
+            logger.error("Failed to detect record type for %s: %s", csv_path, e)
+            raise
+
+    def load_records_from_csv(self, csv_path: str | Path) -> list[BaseRecord]:
+        """Load records from CSV with automatic type detection.
+
+        Args:
+            csv_path: Path to the CSV file
+
+        Returns:
+            List of Record instances
+
+        Raises:
+            ValueError: If record type cannot be detected or records are invalid
+            FileNotFoundError: If CSV file doesn't exist
+        """
+        csv_path = Path(csv_path)
+        logger.info("Loading records from CSV: %s", csv_path)
+
+        # Auto-detect record type
+        record_type = self.detect_csv_record_type(csv_path)
+        logger.info("Detected record type: %s", record_type)
+
+        # Handle verb records that may have multiple rows per verb
+        if record_type in ["verb_conjugation", "verb_imperative"]:
+            return self._load_verb_records_from_csv(csv_path, record_type)
+        else:
+            return self._load_simple_records_from_csv(csv_path, record_type)
+
+    def _load_simple_records_from_csv(
+        self, csv_path: Path, record_type: str
+    ) -> list[BaseRecord]:
+        """Load records with 1:1 row-to-record mapping.
+
+        Args:
+            csv_path: Path to the CSV file
+            record_type: Type of records to create
+
+        Returns:
+            List of Record instances
+        """
+        records = []
+
+        try:
+            with open(csv_path, encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+
+                for row_num, row in enumerate(
+                    reader, start=2
+                ):  # Start at 2 (header is 1)
+                    try:
+                        record = self.map_csv_row_to_record(record_type, row)
+                        records.append(record)
+                        logger.debug(
+                            "Created %s record from row %d", record_type, row_num
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "Failed to create %s record from row %d: %s",
+                            record_type,
+                            row_num,
+                            e,
+                        )
+                        raise ValueError(
+                            f"Invalid {record_type} data at row {row_num}: {e}"
+                        ) from e
+
+            logger.info("Successfully loaded %d %s records", len(records), record_type)
+            return records
+
+        except Exception as e:
+            logger.error(
+                "Failed to load %s records from %s: %s", record_type, csv_path, e
+            )
+            raise
+
+    def _load_verb_records_from_csv(
+        self, csv_path: Path, record_type: str
+    ) -> list[BaseRecord]:
+        """Load verb records from CSV (multiple rows per verb supported).
+
+        For the hybrid approach, each row represents one tense/imperative set
+        for a verb, so we create one record per row.
+
+        Args:
+            csv_path: Path to the CSV file
+            record_type: Type of verb records to create
+
+        Returns:
+            List of verb Record instances
+        """
+        records = []
+
+        try:
+            with open(csv_path, encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+
+                for row_num, row in enumerate(
+                    reader, start=2
+                ):  # Start at 2 (header is 1)
+                    try:
+                        # Each row becomes one record (1 tense per row approach)
+                        record = self.map_csv_row_to_record(record_type, row)
+                        records.append(record)
+                        logger.debug(
+                            "Created %s record from row %d", record_type, row_num
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "Failed to create %s record from row %d: %s",
+                            record_type,
+                            row_num,
+                            e,
+                        )
+                        raise ValueError(
+                            f"Invalid {record_type} data at row {row_num}: {e}"
+                        ) from e
+
+            logger.info("Successfully loaded %d %s records", len(records), record_type)
+            return records
+
+        except Exception as e:
+            logger.error(
+                "Failed to load %s records from %s: %s", record_type, csv_path, e
+            )
+            raise

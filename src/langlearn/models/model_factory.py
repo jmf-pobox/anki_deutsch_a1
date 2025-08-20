@@ -5,11 +5,7 @@ This factory implements the detection logic for determining which domain model
 should handle field processing based on note type names or field patterns.
 """
 
-from .adjective import Adjective
-from .adverb import Adverb
 from .field_processor import FieldProcessor
-from .negation import Negation
-from .noun import Noun
 from .phrase import Phrase
 from .preposition import Preposition
 from .verb import Verb
@@ -22,68 +18,23 @@ class ModelFactory:
     def create_field_processor(cls, note_type_name: str) -> FieldProcessor | None:
         """Create appropriate FieldProcessor for the given note type.
 
+        Note: Only returns FieldProcessor instances for legacy types
+        (verb, preposition, phrase). Clean Pipeline Architecture types
+        (noun, adjective, adverb, negation) return None since they are
+        handled by the Clean Pipeline Architecture.
+
         Args:
             note_type_name: Name of the Anki note type to process
 
         Returns:
-            FieldProcessor instance for the note type, or None if unsupported
+            FieldProcessor instance for legacy note types, or None if Clean Pipeline
         """
         note_type_lower = note_type_name.lower()
 
-        # Adjective detection
-        if "adjective" in note_type_lower:
-            return Adjective(
-                word="",
-                english="",
-                example="",
-                comparative="",
-                superlative="",
-                word_audio="",
-                example_audio="",
-                image_path="",
-            )
-
-        # Noun detection
-        if "noun" in note_type_lower:
-            return Noun(
-                noun="",
-                article="",
-                english="",
-                plural="",
-                example="",
-                related="",
-                word_audio="",
-                example_audio="",
-                image_path="",
-            )
-
-        # Adverb detection
-        if "adverb" in note_type_lower:
-            from .adverb import AdverbType
-
-            return Adverb(
-                word="",
-                english="",
-                type=AdverbType.MANNER,  # Default type
-                example="",
-                word_audio="",
-                example_audio="",
-                image_path="",
-            )
-
-        # Negation detection
-        if "negation" in note_type_lower:
-            from .negation import NegationType
-
-            return Negation(
-                word="",
-                english="",
-                type=NegationType.GENERAL,  # Default type
-                example="",
-                word_audio="",
-                example_audio="",
-                image_path="",
-            )
+        # Clean Pipeline Architecture types - return None (handled by Clean Pipeline)
+        clean_pipeline_types = ["adjective", "noun", "adverb", "negation"]
+        if any(word_type in note_type_lower for word_type in clean_pipeline_types):
+            return None
 
         # Verb detection
         if "verb" in note_type_lower:

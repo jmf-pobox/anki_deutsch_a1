@@ -5,7 +5,8 @@ import os
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
-from unittest.mock import patch
+from typing import cast
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -185,6 +186,7 @@ class TestMediaIntegration:
         fake_audio_path = "/fake/katze.mp3"
 
         # Mock the MediaService that DomainMediaGenerator uses
+        assert backend._domain_media_generator is not None  # Type narrowing
         with (
             patch.object(
                 backend._domain_media_generator._media_service,
@@ -206,9 +208,12 @@ class TestMediaIntegration:
             assert result[8] == "[sound:katze.mp3]"
 
             # Verify that audio generation was called with the right parameters
+            assert backend._domain_media_generator is not None  # Type narrowing
             media_service = backend._domain_media_generator._media_service
-            media_service.generate_audio.assert_any_call("die Katze, die Katzen")  # type: ignore[attr-defined]
-            media_service.generate_audio.assert_any_call("Die Katze schläft.")  # type: ignore[attr-defined]
+            # Use cast to treat as Mock for assertion access
+            mock_generate_audio = cast("Mock", media_service.generate_audio)
+            mock_generate_audio.assert_any_call("die Katze, die Katzen")
+            mock_generate_audio.assert_any_call("Die Katze schläft.")
 
     def test_process_fields_with_media_error_handling(
         self, backend: AnkiBackend

@@ -46,9 +46,6 @@ class TestGermanDeckBuilder:
                 plural="Katzen",
                 example="Die Katze schläft.",
                 related="Haustier",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
             Noun(
                 noun="Hund",
@@ -57,9 +54,6 @@ class TestGermanDeckBuilder:
                 plural="Hunde",
                 example="Der Hund bellt.",
                 related="Haustier",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
         ]
 
@@ -73,9 +67,6 @@ class TestGermanDeckBuilder:
                 example="Das Haus ist schön.",
                 comparative="schöner",
                 superlative="am schönsten",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
             Adjective(
                 word="groß",
@@ -83,9 +74,6 @@ class TestGermanDeckBuilder:
                 example="Der Baum ist groß.",
                 comparative="größer",
                 superlative="am größten",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
         ]
 
@@ -98,18 +86,12 @@ class TestGermanDeckBuilder:
                 english="fast",
                 type=AdverbType.MANNER,
                 example="Er läuft schnell.",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
             Adverb(
                 word="sehr",
                 english="very",
                 type=AdverbType.INTENSITY,
                 example="Das ist sehr gut.",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
         ]
 
@@ -122,18 +104,12 @@ class TestGermanDeckBuilder:
                 english="not",
                 type=NegationType.GENERAL,
                 example="Ich gehe nicht.",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
             Negation(
                 word="kein",
                 english="no/none",
                 type=NegationType.ARTICLE,
                 example="Ich habe kein Geld.",
-                word_audio="",
-                example_audio="",
-                image_path="",
             ),
         ]
 

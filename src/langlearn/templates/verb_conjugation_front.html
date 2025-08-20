@@ -1,0 +1,36 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Verb - {{Tense}}</div>
+
+<div class="verb-prompt">
+    <div class="infinitive-with-audio">
+        <span class="german">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="conjugation-challenge">
+        <div class="tense-label">{{Tense}}</div>
+        <div class="pronoun-grid">
+            <div class="pronoun-item">ich ___</div>
+            <div class="pronoun-item">du ___</div> 
+            <div class="pronoun-item">er/sie/es ___</div>
+            <div class="pronoun-item">wir ___</div>
+            <div class="pronoun-item">ihr ___</div>
+            <div class="pronoun-item">sie ___</div>
+        </div>
+    </div>
+</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Hint</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

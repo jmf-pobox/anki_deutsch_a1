@@ -2,17 +2,15 @@
 Tests for ModelFactory implementation.
 
 This module tests the factory that creates appropriate FieldProcessor instances
-based on note type detection patterns.
+based on note type detection patterns. The factory now supports Clean Pipeline
+Architecture where certain word types (noun, adjective, adverb, negation) return
+None and are handled by the Records system instead.
 """
 
 import pytest
 
-from langlearn.models.adjective import Adjective
-from langlearn.models.adverb import Adverb
 from langlearn.models.field_processor import FieldProcessor
 from langlearn.models.model_factory import ModelFactory
-from langlearn.models.negation import Negation
-from langlearn.models.noun import Noun
 from langlearn.models.phrase import Phrase
 from langlearn.models.preposition import Preposition
 from langlearn.models.verb import Verb
@@ -21,26 +19,8 @@ from langlearn.models.verb import Verb
 class TestModelFactory:
     """Test ModelFactory note type detection and instance creation."""
 
-    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
-    def test_create_adjective_processor(self) -> None:
-        """Test creating adjective field processor."""
-        processor = ModelFactory.create_field_processor("German Adjective")
-
-        assert processor is not None
-        assert isinstance(processor, Adjective)
-        assert isinstance(processor, FieldProcessor)
-
-    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
-    def test_create_noun_processor(self) -> None:
-        """Test creating noun field processor."""
-        processor = ModelFactory.create_field_processor("German Noun")
-
-        assert processor is not None
-        assert isinstance(processor, Noun)
-        assert isinstance(processor, FieldProcessor)
-
     def test_adjective_detection_patterns(self) -> None:
-        """Test various adjective note type name patterns."""
+        """Test adjective note type name patterns (Clean Pipeline - returns None)."""
         test_cases = [
             "German Adjective",
             "adjective",
@@ -52,11 +32,13 @@ class TestModelFactory:
 
         for note_type in test_cases:
             processor = ModelFactory.create_field_processor(note_type)
-            assert processor is not None, f"Failed to detect adjective in: {note_type}"
-            assert isinstance(processor, Adjective)
+            # Clean Pipeline Architecture: adjectives return None (handled by Records)
+            assert processor is None, (
+                f"Expected None for Clean Pipeline type: {note_type}"
+            )
 
     def test_noun_detection_patterns(self) -> None:
-        """Test various noun note type name patterns."""
+        """Test noun note type name patterns (Clean Pipeline - returns None)."""
         test_cases = [
             "German Noun",
             "noun",
@@ -68,20 +50,13 @@ class TestModelFactory:
 
         for note_type in test_cases:
             processor = ModelFactory.create_field_processor(note_type)
-            assert processor is not None, f"Failed to detect noun in: {note_type}"
-            assert isinstance(processor, Noun)
-
-    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
-    def test_create_adverb_processor(self) -> None:
-        """Test creating adverb field processor."""
-        processor = ModelFactory.create_field_processor("German Adverb")
-
-        assert processor is not None
-        assert isinstance(processor, Adverb)
-        assert isinstance(processor, FieldProcessor)
+            # Clean Pipeline Architecture: nouns return None (handled by Records)
+            assert processor is None, (
+                f"Expected None for Clean Pipeline type: {note_type}"
+            )
 
     def test_adverb_detection_patterns(self) -> None:
-        """Test various adverb note type name patterns."""
+        """Test adverb note type name patterns (Clean Pipeline - returns None)."""
         test_cases = [
             "German Adverb",
             "adverb",
@@ -93,20 +68,13 @@ class TestModelFactory:
 
         for note_type in test_cases:
             processor = ModelFactory.create_field_processor(note_type)
-            assert processor is not None, f"Failed to detect adverb in: {note_type}"
-            assert isinstance(processor, Adverb)
-
-    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
-    def test_create_negation_processor(self) -> None:
-        """Test creating negation field processor."""
-        processor = ModelFactory.create_field_processor("German Negation")
-
-        assert processor is not None
-        assert isinstance(processor, Negation)
-        assert isinstance(processor, FieldProcessor)
+            # Clean Pipeline Architecture: adverbs return None (handled by Records)
+            assert processor is None, (
+                f"Expected None for Clean Pipeline type: {note_type}"
+            )
 
     def test_negation_detection_patterns(self) -> None:
-        """Test various negation note type name patterns."""
+        """Test negation note type name patterns (Clean Pipeline - returns None)."""
         test_cases = [
             "German Negation",
             "negation",
@@ -118,8 +86,10 @@ class TestModelFactory:
 
         for note_type in test_cases:
             processor = ModelFactory.create_field_processor(note_type)
-            assert processor is not None, f"Failed to detect negation in: {note_type}"
-            assert isinstance(processor, Negation)
+            # Clean Pipeline Architecture: negations return None (handled by Records)
+            assert processor is None, (
+                f"Expected None for Clean Pipeline type: {note_type}"
+            )
 
     def test_create_verb_processor(self) -> None:
         """Test creating verb field processor."""
@@ -211,7 +181,7 @@ class TestModelFactory:
             assert processor is None, f"Unexpectedly supported: {note_type}"
 
     def test_case_insensitive_detection(self) -> None:
-        """Test that note type detection is case insensitive."""
+        """Test case insensitive detection (Clean Pipeline - returns None)."""
         variants = [
             "adjective",
             "Adjective",
@@ -221,8 +191,8 @@ class TestModelFactory:
 
         for variant in variants:
             processor = ModelFactory.create_field_processor(variant)
-            assert processor is not None
-            assert isinstance(processor, Adjective)
+            # Clean Pipeline Architecture: adjectives return None (handled by Records)
+            assert processor is None
 
     def test_get_supported_note_types(self) -> None:
         """Test getting list of supported note types."""
@@ -264,53 +234,6 @@ class TestModelFactory:
         # Unsupported types
         assert ModelFactory.is_supported_note_type("Random Type") is False
         assert ModelFactory.is_supported_note_type("") is False
-
-    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
-    def test_created_processor_field_layout(self) -> None:
-        """Test that created processors have correct field layout."""
-        processor = ModelFactory.create_field_processor("German Adjective")
-
-        assert processor is not None
-        assert processor.get_expected_field_count() == 8
-
-        field_names = processor._get_field_names()
-        expected_names = [
-            "Word",
-            "English",
-            "Example",
-            "Comparative",
-            "Superlative",
-            "Image",
-            "WordAudio",
-            "ExampleAudio",
-        ]
-        assert field_names == expected_names
-
-    @pytest.mark.skip(reason="FieldProcessor interface deprecated")
-    def test_created_processor_functionality(self) -> None:
-        """Test that created processors are fully functional."""
-        from langlearn.services.domain_media_generator import MockDomainMediaGenerator
-
-        processor = ModelFactory.create_field_processor("German Adjective")
-        mock_generator = MockDomainMediaGenerator()
-
-        fields = [
-            "schön",
-            "beautiful",
-            "Das ist schön.",
-            "schöner",
-            "am schönsten",
-            "",
-            "",
-            "",
-        ]
-
-        assert processor is not None  # Type guard
-        result = processor.process_fields_for_media_generation(fields, mock_generator)
-
-        assert len(result) == 8
-        assert result[0] == "schön"
-        assert len(mock_generator.audio_calls) > 0
 
     def test_factory_expansion_readiness(self) -> None:
         """Test that factory structure supports future model additions."""

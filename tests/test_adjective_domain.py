@@ -16,9 +16,6 @@ class TestAdjectiveDomainBehavior:
             example="Das Haus ist schön.",
             comparative="schöner",
             superlative="am schönsten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         result = adjective.get_combined_audio_text()
@@ -32,9 +29,6 @@ class TestAdjectiveDomainBehavior:
             example="Er läuft schnell.",
             comparative="schneller",
             superlative="",  # Empty superlative
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         result = adjective.get_combined_audio_text()
@@ -48,9 +42,6 @@ class TestAdjectiveDomainBehavior:
             example="Das ist gut.",
             comparative="",  # Empty comparative
             superlative="",  # Empty superlative
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         result = adjective.get_combined_audio_text()
@@ -65,9 +56,6 @@ class TestAdjectiveDomainBehavior:
             example="Das Haus ist schön.",
             comparative="schöner",
             superlative="am schönsten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
         assert regular.validate_comparative() is True
         assert regular.validate_superlative() is True
@@ -79,9 +67,6 @@ class TestAdjectiveDomainBehavior:
             example="Das Essen ist gut.",
             comparative="besser",
             superlative="am besten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
         assert irregular.validate_comparative() is True
         assert irregular.validate_superlative() is True
@@ -93,9 +78,6 @@ class TestAdjectiveDomainBehavior:
             example="Der Mann ist alt.",
             comparative="älter",
             superlative="am ältesten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
         assert umlaut.validate_comparative() is True
         assert umlaut.validate_superlative() is True
@@ -130,9 +112,6 @@ class TestAdjectiveDomainBehavior:
                 example="Test sentence.",
                 comparative=adj_data["comparative"],
                 superlative=adj_data["superlative"],
-                word_audio="",
-                example_audio="",
-                image_path="",
             )
 
             # Test rich domain behavior
@@ -164,9 +143,6 @@ class TestAdjectiveDomainBehavior:
             example="Test sentence.",
             comparative=comparative,
             superlative=superlative,
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
         assert adjective.get_combined_audio_text() == expected_audio
 
@@ -179,9 +155,6 @@ class TestAdjectiveDomainBehavior:
             example="Das Haus ist sehr schön.",
             comparative="schöner",
             superlative="am schönsten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         # Both validation and rich behavior should work
@@ -196,9 +169,6 @@ class TestAdjectiveDomainBehavior:
             example="Das Essen ist gut.",
             comparative="guter",  # Invalid - should be "besser"
             superlative="am besten",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
         # Validation should fail, but audio generation should still work

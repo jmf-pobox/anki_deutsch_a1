@@ -1,0 +1,61 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="verb-imperative">
+    <div class="infinitive-with-audio">
+        <span class="german">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="verb-info">
+        <div class="info-item"><strong>Classification:</strong> {{Classification}}</div>
+        {{#Separable}}<div class="info-item"><strong>Separable:</strong> Yes</div>{{/Separable}}
+    </div>
+    
+    <div class="imperative-table">
+        <div class="imperative-header">Imperative Forms</div>
+        <div class="imperative-grid">
+            <div class="imperative-row">
+                <span class="form-type">du-form:</span>
+                <span class="imperative-form">{{DuForm}}</span>
+                {{#DuAudio}}<span class="inline-audio">🔊 {{DuAudio}}</span>{{/DuAudio}}
+            </div>
+            <div class="imperative-row">
+                <span class="form-type">ihr-form:</span>
+                <span class="imperative-form">{{IhrForm}}</span>
+                {{#IhrAudio}}<span class="inline-audio">🔊 {{IhrAudio}}</span>{{/IhrAudio}}
+            </div>
+            <div class="imperative-row">
+                <span class="form-type">Sie-form:</span>
+                <span class="imperative-form">{{SieForm}}</span>
+                {{#SieAudio}}<span class="inline-audio">🔊 {{SieAudio}}</span>{{/SieAudio}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="examples-section">
+        <div class="examples-header">Examples</div>
+        <div class="example-item">
+            <strong>du:</strong> {{ExampleDu}}
+        </div>
+        <div class="example-item">
+            <strong>ihr:</strong> {{ExampleIhr}}
+        </div>
+        <div class="example-item">
+            <strong>Sie:</strong> {{ExampleSie}}
+        </div>
+    </div>
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
+    <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

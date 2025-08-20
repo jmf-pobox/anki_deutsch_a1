@@ -92,10 +92,10 @@ class StandardMediaEnricher(MediaEnricher):
 
     def __init__(
         self,
-        media_service,  # MediaService - avoiding import for now
+        media_service: Any,  # MediaService - avoiding import for now
         audio_base_path: Path = Path("data/audio"),
         image_base_path: Path = Path("data/images"),
-    ):
+    ) -> None:
         """Initialize media enricher with existing services.
 
         Args:
@@ -132,7 +132,7 @@ class StandardMediaEnricher(MediaEnricher):
             logger.warning(f"Unknown model type: {model_type}")
             return enriched
 
-    def _enrich_noun_record(self, record: dict[str, Any], noun) -> dict[str, Any]:
+    def _enrich_noun_record(self, record: dict[str, Any], noun: Any) -> dict[str, Any]:
         """Enrich noun record with media."""
         # Generate word audio (combined article + noun + plural)
         if not record.get("word_audio"):
@@ -159,7 +159,7 @@ class StandardMediaEnricher(MediaEnricher):
         return record
 
     def _enrich_adjective_record(
-        self, record: dict[str, Any], adjective
+        self, record: dict[str, Any], adjective: Any
     ) -> dict[str, Any]:
         """Enrich adjective record with media."""
         # Generate word audio (combined forms)
@@ -186,7 +186,9 @@ class StandardMediaEnricher(MediaEnricher):
 
         return record
 
-    def _enrich_adverb_record(self, record: dict[str, Any], adverb) -> dict[str, Any]:
+    def _enrich_adverb_record(
+        self, record: dict[str, Any], adverb: Any
+    ) -> dict[str, Any]:
         """Enrich adverb record with media."""
         # Generate word audio
         if not record.get("word_audio") and record.get("word"):
@@ -212,7 +214,7 @@ class StandardMediaEnricher(MediaEnricher):
         return record
 
     def _enrich_negation_record(
-        self, record: dict[str, Any], negation
+        self, record: dict[str, Any], negation: Any
     ) -> dict[str, Any]:
         """Enrich negation record with media."""
         # Generate word audio
@@ -287,7 +289,7 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_audio(self, text: str) -> str | None:
         """Generate audio file for text."""
         try:
-            return self._media_service.generate_audio(text)
+            return self._media_service.generate_audio(text)  # type: ignore[no-any-return]
         except Exception as e:
             logger.warning(f"Audio generation failed for '{text[:50]}...': {e}")
             return None
@@ -295,7 +297,7 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_image(self, search_terms: str, fallback: str) -> str | None:
         """Generate image file for search terms."""
         try:
-            return self._media_service.generate_image(search_terms, fallback)
+            return self._media_service.generate_image(search_terms, fallback)  # type: ignore[no-any-return]
         except Exception as e:
             logger.warning(f"Image generation failed for '{search_terms}': {e}")
             return None

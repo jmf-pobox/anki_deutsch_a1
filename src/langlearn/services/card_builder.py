@@ -183,6 +183,41 @@ class CardBuilder:
                 "WordAudio",
                 "ExampleAudio",
             ],
+            "verb_conjugation": [
+                "Infinitive",
+                "English",
+                "Classification",
+                "Separable",
+                "Auxiliary",
+                "Tense",
+                "Ich",
+                "Du",
+                "Er",
+                "Wir",
+                "Ihr",
+                "Sie",
+                "Example",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
+            ],
+            "verb_imperative": [
+                "Infinitive",
+                "English",
+                "Classification",
+                "Separable",
+                "DuForm",
+                "IhrForm",
+                "SieForm",
+                "ExampleDu",
+                "ExampleIhr",
+                "ExampleSie",
+                "Image",
+                "WordAudio",
+                "DuAudio",
+                "IhrAudio",
+                "SieAudio",
+            ],
         }
 
         return field_mappings.get(record_type, [])
@@ -255,15 +290,44 @@ class CardBuilder:
                 "Word": "word",
                 "Type": "type",
             },
+            "verb_conjugation": {
+                "Infinitive": "infinitive",
+                "English": "meaning",
+                "Classification": "classification",
+                "Separable": "separable",
+                "Auxiliary": "auxiliary",
+                "Tense": "tense",
+                "Ich": "ich",
+                "Du": "du",
+                "Er": "er",
+                "Wir": "wir",
+                "Ihr": "ihr",
+                "Sie": "sie",
+            },
+            "verb_imperative": {
+                "Infinitive": "infinitive",
+                "English": "meaning",
+                "Classification": "classification",
+                "Separable": "separable",
+                "DuForm": "du_form",
+                "IhrForm": "ihr_form",
+                "SieForm": "sie_form",
+                "ExampleDu": "example_du",
+                "ExampleIhr": "example_ihr",
+                "ExampleSie": "example_sie",
+                "DuAudio": "du_audio",
+                "IhrAudio": "ihr_audio",
+                "SieAudio": "sie_audio",
+            },
         }
 
-        # Try common mappings first
-        if anki_field in common_mappings:
-            return common_mappings[anki_field]
-
-        # Try type-specific mappings
+        # Try type-specific mappings first (they override common mappings)
         if record_type in type_mappings and anki_field in type_mappings[record_type]:
             return type_mappings[record_type][anki_field]
+
+        # Try common mappings second
+        if anki_field in common_mappings:
+            return common_mappings[anki_field]
 
         # Fallback: convert to lowercase
         return anki_field.lower()
@@ -281,11 +345,19 @@ class CardBuilder:
         if value is None:
             return ""
 
+        # Handle boolean values (e.g., Separable field)
+        if isinstance(value, bool):
+            return "Yes" if value else ""
+
         # Convert to string
         str_value = str(value)
 
         # Apply field-specific formatting
-        if field_name in ["WordAudio", "ExampleAudio"] and str_value:
+        if (
+            field_name
+            in ["WordAudio", "ExampleAudio", "DuAudio", "IhrAudio", "SieAudio"]
+            and str_value
+        ):
             # Ensure audio fields have proper Anki format
             if not str_value.startswith("[sound:") and not str_value.endswith("]"):
                 str_value = f"[sound:{str_value}]"
@@ -305,7 +377,14 @@ class CardBuilder:
         Returns:
             List of supported record type names
         """
-        return ["noun", "adjective", "adverb", "negation"]
+        return [
+            "noun",
+            "adjective",
+            "adverb",
+            "negation",
+            "verb_conjugation",
+            "verb_imperative",
+        ]
 
     def validate_record_for_card_building(self, record: BaseRecord) -> bool:
         """Validate that a record can be used for card building.
@@ -349,6 +428,14 @@ class CardBuilder:
             "adjective": ["word", "english"],
             "adverb": ["word", "english", "type"],
             "negation": ["word", "english", "type"],
+            "verb_conjugation": ["infinitive", "meaning", "tense", "ich", "du", "er"],
+            "verb_imperative": [
+                "infinitive",
+                "meaning",
+                "du_form",
+                "ihr_form",
+                "sie_form",
+            ],
         }
 
         return required_fields.get(record_type, [])
@@ -370,6 +457,8 @@ class CardBuilder:
             "AdjectiveRecord": "adjective",
             "AdverbRecord": "adverb",
             "NegationRecord": "negation",
+            "VerbConjugationRecord": "verb_conjugation",
+            "VerbImperativeRecord": "verb_imperative",
         }
 
         return class_to_type.get(class_name, class_name.lower())

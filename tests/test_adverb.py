@@ -12,9 +12,6 @@ def test_adverb_initialization() -> None:
         english="here",
         type=AdverbType.LOCATION,
         example="Ich wohne hier.",
-        word_audio="",
-        example_audio="",
-        image_path="",
     )
     assert adverb.word == "hier"
     assert adverb.english == "here"
@@ -30,27 +27,18 @@ def test_adverb_validation() -> None:
             english="here",
             type=AdverbType.LOCATION,
             example="Ich wohne hier.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
         Adverb(
             word="heute",
             english="today",
             type=AdverbType.TIME,
             example="Heute ist es sonnig.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
         Adverb(
             word="immer",
             english="always",
             type=AdverbType.FREQUENCY,
             example="Er kommt immer pünktlich.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
     ]
 
@@ -67,27 +55,18 @@ def test_invalid_example_sentences() -> None:
             english="here",
             type=AdverbType.LOCATION,
             example="hier wohne ich.",  # No capital letter
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
         Adverb(
             word="heute",
             english="today",
             type=AdverbType.TIME,
             example="Heute ist es sonnig",  # No period
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
         Adverb(
             word="immer",
             english="always",
             type=AdverbType.FREQUENCY,
             example="Er kommt pünktlich.",  # Missing adverb
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
     ]
 
@@ -103,9 +82,6 @@ def test_adverb_position_validation() -> None:
         english="here",
         type=AdverbType.LOCATION,
         example="Ich wohne hier.",
-        word_audio="",
-        example_audio="",
-        image_path="",
     )
     assert location_adverb.validate_position() is True
 
@@ -115,9 +91,6 @@ def test_adverb_position_validation() -> None:
         english="today",
         type=AdverbType.TIME,
         example="Heute ist es sonnig.",
-        word_audio="",
-        example_audio="",
-        image_path="",
     )
     assert time_adverb_start.validate_position() is True
 
@@ -126,9 +99,6 @@ def test_adverb_position_validation() -> None:
         english="today",
         type=AdverbType.TIME,
         example="Ich gehe heute einkaufen.",
-        word_audio="",
-        example_audio="",
-        image_path="",
     )
     assert time_adverb_middle.validate_position() is True
 
@@ -138,9 +108,6 @@ def test_adverb_position_validation() -> None:
         english="slowly",
         type=AdverbType.MANNER,
         example="Er spricht langsam Deutsch.",
-        word_audio="",
-        example_audio="",
-        image_path="",
     )
     assert manner_adverb.validate_position() is True
 
@@ -150,9 +117,6 @@ def test_adverb_position_validation() -> None:
         english="very",
         type=AdverbType.INTENSITY,
         example="Das Buch ist sehr interessant.",
-        word_audio="",
-        example_audio="",
-        image_path="",
     )
     assert intensity_adverb.validate_position() is True
 
@@ -165,27 +129,18 @@ def test_invalid_adverb_positions() -> None:
             english="here",
             type=AdverbType.LOCATION,
             example="Hier wohne ich.",  # Location adverb at start
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
         Adverb(
             word="sehr",
             english="very",
             type=AdverbType.INTENSITY,
             example="Das Buch ist interessant sehr.",  # Intensity adverb at end
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
         Adverb(
             word="langsam",
             english="slowly",
             type=AdverbType.MANNER,
             example="Langsam spricht er Deutsch.",  # Manner adverb at start
-            word_audio="",
-            example_audio="",
-            image_path="",
         ),
     ]
 
@@ -202,9 +157,6 @@ def test_adverb_type_validation() -> None:
             english="test",
             type=adverb_type,
             example="Test test.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )
 
     # Test that trying to use an invalid type raises ValueError
@@ -217,7 +169,4 @@ def test_adverb_type_validation() -> None:
             english="test",
             type=AdverbType(invalid_type),  # This should raise ValueError
             example="Test test.",
-            word_audio="",
-            example_audio="",
-            image_path="",
         )

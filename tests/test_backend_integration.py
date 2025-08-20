@@ -7,6 +7,7 @@ to delegate field processing to domain models.
 
 import shutil
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -19,7 +20,7 @@ class TestBackendIntegration:
     """Test backend integration with domain model delegation."""
 
     @pytest.fixture
-    def temp_hide_images(self):
+    def temp_hide_images(self) -> Generator[None, None, None]:
         """Temporarily move existing image files so tests can check generation paths."""
         # List of image files that conflict with tests
         image_files = ["schön.jpg"]
@@ -35,15 +36,15 @@ class TestBackendIntegration:
                 if source.exists():
                     dest = temp_dir / filename
                     shutil.move(str(source), str(dest))
-                    moved_files.append((str(source), str(dest)))
+                    moved_files.append((source, dest))
 
             yield
 
         finally:
             # Restore moved files
             for source, temp_path in moved_files:
-                if Path(temp_path).exists():
-                    shutil.move(temp_path, source)
+                if temp_path.exists():
+                    shutil.move(str(temp_path), str(source))
 
             # Clean up temp directory
             shutil.rmtree(temp_dir, ignore_errors=True)
@@ -92,7 +93,7 @@ class TestBackendIntegration:
             mock_factory.assert_called_once_with("Unsupported Type")
             assert result == fields
 
-    def test_adjective_processing(self, temp_hide_images) -> None:
+    def test_adjective_processing(self, temp_hide_images: None) -> None:
         """Test that AnkiBackend processes adjectives correctly."""
         # Set up adjective fields
         fields = [
@@ -111,7 +112,9 @@ class TestBackendIntegration:
 
         # Mock the new MediaEnricher for Clean Pipeline Architecture
         class MockMediaEnricher:
-            def enrich_record(self, record_dict, domain_model):
+            def enrich_record(
+                self, record_dict: dict[str, str], domain_model: object
+            ) -> dict[str, str]:
                 # Return predictable mock responses
                 enriched = record_dict.copy()
                 enriched["image"] = '<img src="image.jpg">'

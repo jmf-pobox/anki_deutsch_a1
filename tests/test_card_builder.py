@@ -7,7 +7,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
-from langlearn.models.records import create_record
+from langlearn.models.records import BaseRecord, create_record
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService
 
@@ -45,6 +45,18 @@ class TestCardBuilder:
                 front_html="{{Word}}",
                 back_html="{{English}} ({{Type}})",
                 css=".card { color: red; }",
+            ),
+            "verb_conjugation": CardTemplate(
+                name="German Verb Conjugation with Media",
+                front_html="{{Infinitive}} - {{Tense}}",
+                back_html="{{Ich}}, {{Du}}, {{Er}}",
+                css=".card { color: purple; }",
+            ),
+            "verb_imperative": CardTemplate(
+                name="German Verb Imperative with Media",
+                front_html="{{Infinitive}} - Commands",
+                back_html="{{DuForm}}, {{IhrForm}}, {{SieForm}}",
+                css=".card { color: brown; }",
             ),
         }
 
@@ -298,7 +310,14 @@ class TestCardBuilder:
     def test_get_supported_record_types(self, card_builder: CardBuilder) -> None:
         """Test getting supported record types."""
         types = card_builder.get_supported_record_types()
-        assert set(types) == {"noun", "adjective", "adverb", "negation"}
+        assert set(types) == {
+            "noun",
+            "adjective",
+            "adverb",
+            "negation",
+            "verb_conjugation",
+            "verb_imperative",
+        }
 
     def test_validate_record_for_card_building_valid(
         self, card_builder: CardBuilder
@@ -340,21 +359,25 @@ class TestCardBuilder:
         ]
 
         # Mock the template service to raise an error for the second call
-        card_builder._template_service.get_template.side_effect = [
+        mock_template_service = card_builder._template_service
+        assert hasattr(mock_template_service.get_template, "side_effect")
+        mock_template_service.get_template.side_effect = [
             CardTemplate("Test", "{{Noun}}", "{{English}}", ""),
             Exception("Template error"),
         ]
 
-        # Add a record that will cause template error
+        # Add a record that will cause template error (use NounRecord)
         records.append(
             create_record(
-                "adjective",
-                ["schön", "beautiful", "Example", "schöner", "am schönsten"],
+                "noun",
+                ["Hund", "der", "dog", "Hunde", "Der Hund bellt.", "Tier"],
             )
         )
 
         # Build cards - should handle error gracefully
-        cards = card_builder.build_cards_from_records(records)
+        # Convert to BaseRecord list for type compatibility
+        base_records: list[BaseRecord] = list(records)
+        cards = card_builder.build_cards_from_records(base_records)
 
         # Should only return the successful card
         assert len(cards) == 1
@@ -398,6 +421,32 @@ class TestCardBuilder:
 class TestCardBuilderIntegration:
     """Test CardBuilder integration with real components."""
 
+    @pytest.fixture
+    def card_builder(self) -> CardBuilder:
+        """Create CardBuilder with mock template service."""
+        mock_service = Mock(spec=TemplateService)
+
+        # Create mock templates for verb record types
+        mock_templates = {
+            "verb_conjugation": CardTemplate(
+                name="German Verb Conjugation with Media",
+                front_html="{{Infinitive}} - {{Tense}}",
+                back_html="{{Ich}}, {{Du}}, {{Er}}",
+                css=".card { color: purple; }",
+            ),
+            "verb_imperative": CardTemplate(
+                name="German Verb Imperative with Media",
+                front_html="{{Infinitive}} - Commands",
+                back_html="{{DuForm}}, {{IhrForm}}, {{SieForm}}",
+                css=".card { color: brown; }",
+            ),
+        }
+
+        mock_service.get_template.side_effect = lambda card_type: mock_templates[
+            card_type
+        ]
+        return CardBuilder(template_service=mock_service)
+
     def test_card_builder_with_real_template_service(self) -> None:
         """Test CardBuilder with real TemplateService."""
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -425,3 +474,246 @@ class TestCardBuilderIntegration:
             assert field_values[0] == "Katze"
             assert note_type.name == "German Noun with Media"
             assert note_type.templates[0].front_html == "{{Noun}} ({{Article}})"
+
+    def test_build_card_from_verb_conjugation_record(
+        self, card_builder: CardBuilder
+    ) -> None:
+        """Test building card from verb conjugation record."""
+        record = create_record(
+            "verb_conjugation",
+            [
+                "arbeiten",
+                "to work",
+                "regelmäßig",
+                "false",
+                "haben",
+                "present",
+                "arbeite",
+                "arbeitest",
+                "arbeitet",
+                "arbeiten",
+                "arbeitet",
+                "arbeiten",
+                "Ich arbeite jeden Tag.",
+            ],
+        )
+
+        field_values, note_type = card_builder.build_card_from_record(record)
+
+        # Verify field count and values
+        assert len(field_values) == 16  # All verb conjugation fields
+        assert field_values[0] == "arbeiten"  # Infinitive
+        assert field_values[1] == "to work"  # English
+        assert field_values[2] == "regelmäßig"  # Classification
+        assert field_values[3] == ""  # Separable (False -> "")
+        assert field_values[4] == "haben"  # Auxiliary
+        assert field_values[5] == "present"  # Tense
+        assert field_values[6] == "arbeite"  # Ich
+        assert field_values[7] == "arbeitest"  # Du
+        assert field_values[8] == "arbeitet"  # Er
+        assert field_values[9] == "arbeiten"  # Wir
+        assert field_values[10] == "arbeitet"  # Ihr
+        assert field_values[11] == "arbeiten"  # Sie
+        assert field_values[12] == "Ich arbeite jeden Tag."  # Example
+
+        # Verify note type
+        assert note_type.name == "German Verb Conjugation with Media"
+        assert len(note_type.fields) == 16
+
+    def test_build_card_from_verb_imperative_record(
+        self, card_builder: CardBuilder
+    ) -> None:
+        """Test building card from verb imperative record."""
+        record = create_record(
+            "verb_imperative",
+            [
+                "arbeiten",
+                "to work",
+                "regelmäßig",
+                "false",
+                "arbeite",
+                "arbeitet",
+                "arbeiten Sie",
+                "Arbeite schneller!",
+                "Arbeitet zusammen!",
+                "Arbeiten Sie bitte hier!",
+            ],
+        )
+
+        field_values, note_type = card_builder.build_card_from_record(record)
+
+        # Verify field count and values
+        assert len(field_values) == 15  # All verb imperative fields
+        assert field_values[0] == "arbeiten"  # Infinitive
+        assert field_values[1] == "to work"  # English
+        assert field_values[2] == "regelmäßig"  # Classification
+        assert field_values[3] == ""  # Separable (False -> "")
+        assert field_values[4] == "arbeite"  # DuForm
+        assert field_values[5] == "arbeitet"  # IhrForm
+        assert field_values[6] == "arbeiten Sie"  # SieForm
+        assert field_values[7] == "Arbeite schneller!"  # ExampleDu
+        assert field_values[8] == "Arbeitet zusammen!"  # ExampleIhr
+        assert field_values[9] == "Arbeiten Sie bitte hier!"  # ExampleSie
+
+        # Verify note type
+        assert note_type.name == "German Verb Imperative with Media"
+        assert len(note_type.fields) == 15
+
+    def test_verb_record_separable_formatting(self, card_builder: CardBuilder) -> None:
+        """Test that separable verb field is formatted correctly."""
+        # Test separable=True
+        separable_record = create_record(
+            "verb_conjugation",
+            [
+                "aufstehen",
+                "to get up",
+                "unregelmäßig",
+                "true",
+                "sein",
+                "present",
+                "stehe auf",
+                "stehst auf",
+                "steht auf",
+                "stehen auf",
+                "steht auf",
+                "stehen auf",
+                "Ich stehe um 7 Uhr auf.",
+            ],
+        )
+
+        field_values, _ = card_builder.build_card_from_record(separable_record)
+        assert field_values[3] == "Yes"  # Separable=True -> "Yes"
+
+        # Test separable=False
+        non_separable_record = create_record(
+            "verb_conjugation",
+            [
+                "arbeiten",
+                "to work",
+                "regelmäßig",
+                "false",
+                "haben",
+                "present",
+                "arbeite",
+                "arbeitest",
+                "arbeitet",
+                "arbeiten",
+                "arbeitet",
+                "arbeiten",
+                "Ich arbeite.",
+            ],
+        )
+
+        field_values, _ = card_builder.build_card_from_record(non_separable_record)
+        assert field_values[3] == ""  # Separable=False -> ""
+
+    def test_verb_audio_field_formatting(self, card_builder: CardBuilder) -> None:
+        """Test that verb audio fields are formatted correctly."""
+        record = create_record(
+            "verb_imperative",
+            [
+                "arbeiten",
+                "to work",
+                "regelmäßig",
+                "false",
+                "arbeite",
+                "arbeitet",
+                "arbeiten Sie",
+                "Arbeite!",
+                "Arbeitet!",
+                "Arbeiten Sie!",
+            ],
+        )
+
+        enriched_data = {
+            "word_audio": "arbeiten.mp3",
+            "du_audio": "arbeite.mp3",
+            "ihr_audio": "arbeitet.mp3",
+            "sie_audio": "arbeiten_sie.mp3",
+        }
+
+        field_values, _ = card_builder.build_card_from_record(record, enriched_data)
+
+        # Check audio field formatting
+        assert field_values[11] == "[sound:arbeiten.mp3]"  # WordAudio
+        assert field_values[12] == "[sound:arbeite.mp3]"  # DuAudio
+        assert field_values[13] == "[sound:arbeitet.mp3]"  # IhrAudio
+        assert field_values[14] == "[sound:arbeiten_sie.mp3]"  # SieAudio
+
+    def test_get_supported_record_types_includes_verbs(
+        self, card_builder: CardBuilder
+    ) -> None:
+        """Test that supported record types includes verb types."""
+        supported_types = card_builder.get_supported_record_types()
+
+        assert "verb_conjugation" in supported_types
+        assert "verb_imperative" in supported_types
+        assert (
+            len(supported_types) == 6
+        )  # noun, adjective, adverb, negation, verb_conjugation, verb_imperative
+
+    def test_validate_verb_conjugation_record_validation(
+        self, card_builder: CardBuilder
+    ) -> None:
+        """Test validation of verb conjugation records."""
+        # Valid record
+        valid_record = create_record(
+            "verb_conjugation",
+            [
+                "arbeiten",
+                "to work",
+                "regelmäßig",
+                "false",
+                "haben",
+                "present",
+                "arbeite",
+                "arbeitest",
+                "arbeitet",
+                "arbeiten",
+                "arbeitet",
+                "arbeiten",
+                "Ich arbeite.",
+            ],
+        )
+
+        assert card_builder.validate_record_for_card_building(valid_record) is True
+
+        # Since Pydantic validation prevents creating invalid records,
+        # we test CardBuilder validation by using a different record type
+        # that CardBuilder doesn't support
+
+        noun_record = create_record(
+            "noun", ["Katze", "die", "cat", "Katzen", "Example", "Tier"]
+        )
+
+        # Temporarily change the record type to simulate unsupported type
+        original_class_name = noun_record.__class__.__name__
+        noun_record.__class__.__name__ = "UnsupportedRecord"
+
+        assert card_builder.validate_record_for_card_building(noun_record) is False
+
+        # Restore original class name
+        noun_record.__class__.__name__ = original_class_name
+
+    def test_validate_verb_imperative_record_validation(
+        self, card_builder: CardBuilder
+    ) -> None:
+        """Test validation of verb imperative records."""
+        # Valid record
+        valid_record = create_record(
+            "verb_imperative",
+            [
+                "arbeiten",
+                "to work",
+                "regelmäßig",
+                "false",
+                "arbeite",
+                "arbeitet",
+                "arbeiten Sie",
+                "Arbeite!",
+                "Arbeitet!",
+                "Arbeiten Sie!",
+            ],
+        )
+
+        assert card_builder.validate_record_for_card_building(valid_record) is True

@@ -14,6 +14,7 @@ from anki.models import NotetypeId
 
 from langlearn.models.model_factory import ModelFactory
 from langlearn.models.records import create_record
+from langlearn.protocols import MediaServiceProtocol
 from langlearn.services.audio import AudioService
 from langlearn.services.domain_media_generator import DomainMediaGenerator
 from langlearn.services.media_enricher import StandardMediaEnricher
@@ -36,14 +37,14 @@ class AnkiBackend(DeckBackend):
         self,
         deck_name: str,
         description: str = "",
-        media_service: MediaService | None = None,
+        media_service: MediaServiceProtocol | None = None,
     ) -> None:
         """Initialize the official Anki backend.
 
         Args:
             deck_name: Name of the deck to create
             description: Optional description for the deck
-            media_service: Optional MediaService for media generation
+            media_service: Optional MediaServiceProtocol for media generation
         """
         super().__init__(deck_name, description)
 
@@ -74,27 +75,25 @@ class AnkiBackend(DeckBackend):
 
         # Initialize services with dependency injection
         if media_service is None:
-            # Check if we're running under pytest (avoid AWS in unit tests)
-            import sys
-            if 'pytest' in sys.modules:
-                # Use mock services for testing
-                from unittest.mock import MagicMock
-                media_service = MagicMock()
-            else:
-                # Use real services for production
-                audio_service = AudioService(
-                    output_dir=str(self._project_root / "data" / "audio")
-                )
-                pexels_service = PexelsService()
-                config = MediaGenerationConfig()
-                media_service = MediaService(
-                    audio_service, pexels_service, config, self._project_root
-                )
+            from typing import cast
+
+            audio_service = AudioService(
+                output_dir=str(self._project_root / "data" / "audio")
+            )
+            pexels_service = PexelsService()
+            config = MediaGenerationConfig()
+            media_service = cast(
+                "MediaServiceProtocol",
+                MediaService(audio_service, pexels_service, config, self._project_root),
+            )
 
         self._media_service = media_service
 
         # Create domain media generator for field processing delegation
-        self._domain_media_generator = DomainMediaGenerator(self._media_service)
+        # Only create if we have a concrete MediaService (not just protocol)
+        self._domain_media_generator: DomainMediaGenerator | None = None
+        if isinstance(self._media_service, MediaService):
+            self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
         # Create MediaEnricher for Clean Pipeline Architecture
         self._media_enricher = StandardMediaEnricher(
@@ -121,11 +120,15 @@ class AnkiBackend(DeckBackend):
     @property
     def _audio_service(self) -> AudioService:
         """Backward compatibility property for tests."""
+        if not isinstance(self._media_service, MediaService):
+            raise ValueError("MediaService must be available for audio operations")
         return self._media_service._audio_service
 
     @property
     def _pexels_service(self) -> PexelsService:
         """Backward compatibility property for tests."""
+        if not isinstance(self._media_service, MediaService):
+            raise ValueError("MediaService must be available for image operations")
         return self._media_service._pexels_service
 
     def __del__(self) -> None:
@@ -370,6 +373,11 @@ class AnkiBackend(DeckBackend):
                 field_processor, "process_fields_for_media_generation"
             ):
                 logger.debug(f"Using legacy FieldProcessor for: {note_type_name}")
+                if self._domain_media_generator is None:
+                    logger.warning(
+                        "No domain media generator available for FieldProcessor"
+                    )
+                    return fields
                 return field_processor.process_fields_for_media_generation(
                     fields, self._domain_media_generator
                 )
@@ -385,7 +393,7 @@ class AnkiBackend(DeckBackend):
             logger.error(f"Error processing media for {note_type_input}: {e}")
             return fields
 
-    def _create_domain_model_from_record(self, record, record_type: str):
+    def _create_domain_model_from_record(self, record: Any, record_type: str) -> Any:
         """Create domain model instance from record data."""
         from langlearn.models.adjective import Adjective
         from langlearn.models.adverb import Adverb, AdverbType
@@ -429,7 +437,14 @@ class AnkiBackend(DeckBackend):
     def _generate_or_get_audio(self, text: str) -> str | None:
         """Generate audio for text or return existing audio file path."""
         try:
-            result = self._media_service.generate_or_get_audio(text)
+            # Check if media service is available - using getattr to avoid
+            # flow analysis issues
+            media_service: MediaServiceProtocol | None = getattr(
+                self, "_media_service", None
+            )
+            if media_service is None:
+                return None
+            result = media_service.generate_or_get_audio(text)
 
             # Update stats
             if result is not None:
@@ -453,7 +468,14 @@ class AnkiBackend(DeckBackend):
     ) -> str | None:
         """Generate/download image for word or return existing image file path."""
         try:
-            result = self._media_service.generate_or_get_image(
+            # Check if media service is available - using getattr to avoid
+            # flow analysis issues
+            media_service: MediaServiceProtocol | None = getattr(
+                self, "_media_service", None
+            )
+            if media_service is None:
+                return None
+            result = media_service.generate_or_get_image(
                 word, search_query, example_sentence
             )
 

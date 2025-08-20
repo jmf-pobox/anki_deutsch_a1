@@ -7,9 +7,9 @@ fields and domain models.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Literal, overload
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class BaseRecord(BaseModel, ABC):
@@ -283,20 +283,318 @@ class NegationRecord(BaseRecord):
         return ["word", "english", "type", "example"]
 
 
+class VerbConjugationRecord(BaseRecord):
+    """Record for German verb conjugation data from CSV.
+
+    Handles standard conjugation patterns with 6 person forms:
+    ich, du, er/sie/es, wir, ihr, sie/Sie
+    """
+
+    infinitive: str = Field(..., description="German infinitive verb")
+    meaning: str = Field(..., description="English meaning")
+    classification: str = Field(
+        ..., description="Verb type (regelmäßig/unregelmäßig/gemischt)"
+    )
+    separable: bool = Field(..., description="Whether verb is separable")
+    auxiliary: str = Field(..., description="Auxiliary verb (haben/sein)")
+    tense: str = Field(..., description="Tense (present/preterite/perfect/future)")
+
+    # Six conjugation forms
+    ich: str = Field(..., description="First person singular form")
+    du: str = Field(..., description="Second person singular form")
+    er: str = Field(..., description="Third person singular form (er/sie/es)")
+    wir: str = Field(..., description="First person plural form")
+    ihr: str = Field(..., description="Second person plural form")
+    sie: str = Field(..., description="Third person plural/formal form (sie/Sie)")
+
+    example: str = Field(..., description="Example sentence using this tense")
+
+    # Media fields (populated during enrichment)
+    word_audio: str | None = Field(
+        default=None, description="Infinitive audio reference"
+    )
+    example_audio: str | None = Field(
+        default=None, description="Example audio reference"
+    )
+    image: str | None = Field(default=None, description="Image reference")
+
+    @field_validator("classification")
+    @classmethod
+    def validate_classification(cls, v: str) -> str:
+        """Validate verb classification."""
+        valid_classifications = {"regelmäßig", "unregelmäßig", "gemischt"}
+        if v not in valid_classifications:
+            raise ValueError(
+                f"Invalid classification: {v}. Must be one of {valid_classifications}"
+            )
+        return v
+
+    @field_validator("auxiliary")
+    @classmethod
+    def validate_auxiliary(cls, v: str) -> str:
+        """Validate auxiliary verb."""
+        valid_auxiliaries = {"haben", "sein"}
+        if v not in valid_auxiliaries:
+            raise ValueError(
+                f"Invalid auxiliary: {v}. Must be one of {valid_auxiliaries}"
+            )
+        return v
+
+    @field_validator("tense")
+    @classmethod
+    def validate_tense(cls, v: str) -> str:
+        """Validate tense name."""
+        valid_tenses = {"present", "preterite", "perfect", "future", "subjunctive"}
+        if v not in valid_tenses:
+            raise ValueError(f"Invalid tense: {v}. Must be one of {valid_tenses}")
+        return v
+
+    @field_validator("ich", "du", "er", "wir", "ihr", "sie")
+    @classmethod
+    def validate_conjugation_not_empty(cls, v: str) -> str:
+        """Ensure conjugation forms are not empty."""
+        if not v or v.strip() == "":
+            raise ValueError("Conjugation forms cannot be empty")
+        return v.strip()
+
+    @classmethod
+    def from_csv_fields(cls, fields: list[str]) -> "VerbConjugationRecord":
+        """Create VerbConjugationRecord from CSV fields."""
+        if len(fields) < 12:
+            raise ValueError(
+                f"VerbConjugationRecord requires at least 12 fields, got {len(fields)}"
+            )
+
+        return cls(
+            infinitive=fields[0].strip(),
+            meaning=fields[1].strip(),
+            classification=fields[2].strip(),
+            separable=fields[3].strip().lower() in ("true", "1", "yes"),
+            auxiliary=fields[4].strip(),
+            tense=fields[5].strip(),
+            ich=fields[6].strip(),
+            du=fields[7].strip(),
+            er=fields[8].strip(),
+            wir=fields[9].strip(),
+            ihr=fields[10].strip(),
+            sie=fields[11].strip(),
+            example=fields[12].strip() if len(fields) > 12 else "",
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for MediaEnricher."""
+        return {
+            "infinitive": self.infinitive,
+            "meaning": self.meaning,
+            "classification": self.classification,
+            "separable": self.separable,
+            "auxiliary": self.auxiliary,
+            "tense": self.tense,
+            "ich": self.ich,
+            "du": self.du,
+            "er": self.er,
+            "wir": self.wir,
+            "ihr": self.ihr,
+            "sie": self.sie,
+            "example": self.example,
+            "word_audio": self.word_audio,
+            "example_audio": self.example_audio,
+            "image": self.image,
+        }
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Expected CSV field count for verb conjugations."""
+        return 13
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Field names for verb conjugation CSV."""
+        return [
+            "infinitive",
+            "meaning",
+            "classification",
+            "separable",
+            "auxiliary",
+            "tense",
+            "ich",
+            "du",
+            "er",
+            "wir",
+            "ihr",
+            "sie",
+            "example",
+        ]
+
+
+class VerbImperativeRecord(BaseRecord):
+    """Record for German verb imperative data from CSV.
+
+    Handles imperative forms with 3 person forms:
+    du-form, ihr-form, Sie-form (formal)
+    """
+
+    infinitive: str = Field(..., description="German infinitive verb")
+    meaning: str = Field(..., description="English meaning")
+    classification: str = Field(
+        ..., description="Verb type (regelmäßig/unregelmäßig/gemischt)"
+    )
+    separable: bool = Field(..., description="Whether verb is separable")
+
+    # Three imperative forms
+    du_form: str = Field(..., description="Imperative for du (informal singular)")
+    ihr_form: str = Field(..., description="Imperative for ihr (informal plural)")
+    sie_form: str = Field(..., description="Imperative for Sie (formal)")
+
+    # Examples for each form
+    example_du: str = Field(..., description="Example sentence with du-form")
+    example_ihr: str = Field(default="", description="Example sentence with ihr-form")
+    example_sie: str = Field(default="", description="Example sentence with Sie-form")
+
+    # Media fields (populated during enrichment)
+    word_audio: str | None = Field(
+        default=None, description="Infinitive audio reference"
+    )
+    du_audio: str | None = Field(default=None, description="Du-form audio reference")
+    ihr_audio: str | None = Field(default=None, description="Ihr-form audio reference")
+    sie_audio: str | None = Field(default=None, description="Sie-form audio reference")
+    image: str | None = Field(default=None, description="Image reference")
+
+    @field_validator("classification")
+    @classmethod
+    def validate_classification(cls, v: str) -> str:
+        """Validate verb classification."""
+        valid_classifications = {"regelmäßig", "unregelmäßig", "gemischt"}
+        if v not in valid_classifications:
+            raise ValueError(
+                f"Invalid classification: {v}. Must be one of {valid_classifications}"
+            )
+        return v
+
+    @field_validator("du_form", "ihr_form", "sie_form")
+    @classmethod
+    def validate_imperative_forms(cls, v: str) -> str:
+        """Ensure imperative forms are not empty."""
+        if not v or v.strip() == "":
+            raise ValueError("Imperative forms cannot be empty")
+        return v.strip()
+
+    @classmethod
+    def from_csv_fields(cls, fields: list[str]) -> "VerbImperativeRecord":
+        """Create VerbImperativeRecord from CSV fields."""
+        if len(fields) < 7:
+            raise ValueError(
+                f"VerbImperativeRecord requires at least 7 fields, got {len(fields)}"
+            )
+
+        return cls(
+            infinitive=fields[0].strip(),
+            meaning=fields[1].strip(),
+            classification=fields[2].strip(),
+            separable=fields[3].strip().lower() in ("true", "1", "yes"),
+            du_form=fields[4].strip(),
+            ihr_form=fields[5].strip(),
+            sie_form=fields[6].strip(),
+            example_du=fields[7].strip() if len(fields) > 7 else "",
+            example_ihr=fields[8].strip() if len(fields) > 8 else "",
+            example_sie=fields[9].strip() if len(fields) > 9 else "",
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for MediaEnricher."""
+        return {
+            "infinitive": self.infinitive,
+            "meaning": self.meaning,
+            "classification": self.classification,
+            "separable": self.separable,
+            "du_form": self.du_form,
+            "ihr_form": self.ihr_form,
+            "sie_form": self.sie_form,
+            "example_du": self.example_du,
+            "example_ihr": self.example_ihr,
+            "example_sie": self.example_sie,
+            "word_audio": self.word_audio,
+            "du_audio": self.du_audio,
+            "ihr_audio": self.ihr_audio,
+            "sie_audio": self.sie_audio,
+            "image": self.image,
+        }
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Expected CSV field count for verb imperatives."""
+        return 10
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Field names for verb imperative CSV."""
+        return [
+            "infinitive",
+            "meaning",
+            "classification",
+            "separable",
+            "du_form",
+            "ihr_form",
+            "sie_form",
+            "example_du",
+            "example_ihr",
+            "example_sie",
+        ]
+
+
 # Registry for mapping model types to record types
 RECORD_TYPE_REGISTRY = {
     "noun": NounRecord,
     "adjective": AdjectiveRecord,
     "adverb": AdverbRecord,
     "negation": NegationRecord,
+    "verb_conjugation": VerbConjugationRecord,
+    "verb_imperative": VerbImperativeRecord,
 }
+
+
+@overload
+def create_record(model_type: Literal["noun"], fields: list[str]) -> NounRecord: ...
+
+
+@overload
+def create_record(
+    model_type: Literal["adjective"], fields: list[str]
+) -> AdjectiveRecord: ...
+
+
+@overload
+def create_record(model_type: Literal["adverb"], fields: list[str]) -> AdverbRecord: ...
+
+
+@overload
+def create_record(
+    model_type: Literal["negation"], fields: list[str]
+) -> NegationRecord: ...
+
+
+@overload
+def create_record(
+    model_type: Literal["verb_conjugation"], fields: list[str]
+) -> VerbConjugationRecord: ...
+
+
+@overload
+def create_record(
+    model_type: Literal["verb_imperative"], fields: list[str]
+) -> VerbImperativeRecord: ...
+
+
+@overload
+def create_record(model_type: str, fields: list[str]) -> BaseRecord: ...
 
 
 def create_record(model_type: str, fields: list[str]) -> BaseRecord:
     """Factory function to create records from model type and CSV fields.
 
     Args:
-        model_type: Type of model (noun, adjective, adverb, negation)
+        model_type: Type of model (noun, adjective, adverb, negation,
+                   verb_conjugation, verb_imperative)
         fields: CSV field values
 
     Returns:
@@ -312,4 +610,5 @@ def create_record(model_type: str, fields: list[str]) -> BaseRecord:
         )
 
     record_class = RECORD_TYPE_REGISTRY[model_type]
-    return record_class.from_csv_fields(fields)
+    # Type ignore needed because mypy can't infer the exact return type from registry
+    return record_class.from_csv_fields(fields)  # type: ignore[no-any-return, attr-defined]

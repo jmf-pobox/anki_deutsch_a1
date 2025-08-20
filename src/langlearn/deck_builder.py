@@ -19,6 +19,7 @@ from .models.adjective import Adjective
 from .models.adverb import Adverb
 from .models.negation import Negation
 from .models.noun import Noun
+from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
 from .services.csv_service import CSVService
 from .services.media_service import MediaService
 from .services.template_service import TemplateService
@@ -61,6 +62,9 @@ class DeckBuilder:
         deck_name: str,
         backend_type: str = "anki",
         enable_media_generation: bool = True,
+        audio_service: AudioServiceProtocol | None = None,
+        pexels_service: PexelsServiceProtocol | None = None,
+        media_service: MediaServiceProtocol | None = None,
     ) -> None:
         """Initialize the German deck builder.
 
@@ -68,6 +72,9 @@ class DeckBuilder:
             deck_name: Name of the Anki deck to create
             backend_type: Backend to use ("anki")
             enable_media_generation: Whether to enable media generation services
+            audio_service: Optional AudioServiceProtocol for dependency injection
+            pexels_service: Optional PexelsServiceProtocol for dependency injection
+            media_service: Optional MediaServiceProtocol for dependency injection
         """
         self.deck_name = deck_name
         self.backend_type = backend_type
@@ -80,36 +87,37 @@ class DeckBuilder:
         template_dir = Path(__file__).parent / "templates"
         self._template_service = TemplateService(template_dir)
 
-        # Initialize media service if enabled
-        self._media_service: MediaService | None = None
-        if enable_media_generation:
+        # Initialize media service with dependency injection
+        self._media_service: MediaServiceProtocol | None = None
+        if media_service is not None:
+            # Use provided media service (for dependency injection)
+            self._media_service = media_service
+        elif enable_media_generation:
             from .services.audio import AudioService
             from .services.media_service import MediaGenerationConfig
             from .services.pexels_service import PexelsService
 
-            # Initialize dependencies for media service
+            # Initialize dependencies for media service with dependency injection
             project_root = Path(__file__).parent.parent.parent  # Go up to project root
 
-            # Check if we're running under pytest (avoid AWS in unit tests)
-            import sys
-            if 'pytest' in sys.modules:
-                # Use mock service for testing
-                from unittest.mock import MagicMock
-                audio_service = MagicMock()
-                pexels_service = MagicMock()
-            else:
-                # Use real service for production
-                audio_service = AudioService(
-                    output_dir=str(project_root / "data" / "audio")
-                )
-                pexels_service = PexelsService()
+            # Use provided services or create defaults
+            actual_audio_service = audio_service or AudioService(
+                output_dir=str(project_root / "data" / "audio")
+            )
+            actual_pexels_service = pexels_service or PexelsService()
             media_config = MediaGenerationConfig()
 
-            self._media_service = MediaService(
-                audio_service=audio_service,
-                pexels_service=pexels_service,
-                config=media_config,
-                project_root=project_root,
+            # Cast to concrete types since MediaService requires concrete types
+            from typing import cast
+
+            self._media_service = cast(
+                "MediaServiceProtocol",
+                MediaService(
+                    audio_service=cast("AudioService", actual_audio_service),
+                    pexels_service=cast("PexelsService", actual_pexels_service),
+                    config=media_config,
+                    project_root=project_root,
+                ),
             )
 
         # Initialize backend
@@ -117,7 +125,11 @@ class DeckBuilder:
 
         # Initialize managers with dependency injection
         self._deck_manager = DeckManager(self._backend)
-        self._media_manager = MediaManager(self._backend, self._media_service)
+        # Cast MediaServiceProtocol to MediaService for MediaManager
+        media_service_for_manager = (
+            cast("MediaService", self._media_service) if self._media_service else None
+        )
+        self._media_manager = MediaManager(self._backend, media_service_for_manager)
 
         # Initialize card generator factory
         self._card_factory = CardGeneratorFactory(
