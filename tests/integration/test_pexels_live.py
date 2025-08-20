@@ -32,9 +32,18 @@ def is_rate_limit_error(e: Exception) -> bool:
 @pytest.mark.live
 def test_api_direct() -> None:
     """Test Pexels API directly."""
-    api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
+    # Use environment variables first, then fall back to keyring
+    import os
+
+    api_key = os.environ.get("PEXELS_API_KEY")
     if not api_key:
-        pytest.skip("PEXELS_API_KEY not found in keyring")
+        try:
+            api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
+        except Exception:
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+
+    if not api_key:
+        pytest.skip("PEXELS_API_KEY not available in environment or keyring")
 
     try:
         headers = {"Authorization": api_key}
@@ -58,7 +67,13 @@ def test_api_direct() -> None:
 @pytest.mark.live
 def test_live_image_url() -> None:
     """Test getting real image URL from Pexels."""
-    service = PexelsService()  # Will use API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
 
     # Try a few different queries to increase chances of success
     queries = ["nature", "city", "people"]
@@ -108,7 +123,13 @@ def test_live_image_url() -> None:
 @pytest.mark.live
 def test_live_download_image(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
     """Test downloading a real image."""
-    service = PexelsService()  # Will use API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
     output_path = tmp_path / "test.jpg"
 
     # Try a few different queries to increase chances of success

@@ -145,7 +145,14 @@ def test_download_image_success(mock_response: PexelsResponse, tmp_path: Path) -
 @pytest.mark.live
 def test_live_get_image_url() -> None:
     """Test image URL retrieval with real API key."""
-    service = PexelsService()  # Uses real API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
+
     url = service.get_image_url("house", "medium")
     assert url is not None
     assert url.startswith("https://images.pexels.com/photos/")
@@ -157,7 +164,13 @@ def test_live_download_image(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test image download with real API key."""
-    service = PexelsService()  # Uses real API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
     output_path = tmp_path / "test.jpg"
 
     # Try a few different queries to increase chances of success
