@@ -33,7 +33,7 @@ class TestDeckBackendInterface:
                 "ANTHROPIC_API_KEY": "mock-anthropic-key",
                 "AWS_DEFAULT_REGION": "us-east-1",
                 "AWS_ACCESS_KEY_ID": "mock-aws-key",
-                "AWS_SECRET_ACCESS_KEY": "mock-aws-secret"
+                "AWS_SECRET_ACCESS_KEY": "mock-aws-secret",
             }
 
             # Store original values and set test values

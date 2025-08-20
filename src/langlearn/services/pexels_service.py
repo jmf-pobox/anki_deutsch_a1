@@ -93,6 +93,7 @@ class PexelsService:
         self.api_key = os.environ.get("PEXELS_API_KEY")
         if not self.api_key:
             import keyring
+
             self.api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
 
         if not self.api_key:
