@@ -12,8 +12,13 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
+from langlearn.models.adjective import Adjective
+from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.model_factory import ModelFactory
+from langlearn.models.negation import Negation, NegationType
+from langlearn.models.noun import Noun
 from langlearn.models.records import create_record
+from langlearn.models.verb import Verb
 from langlearn.protocols import MediaServiceProtocol
 from langlearn.services.audio import AudioService
 from langlearn.services.domain_media_generator import DomainMediaGenerator
@@ -397,12 +402,6 @@ class AnkiBackend(DeckBackend):
 
     def _create_domain_model_from_record(self, record: Any, record_type: str) -> Any:
         """Create domain model instance from record data."""
-        from langlearn.models.adjective import Adjective
-        from langlearn.models.adverb import Adverb, AdverbType
-        from langlearn.models.negation import Negation, NegationType
-        from langlearn.models.noun import Noun
-        from langlearn.models.verb import Verb
-
         if record_type == "noun":
             return Noun(
                 noun=record.noun,
