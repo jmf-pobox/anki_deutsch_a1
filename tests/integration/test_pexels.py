@@ -16,6 +16,39 @@ from langlearn.services import PexelsService
 logger = logging.getLogger(__name__)
 
 
+def is_rate_limited_error(e: Exception) -> bool:
+    """Check if an exception indicates Pexels API rate limiting.
+
+    Detects rate limiting from:
+    - HTTP 429 status codes
+    - "Too Many Requests" messages
+    - Quota exceeded errors
+    - Rate limit keywords in error messages
+    """
+    error_str = str(e).lower()
+    rate_limit_indicators = [
+        "429",
+        "too many requests",
+        "rate limit",
+        "quota exceeded",
+        "requests per hour exceeded",
+        "api limit",
+    ]
+    return any(indicator in error_str for indicator in rate_limit_indicators)
+
+
+def check_rate_limit_in_logs(caplog: pytest.LogCaptureFixture) -> bool:
+    """Check if rate limiting was detected in test logs."""
+    log_text = caplog.text.lower()
+    return is_rate_limited_error(Exception(log_text))
+
+
+def skip_if_rate_limited(e: Exception, test_name: str = "test") -> None:
+    """Skip test if exception indicates rate limiting."""
+    if is_rate_limited_error(e):
+        pytest.skip(f"Pexels API rate limited during {test_name} - skipping for CI")
+
+
 @pytest.fixture
 def cleanup_test_images() -> Generator[None, None, None]:
     """Clean up test image directories after tests."""
@@ -153,9 +186,13 @@ def test_live_get_image_url() -> None:
             pytest.skip("PEXELS_API_KEY not available in environment or keyring")
         raise
 
-    url = service.get_image_url("house", "medium")
-    assert url is not None
-    assert url.startswith("https://images.pexels.com/photos/")
+    try:
+        url = service.get_image_url("house", "medium")
+        assert url is not None
+        assert url.startswith("https://images.pexels.com/photos/")
+    except Exception as e:
+        skip_if_rate_limited(e, "test_live_get_image_url")
+        raise
 
 
 @pytest.mark.live
@@ -186,20 +223,16 @@ def test_live_download_image(
                 success = True
                 break
         except Exception as e:
-            if "429" in str(e) or "Too Many Requests" in str(e):
+            if is_rate_limited_error(e):
                 rate_limited = True
                 logger.warning("Rate limited by Pexels API")
             continue
 
     if rate_limited:
-        pytest.skip("Rate limited by Pexels API")
+        pytest.skip("Rate limited by Pexels API during download attempts")
 
-    if not success:
-        # If we're not rate limited but still failed, check the logs
-        # to see if we got any rate limit errors in the nested calls
-        log_text = caplog.text.lower()
-        if "429" in log_text or "too many requests" in log_text:
-            pytest.skip("Rate limited by Pexels API (detected in logs)")
+    if not success and check_rate_limit_in_logs(caplog):
+        pytest.skip("Rate limited by Pexels API (detected in logs)")
 
     assert success, "Failed to download image after trying multiple queries"
     assert output_path.exists()
