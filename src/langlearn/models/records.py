@@ -285,56 +285,58 @@ class NegationRecord(BaseRecord):
 
 class VerbRecord(BaseRecord):
     """Record for German verb data from CSV.
-    
+
     Simple Clean Pipeline migration for current verb CSV structure.
-    Matches existing verbs.csv format: verb,english,present_ich,present_du,present_er,perfect,example
+    Matches existing verbs.csv format:
+    verb,english,present_ich,present_du,present_er,perfect,example
     """
-    
+
     verb: str = Field(..., description="German verb in infinitive form")
     english: str = Field(..., description="English translation")
     present_ich: str = Field(..., description="First person singular present")
-    present_du: str = Field(..., description="Second person singular present") 
+    present_du: str = Field(..., description="Second person singular present")
     present_er: str = Field(..., description="Third person singular present")
     perfect: str = Field(..., description="Perfect tense form")
     example: str = Field(..., description="Example sentence")
-    
+
     # Media fields (populated during enrichment)
     word_audio: str | None = Field(
         default=None, description="Verb pronunciation audio reference"
     )
     example_audio: str | None = Field(
-        default=None, description="Example sentence audio reference"  
+        default=None, description="Example sentence audio reference"
     )
     image: str | None = Field(default=None, description="Image reference")
-    
+
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbRecord":
         """Create VerbRecord from CSV field array.
-        
+
         Args:
-            fields: Array of CSV field values [verb, english, present_ich, present_du, present_er, perfect, example]
-            
+            fields: Array of CSV field values in order:
+                [verb, english, present_ich, present_du, present_er,
+                 perfect, example]
+
         Returns:
             VerbRecord instance
-            
+
         Raises:
             ValueError: If fields length doesn't match expected count
         """
         if len(fields) != cls.get_expected_field_count():
-            raise ValueError(
-                f"VerbRecord expects {cls.get_expected_field_count()} fields, got {len(fields)}"
-            )
-        
+            expected = cls.get_expected_field_count()
+            raise ValueError(f"VerbRecord expects {expected} fields, got {len(fields)}")
+
         return cls(
             verb=fields[0],
-            english=fields[1], 
+            english=fields[1],
             present_ich=fields[2],
             present_du=fields[3],
             present_er=fields[4],
             perfect=fields[5],
             example=fields[6],
         )
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for media enrichment."""
         return {
@@ -342,23 +344,31 @@ class VerbRecord(BaseRecord):
             "english": self.english,
             "present_ich": self.present_ich,
             "present_du": self.present_du,
-            "present_er": self.present_er, 
+            "present_er": self.present_er,
             "perfect": self.perfect,
             "example": self.example,
             "word_audio": self.word_audio,
             "example_audio": self.example_audio,
             "image": self.image,
         }
-    
-    @classmethod  
+
+    @classmethod
     def get_expected_field_count(cls) -> int:
         """Expected number of CSV fields for verbs."""
-        return 7  # verb, english, present_ich, present_du, present_er, perfect, example
-    
+        return 7
+
     @classmethod
     def get_field_names(cls) -> list[str]:
         """Field names for verb CSV."""
-        return ["verb", "english", "present_ich", "present_du", "present_er", "perfect", "example"]
+        return [
+            "verb",
+            "english",
+            "present_ich",
+            "present_du",
+            "present_er",
+            "perfect",
+            "example",
+        ]
 
 
 class VerbConjugationRecord(BaseRecord):
