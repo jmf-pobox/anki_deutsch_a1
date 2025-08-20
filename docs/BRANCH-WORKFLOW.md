@@ -70,7 +70,7 @@ The following checks run automatically on every PR:
 2. **Ruff Linting**: Must show zero violations
 3. **Code Formatting**: Must pass formatting check
 4. **Unit Test Suite**: All 667 unit tests must pass
-5. **Coverage Check**: Must maintain >73% coverage
+5. **Coverage Check**: Must maintain ≥73% coverage
 6. **Final Verification**: Combined MyPy + test check
 
 #### Review Process:
@@ -185,7 +185,7 @@ gh pr create --title "Fix media enricher error handling"
 We track these metrics over time:
 - **MyPy compliance**: Must remain at 0 errors
 - **Test suite health**: Must maintain 691 passing tests
-- **Coverage trends**: Must stay above 73%
+- **Coverage trends**: Must stay ≥73%
 - **Ruff violations**: Must remain at 0
 - **PR merge rate**: Track quality gate effectiveness
 
@@ -212,7 +212,7 @@ We track these metrics over time:
 ### Common Issues and Solutions:
 - **MyPy errors**: Run `hatch run type` locally and fix before pushing
 - **Test failures**: Run `hatch run test` locally and ensure all pass
-- **Coverage drops**: Add tests for new code to maintain >73%
+- **Coverage drops**: Add tests for new code to maintain ≥73%
 - **Merge conflicts**: Keep branches up to date with main
 
 ## 🏆 Success Metrics
