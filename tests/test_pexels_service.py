@@ -42,14 +42,30 @@ class TestPexelsService:
     @pytest.fixture
     def service(self) -> PexelsService:
         """Create PexelsService instance with mocked API key."""
-        with patch("keyring.get_password") as mock_keyring:
-            mock_keyring.return_value = "test_api_key"
+        import os
+        
+        # Mock environment variable first (our new behavior)
+        original_env = os.environ.get("PEXELS_API_KEY")
+        os.environ["PEXELS_API_KEY"] = "test_api_key"
+        
+        try:
             return PexelsService()
+        finally:
+            # Restore original environment
+            if original_env is None:
+                os.environ.pop("PEXELS_API_KEY", None)
+            else:
+                os.environ["PEXELS_API_KEY"] = original_env
 
     def test_init_success(self) -> None:
         """Test successful initialization with API key."""
-        with patch("keyring.get_password") as mock_keyring:
-            mock_keyring.return_value = "test_api_key"
+        import os
+        
+        # Test environment variable path (new behavior)
+        original_env = os.environ.get("PEXELS_API_KEY")
+        os.environ["PEXELS_API_KEY"] = "test_api_key"
+        
+        try:
             service = PexelsService()
 
             assert service.api_key == "test_api_key"
@@ -58,14 +74,32 @@ class TestPexelsService:
             assert service.base_delay == 2
             assert service.max_delay == 60
             assert service.request_delay == 1.0
+        finally:
+            # Restore original environment
+            if original_env is None:
+                os.environ.pop("PEXELS_API_KEY", None)
+            else:
+                os.environ["PEXELS_API_KEY"] = original_env
 
     def test_init_no_api_key(self) -> None:
         """Test initialization failure when API key not found."""
-        with patch("keyring.get_password") as mock_keyring:
-            mock_keyring.return_value = None
+        import os
+        
+        # Ensure no environment variable set
+        original_env = os.environ.get("PEXELS_API_KEY")
+        if "PEXELS_API_KEY" in os.environ:
+            del os.environ["PEXELS_API_KEY"]
+        
+        try:
+            with patch("keyring.get_password") as mock_keyring:
+                mock_keyring.return_value = None
 
-            with pytest.raises(ValueError, match="Pexels API key not found in keyring"):
-                PexelsService()
+                with pytest.raises(ValueError, match="Pexels API key not found in environment variables or keyring"):
+                    PexelsService()
+        finally:
+            # Restore original environment
+            if original_env is not None:
+                os.environ["PEXELS_API_KEY"] = original_env
 
     def test_get_headers(self, service: PexelsService) -> None:
         """Test header generation."""
