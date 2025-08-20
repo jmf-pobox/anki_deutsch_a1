@@ -97,7 +97,8 @@ class PexelsService:
             self.api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
 
         # Allow empty API key in test environments (will be mocked)
-        if not self.api_key and not self._is_test_environment():
+        from langlearn.utils.environment import is_test_environment
+        if not self.api_key and not is_test_environment(self.api_key):
             raise ValueError(
                 "Pexels API key not found in environment variables or keyring"
             )
@@ -107,18 +108,6 @@ class PexelsService:
         self.max_delay = 60  # Maximum delay cap
         self.request_delay = 1.0  # Minimum delay between requests to be API-friendly
 
-    def _is_test_environment(self) -> bool:
-        """Check if we're running in a test environment."""
-        import os
-        import sys
-
-        # Check for pytest in the command line or running modules
-        return (
-            "pytest" in sys.modules
-            or "PYTEST_CURRENT_TEST" in os.environ
-            or any("test" in arg for arg in sys.argv)
-            or os.environ.get("CI") == "true"  # GitHub Actions sets CI=true
-        )
 
     def _get_headers(self) -> dict[str, str]:
         """Get headers for Pexels API requests.

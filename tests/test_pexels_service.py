@@ -97,7 +97,10 @@ class TestPexelsService:
         try:
             with (
                 patch("keyring.get_password") as mock_keyring,
-                patch.object(PexelsService, "_is_test_environment", return_value=False),
+                patch(
+                    "langlearn.utils.environment.is_test_environment",
+                    return_value=False,
+                ),
             ):
                 mock_keyring.return_value = None
 

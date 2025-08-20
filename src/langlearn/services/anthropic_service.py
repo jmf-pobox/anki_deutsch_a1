@@ -60,7 +60,8 @@ class AnthropicService:
             api_key = keyring.get_password("ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
 
         # Allow empty API key in test environments (will be mocked)
-        if not api_key and not self._is_test_environment():
+        from langlearn.utils.environment import is_test_environment
+        if not api_key and not is_test_environment(api_key):
             raise ValueError(
                 "Key ANTHROPIC_API_KEY not found in environment or keyring"
             )
@@ -69,7 +70,7 @@ class AnthropicService:
         self.model = "claude-3-7-sonnet-20250219"  # Updated to current model
 
         # Only create real client if we have a valid API key
-        if self.api_key and not self._is_test_environment():
+        if self.api_key and not is_test_environment(self.api_key):
             self.client = Anthropic(api_key=self.api_key)
         else:
             # In test environments or with empty keys, client will be mocked
@@ -77,25 +78,6 @@ class AnthropicService:
 
         logger.debug(f"Initialized AnthropicService with model: {self.model}")
 
-    def _is_test_environment(self) -> bool:
-        """Check if we're running in a test environment that should be mocked.
-
-        Returns True for unit tests that should be mocked, False for integration
-        tests that need real API clients even in CI environments.
-        """
-        import os
-        import sys
-
-        # If we're in CI but have real API credentials, we're running integration tests
-        if os.environ.get("CI") == "true" and self.api_key:
-            return False
-
-        # Check for pytest unit test environment (should be mocked)
-        return (
-            "pytest" in sys.modules
-            or "PYTEST_CURRENT_TEST" in os.environ
-            or any("test" in arg for arg in sys.argv)
-        )
 
     def _generate_response(
         self, prompt: str, max_tokens: int = 100, temperature: float = 0.7
