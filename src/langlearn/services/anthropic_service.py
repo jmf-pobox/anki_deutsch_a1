@@ -64,7 +64,7 @@ class AnthropicService:
         # Allow empty API key in test environments (will be mocked)
         from langlearn.utils.environment import is_test_environment
 
-        if not api_key and not is_test_environment():
+        if not api_key and not is_test_environment(api_key):
             raise ValueError(
                 "Key ANTHROPIC_API_KEY not found in environment or keyring"
             )
@@ -73,7 +73,7 @@ class AnthropicService:
         self.model = "claude-3-7-sonnet-20250219"  # Updated to current model
 
         # Only create real client if we have a valid API key
-        if self.api_key and not is_test_environment():
+        if self.api_key and not is_test_environment(self.api_key):
             self.client = Anthropic(api_key=self.api_key)
         else:
             # In test environments or with empty keys, client will be mocked

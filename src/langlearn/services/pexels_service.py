@@ -99,7 +99,7 @@ class PexelsService:
         # Allow empty API key in test environments (will be mocked)
         from langlearn.utils.environment import is_test_environment
 
-        if not self.api_key and not is_test_environment():
+        if not self.api_key and not is_test_environment(self.api_key):
             raise ValueError(
                 "Pexels API key not found in environment variables or keyring"
             )
