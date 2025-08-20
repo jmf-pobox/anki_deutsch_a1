@@ -78,16 +78,23 @@ class AnthropicService:
         logger.debug(f"Initialized AnthropicService with model: {self.model}")
 
     def _is_test_environment(self) -> bool:
-        """Check if we're running in a test environment."""
+        """Check if we're running in a test environment that should be mocked.
+
+        Returns True for unit tests that should be mocked, False for integration
+        tests that need real API clients even in CI environments.
+        """
         import os
         import sys
 
-        # Check for pytest in the command line or running modules
+        # If we're in CI but have real API credentials, we're running integration tests
+        if os.environ.get("CI") == "true" and self.api_key:
+            return False
+
+        # Check for pytest unit test environment (should be mocked)
         return (
             "pytest" in sys.modules
             or "PYTEST_CURRENT_TEST" in os.environ
             or any("test" in arg for arg in sys.argv)
-            or os.environ.get("CI") == "true"  # GitHub Actions sets CI=true
         )
 
     def _generate_response(
