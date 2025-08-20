@@ -16,6 +16,7 @@ jobs:
   quality-gates:
     name: Mandatory Quality Gates
     runs-on: ubuntu-latest
+    environment: GH_ACTIONS
     
     steps:
     - uses: actions/checkout@v4
@@ -112,6 +113,7 @@ jobs:
   integration-tests:
     name: Integration Tests (Live APIs)
     runs-on: ubuntu-latest
+    environment: GH_ACTIONS
     needs: quality-gates  # Only run after quality gates pass
     # Make this job optional - only runs if secrets are configured
     # Skip for external contributors (forks don't have access to secrets)
