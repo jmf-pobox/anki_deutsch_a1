@@ -67,7 +67,14 @@ class AnthropicService:
 
         self.api_key = api_key
         self.model = "claude-3-7-sonnet-20250219"  # Updated to current model
-        self.client = Anthropic(api_key=self.api_key)
+
+        # Only create real client if we have a valid API key
+        if self.api_key and not self._is_test_environment():
+            self.client = Anthropic(api_key=self.api_key)
+        else:
+            # In test environments or with empty keys, client will be mocked
+            self.client = None  # type: ignore[assignment]
+
         logger.debug(f"Initialized AnthropicService with model: {self.model}")
 
     def _is_test_environment(self) -> bool:
@@ -97,6 +104,12 @@ class AnthropicService:
             str: The generated response
         """
         try:
+            # Handle case where client is None (test environment)
+            if self.client is None:
+                raise RuntimeError(
+                    "AnthropicService client not initialized - in test environment"
+                )
+
             response: Message = self.client.messages.create(
                 model=self.model,
                 max_tokens=max_tokens,
