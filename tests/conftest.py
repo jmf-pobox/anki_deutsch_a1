@@ -31,7 +31,10 @@ def mock_external_services(
     proper test isolation for unit tests.
     """
     # Skip mocking for integration tests that need real API calls
-    if request.node.get_closest_marker("integration"):
+    if (
+        request.node.get_closest_marker("integration")
+        or "integration" in str(request.node.fspath)
+    ):
         yield None
         return
     # Store original environment

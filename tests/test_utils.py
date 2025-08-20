@@ -45,30 +45,33 @@ def check_rate_limit_in_logs(caplog: pytest.LogCaptureFixture) -> bool:
     return is_rate_limited_error(Exception(log_text))
 
 
+# Common test utilities
+@contextlib.contextmanager
+def mock_env(var_name: str, value: str | None) -> Generator[None, None, None]:
+    """Context manager for temporarily setting environment variables."""
+    import os
+
+    original = os.environ.get(var_name)
+    if value is None:
+        if var_name in os.environ:
+            del os.environ[var_name]
+    else:
+        os.environ[var_name] = value
+    try:
+        yield
+    finally:
+        # Restore original state
+        if original is None:
+            os.environ.pop(var_name, None)
+        else:
+            os.environ[var_name] = original
+
+
 # Common test fixtures and helpers
 @pytest.fixture
 def mock_environment_variable() -> Any:
     """Context manager for temporarily setting environment variables."""
-    import os
-
-    @contextlib.contextmanager
-    def _mock_env(var_name: str, value: str | None) -> Generator[None, None, None]:
-        original = os.environ.get(var_name)
-        if value is None:
-            if var_name in os.environ:
-                del os.environ[var_name]
-        else:
-            os.environ[var_name] = value
-        try:
-            yield
-        finally:
-            # Restore original state
-            if original is None:
-                os.environ.pop(var_name, None)
-            else:
-                os.environ[var_name] = original
-
-    return _mock_env
+    return mock_env
 
 
 @pytest.fixture
