@@ -15,6 +15,7 @@ from langlearn.models.records import (
     NounRecord,
     VerbConjugationRecord,
     VerbImperativeRecord,
+    VerbRecord,
     create_record,
 )
 
@@ -325,6 +326,7 @@ class TestRecordTypeRegistry:
             "adjective",
             "adverb",
             "negation",
+            "verb",
             "verb_conjugation",
             "verb_imperative",
         }
@@ -334,6 +336,7 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["adjective"] == AdjectiveRecord
         assert RECORD_TYPE_REGISTRY["adverb"] == AdverbRecord
         assert RECORD_TYPE_REGISTRY["negation"] == NegationRecord
+        assert RECORD_TYPE_REGISTRY["verb"] == VerbRecord
         assert RECORD_TYPE_REGISTRY["verb_conjugation"] == VerbConjugationRecord
         assert RECORD_TYPE_REGISTRY["verb_imperative"] == VerbImperativeRecord
 
