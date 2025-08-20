@@ -11,30 +11,26 @@ import pytest
 import requests
 
 from langlearn.services import PexelsService
+from tests.test_utils import is_rate_limited_error, skip_if_rate_limited
 
 logger = logging.getLogger(__name__)
-
-
-def is_rate_limited(e: Exception) -> bool:
-    """Check if an exception is due to rate limiting."""
-    return "429" in str(e) or "Too Many Requests" in str(e)
-
-
-def is_rate_limit_error(e: Exception) -> bool:
-    """Check if an error is due to rate limiting, including nested errors."""
-    if is_rate_limited(e):
-        return True
-    # Check if the error message contains a nested rate limit error
-    error_str = str(e).lower()
-    return "429" in error_str or "too many requests" in error_str
 
 
 @pytest.mark.live
 def test_api_direct() -> None:
     """Test Pexels API directly."""
-    api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
+    # Use environment variables first, then fall back to keyring
+    import os
+
+    api_key = os.environ.get("PEXELS_API_KEY")
     if not api_key:
-        pytest.skip("PEXELS_API_KEY not found in keyring")
+        try:
+            api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
+        except Exception:
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+
+    if not api_key:
+        pytest.skip("PEXELS_API_KEY not available in environment or keyring")
 
     try:
         headers = {"Authorization": api_key}
@@ -50,15 +46,20 @@ def test_api_direct() -> None:
         assert response.status_code == 200
         assert "photos" in response.json()
     except Exception as e:
-        if is_rate_limit_error(e):
-            pytest.skip("Rate limited by Pexels API")
+        skip_if_rate_limited(e, "test_api_direct")
         raise
 
 
 @pytest.mark.live
 def test_live_image_url() -> None:
     """Test getting real image URL from Pexels."""
-    service = PexelsService()  # Will use API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
 
     # Try a few different queries to increase chances of success
     queries = ["nature", "city", "people"]
@@ -73,13 +74,13 @@ def test_live_image_url() -> None:
             if url is not None:
                 break
         except Exception as e:
-            if is_rate_limit_error(e):
+            if is_rate_limited_error(e):
                 rate_limited = True
                 logger.warning("Rate limited by Pexels API")
             continue
 
     if rate_limited and url is None:
-        pytest.skip("Rate limited by Pexels API")
+        pytest.skip("Rate limited by Pexels API during URL retrieval")
 
     assert url is not None, "Failed to get image URL after trying multiple queries"
     assert url.startswith("https://")
@@ -96,19 +97,25 @@ def test_live_image_url() -> None:
                 assert size_url.startswith("https://")
                 break
         except Exception as e:
-            if is_rate_limit_error(e):
+            if is_rate_limited_error(e):
                 rate_limited = True
                 logger.warning("Rate limited by Pexels API")
             continue
 
     if rate_limited:
-        pytest.skip("Rate limited by Pexels API")
+        pytest.skip("Rate limited by Pexels API during size testing")
 
 
 @pytest.mark.live
 def test_live_download_image(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
     """Test downloading a real image."""
-    service = PexelsService()  # Will use API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
     output_path = tmp_path / "test.jpg"
 
     # Try a few different queries to increase chances of success
@@ -124,19 +131,18 @@ def test_live_download_image(tmp_path: Path, caplog: pytest.LogCaptureFixture) -
                 success = True
                 break
         except Exception as e:
-            if is_rate_limit_error(e):
+            if is_rate_limited_error(e):
                 rate_limited = True
                 logger.warning("Rate limited by Pexels API")
             continue
 
     if rate_limited:
-        pytest.skip("Rate limited by Pexels API")
+        pytest.skip("Rate limited by Pexels API during download attempts")
 
     if not success:
-        # If we're not rate limited but still failed, check the logs
-        # to see if we got any rate limit errors in the nested calls
+        # Check if we got rate limit errors in the nested calls
         log_text = caplog.text.lower()
-        if "429" in log_text or "too many requests" in log_text:
+        if is_rate_limited_error(Exception(log_text)):
             pytest.skip("Rate limited by Pexels API (detected in logs)")
 
     assert success, "Failed to download image after trying multiple queries"

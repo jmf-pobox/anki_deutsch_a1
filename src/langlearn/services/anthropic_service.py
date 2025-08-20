@@ -46,25 +46,39 @@ logger.addHandler(console_handler)
 class AnthropicService:
     """Service for generating Pexels search queries using Anthropic's Claude API."""
 
+    client: Anthropic | None
+
     def __init__(self) -> None:
         """Initialize the service with API credentials.
 
         Raises:
             ValueError: If the API key cannot be found in environment or keyring
         """
-        # Try to get API key from environment first
+        # Try to get API key from environment first (for CI/CD)
         api_key = os.environ.get("ANTHROPIC_API_KEY")
 
-        # Fall back to keyring if not in environment
-        if not api_key:
+        # Fall back to keyring if environment variable not set at all
+        if api_key is None:
             api_key = keyring.get_password("ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
 
-        if not api_key:
-            raise ValueError("Key ANTHROPIC_API_KEY not found in system keyring")
+        # Allow empty API key in test environments (will be mocked)
+        from langlearn.utils.environment import is_test_environment
+
+        if not api_key and not is_test_environment(api_key):
+            raise ValueError(
+                "Key ANTHROPIC_API_KEY not found in environment or keyring"
+            )
 
         self.api_key = api_key
         self.model = "claude-3-7-sonnet-20250219"  # Updated to current model
-        self.client = Anthropic(api_key=self.api_key)
+
+        # Only create real client if we have a valid API key
+        if self.api_key and not is_test_environment(self.api_key):
+            self.client = Anthropic(api_key=self.api_key)
+        else:
+            # In test environments or with empty keys, client will be mocked
+            self.client = None
+
         logger.debug(f"Initialized AnthropicService with model: {self.model}")
 
     def _generate_response(
@@ -81,6 +95,12 @@ class AnthropicService:
             str: The generated response
         """
         try:
+            # Handle case where client is None (test environment)
+            if self.client is None:
+                raise RuntimeError(
+                    "AnthropicService client not initialized - in test environment"
+                )
+
             response: Message = self.client.messages.create(
                 model=self.model,
                 max_tokens=max_tokens,

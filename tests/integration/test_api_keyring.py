@@ -17,10 +17,20 @@ class TestApiKeyring(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up test environment."""
+        # Skip all keyring tests in CI environment
+        if os.environ.get("CI") == "true":
+            self.skipTest("Keyring functionality not available in CI environment")
+
         self.test_app_name = "test_app"
         self.test_username = "test_user"
         self.test_password = "test_password"
-        self.cred_manager = CredentialManager(self.test_app_name)
+
+        try:
+            self.cred_manager = CredentialManager(self.test_app_name)
+        except Exception as e:
+            if "keyring" in str(e).lower() or "backend" in str(e).lower():
+                self.skipTest("Keyring backend not available")
+            raise
 
     def tearDown(self) -> None:
         """Clean up test environment."""

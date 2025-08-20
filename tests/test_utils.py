@@ -1,5 +1,6 @@
 """Test utilities for mocking external services."""
 
+import contextlib
 from collections.abc import Generator
 from typing import Any
 from unittest.mock import MagicMock, patch
@@ -8,6 +9,117 @@ import pytest
 
 from langlearn.backends.anki_backend import AnkiBackend
 from langlearn.deck_builder import DeckBuilder
+
+
+# Rate limit detection utilities
+def is_rate_limited_error(e: Exception) -> bool:
+    """Check if an exception indicates Pexels API rate limiting.
+
+    Detects rate limiting from:
+    - HTTP 429 status codes
+    - "Too Many Requests" messages
+    - Quota exceeded errors
+    - Rate limit keywords in error messages
+    """
+    error_str = str(e).lower()
+    rate_limit_indicators = [
+        "429",
+        "too many requests",
+        "rate limit",
+        "quota exceeded",
+        "requests per hour exceeded",
+        "api limit",
+    ]
+    return any(indicator in error_str for indicator in rate_limit_indicators)
+
+
+def skip_if_rate_limited(e: Exception, test_name: str = "test") -> None:
+    """Skip test if exception indicates rate limiting."""
+    if is_rate_limited_error(e):
+        pytest.skip(f"Pexels API rate limited during {test_name} - skipping for CI")
+
+
+def check_rate_limit_in_logs(caplog: pytest.LogCaptureFixture) -> bool:
+    """Check if rate limiting was detected in test logs."""
+    log_text = caplog.text.lower()
+    return is_rate_limited_error(Exception(log_text))
+
+
+# Common test utilities
+@contextlib.contextmanager
+def mock_env(var_name: str, value: str | None) -> Generator[None, None, None]:
+    """Context manager for temporarily setting environment variables."""
+    import os
+
+    original = os.environ.get(var_name)
+    if value is None:
+        if var_name in os.environ:
+            del os.environ[var_name]
+    else:
+        os.environ[var_name] = value
+    try:
+        yield
+    finally:
+        # Restore original state
+        if original is None:
+            os.environ.pop(var_name, None)
+        else:
+            os.environ[var_name] = original
+
+
+# Common test fixtures and helpers
+@pytest.fixture
+def mock_environment_variable() -> Any:
+    """Context manager for temporarily setting environment variables."""
+    return mock_env
+
+
+@pytest.fixture
+def mock_requests_and_sleep() -> Any:
+    """Common fixture for mocking requests.get and time.sleep together."""
+    from unittest.mock import Mock, patch
+
+    @contextlib.contextmanager
+    def _mock_requests_sleep(**kwargs: Any) -> Generator[tuple[Mock, Mock], None, None]:
+        """Context manager that mocks both requests.get and time.sleep.
+
+        Args:
+            **kwargs: Arguments to configure the mock response
+                - response: Mock response object
+                - side_effect: Side effect for requests.get
+                - status_code: HTTP status code
+                - content: Response content
+        """
+        mock_response = Mock()
+        if "response" in kwargs:
+            mock_response = kwargs["response"]
+        elif "status_code" in kwargs:
+            mock_response.status_code = kwargs["status_code"]
+        if "content" in kwargs:
+            mock_response.content = kwargs["content"]
+        mock_response.raise_for_status.return_value = None
+
+        with patch("requests.get") as mock_get, patch("time.sleep") as mock_sleep:
+            if "side_effect" in kwargs:
+                mock_get.side_effect = kwargs["side_effect"]
+            else:
+                mock_get.return_value = mock_response
+            yield mock_get, mock_sleep
+
+    return _mock_requests_sleep
+
+
+@contextlib.contextmanager
+def temp_directory_with_nested_path(
+    nested_path: str = "nested/path",
+) -> Generator[tuple[str, Any], None, None]:
+    """Create a temporary directory and yield a nested path within it."""
+    import tempfile
+    from pathlib import Path
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        nested_dir = Path(temp_dir) / nested_path
+        yield temp_dir, nested_dir
 
 
 @pytest.fixture

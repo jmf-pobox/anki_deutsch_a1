@@ -12,6 +12,11 @@ from unittest.mock import patch
 import pytest
 
 from langlearn.services import PexelsService
+from tests.test_utils import (
+    check_rate_limit_in_logs,
+    is_rate_limited_error,
+    skip_if_rate_limited,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -145,10 +150,21 @@ def test_download_image_success(mock_response: PexelsResponse, tmp_path: Path) -
 @pytest.mark.live
 def test_live_get_image_url() -> None:
     """Test image URL retrieval with real API key."""
-    service = PexelsService()  # Uses real API key from keyring
-    url = service.get_image_url("house", "medium")
-    assert url is not None
-    assert url.startswith("https://images.pexels.com/photos/")
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
+
+    try:
+        url = service.get_image_url("house", "medium")
+        assert url is not None
+        assert url.startswith("https://images.pexels.com/photos/")
+    except Exception as e:
+        skip_if_rate_limited(e, "test_live_get_image_url")
+        raise
 
 
 @pytest.mark.live
@@ -157,7 +173,13 @@ def test_live_download_image(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test image download with real API key."""
-    service = PexelsService()  # Uses real API key from keyring
+    # Use service constructor which checks environment variables first, then keyring
+    try:
+        service = PexelsService()
+    except ValueError as e:
+        if "not found in environment variables or keyring" in str(e):
+            pytest.skip("PEXELS_API_KEY not available in environment or keyring")
+        raise
     output_path = tmp_path / "test.jpg"
 
     # Try a few different queries to increase chances of success
@@ -173,20 +195,16 @@ def test_live_download_image(
                 success = True
                 break
         except Exception as e:
-            if "429" in str(e) or "Too Many Requests" in str(e):
+            if is_rate_limited_error(e):
                 rate_limited = True
                 logger.warning("Rate limited by Pexels API")
             continue
 
     if rate_limited:
-        pytest.skip("Rate limited by Pexels API")
+        pytest.skip("Rate limited by Pexels API during download attempts")
 
-    if not success:
-        # If we're not rate limited but still failed, check the logs
-        # to see if we got any rate limit errors in the nested calls
-        log_text = caplog.text.lower()
-        if "429" in log_text or "too many requests" in log_text:
-            pytest.skip("Rate limited by Pexels API (detected in logs)")
+    if not success and check_rate_limit_in_logs(caplog):
+        pytest.skip("Rate limited by Pexels API (detected in logs)")
 
     assert success, "Failed to download image after trying multiple queries"
     assert output_path.exists()

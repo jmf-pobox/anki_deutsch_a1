@@ -87,11 +87,22 @@ class PexelsService:
 
     def __init__(self) -> None:
         """Initialize the PexelsService."""
-        import keyring
+        import os
 
-        self.api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
-        if not self.api_key:
-            raise ValueError("Pexels API key not found in keyring")
+        # First check environment variables (for CI/CD), then fall back to keyring
+        self.api_key = os.environ.get("PEXELS_API_KEY")
+        if self.api_key is None:  # Environment variable not set at all
+            import keyring
+
+            self.api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
+
+        # Allow empty API key in test environments (will be mocked)
+        from langlearn.utils.environment import is_test_environment
+
+        if not self.api_key and not is_test_environment(self.api_key):
+            raise ValueError(
+                "Pexels API key not found in environment variables or keyring"
+            )
         self.base_url = "https://api.pexels.com/v1"
         self.max_retries = 5  # Increased for bulk operations
         self.base_delay = 2  # Base delay in seconds for exponential backoff

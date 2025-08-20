@@ -8,6 +8,7 @@ import pytest
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from langlearn.services.pexels_service import PexelsService, Photo, PhotoSize
+from tests.test_utils import mock_env
 
 
 class TestPexelsService:
@@ -42,14 +43,13 @@ class TestPexelsService:
     @pytest.fixture
     def service(self) -> PexelsService:
         """Create PexelsService instance with mocked API key."""
-        with patch("keyring.get_password") as mock_keyring:
-            mock_keyring.return_value = "test_api_key"
+        with mock_env("PEXELS_API_KEY", "test_api_key"):
             return PexelsService()
 
     def test_init_success(self) -> None:
         """Test successful initialization with API key."""
-        with patch("keyring.get_password") as mock_keyring:
-            mock_keyring.return_value = "test_api_key"
+        # Test environment variable path (new behavior)
+        with mock_env("PEXELS_API_KEY", "test_api_key"):
             service = PexelsService()
 
             assert service.api_key == "test_api_key"
@@ -60,11 +60,26 @@ class TestPexelsService:
             assert service.request_delay == 1.0
 
     def test_init_no_api_key(self) -> None:
-        """Test initialization failure when API key not found."""
-        with patch("keyring.get_password") as mock_keyring:
+        """Test initialization failure when API key not found.
+
+        This tests that the service properly raises an error when no
+        credentials are available in a production (non-test) environment.
+        """
+        # Ensure no environment variable set
+        with (
+            mock_env("PEXELS_API_KEY", None),
+            patch("keyring.get_password") as mock_keyring,
+            patch(
+                "langlearn.utils.environment.is_test_environment",
+                return_value=False,
+            ),
+        ):
             mock_keyring.return_value = None
 
-            with pytest.raises(ValueError, match="Pexels API key not found in keyring"):
+            with pytest.raises(
+                ValueError,
+                match=("Pexels API key not found in environment variables or keyring"),
+            ):
                 PexelsService()
 
     def test_get_headers(self, service: PexelsService) -> None:
