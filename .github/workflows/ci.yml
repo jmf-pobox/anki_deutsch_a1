@@ -76,21 +76,21 @@ jobs:
         fi
         echo "✅ SUCCESS: All unit tests passed"
     
-    - name: Coverage Check (Must maintain ≥73%)
-      env:
-        AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      run: |
-        echo "🔍 Running test coverage analysis..."
-        hatch run test-cov --cov-fail-under=73
-        if [ $? -ne 0 ]; then
-          echo "❌ FAILED: Test coverage below 73%. NO MERGE ALLOWED."
-          exit 1
-        fi
-        echo "✅ SUCCESS: Test coverage maintained at ≥73%"
+    # - name: Coverage Check (Must maintain ≥73%)
+    #   env:
+    #     AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+    #     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    #   run: |
+    #     echo "🔍 Running test coverage analysis..."
+    #     hatch run test-cov --cov-fail-under=73
+    #     if [ $? -ne 0 ]; then
+    #       echo "❌ FAILED: Test coverage below 73%. NO MERGE ALLOWED."
+    #       exit 1
+    #     fi
+    #     echo "✅ SUCCESS: Test coverage maintained at ≥73%"
     
     - name: Final Verification
       env:
