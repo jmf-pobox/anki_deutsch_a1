@@ -78,9 +78,7 @@ class TestPexelsService:
 
             with pytest.raises(
                 ValueError,
-                match=(
-                    "Pexels API key not found in environment variables or keyring"
-                ),
+                match=("Pexels API key not found in environment variables or keyring"),
             ):
                 PexelsService()
 
