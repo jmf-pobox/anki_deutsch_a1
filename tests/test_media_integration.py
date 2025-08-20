@@ -28,7 +28,7 @@ class TestMediaIntegration:
             mock_boto_client.return_value = Mock()
             mock_requests.return_value = Mock()
             mock_keyring.return_value = "mock-api-key"  # Fallback for keyring calls
-            
+
             # Set environment variables for services that check them first
             original_env = {}
             test_env_vars = {
@@ -38,12 +38,12 @@ class TestMediaIntegration:
                 "AWS_ACCESS_KEY_ID": "mock-aws-key",
                 "AWS_SECRET_ACCESS_KEY": "mock-aws-secret",
             }
-            
+
             # Store original values and set test values
             for key, value in test_env_vars.items():
                 original_env[key] = os.environ.get(key)
                 os.environ[key] = value
-            
+
             try:
                 return AnkiBackend("Media Test Deck", "Testing media integration")
             finally:
