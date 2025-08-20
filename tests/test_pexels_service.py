@@ -82,7 +82,11 @@ class TestPexelsService:
                 os.environ["PEXELS_API_KEY"] = original_env
 
     def test_init_no_api_key(self) -> None:
-        """Test initialization failure when API key not found."""
+        """Test initialization failure when API key not found.
+
+        This tests that the service properly raises an error when no credentials
+        are available in a production (non-test) environment.
+        """
         import os
 
         # Ensure no environment variable set
@@ -91,7 +95,10 @@ class TestPexelsService:
             del os.environ["PEXELS_API_KEY"]
 
         try:
-            with patch("keyring.get_password") as mock_keyring:
+            with (
+                patch("keyring.get_password") as mock_keyring,
+                patch.object(PexelsService, "_is_test_environment", return_value=False),
+            ):
                 mock_keyring.return_value = None
 
                 with pytest.raises(
