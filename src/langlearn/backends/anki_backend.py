@@ -298,6 +298,8 @@ class AnkiBackend(DeckBackend):
                 "German Adverb with Media": "adverb",
                 "German Negation": "negation",
                 "German Negation with Media": "negation",
+                "German Verb": "verb",
+                "German Verb with Media": "verb",
             }
 
             # Check if we support this note type with new architecture
@@ -399,6 +401,7 @@ class AnkiBackend(DeckBackend):
         from langlearn.models.adverb import Adverb, AdverbType
         from langlearn.models.negation import Negation, NegationType
         from langlearn.models.noun import Noun
+        from langlearn.models.verb import Verb
 
         if record_type == "noun":
             return Noun(
@@ -429,6 +432,16 @@ class AnkiBackend(DeckBackend):
                 word=record.word,
                 english=record.english,
                 type=NegationType(record.type),
+                example=record.example,
+            )
+        elif record_type == "verb":
+            return Verb(
+                verb=record.verb,
+                english=record.english,
+                present_ich=record.present_ich,
+                present_du=record.present_du,
+                present_er=record.present_er,
+                perfect=record.perfect,
                 example=record.example,
             )
         else:
