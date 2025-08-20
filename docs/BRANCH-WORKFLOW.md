@@ -7,7 +7,7 @@ This document defines the mandatory branch-based development workflow for the An
 This workflow protects our critical quality achievements:
 - **MyPy --strict compliance**: 502→0 errors (100% elimination)
 - **Test suite integrity**: 691 passing tests (667 unit + 24 integration)
-- **Code quality standards**: Zero Ruff violations, >73% test coverage
+- **Code quality standards**: Zero Ruff violations, ≥73% test coverage
 - **Clean Pipeline Architecture**: Maintained separation of concerns
 
 ## 🚨 Mandatory Process

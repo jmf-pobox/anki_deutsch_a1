@@ -33,7 +33,10 @@
       "Bash(gh run view:*)",
       "Bash(gh run list:*)",
       "Bash(git commit:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh api:*)"
     ],
     "deny": []
   }

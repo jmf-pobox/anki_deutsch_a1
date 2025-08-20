@@ -45,8 +45,8 @@ jobs:
     - name: Code Formatting Check
       run: |
         echo "🔍 Checking code formatting..."
-        hatch run format --check
-        if [ $? -ne 0 ]; then
+        hatch run format
+        if ! git diff --exit-code; then
           echo "❌ FAILED: Code formatting issues detected. NO MERGE ALLOWED."
           exit 1
         fi
@@ -62,15 +62,15 @@ jobs:
         fi
         echo "✅ SUCCESS: All unit tests passed"
     
-    - name: Coverage Check (Must maintain >73%)
+    - name: Coverage Check (Must maintain ≥73%)
       run: |
         echo "🔍 Running test coverage analysis..."
-        hatch run test-unit-cov --cov-fail-under=73
+        hatch run test-cov --cov-fail-under=73
         if [ $? -ne 0 ]; then
           echo "❌ FAILED: Test coverage below 73%. NO MERGE ALLOWED."
           exit 1
         fi
-        echo "✅ SUCCESS: Test coverage maintained above 73%"
+        echo "✅ SUCCESS: Test coverage maintained at ≥73%"
     
     - name: Final Verification
       run: |
