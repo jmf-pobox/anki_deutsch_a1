@@ -16,14 +16,40 @@ class TestDeckBackendInterface:
     @pytest.fixture
     def backend(self) -> DeckBackend:
         """Create a backend instance for testing."""
-        # Mock AWS services to avoid region configuration issues in CI
+        # Mock external services for unit testing
         with (
             patch("langlearn.services.audio.boto3.client") as mock_boto_client,
             patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+            patch("keyring.get_password") as mock_keyring,
         ):
             mock_boto_client.return_value = Mock()
             mock_requests.return_value = Mock()
-            return AnkiBackend("Test Deck", "Test description")
+            mock_keyring.return_value = "mock-api-key"  # Fallback for keyring calls
+            
+            # Set environment variables for services that check them first
+            original_env = {}
+            test_env_vars = {
+                "PEXELS_API_KEY": "mock-pexels-key",
+                "ANTHROPIC_API_KEY": "mock-anthropic-key",
+                "AWS_DEFAULT_REGION": "us-east-1",
+                "AWS_ACCESS_KEY_ID": "mock-aws-key", 
+                "AWS_SECRET_ACCESS_KEY": "mock-aws-secret"
+            }
+            
+            # Store original values and set test values
+            for key, value in test_env_vars.items():
+                original_env[key] = os.environ.get(key)
+                os.environ[key] = value
+            
+            try:
+                return AnkiBackend("Test Deck", "Test description")
+            finally:
+                # Restore original environment
+                for key, original_value in original_env.items():
+                    if original_value is None:
+                        os.environ.pop(key, None)
+                    else:
+                        os.environ[key] = original_value
 
     @pytest.fixture
     def sample_note_type(self) -> NoteType:
