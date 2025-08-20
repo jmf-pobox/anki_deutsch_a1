@@ -98,6 +98,7 @@ class PexelsService:
 
         # Allow empty API key in test environments (will be mocked)
         from langlearn.utils.environment import is_test_environment
+
         if not self.api_key and not is_test_environment(self.api_key):
             raise ValueError(
                 "Pexels API key not found in environment variables or keyring"
@@ -107,7 +108,6 @@ class PexelsService:
         self.base_delay = 2  # Base delay in seconds for exponential backoff
         self.max_delay = 60  # Maximum delay cap
         self.request_delay = 1.0  # Minimum delay between requests to be API-friendly
-
 
     def _get_headers(self) -> dict[str, str]:
         """Get headers for Pexels API requests.
