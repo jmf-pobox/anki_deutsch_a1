@@ -183,6 +183,18 @@ class CardBuilder:
                 "WordAudio",
                 "ExampleAudio",
             ],
+            "verb": [
+                "Verb",
+                "English",
+                "PresentIch",
+                "PresentDu",
+                "PresentEr",
+                "Perfect",
+                "Example",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
+            ],
             "verb_conjugation": [
                 "Infinitive",
                 "English",
@@ -290,6 +302,13 @@ class CardBuilder:
                 "Word": "word",
                 "Type": "type",
             },
+            "verb": {
+                "Verb": "verb",
+                "PresentIch": "present_ich",
+                "PresentDu": "present_du",
+                "PresentEr": "present_er",
+                "Perfect": "perfect",
+            },
             "verb_conjugation": {
                 "Infinitive": "infinitive",
                 "English": "meaning",
@@ -382,6 +401,7 @@ class CardBuilder:
             "adjective",
             "adverb",
             "negation",
+            "verb",
             "verb_conjugation",
             "verb_imperative",
         ]
@@ -428,6 +448,7 @@ class CardBuilder:
             "adjective": ["word", "english"],
             "adverb": ["word", "english", "type"],
             "negation": ["word", "english", "type"],
+            "verb": ["verb", "english", "present_ich", "present_du", "present_er"],
             "verb_conjugation": ["infinitive", "meaning", "tense", "ich", "du", "er"],
             "verb_imperative": [
                 "infinitive",
@@ -457,6 +478,7 @@ class CardBuilder:
             "AdjectiveRecord": "adjective",
             "AdverbRecord": "adverb",
             "NegationRecord": "negation",
+            "VerbRecord": "verb",
             "VerbConjugationRecord": "verb_conjugation",
             "VerbImperativeRecord": "verb_imperative",
         }
