@@ -5,14 +5,17 @@ unit tests run reliably in CI/CD environments without keyring backends.
 """
 
 import os
-from typing import Any, Dict, Generator
+from collections.abc import Generator
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
 
 
 @pytest.fixture(autouse=True)
-def mock_external_services(request: pytest.FixtureRequest) -> Generator[Dict[str, Any] | None, None, None]:
+def mock_external_services(
+    request: pytest.FixtureRequest,
+) -> Generator[dict[str, Any] | None, None, None]:
     """Automatically mock external services for unit tests only.
 
     This fixture runs before every test to ensure that:
