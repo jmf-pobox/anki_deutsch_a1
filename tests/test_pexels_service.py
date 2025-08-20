@@ -84,8 +84,8 @@ class TestPexelsService:
     def test_init_no_api_key(self) -> None:
         """Test initialization failure when API key not found.
 
-        This tests that the service properly raises an error when no credentials
-        are available in a production (non-test) environment.
+        This tests that the service properly raises an error when no
+        credentials are available in a production (non-test) environment.
         """
         import os
 
