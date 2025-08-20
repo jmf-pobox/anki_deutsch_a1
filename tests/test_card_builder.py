@@ -315,6 +315,7 @@ class TestCardBuilder:
             "adjective",
             "adverb",
             "negation",
+            "verb",
             "verb_conjugation",
             "verb_imperative",
         }
@@ -646,11 +647,12 @@ class TestCardBuilderIntegration:
         """Test that supported record types includes verb types."""
         supported_types = card_builder.get_supported_record_types()
 
+        assert "verb" in supported_types
         assert "verb_conjugation" in supported_types
         assert "verb_imperative" in supported_types
         assert (
-            len(supported_types) == 6
-        )  # noun, adjective, adverb, negation, verb_conjugation, verb_imperative
+            len(supported_types) == 7
+        )  # noun, adjective, adverb, negation, verb, verb_conjugation, verb_imperative
 
     def test_validate_verb_conjugation_record_validation(
         self, card_builder: CardBuilder

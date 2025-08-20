@@ -15,6 +15,7 @@ from langlearn.models.records import (
     NounRecord,
     VerbConjugationRecord,
     VerbImperativeRecord,
+    VerbRecord,
     create_record,
 )
 
@@ -325,6 +326,7 @@ class TestRecordTypeRegistry:
             "adjective",
             "adverb",
             "negation",
+            "verb",
             "verb_conjugation",
             "verb_imperative",
         }
@@ -334,6 +336,7 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["adjective"] == AdjectiveRecord
         assert RECORD_TYPE_REGISTRY["adverb"] == AdverbRecord
         assert RECORD_TYPE_REGISTRY["negation"] == NegationRecord
+        assert RECORD_TYPE_REGISTRY["verb"] == VerbRecord
         assert RECORD_TYPE_REGISTRY["verb_conjugation"] == VerbConjugationRecord
         assert RECORD_TYPE_REGISTRY["verb_imperative"] == VerbImperativeRecord
 
@@ -363,6 +366,28 @@ class TestRecordTypeRegistry:
         assert isinstance(record, AdverbRecord)
         assert record.word == "hier"
         assert record.type == "location"
+
+    def test_create_record_verb(self) -> None:
+        """Test creating verb record via factory function."""
+        fields = [
+            "arbeiten",
+            "to work",
+            "arbeite",
+            "arbeitest",
+            "arbeitet",
+            "hat gearbeitet",
+            "Ich arbeite bei Siemens.",
+        ]
+        record = create_record("verb", fields)
+
+        assert isinstance(record, VerbRecord)
+        assert record.verb == "arbeiten"
+        assert record.english == "to work"
+        assert record.present_ich == "arbeite"
+        assert record.present_du == "arbeitest"
+        assert record.present_er == "arbeitet"
+        assert record.perfect == "hat gearbeitet"
+        assert record.example == "Ich arbeite bei Siemens."
 
     def test_create_record_negation(self) -> None:
         """Test creating negation record via factory function."""
