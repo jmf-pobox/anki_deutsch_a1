@@ -49,7 +49,6 @@ def check_rate_limit_in_logs(caplog: pytest.LogCaptureFixture) -> bool:
 @pytest.fixture
 def mock_environment_variable() -> Any:
     """Context manager for temporarily setting environment variables."""
-    import contextlib
     import os
 
     @contextlib.contextmanager

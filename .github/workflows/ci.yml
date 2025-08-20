@@ -69,7 +69,6 @@ jobs:
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       run: |
         echo "🔍 Running full unit test suite..."
-        echo "ℹ️  Using real credentials from GitHub Secrets"
         hatch run test-unit
         if [ $? -ne 0 ]; then
           echo "❌ FAILED: Unit tests failing. NO MERGE ALLOWED."

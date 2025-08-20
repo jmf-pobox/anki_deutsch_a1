@@ -46,6 +46,8 @@ logger.addHandler(console_handler)
 class AnthropicService:
     """Service for generating Pexels search queries using Anthropic's Claude API."""
 
+    client: Anthropic | None
+
     def __init__(self) -> None:
         """Initialize the service with API credentials.
 
@@ -75,7 +77,7 @@ class AnthropicService:
             self.client = Anthropic(api_key=self.api_key)
         else:
             # In test environments or with empty keys, client will be mocked
-            self.client = None  # type: ignore[assignment]
+            self.client = None
 
         logger.debug(f"Initialized AnthropicService with model: {self.model}")
 

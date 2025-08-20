@@ -1,5 +1,6 @@
 """Unit tests for PexelsService."""
 
+import os
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -42,7 +43,6 @@ class TestPexelsService:
     @pytest.fixture
     def service(self) -> PexelsService:
         """Create PexelsService instance with mocked API key."""
-        import os
 
         # Mock environment variable first (our new behavior)
         original_env = os.environ.get("PEXELS_API_KEY")
