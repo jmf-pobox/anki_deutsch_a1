@@ -227,9 +227,9 @@ hatch run run-adjectives       # Generate adjectives-only deck
 
 ### Support & Documentation
 - 🐛 **Issues:** [GitHub Issues](https://github.com/jmf-pobox/anki_deutsch_a1/issues)
-- 📖 **Technical Docs:** `docs/DESIGN-INDEX.md` for navigation
-- 🏗️ **Architecture:** `docs/DESIGN-GUIDANCE.md` for development standards
-- 💡 **Contributing:** Review `CLAUDE.md` and `AI.md` for guidelines
+- 📖 **Technical Docs:** `docs/ENG-DESIGN-INDEX.md` for navigation
+- 🏗️ **Architecture:** `docs/ENG-DEVELOPMENT-STANDARDS.md` for development standards
+- 💡 **Contributing:** Review `CLAUDE.md` and `docs/ENG-PYTHON-STANDARDS.md` for guidelines
 
 ## 🎓 Language-Specific Intelligence
 
@@ -274,7 +274,7 @@ hatch run ruff check    # Linting (zero violations required)
 - **Production Ready:** Security hardening and performance optimization
 
 ### Contributing Guidelines
-1. **Read Required Docs:** `CLAUDE.md`, `AI.md`, and `docs/DESIGN-INDEX.md`
+1. **Read Required Docs:** `CLAUDE.md`, `docs/ENG-PYTHON-STANDARDS.md`, and `docs/ENG-DESIGN-INDEX.md`
 2. **Follow Quality Standards:** All 6 quality gates must pass (see CLAUDE.md)
 3. **Use Micro-Commits:** Atomic changes with comprehensive testing
 4. **Branch Workflow:** Feature branches with PR review process

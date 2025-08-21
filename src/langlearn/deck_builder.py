@@ -602,7 +602,9 @@ class DeckBuilder:
             logger.info(f"Processing {len(records)} {record_type} records")
 
             # Step 1.5: Create subdeck for this word type
-            subdeck_name = record_type.capitalize() + ("s" if not record_type.endswith("s") else "")
+            subdeck_name = record_type.capitalize() + (
+                "s" if not record_type.endswith("s") else ""
+            )
             self.create_subdeck(subdeck_name)
             logger.info(f"Created subdeck: {subdeck_name}")
 

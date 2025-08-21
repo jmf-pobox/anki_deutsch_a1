@@ -11,22 +11,22 @@ This directory contains design documentation for **Language Learn** - Multi-Lang
 ## 🚀 **Quick Start Guide**
 
 ### **New Developer Setup**
-1. **Start here**: [DESIGN-STATE.md](./DESIGN-STATE.md) - Current implementation status
-2. **Development standards**: [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md) - Coding standards and workflow
-3. **Component reference**: [DESIGN-SRP.md](./DESIGN-SRP.md) - System components overview
+1. **Start here**: [ENG-QUALITY-METRICS.md](./ENG-QUALITY-METRICS.md) - Current implementation status
+2. **Development standards**: [ENG-DEVELOPMENT-STANDARDS.md](./ENG-DEVELOPMENT-STANDARDS.md) - Coding standards and workflow
+3. **Component reference**: [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md) - System components overview
 
 ### **Need Something Specific?**
-- 🎯 **Implementation status?** → [DESIGN-STATE.md](./DESIGN-STATE.md)
-- 🔧 **Development workflow?** → [DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md)  
-- 🔍 **Component overview?** → [DESIGN-SRP.md](./DESIGN-SRP.md)
+- 🎯 **Implementation status?** → [ENG-QUALITY-METRICS.md](./ENG-QUALITY-METRICS.md)
+- 🔧 **Development workflow?** → [ENG-DEVELOPMENT-STANDARDS.md](./ENG-DEVELOPMENT-STANDARDS.md)  
+- 🔍 **Component overview?** → [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
 - 📊 **Quality metrics?** → Run `hatch run test-cov` for coverage report
-- 🏗️ **System design?** → [DESIGN.md](./DESIGN.md)
+- 🏗️ **System design?** → [ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)
 
 ---
 
 ## 📋 **Document Descriptions**
 
-### **[DESIGN-SRP.md](./DESIGN-SRP.md)** - System Components
+### **[ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)** - System Components
 **Target Audience**: All Engineers  
 **Purpose**: Overview of system components and their responsibilities  
 **When to Use**: 
@@ -43,7 +43,7 @@ This directory contains design documentation for **Language Learn** - Multi-Lang
 
 ---
 
-### **[DESIGN-STATE.md](./DESIGN-STATE.md)** - Current Status  
+### **[ENG-QUALITY-METRICS.md](./ENG-QUALITY-METRICS.md)** - Current Status  
 **Target Audience**: Technical Leadership, Senior Engineers  
 **Purpose**: Implementation status and quality metrics  
 **When to Use**:
@@ -60,7 +60,7 @@ This directory contains design documentation for **Language Learn** - Multi-Lang
 
 ---
 
-### **[DESIGN-GUIDANCE.md](./DESIGN-GUIDANCE.md)** - Development Standards
+### **[ENG-DEVELOPMENT-STANDARDS.md](./ENG-DEVELOPMENT-STANDARDS.md)** - Development Standards
 **Target Audience**: All Engineers (Daily Reference)  
 **Purpose**: Clean Pipeline Architecture development practices and standards  
 **When to Use**:
@@ -77,7 +77,7 @@ This directory contains design documentation for **Language Learn** - Multi-Lang
 
 ---
 
-### **[DESIGN.md](./DESIGN.md)** - Architecture Overview
+### **[ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)** - Architecture Overview
 **Target Audience**: Architects, Senior Engineers  
 **Purpose**: Clean Pipeline Architecture design and implementation details  
 **When to Use**:
@@ -129,10 +129,10 @@ All documentation has been updated to reflect the completed Clean Pipeline Archi
 
 | **Document** | **Status** | **Last Updated** |
 |--------------|------------|------------------|
-| **DESIGN-INDEX.md** | ✅ Current | Clean Pipeline Migration |
-| **DESIGN-STATE.md** | ✅ Updated | Current metrics and status |
-| **DESIGN-GUIDANCE.md** | ✅ Updated | Clean Architecture practices |
-| **DESIGN-SRP.md** | ✅ Updated | Component responsibilities |
+| **ENG-DESIGN-INDEX.md** | ✅ Current | Clean Pipeline Migration |
+| **ENG-QUALITY-METRICS.md** | ✅ Updated | Current metrics and status |
+| **ENG-DEVELOPMENT-STANDARDS.md** | ✅ Updated | Clean Architecture practices |
+| **ENG-COMPONENT-INVENTORY.md** | ✅ Updated | Component responsibilities |
 
 ---
 
