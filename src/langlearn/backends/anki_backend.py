@@ -17,6 +17,7 @@ from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.model_factory import ModelFactory
 from langlearn.models.negation import Negation, NegationType
 from langlearn.models.noun import Noun
+from langlearn.models.phrase import Phrase
 from langlearn.models.preposition import Preposition
 from langlearn.models.records import create_record
 from langlearn.models.verb import Verb
@@ -306,6 +307,8 @@ class AnkiBackend(DeckBackend):
                 "German Negation with Media": "negation",
                 "German Verb": "verb",
                 "German Verb with Media": "verb",
+                "German Phrase": "phrase",
+                "German Phrase with Media": "phrase",
                 "German Preposition": "preposition",
                 "German Preposition with Media": "preposition",
             }
@@ -445,6 +448,13 @@ class AnkiBackend(DeckBackend):
                 present_er=record.present_er,
                 perfect=record.perfect,
                 example=record.example,
+            )
+        elif record_type == "phrase":
+            return Phrase(
+                phrase=record.phrase,
+                english=record.english,
+                context=record.context,
+                related=record.related,
             )
         elif record_type == "preposition":
             return Preposition(

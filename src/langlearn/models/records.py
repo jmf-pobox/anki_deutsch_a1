@@ -709,6 +709,74 @@ class PrepositionRecord(BaseRecord):
         return ["preposition", "english", "case", "example1", "example2"]
 
 
+class PhraseRecord(BaseRecord):
+    """Record for German phrase data from CSV.
+
+    Simple Clean Pipeline migration for current phrases.csv structure.
+    Matches existing phrases.csv format:
+    phrase,english,context,related
+    """
+
+    phrase: str = Field(..., description="German phrase")
+    english: str = Field(..., description="English translation")
+    context: str = Field(..., description="Usage context description")
+    related: str = Field(default="", description="Related phrases")
+
+    # Media fields (populated during enrichment)
+    phrase_audio: str | None = Field(
+        default=None, description="Phrase pronunciation audio reference"
+    )
+    image: str | None = Field(default=None, description="Image reference")
+
+    @classmethod
+    def from_csv_fields(cls, fields: list[str]) -> "PhraseRecord":
+        """Create PhraseRecord from CSV field array.
+
+        Args:
+            fields: Array of CSV field values in order:
+                [phrase, english, context, related]
+
+        Returns:
+            PhraseRecord instance
+
+        Raises:
+            ValueError: If fields length doesn't match expected count
+        """
+        if len(fields) != cls.get_expected_field_count():
+            expected = cls.get_expected_field_count()
+            raise ValueError(
+                f"PhraseRecord expects {expected} fields, got {len(fields)}"
+            )
+
+        return cls(
+            phrase=fields[0].strip(),
+            english=fields[1].strip(),
+            context=fields[2].strip(),
+            related=fields[3].strip(),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for media enrichment."""
+        return {
+            "phrase": self.phrase,
+            "english": self.english,
+            "context": self.context,
+            "related": self.related,
+            "phrase_audio": self.phrase_audio,
+            "image": self.image,
+        }
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Expected number of CSV fields for phrases."""
+        return 4
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Field names for phrase CSV."""
+        return ["phrase", "english", "context", "related"]
+
+
 # Registry for mapping model types to record types
 RECORD_TYPE_REGISTRY = {
     "noun": NounRecord,
@@ -716,6 +784,7 @@ RECORD_TYPE_REGISTRY = {
     "adverb": AdverbRecord,
     "negation": NegationRecord,
     "verb": VerbRecord,
+    "phrase": PhraseRecord,
     "preposition": PrepositionRecord,
     "verb_conjugation": VerbConjugationRecord,
     "verb_imperative": VerbImperativeRecord,
@@ -747,6 +816,10 @@ def create_record(model_type: Literal["verb"], fields: list[str]) -> VerbRecord:
 
 
 @overload
+def create_record(model_type: Literal["phrase"], fields: list[str]) -> PhraseRecord: ...
+
+
+@overload
 def create_record(
     model_type: Literal["preposition"], fields: list[str]
 ) -> PrepositionRecord: ...
@@ -773,7 +846,7 @@ def create_record(model_type: str, fields: list[str]) -> BaseRecord:
 
     Args:
         model_type: Type of model (noun, adjective, adverb, negation,
-                   verb, preposition, verb_conjugation, verb_imperative)
+                   verb, phrase, preposition, verb_conjugation, verb_imperative)
         fields: CSV field values
 
     Returns:

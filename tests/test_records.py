@@ -13,6 +13,7 @@ from langlearn.models.records import (
     BaseRecord,
     NegationRecord,
     NounRecord,
+    PhraseRecord,
     PrepositionRecord,
     VerbConjugationRecord,
     VerbImperativeRecord,
@@ -328,6 +329,7 @@ class TestRecordTypeRegistry:
             "adverb",
             "negation",
             "verb",
+            "phrase",
             "preposition",
             "verb_conjugation",
             "verb_imperative",
@@ -339,6 +341,7 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["adverb"] == AdverbRecord
         assert RECORD_TYPE_REGISTRY["negation"] == NegationRecord
         assert RECORD_TYPE_REGISTRY["verb"] == VerbRecord
+        assert RECORD_TYPE_REGISTRY["phrase"] == PhraseRecord
         assert RECORD_TYPE_REGISTRY["preposition"] == PrepositionRecord
         assert RECORD_TYPE_REGISTRY["verb_conjugation"] == VerbConjugationRecord
         assert RECORD_TYPE_REGISTRY["verb_imperative"] == VerbImperativeRecord
@@ -409,6 +412,22 @@ class TestRecordTypeRegistry:
         assert record.case == "Accusative/Dative"
         assert record.example1 == "Ich gehe in die Schule."
         assert record.example2 == "Ich bin in der Schule."
+
+    def test_create_record_phrase(self) -> None:
+        """Test creating phrase record via factory function."""
+        fields = [
+            "Guten Morgen!",
+            "Good morning!",
+            "Morning greeting (until about 11 AM)",
+            "Guten Tag! Guten Abend!",
+        ]
+        record = create_record("phrase", fields)
+
+        assert isinstance(record, PhraseRecord)
+        assert record.phrase == "Guten Morgen!"
+        assert record.english == "Good morning!"
+        assert record.context == "Morning greeting (until about 11 AM)"
+        assert record.related == "Guten Tag! Guten Abend!"
 
     def test_create_record_negation(self) -> None:
         """Test creating negation record via factory function."""

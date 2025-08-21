@@ -195,6 +195,14 @@ class CardBuilder:
                 "WordAudio",
                 "ExampleAudio",
             ],
+            "phrase": [
+                "Phrase",
+                "English",
+                "Context",
+                "Related",
+                "Image",
+                "PhraseAudio",
+            ],
             "preposition": [
                 "Preposition",
                 "English",
@@ -320,6 +328,12 @@ class CardBuilder:
                 "PresentEr": "present_er",
                 "Perfect": "perfect",
             },
+            "phrase": {
+                "Phrase": "phrase",
+                "Context": "context",
+                "Related": "related",
+                "PhraseAudio": "phrase_audio",
+            },
             "preposition": {
                 "Preposition": "preposition",
                 "Case": "case",
@@ -421,6 +435,7 @@ class CardBuilder:
             "adverb",
             "negation",
             "verb",
+            "phrase",
             "preposition",
             "verb_conjugation",
             "verb_imperative",
@@ -469,6 +484,7 @@ class CardBuilder:
             "adverb": ["word", "english", "type"],
             "negation": ["word", "english", "type"],
             "verb": ["verb", "english", "present_ich", "present_du", "present_er"],
+            "phrase": ["phrase", "english", "context"],
             "preposition": ["preposition", "english", "case", "example1", "example2"],
             "verb_conjugation": ["infinitive", "meaning", "tense", "ich", "du", "er"],
             "verb_imperative": [
@@ -500,6 +516,7 @@ class CardBuilder:
             "AdverbRecord": "adverb",
             "NegationRecord": "negation",
             "VerbRecord": "verb",
+            "PhraseRecord": "phrase",
             "PrepositionRecord": "preposition",
             "VerbConjugationRecord": "verb_conjugation",
             "VerbImperativeRecord": "verb_imperative",
