@@ -19,9 +19,12 @@ from .models.adjective import Adjective
 from .models.adverb import Adverb
 from .models.negation import Negation
 from .models.noun import Noun
+from .models.records import BaseRecord
 from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
+from .services.card_builder import CardBuilder
 from .services.csv_service import CSVService
 from .services.media_service import MediaService
+from .services.record_mapper import RecordMapper
 from .services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
@@ -83,9 +86,18 @@ class DeckBuilder:
         # Initialize services
         self._csv_service = CSVService()
 
+        # Initialize Clean Pipeline services
+        self._record_mapper = RecordMapper()
+
         # Initialize template service with templates directory
         template_dir = Path(__file__).parent / "templates"
         self._template_service = TemplateService(template_dir)
+
+        # Initialize CardBuilder service for Clean Pipeline
+        self._card_builder = CardBuilder(template_service=self._template_service)
+
+        # Initialize StandardMediaEnricher (type annotation)
+        self._media_enricher: Any = None  # Will be properly initialized later
 
         # Initialize media service with dependency injection
         self._media_service: MediaServiceProtocol | None = None
@@ -131,19 +143,32 @@ class DeckBuilder:
         )
         self._media_manager = MediaManager(self._backend, media_service_for_manager)
 
-        # Initialize card generator factory
+        # Initialize StandardMediaEnricher for Clean Pipeline
+        if self._media_service:
+            from .services.media_enricher import StandardMediaEnricher
+
+            self._media_enricher = StandardMediaEnricher(
+                media_service=self._media_service
+            )
+        else:
+            self._media_enricher = None
+
+        # Initialize card generator factory (legacy compatibility)
         self._card_factory = CardGeneratorFactory(
             backend=self._backend,
             template_service=self._template_service,
             media_manager=self._media_manager,
         )
 
-        # Track loaded data
+        # Track loaded data - DUAL STORAGE for compatibility
+        # Legacy domain models (for backward compatibility)
         self._loaded_nouns: list[Noun] = []
         self._loaded_adjectives: list[Adjective] = []
         self._loaded_adverbs: list[Adverb] = []
         self._loaded_negations: list[Negation] = []
-        # Additional model types will be added as needed
+
+        # Clean Pipeline records (new architecture)
+        self._loaded_records: list[BaseRecord] = []
 
         logger.info(f"Initialized GermanDeckBuilder with {backend_type} backend")
 
@@ -230,7 +255,7 @@ class DeckBuilder:
         logger.info(f"Loaded {len(negations)} negations")
 
     def load_data_from_directory(self, data_dir: str | Path) -> None:
-        """Load all available data files from a directory.
+        """Load all available data files from a directory using Clean Pipeline Architecture.
 
         Args:
             data_dir: Directory containing CSV data files
@@ -238,21 +263,100 @@ class DeckBuilder:
         data_dir = Path(data_dir)
         logger.info(f"Loading data from directory: {data_dir}")
 
-        # Define expected files and their corresponding load methods
-        file_mappings = {
-            "nouns.csv": self.load_nouns_from_csv,
-            "adjectives.csv": self.load_adjectives_from_csv,
-            "adverbs.csv": self.load_adverbs_from_csv,
-            "negations.csv": self.load_negations_from_csv,
-            # Additional mappings will be added as more models are implemented
+        # Clean Pipeline approach: Map CSV files directly to record types
+        csv_to_record_type = {
+            "nouns.csv": "noun",
+            "adjectives.csv": "adjective",
+            "adverbs.csv": "adverb",
+            "negations.csv": "negation",
+            "verbs.csv": "verb",
+            "prepositions.csv": "preposition",
+            "phrases.csv": "phrase",
+            "regular_verbs.csv": "verb_conjugation",
+            "irregular_verbs.csv": "verb_conjugation",
+            "separable_verbs.csv": "verb_imperative",
         }
 
-        for filename, load_method in file_mappings.items():
+        for filename, record_type in csv_to_record_type.items():
             file_path = data_dir / filename
             if file_path.exists():
-                load_method(file_path)
+                logger.info(f"Loading {record_type} data from {file_path}")
+                # Use Clean Pipeline: CSV → Records
+                records = self._record_mapper.load_records_from_csv(file_path)
+                self._loaded_records.extend(records)
+                logger.info(f"Loaded {len(records)} {record_type} records")
+
+                # Legacy compatibility: also load into old domain models for backward compatibility
+                self._load_legacy_models_from_records(records, record_type)
             else:
                 logger.debug(f"Data file not found: {file_path}")
+
+        total_records = len(self._loaded_records)
+        logger.info(f"Total records loaded via Clean Pipeline: {total_records}")
+
+    def _load_legacy_models_from_records(
+        self, records: list[BaseRecord], record_type: str
+    ) -> None:
+        """Load legacy domain models from records for backward compatibility.
+
+        Args:
+            records: Records to convert to legacy models
+            record_type: Type of record being converted
+        """
+        from .models.records import (
+            AdjectiveRecord,
+            AdverbRecord,
+            NegationRecord,
+            NounRecord,
+        )
+
+        # Convert records back to legacy domain models for compatibility
+        for record in records:
+            if record_type == "noun" and isinstance(record, NounRecord):
+                noun = Noun(
+                    noun=record.noun,
+                    article=record.article,
+                    english=record.english,
+                    plural=record.plural,
+                    example=record.example,
+                    related=record.related,
+                )
+                self._loaded_nouns.append(noun)
+            elif record_type == "adjective" and isinstance(record, AdjectiveRecord):
+                adjective = Adjective(
+                    word=record.word,
+                    english=record.english,
+                    example=record.example,
+                    comparative=record.comparative,
+                    superlative=record.superlative,
+                )
+                self._loaded_adjectives.append(adjective)
+            elif record_type == "adverb" and isinstance(record, AdverbRecord):
+                from .models.adverb import AdverbType
+
+                adverb_type = (
+                    AdverbType(record.type) if record.type else AdverbType.TIME
+                )
+                adverb = Adverb(
+                    word=record.word,
+                    english=record.english,
+                    type=adverb_type,
+                    example=record.example,
+                )
+                self._loaded_adverbs.append(adverb)
+            elif record_type == "negation" and isinstance(record, NegationRecord):
+                from .models.negation import NegationType
+
+                negation_type = (
+                    NegationType(record.type) if record.type else NegationType.GENERAL
+                )
+                negation = Negation(
+                    word=record.word,
+                    english=record.english,
+                    type=negation_type,
+                    example=record.example,
+                )
+                self._loaded_negations.append(negation)
 
     # Subdeck Organization Methods
 
@@ -387,7 +491,7 @@ class DeckBuilder:
         return cards_created
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
-        """Generate all cards for loaded data.
+        """Generate all cards using Clean Pipeline Architecture.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -395,6 +499,85 @@ class DeckBuilder:
         Returns:
             Dictionary with counts of cards generated by type
         """
+        if not self._loaded_records:
+            logger.warning("No records loaded - using legacy fallback")
+            return self._generate_all_cards_legacy(generate_media)
+
+        logger.info(
+            f"Generating cards via Clean Pipeline for {len(self._loaded_records)} records"
+        )
+
+        # **CLEAN PIPELINE FLOW**: Records → MediaEnricher → CardBuilder → AnkiBackend
+
+        # Step 1: Group records by type for processing
+        records_by_type: dict[str, list[BaseRecord]] = {}
+        for record in self._loaded_records:
+            record_type = record.__class__.__name__.replace("Record", "").lower()
+            if record_type not in records_by_type:
+                records_by_type[record_type] = []
+            records_by_type[record_type].append(record)
+
+        results = {}
+
+        for record_type, records in records_by_type.items():
+            logger.info(f"Processing {len(records)} {record_type} records")
+
+            # Step 2: Media enrichment (if enabled) - Clean Pipeline approach
+            enriched_data_list: list[dict[str, Any]] = []
+            if generate_media and self._media_enricher:
+                logger.info(f"Generating media for {record_type} records...")
+                # For now, use empty enrichment data - media generation will be handled in CardBuilder
+                enriched_data_list = [{}] * len(records)
+            else:
+                # No media generation - create empty enrichment data
+                enriched_data_list = [{}] * len(records)
+
+            # Step 3: Card building via CardBuilder service
+            logger.info(f"Building cards for {record_type} records...")
+            cards = self._card_builder.build_cards_from_records(
+                records, enriched_data_list
+            )
+
+            # Step 4: Create note types and add cards to backend via AnkiBackend
+            cards_created = 0
+            created_note_types = {}  # Cache note type IDs to avoid duplicates
+
+            for field_values, note_type in cards:
+                try:
+                    # Create note type if not already created
+                    if note_type.name not in created_note_types:
+                        note_type_id = self._backend.create_note_type(note_type)
+                        created_note_types[note_type.name] = note_type_id
+                        logger.debug(
+                            f"Created note type: {note_type.name} -> {note_type_id}"
+                        )
+                    else:
+                        note_type_id = created_note_types[note_type.name]
+
+                    # Add note with proper note_type_id
+                    self._backend.add_note(note_type_id, field_values)
+                    cards_created += 1
+                except Exception as e:
+                    logger.error(f"Failed to add {record_type} card: {e}")
+
+            results[f"{record_type}s"] = cards_created
+            logger.info(f"Created {cards_created} {record_type} cards")
+
+        total = sum(results.values())
+        logger.info(f"🎉 Clean Pipeline generated {total} total cards: {results}")
+
+        return results
+
+    def _generate_all_cards_legacy(self, generate_media: bool = True) -> dict[str, int]:
+        """Legacy fallback for card generation using old architecture.
+
+        Args:
+            generate_media: Whether to generate audio/image media
+
+        Returns:
+            Dictionary with counts of cards generated by type
+        """
+        logger.info("Using legacy card generation architecture")
         results = {}
 
         if self._loaded_nouns:
@@ -410,7 +593,7 @@ class DeckBuilder:
             results["negations"] = self.generate_negation_cards(generate_media)
 
         total = sum(results.values())
-        logger.info(f"Generated {total} total cards: {results}")
+        logger.info(f"Legacy architecture generated {total} total cards: {results}")
 
         return results
 
@@ -451,6 +634,14 @@ class DeckBuilder:
         Returns:
             Dictionary containing all available statistics
         """
+        # Count Clean Pipeline records by type
+        clean_pipeline_stats = {}
+        for record in self._loaded_records:
+            record_type = record.__class__.__name__.replace("Record", "").lower()
+            if record_type not in clean_pipeline_stats:
+                clean_pipeline_stats[record_type] = 0
+            clean_pipeline_stats[record_type] += 1
+
         stats = {
             "deck_info": {
                 "name": self.deck_name,
@@ -458,10 +649,15 @@ class DeckBuilder:
                 "media_enabled": self.enable_media_generation,
             },
             "loaded_data": {
+                # Legacy data (backward compatibility)
                 "nouns": len(self._loaded_nouns),
                 "adjectives": len(self._loaded_adjectives),
                 "adverbs": len(self._loaded_adverbs),
                 "negations": len(self._loaded_negations),
+                # Clean Pipeline data
+                **clean_pipeline_stats,
+                # Total records via Clean Pipeline
+                "total_clean_pipeline_records": len(self._loaded_records),
             },
             "deck_stats": self._deck_manager.get_stats(),
         }
@@ -488,11 +684,14 @@ class DeckBuilder:
 
     def clear_loaded_data(self) -> None:
         """Clear all loaded data from memory."""
+        # Clear legacy data
         self._loaded_nouns.clear()
         self._loaded_adjectives.clear()
         self._loaded_adverbs.clear()
         self._loaded_negations.clear()
-        logger.info("Cleared all loaded data")
+        # Clear Clean Pipeline data
+        self._loaded_records.clear()
+        logger.info("Cleared all loaded data (legacy + Clean Pipeline records)")
 
     # Context Manager Support
 
