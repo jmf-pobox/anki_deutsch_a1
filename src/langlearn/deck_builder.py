@@ -601,6 +601,11 @@ class DeckBuilder:
         for record_type, records in records_by_type.items():
             logger.info(f"Processing {len(records)} {record_type} records")
 
+            # Step 1.5: Create subdeck for this word type
+            subdeck_name = record_type.capitalize() + ("s" if not record_type.endswith("s") else "")
+            self.create_subdeck(subdeck_name)
+            logger.info(f"Created subdeck: {subdeck_name}")
+
             # Step 2: Media enrichment (if enabled) - Clean Pipeline batch processing
             enriched_data_list: list[dict[str, Any]] = []
             if generate_media and self._media_enricher:
@@ -690,6 +695,9 @@ class DeckBuilder:
 
             results[f"{record_type}s"] = cards_created
             logger.info(f"Created {cards_created} {record_type} cards")
+
+            # Step 5: Reset to main deck after processing this word type
+            self.reset_to_main_deck()
 
         total = sum(results.values())
         logger.info(f"🎉 Clean Pipeline generated {total} total cards: {results}")
