@@ -139,6 +139,31 @@ class RecordMapper:
                     csv_row.get("example_ihr", ""),
                     csv_row.get("example_sie", ""),
                 ]
+            elif record_type == "verb":
+                fields = [
+                    csv_row.get("verb", ""),
+                    csv_row.get("english", ""),
+                    csv_row.get("present_ich", ""),
+                    csv_row.get("present_du", ""),
+                    csv_row.get("present_er", ""),
+                    csv_row.get("perfect", ""),
+                    csv_row.get("example", ""),
+                ]
+            elif record_type == "preposition":
+                fields = [
+                    csv_row.get("preposition", ""),
+                    csv_row.get("english", ""),
+                    csv_row.get("case", ""),
+                    csv_row.get("example1", ""),
+                    csv_row.get("example2", ""),
+                ]
+            elif record_type == "phrase":
+                fields = [
+                    csv_row.get("phrase", ""),
+                    csv_row.get("english", ""),
+                    csv_row.get("context", ""),
+                    csv_row.get("related", ""),
+                ]
             else:
                 raise ValueError(f"Unsupported record type: {record_type}")
 
@@ -159,6 +184,9 @@ class RecordMapper:
             "adjective",
             "adverb",
             "negation",
+            "verb",
+            "preposition",
+            "phrase",
             "verb_conjugation",
             "verb_imperative",
         ]
@@ -301,6 +329,24 @@ class RecordMapper:
                     # Default to adverb if ambiguous
                     logger.debug("Detected adverb CSV format (default)")
                     return "adverb"
+
+            # Detect regular verb format
+            verb_indicators = {"verb", "english", "present_ich", "present_du", "present_er"}
+            if verb_indicators.issubset(headers):
+                logger.debug("Detected regular verb CSV format")
+                return "verb"
+
+            # Detect preposition format
+            preposition_indicators = {"preposition", "english", "case", "example1", "example2"}
+            if preposition_indicators.issubset(headers):
+                logger.debug("Detected preposition CSV format")
+                return "preposition"
+
+            # Detect phrase format
+            phrase_indicators = {"phrase", "english", "context", "related"}
+            if phrase_indicators.issubset(headers):
+                logger.debug("Detected phrase CSV format")
+                return "phrase"
 
             # If no patterns match, raise error
             raise ValueError(
