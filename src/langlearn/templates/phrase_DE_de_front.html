@@ -1,0 +1,29 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Common Phrase</div>
+
+<div class="phrase-prompt">
+    <div class="phrase-with-audio">
+        <span class="german">{{Phrase}}</span>
+        {{#PhraseAudio}}<span class="inline-audio">🔊 {{PhraseAudio}}</span>{{/PhraseAudio}}
+    </div>
+    
+    <div class="translation-challenge">
+        <div class="challenge-label">What does this phrase mean?</div>
+        <div class="context-clue">Context: {{Context}}</div>
+    </div>
+</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Show Translation</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

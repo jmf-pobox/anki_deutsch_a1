@@ -1,0 +1,44 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="phrase-info">
+    <div class="phrase-with-audio">
+        <span class="german">{{Phrase}}</span>
+        {{#PhraseAudio}}<span class="inline-audio">🔊 {{PhraseAudio}}</span>{{/PhraseAudio}}
+    </div>
+    
+    <div class="translation">{{English}}</div>
+</div>
+
+<div class="context-section">
+    <div class="context-header">Usage Context</div>
+    <div class="context-content">{{Context}}</div>
+</div>
+
+{{#Related}}<div class="related-section">
+    <div class="related-header">Related Phrases</div>
+    <div class="related-content">{{Related}}</div>
+</div>{{/Related}}
+
+<div class="usage-tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-content">
+        <strong>Learning Tip:</strong> Practice using this phrase in the context described above. 
+        German phrases often have specific situations where they're most appropriate.
+    </div>
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">🔄 Practice Again</button>
+    <div id="back-hint-content" class="hint-content hidden">
+        Try to use "{{Phrase}}" in a conversation or write a short dialogue including this phrase.
+    </div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>
