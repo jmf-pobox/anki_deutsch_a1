@@ -363,6 +363,7 @@ class StandardMediaEnricher(MediaEnricher):
             # Create domain model to use get_combined_audio_text() for full conjugations
             try:
                 from langlearn.models.verb import Verb
+
                 verb_model = Verb(
                     verb=record["verb"],
                     english=record.get("english", ""),
@@ -370,7 +371,7 @@ class StandardMediaEnricher(MediaEnricher):
                     present_du=record.get("present_du", ""),
                     present_er=record.get("present_er", ""),
                     perfect=record.get("perfect", ""),
-                    example=record.get("example", "")
+                    example=record.get("example", ""),
                 )
                 # Use combined audio with all conjugated forms and pronouns
                 combined_text = verb_model.get_combined_audio_text()
