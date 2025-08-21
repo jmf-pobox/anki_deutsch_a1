@@ -9,6 +9,19 @@
 
 ## 🎯 **Executive Summary**
 
+> CSV requirements summary (Clean Pipeline vs current samples)
+>
+> - Supported verb CSV types in code:
+>   - verb: headers = verb, english, present_ich, present_du, present_er, perfect, example (RecordMapper.map_csv_row_to_record)
+>   - verb_conjugation: headers = infinitive, meaning, classification, separable, auxiliary, tense, ich, du, er, wir, ihr, sie, example
+>   - verb_imperative: headers = infinitive, meaning, classification, separable, du_form, ihr_form, sie_form, example_du, example_ihr, example_sie
+> - Current samples in data/:
+>   - data/verbs.csv uses the verb schema (matches code expectations) ✓
+>   - data/regular_verbs.csv and data/irregular_verbs.csv also use the simple verb schema, NOT the verb_conjugation schema.
+>   - data/separable_verbs.csv uses the simple verb schema with an extra prefix column, NOT the verb_imperative schema.
+> - Implication: These three files will be auto-detected as type "verb" (by headers) and will build Core Verb cards. If you intended conjugation/imperative cards, update CSVs to the required headers above.
+> - DeckBuilder note: load_data_from_directory lists names for conjugation/imperative, but actual type detection is automatic and based on headers (RecordMapper.detect_csv_record_type). So renaming files alone doesn’t change the expected columns — the headers must match the intended type.
+
 This document presents a **two-tier verb learning system** that separates conceptual understanding from conjugation mastery. Each verb generates one **Core Verb Card** for meaning/context recognition, plus multiple **Conjugation Cards** for systematic tense practice appropriate to the learner's CEFR level.
 
 **Key Innovations**: 

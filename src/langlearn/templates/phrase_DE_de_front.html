@@ -1,22 +1,10 @@
 {{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
 
-<div class="part-of-speech">Common Phrase</div>
-
-<div class="phrase-prompt">
-    <div class="phrase-with-audio">
-        <span class="german">{{Phrase}}</span>
-        {{#PhraseAudio}}<span class="inline-audio">🔊 {{PhraseAudio}}</span>{{/PhraseAudio}}
-    </div>
-    
-    <div class="translation-challenge">
-        <div class="challenge-label">What does this phrase mean?</div>
-        <div class="context-clue">Context: {{Context}}</div>
-    </div>
-</div>
+<div class="part-of-speech">Redewendung</div>
 
 <div class="hint-container">
-    <button class="hint-button" onclick="showHint()">💡 Show Translation</button>
-    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+    <button class="hint-button" onclick="showHint()">💡 Hinweis</button>
+    <div id="hint-content" class="hint-content hidden">{{Context}}</div>
 </div>
 
 <script>

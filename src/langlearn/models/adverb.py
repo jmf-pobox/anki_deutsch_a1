@@ -124,7 +124,7 @@ class Adverb(BaseModel):
 
     def get_image_search_strategy(self) -> "Callable[[], str]":
         """Get a strategy for generating search terms without executing it immediately.
-        
+
         This lazy evaluation approach prevents unnecessary Anthropic API calls
         when images already exist or aren't needed.
 
@@ -132,6 +132,7 @@ class Adverb(BaseModel):
             A callable that when invoked will generate context-aware search terms,
             with fallback to adverb concept mappings
         """
+
         def generate_search_terms() -> str:
             """Execute the search term generation strategy."""
             if not self.english.strip():
@@ -149,21 +150,21 @@ class Adverb(BaseModel):
             except Exception:
                 # Fall back to concept mappings if Anthropic service fails
                 pass
-            
+
             # Return fallback search terms
             return self._get_fallback_search_terms()
-        
+
         return generate_search_terms
-    
+
     def get_image_search_terms(self) -> str:
         """Legacy method for backward compatibility - executes strategy immediately.
-        
+
         Note: This method maintains compatibility but should be replaced with
         get_image_search_strategy() for better performance.
         """
         strategy = self.get_image_search_strategy()
         return strategy()
-    
+
     def _get_fallback_search_terms(self) -> str:
         """Get fallback search terms using adverb concept mappings."""
 

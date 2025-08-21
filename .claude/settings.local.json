@@ -37,7 +37,15 @@
       "Bash(gh pr view:*)",
       "Bash(gh pr checks:*)",
       "Bash(gh api:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(gh pr checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(git merge:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(timeout:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue close:*)"
     ],
     "deny": []
   }

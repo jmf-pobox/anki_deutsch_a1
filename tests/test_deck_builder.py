@@ -189,7 +189,7 @@ class TestGermanDeckBuilder:
     def test_load_data_from_directory(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
-        """Test loading data from directory with multiple files."""
+        """Test loading data from directory with multiple files using Clean Pipeline."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
@@ -200,16 +200,30 @@ class TestGermanDeckBuilder:
             temp_path = Path(temp_dir)
             (temp_path / "nouns.csv").touch()
 
-            with (
-                patch.object(builder, "load_nouns_from_csv") as mock_load_nouns,
-                patch.object(builder, "load_adjectives_from_csv") as mock_load_adj,
-            ):
+            # Mock record mapper - testing directory logic, not CSV parsing
+            with patch.object(
+                builder._record_mapper, "load_records_from_csv"
+            ) as mock_load:
+                from langlearn.models.records import NounRecord
+
+                # Return mock records when CSV loading is called
+                mock_load.return_value = [
+                    NounRecord(
+                        noun="Katze",
+                        article="die",
+                        english="cat",
+                        plural="Katzen",
+                        example="Test",
+                        related="",
+                    )
+                ]
+
                 builder.load_data_from_directory(temp_dir)
 
-                # Should call load_nouns_from_csv since nouns.csv exists
-                mock_load_nouns.assert_called_once()
-                # Should not call load_adjectives_from_csv since file doesn't exist
-                mock_load_adj.assert_not_called()
+                # Should call load_records_from_csv once since nouns.csv exists
+                mock_load.assert_called_once()
+                # Should have loaded records
+                assert len(builder._loaded_records) == 1
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_create_subdeck(self, mock_anki: Mock) -> None:
@@ -688,7 +702,7 @@ class TestGermanDeckBuilder:
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
-        """Test loading data from directory with all file types."""
+        """Test loading data from directory with all file types using Clean Pipeline."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
@@ -702,19 +716,56 @@ class TestGermanDeckBuilder:
             (temp_path / "adverbs.csv").touch()
             (temp_path / "negations.csv").touch()
 
-            with (
-                patch.object(builder, "load_nouns_from_csv") as mock_load_nouns,
-                patch.object(builder, "load_adjectives_from_csv") as mock_load_adj,
-                patch.object(builder, "load_adverbs_from_csv") as mock_load_adv,
-                patch.object(builder, "load_negations_from_csv") as mock_load_neg,
-            ):
+            # Mock record mapper - testing directory logic, not CSV parsing
+            with patch.object(
+                builder._record_mapper, "load_records_from_csv"
+            ) as mock_load:
+                from langlearn.models.records import (
+                    AdjectiveRecord,
+                    AdverbRecord,
+                    NegationRecord,
+                    NounRecord,
+                )
+
+                # Return different record types based on call
+                mock_load.side_effect = [
+                    [
+                        NounRecord(
+                            noun="Katze",
+                            article="die",
+                            english="cat",
+                            plural="Katzen",
+                            example="Test",
+                            related="",
+                        )
+                    ],
+                    [
+                        AdjectiveRecord(
+                            word="schön",
+                            english="beautiful",
+                            example="Test",
+                            comparative="schöner",
+                            superlative="am schönsten",
+                        )
+                    ],
+                    [
+                        AdverbRecord(
+                            word="hier", english="here", type="location", example="Test"
+                        )
+                    ],
+                    [
+                        NegationRecord(
+                            word="nicht", english="not", type="general", example="Test"
+                        )
+                    ],
+                ]
+
                 builder.load_data_from_directory(temp_dir)
 
-                # Should call all loaders
-                mock_load_nouns.assert_called_once()
-                mock_load_adj.assert_called_once()
-                mock_load_adv.assert_called_once()
-                mock_load_neg.assert_called_once()
+                # Should call load_records_from_csv 4 times (once for each CSV file)
+                assert mock_load.call_count == 4
+                # Should have loaded records from all files
+                assert len(builder._loaded_records) == 4
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_generate_all_cards_with_all_types(

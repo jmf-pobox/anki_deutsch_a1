@@ -201,6 +201,9 @@ class TestRecordMapper:
             "adjective",
             "adverb",
             "negation",
+            "verb",
+            "preposition",
+            "phrase",
             "verb_conjugation",
             "verb_imperative",
         }
@@ -212,6 +215,9 @@ class TestRecordMapper:
         assert record_mapper.is_supported_record_type("adjective") is True
         assert record_mapper.is_supported_record_type("adverb") is True
         assert record_mapper.is_supported_record_type("negation") is True
+        assert record_mapper.is_supported_record_type("verb") is True
+        assert record_mapper.is_supported_record_type("preposition") is True
+        assert record_mapper.is_supported_record_type("phrase") is True
         assert record_mapper.is_supported_record_type("verb_conjugation") is True
         assert record_mapper.is_supported_record_type("verb_imperative") is True
 

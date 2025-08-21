@@ -331,13 +331,25 @@ class RecordMapper:
                     return "adverb"
 
             # Detect regular verb format
-            verb_indicators = {"verb", "english", "present_ich", "present_du", "present_er"}
+            verb_indicators = {
+                "verb",
+                "english",
+                "present_ich",
+                "present_du",
+                "present_er",
+            }
             if verb_indicators.issubset(headers):
                 logger.debug("Detected regular verb CSV format")
                 return "verb"
 
             # Detect preposition format
-            preposition_indicators = {"preposition", "english", "case", "example1", "example2"}
+            preposition_indicators = {
+                "preposition",
+                "english",
+                "case",
+                "example1",
+                "example2",
+            }
             if preposition_indicators.issubset(headers):
                 logger.debug("Detected preposition CSV format")
                 return "preposition"
