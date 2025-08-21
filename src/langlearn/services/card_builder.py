@@ -195,6 +195,17 @@ class CardBuilder:
                 "WordAudio",
                 "ExampleAudio",
             ],
+            "preposition": [
+                "Preposition",
+                "English",
+                "Case",
+                "Example1",
+                "Example2",
+                "Image",
+                "WordAudio",
+                "Example1Audio",
+                "Example2Audio",
+            ],
             "verb_conjugation": [
                 "Infinitive",
                 "English",
@@ -309,6 +320,14 @@ class CardBuilder:
                 "PresentEr": "present_er",
                 "Perfect": "perfect",
             },
+            "preposition": {
+                "Preposition": "preposition",
+                "Case": "case",
+                "Example1": "example1",
+                "Example2": "example2",
+                "Example1Audio": "example1_audio",
+                "Example2Audio": "example2_audio",
+            },
             "verb_conjugation": {
                 "Infinitive": "infinitive",
                 "English": "meaning",
@@ -402,6 +421,7 @@ class CardBuilder:
             "adverb",
             "negation",
             "verb",
+            "preposition",
             "verb_conjugation",
             "verb_imperative",
         ]
@@ -449,6 +469,7 @@ class CardBuilder:
             "adverb": ["word", "english", "type"],
             "negation": ["word", "english", "type"],
             "verb": ["verb", "english", "present_ich", "present_du", "present_er"],
+            "preposition": ["preposition", "english", "case", "example1", "example2"],
             "verb_conjugation": ["infinitive", "meaning", "tense", "ich", "du", "er"],
             "verb_imperative": [
                 "infinitive",
@@ -479,6 +500,7 @@ class CardBuilder:
             "AdverbRecord": "adverb",
             "NegationRecord": "negation",
             "VerbRecord": "verb",
+            "PrepositionRecord": "preposition",
             "VerbConjugationRecord": "verb_conjugation",
             "VerbImperativeRecord": "verb_imperative",
         }
