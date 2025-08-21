@@ -1,0 +1,35 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Preposition</div>
+
+<div class="preposition-prompt">
+    <div class="preposition-with-audio">
+        <span class="german">{{Preposition}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="case-challenge">
+        <div class="challenge-label">What case does this preposition require?</div>
+        <div class="case-options">
+            <div class="case-option">Nominativ</div>
+            <div class="case-option">Akkusativ</div>
+            <div class="case-option">Dativ</div>
+            <div class="case-option">Genitiv</div>
+            <div class="case-option">Variable (movement/location)</div>
+        </div>
+    </div>
+</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Hint</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>
