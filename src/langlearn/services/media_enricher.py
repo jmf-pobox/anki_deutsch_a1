@@ -149,12 +149,21 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image (only for concrete nouns)
         if not record.get("image") and noun.is_concrete():
-            search_terms = noun.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["noun"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms (EFFICIENCY FIX)
+            word = record["noun"]
+            if not self.image_exists(word):
+                # Only generate search terms when actually needed - saves API calls!
+                search_strategy = noun.get_image_search_strategy()
+                search_terms = search_strategy()  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -175,14 +184,23 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Generate image
+        # Generate image  
         if not record.get("image"):
-            search_terms = adjective.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["word"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms (EFFICIENCY FIX)
+            word = record["word"]
+            if not self.image_exists(word):
+                # Only generate search terms when actually needed - saves API calls!
+                search_strategy = adjective.get_image_search_strategy()
+                search_terms = search_strategy()  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -204,12 +222,21 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image
         if not record.get("image"):
-            search_terms = adverb.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["word"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms (EFFICIENCY FIX)
+            word = record["word"]
+            if not self.image_exists(word):
+                # Only generate search terms when actually needed - saves API calls!
+                search_strategy = adverb.get_image_search_strategy()
+                search_terms = search_strategy()  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -231,12 +258,21 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image
         if not record.get("image"):
-            search_terms = negation.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["word"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms (EFFICIENCY FIX)
+            word = record["word"]
+            if not self.image_exists(word):
+                # Only generate search terms when actually needed - saves API calls!
+                search_strategy = negation.get_image_search_strategy()
+                search_terms = search_strategy()  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 

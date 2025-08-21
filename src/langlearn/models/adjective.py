@@ -1,6 +1,11 @@
 """Model for German adjectives."""
 
+from typing import TYPE_CHECKING
+
 from pydantic import BaseModel, Field
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # Removed field_processor import - now pure domain model
 
@@ -132,25 +137,47 @@ class Adjective(BaseModel):
 
     # Removed field processing methods - now pure domain model with only business logic
 
-    def get_image_search_terms(self) -> str:
-        """Get enhanced search terms prioritizing sentence context for better results.
+    def get_image_search_strategy(self) -> "Callable[[], str]":
+        """Get a strategy for generating search terms without executing it immediately.
+        
+        This lazy evaluation approach prevents unnecessary Anthropic API calls
+        when images already exist or aren't needed.
 
         Returns:
-            Context-aware search terms generated from the example sentence,
+            A callable that when invoked will generate context-aware search terms,
             with fallback to concept mappings for abstract adjectives
         """
-        # Try to use Anthropic service for context-aware query generation
-        try:
-            from langlearn.services.service_container import get_anthropic_service
+        def generate_search_terms() -> str:
+            """Execute the search term generation strategy."""
+            # Try to use Anthropic service for context-aware query generation
+            try:
+                from langlearn.services.service_container import get_anthropic_service
 
-            service = get_anthropic_service()
-            if service:
-                context_query = service.generate_pexels_query(self)
-                if context_query and context_query.strip():
-                    return context_query.strip()
-        except Exception:
-            # Fall back to concept mappings if Anthropic service fails
-            pass
+                service = get_anthropic_service()
+                if service:
+                    context_query = service.generate_pexels_query(self)
+                    if context_query and context_query.strip():
+                        return context_query.strip()
+            except Exception:
+                # Fall back to concept mappings if Anthropic service fails
+                pass
+            
+            # Return fallback search terms
+            return self._get_fallback_search_terms()
+        
+        return generate_search_terms
+    
+    def get_image_search_terms(self) -> str:
+        """Legacy method for backward compatibility - executes strategy immediately.
+        
+        Note: This method maintains compatibility but should be replaced with
+        get_image_search_strategy() for better performance.
+        """
+        strategy = self.get_image_search_strategy()
+        return strategy()
+    
+    def _get_fallback_search_terms(self) -> str:
+        """Get fallback search terms using concept mappings."""
 
         # Enhanced concept mappings for difficult-to-visualize adjectives
         concept_mappings = {
