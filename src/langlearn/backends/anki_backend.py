@@ -17,6 +17,7 @@ from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.model_factory import ModelFactory
 from langlearn.models.negation import Negation, NegationType
 from langlearn.models.noun import Noun
+from langlearn.models.preposition import Preposition
 from langlearn.models.records import create_record
 from langlearn.models.verb import Verb
 from langlearn.protocols import MediaServiceProtocol
@@ -305,6 +306,8 @@ class AnkiBackend(DeckBackend):
                 "German Negation with Media": "negation",
                 "German Verb": "verb",
                 "German Verb with Media": "verb",
+                "German Preposition": "preposition",
+                "German Preposition with Media": "preposition",
             }
 
             # Check if we support this note type with new architecture
@@ -442,6 +445,14 @@ class AnkiBackend(DeckBackend):
                 present_er=record.present_er,
                 perfect=record.perfect,
                 example=record.example,
+            )
+        elif record_type == "preposition":
+            return Preposition(
+                preposition=record.preposition,
+                english=record.english,
+                case=record.case,
+                example1=record.example1,
+                example2=record.example2,
             )
         else:
             raise ValueError(f"Unsupported record type: {record_type}")
