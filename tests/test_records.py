@@ -13,6 +13,7 @@ from langlearn.models.records import (
     BaseRecord,
     NegationRecord,
     NounRecord,
+    PrepositionRecord,
     VerbConjugationRecord,
     VerbImperativeRecord,
     VerbRecord,
@@ -327,6 +328,7 @@ class TestRecordTypeRegistry:
             "adverb",
             "negation",
             "verb",
+            "preposition",
             "verb_conjugation",
             "verb_imperative",
         }
@@ -337,6 +339,7 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["adverb"] == AdverbRecord
         assert RECORD_TYPE_REGISTRY["negation"] == NegationRecord
         assert RECORD_TYPE_REGISTRY["verb"] == VerbRecord
+        assert RECORD_TYPE_REGISTRY["preposition"] == PrepositionRecord
         assert RECORD_TYPE_REGISTRY["verb_conjugation"] == VerbConjugationRecord
         assert RECORD_TYPE_REGISTRY["verb_imperative"] == VerbImperativeRecord
 
@@ -388,6 +391,24 @@ class TestRecordTypeRegistry:
         assert record.present_er == "arbeitet"
         assert record.perfect == "hat gearbeitet"
         assert record.example == "Ich arbeite bei Siemens."
+
+    def test_create_record_preposition(self) -> None:
+        """Test creating preposition record via factory function."""
+        fields = [
+            "in",
+            "in",
+            "Accusative/Dative",
+            "Ich gehe in die Schule.",
+            "Ich bin in der Schule.",
+        ]
+        record = create_record("preposition", fields)
+
+        assert isinstance(record, PrepositionRecord)
+        assert record.preposition == "in"
+        assert record.english == "in"
+        assert record.case == "Accusative/Dative"
+        assert record.example1 == "Ich gehe in die Schule."
+        assert record.example2 == "Ich bin in der Schule."
 
     def test_create_record_negation(self) -> None:
         """Test creating negation record via factory function."""
