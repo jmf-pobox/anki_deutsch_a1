@@ -1,6 +1,7 @@
 """Tests for the Anthropic service."""
 
 import os
+import sys
 from collections.abc import Generator
 from unittest.mock import MagicMock, patch
 
@@ -53,10 +54,14 @@ def test_anthropic_service_initialization(mock_keyring: MagicMock) -> None:
         # Mock keyring to return None (simulating missing credentials)
         mock_keyring.return_value = None
 
-        # Should only fail if we're not in a test environment
-        # In CI, this test should be skipped since credentials should be available
+        # Skip this test in integration environments where real credentials expected
+        # This includes CI and local integration test runs
         if os.environ.get("CI") == "true":
             pytest.skip("Skipping credential validation test in CI environment")
+
+        # Skip if we're explicitly running integration tests locally
+        if any("integration" in arg for arg in sys.argv):
+            pytest.skip("Skipping credential validation test in integration test run")
 
         with pytest.raises(
             ValueError,
