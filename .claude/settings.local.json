@@ -48,7 +48,8 @@
       "Bash(gh issue close:*)",
       "Bash(gh pr create:*)",
       "Bash(gh issue list:*)",
-      "Bash(gh issue:*)"
+      "Bash(gh issue:*)",
+      "Bash(gh pr comment:*)"
     ],
     "deny": []
   }

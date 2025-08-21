@@ -133,11 +133,13 @@ class MediaFileRegistrar:
         if filename.startswith("/") or filename.startswith("\\"):
             return False
 
-        # Check for invalid characters (keep alphanumeric, dots, dashes, underscores)
-        import string
+        # Use regex pattern for comprehensive filename validation
+        # Disallow consecutive dots, filenames starting/ending with dots
+        # Only allow alphanumerics, single dots, dashes, underscores
+        import re
 
-        allowed_chars = string.ascii_letters + string.digits + ".-_"
-        return all(c in allowed_chars for c in filename)
+        safe_pattern = r"^[A-Za-z0-9](?!.*\.\.)[A-Za-z0-9._-]*[A-Za-z0-9_-]$"
+        return re.match(safe_pattern, filename) is not None
 
     def _extract_image_references(self, content: str) -> list[str]:
         """Extract image file references from content.

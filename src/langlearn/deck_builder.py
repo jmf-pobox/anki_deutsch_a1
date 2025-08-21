@@ -601,33 +601,51 @@ class DeckBuilder:
         for record_type, records in records_by_type.items():
             logger.info(f"Processing {len(records)} {record_type} records")
 
-            # Step 2: Media enrichment (if enabled) - Clean Pipeline approach
+            # Step 2: Media enrichment (if enabled) - Clean Pipeline batch processing
             enriched_data_list: list[dict[str, Any]] = []
             if generate_media and self._media_enricher:
                 logger.info(f"Generating media for {record_type} records...")
+
+                # Collect all records and domain models for batch enrichment
+                record_dicts = []
+                domain_models = []
                 for rec in records:
                     try:
                         domain_model = self._record_to_domain_model(rec)
-                        enriched = self._media_enricher.enrich_record(
-                            rec.to_dict(), domain_model
-                        )
-                        # Keep only media-related fields to merge into cards
-                        media_keys = {
-                            "image",
-                            "word_audio",
-                            "example_audio",
-                            "phrase_audio",
-                            "example1_audio",
-                            "example2_audio",
-                            "du_audio",
-                            "ihr_audio",
-                            "sie_audio",
-                        }
+                        record_dicts.append(rec.to_dict())
+                        domain_models.append(domain_model)
+                    except Exception as e:
+                        logger.warning(f"Failed to map record to domain model: {e}")
+                        record_dicts.append(rec.to_dict())
+                        domain_models.append(None)
+
+                # Batch enrich all records
+                try:
+                    enriched_list = self._media_enricher.enrich_records(
+                        record_dicts, domain_models
+                    )
+                except Exception as e:
+                    logger.error(f"Batch enrichment failed for {record_type}: {e}")
+                    enriched_list = [{} for _ in records]
+
+                # Keep only media-related fields to merge into cards
+                media_keys = {
+                    "image",
+                    "word_audio",
+                    "example_audio",
+                    "phrase_audio",
+                    "example1_audio",
+                    "example2_audio",
+                    "du_audio",
+                    "ihr_audio",
+                    "sie_audio",
+                }
+                for enriched in enriched_list:
+                    if isinstance(enriched, dict):
                         enriched_data_list.append(
                             {k: v for k, v in enriched.items() if k in media_keys and v}
                         )
-                    except Exception as e:
-                        logger.warning(f"Media enrichment failed for record {rec}: {e}")
+                    else:
                         enriched_data_list.append({})
             else:
                 # No media generation - create empty enrichment data

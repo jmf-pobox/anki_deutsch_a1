@@ -381,7 +381,19 @@ class StandardMediaEnricher(MediaEnricher):
             except Exception as e:
                 # Fallback to simple infinitive audio if domain model creation fails
                 verb_name = record.get("verb", "unknown")
-                logger.warning(f"Verb model creation failed for {verb_name}: {e}")
+                verb_fields = [
+                    "verb",
+                    "english",
+                    "present_ich",
+                    "present_du",
+                    "present_er",
+                    "perfect",
+                ]
+                verb_data = {k: v for k, v in record.items() if k in verb_fields}
+                logger.warning(
+                    f"Verb model creation failed for '{verb_name}' "
+                    f"(type: {type(e).__name__}): {e}. Data: {verb_data}"
+                )
                 audio_path = self._get_or_generate_audio(record["verb"])
                 if audio_path:
                     record["word_audio"] = f"[sound:{Path(audio_path).name}]"
@@ -402,6 +414,31 @@ class StandardMediaEnricher(MediaEnricher):
                 record["image"] = f'<img src="{image_filename}">'
 
         return record
+
+    def enrich_records(
+        self, record_dicts: list[dict[str, Any]], domain_models: list[Any]
+    ) -> list[dict[str, Any]]:
+        """Batch enrich multiple records for improved performance.
+
+        Args:
+            record_dicts: List of record dictionaries to enrich
+            domain_models: Corresponding list of domain models (can contain None)
+
+        Returns:
+            List of enriched record dictionaries
+        """
+        enriched_records = []
+
+        for record_dict, domain_model in zip(record_dicts, domain_models, strict=False):
+            try:
+                enriched = self.enrich_record(record_dict, domain_model)
+                enriched_records.append(enriched)
+            except Exception as e:
+                word = record_dict.get("word", "unknown")
+                logger.warning(f"Record enrichment failed for {word}: {e}")
+                enriched_records.append({})
+
+        return enriched_records
 
     def _get_or_generate_audio(self, text: str) -> str | None:
         """Get existing audio or generate if not exists.
