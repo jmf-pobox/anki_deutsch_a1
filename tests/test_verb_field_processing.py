@@ -280,7 +280,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "sein, ich bin, er ist, ist gewesen"  # Should skip empty du form, include perfect
+        expected = "sein, ich bin, er ist, ist gewesen"  # Skip empty, include perfect
 
         assert combined_text == expected
 
