@@ -260,7 +260,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "arbeiten, ich arbeite, du arbeitest, er arbeitet"
+        expected = "arbeiten, ich arbeite, du arbeitest, er arbeitet, hat gearbeitet"
 
         assert combined_text == expected
 
@@ -280,7 +280,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "sein, ich bin, er ist"  # Should skip empty du form
+        expected = "sein, ich bin, er ist, ist gewesen"  # Should skip empty du form, include perfect
 
         assert combined_text == expected
 
@@ -300,7 +300,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "verstehen"  # Should only include infinitive
+        expected = "verstehen, hat verstanden"  # Should include infinitive and perfect
 
         assert combined_text == expected
 

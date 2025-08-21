@@ -23,6 +23,7 @@ from .models.records import BaseRecord
 from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
 from .services.card_builder import CardBuilder
 from .services.csv_service import CSVService
+from .services.media_file_registrar import MediaFileRegistrar
 from .services.media_service import MediaService
 from .services.record_mapper import RecordMapper
 from .services.template_service import TemplateService
@@ -143,6 +144,9 @@ class DeckBuilder:
         )
         self._media_manager = MediaManager(self._backend, media_service_for_manager)
 
+        # Initialize MediaFileRegistrar for Clean Pipeline
+        self._media_file_registrar = MediaFileRegistrar()
+
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
             from .services.media_enricher import StandardMediaEnricher
@@ -255,7 +259,7 @@ class DeckBuilder:
         logger.info(f"Loaded {len(negations)} negations")
 
     def load_data_from_directory(self, data_dir: str | Path) -> None:
-        """Load all available data files from a directory using Clean Pipeline Architecture.
+        """Load all available data files from a directory using Clean Pipeline.
 
         Args:
             data_dir: Directory containing CSV data files
@@ -272,9 +276,9 @@ class DeckBuilder:
             "verbs.csv": "verb",
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
-            "regular_verbs.csv": "verb_conjugation",
-            "irregular_verbs.csv": "verb_conjugation",
-            "separable_verbs.csv": "verb_imperative",
+            "regular_verbs.csv": "verb",
+            "irregular_verbs.csv": "verb",
+            "separable_verbs.csv": "verb",
         }
 
         for filename, record_type in csv_to_record_type.items():
@@ -286,7 +290,7 @@ class DeckBuilder:
                 self._loaded_records.extend(records)
                 logger.info(f"Loaded {len(records)} {record_type} records")
 
-                # Legacy compatibility: also load into old domain models for backward compatibility
+                # Legacy compatibility: load into old domain models too
                 self._load_legacy_models_from_records(records, record_type)
             else:
                 logger.debug(f"Data file not found: {file_path}")
@@ -357,6 +361,81 @@ class DeckBuilder:
                     example=record.example,
                 )
                 self._loaded_negations.append(negation)
+
+    def _record_to_domain_model(self, rec: BaseRecord) -> Any:
+        """Convert a record into a legacy domain model where available.
+
+        Provides domain behavior (e.g., get_image_search_strategy,
+        get_combined_audio_text) expected by StandardMediaEnricher.
+        For unsupported types, returns the record itself.
+        """
+        try:
+            from .models.records import (
+                AdjectiveRecord,
+                AdverbRecord,
+                NegationRecord,
+                NounRecord,
+                VerbRecord,
+            )
+
+            if isinstance(rec, NounRecord):
+                return Noun(
+                    noun=rec.noun,
+                    article=rec.article,
+                    english=rec.english,
+                    plural=rec.plural,
+                    example=rec.example,
+                    related=rec.related,
+                )
+            if isinstance(rec, AdjectiveRecord):
+                return Adjective(
+                    word=rec.word,
+                    english=rec.english,
+                    example=rec.example,
+                    comparative=rec.comparative,
+                    superlative=rec.superlative,
+                )
+            if isinstance(rec, AdverbRecord):
+                from .models.adverb import Adverb as AdvModel
+                from .models.adverb import AdverbType
+
+                adv_type = AdverbType(rec.type) if rec.type else AdverbType.TIME
+                return AdvModel(
+                    word=rec.word,
+                    english=rec.english,
+                    type=adv_type,
+                    example=rec.example,
+                )
+            if isinstance(rec, NegationRecord):
+                from .models.negation import Negation as NegModel
+                from .models.negation import NegationType
+
+                neg_type = NegationType(rec.type) if rec.type else NegationType.GENERAL
+                return NegModel(
+                    word=rec.word,
+                    english=rec.english,
+                    type=neg_type,
+                    example=rec.example,
+                )
+            if isinstance(rec, VerbRecord):
+                from .models.verb import Verb
+
+                return Verb(
+                    verb=rec.verb,
+                    english=rec.english,
+                    present_ich=rec.present_ich,
+                    present_du=rec.present_du,
+                    present_er=rec.present_er,
+                    perfect=rec.perfect,
+                    example=rec.example,
+                )
+        except Exception:
+            # If anything goes wrong, just fall back to the record itself
+            pass
+
+        # For other record types (verb, phrase, preposition, etc.),
+        # StandardMediaEnricher should be extended to operate on record dicts directly.
+        return rec
 
     # Subdeck Organization Methods
 
@@ -491,7 +570,7 @@ class DeckBuilder:
         return cards_created
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
-        """Generate all cards using Clean Pipeline Architecture.
+        """Generate all cards using Clean Pipeline.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -503,9 +582,7 @@ class DeckBuilder:
             logger.warning("No records loaded - using legacy fallback")
             return self._generate_all_cards_legacy(generate_media)
 
-        logger.info(
-            f"Generating cards via Clean Pipeline for {len(self._loaded_records)} records"
-        )
+        logger.info(f"Generating cards for {len(self._loaded_records)} records")
 
         # **CLEAN PIPELINE FLOW**: Records → MediaEnricher → CardBuilder → AnkiBackend
 
@@ -526,8 +603,30 @@ class DeckBuilder:
             enriched_data_list: list[dict[str, Any]] = []
             if generate_media and self._media_enricher:
                 logger.info(f"Generating media for {record_type} records...")
-                # For now, use empty enrichment data - media generation will be handled in CardBuilder
-                enriched_data_list = [{}] * len(records)
+                for rec in records:
+                    try:
+                        domain_model = self._record_to_domain_model(rec)
+                        enriched = self._media_enricher.enrich_record(
+                            rec.to_dict(), domain_model
+                        )
+                        # Keep only media-related fields to merge into cards
+                        media_keys = {
+                            "image",
+                            "word_audio",
+                            "example_audio",
+                            "phrase_audio",
+                            "example1_audio",
+                            "example2_audio",
+                            "du_audio",
+                            "ihr_audio",
+                            "sie_audio",
+                        }
+                        enriched_data_list.append(
+                            {k: v for k, v in enriched.items() if k in media_keys and v}
+                        )
+                    except Exception as e:
+                        logger.warning(f"Media enrichment failed for record {rec}: {e}")
+                        enriched_data_list.append({})
             else:
                 # No media generation - create empty enrichment data
                 enriched_data_list = [{}] * len(records)
@@ -554,8 +653,17 @@ class DeckBuilder:
                     else:
                         note_type_id = created_note_types[note_type.name]
 
-                    # Add note with proper note_type_id
-                    self._backend.add_note(note_type_id, field_values)
+                    # Skip media processing since CardBuilder already processed fields
+                    self._backend.add_note(
+                        note_type_id, field_values, skip_media_processing=True
+                    )
+
+                    # Register media files referenced in this card
+                    if self._media_file_registrar:
+                        self._media_file_registrar.register_card_media(
+                            field_values, self._backend
+                        )
+
                     cards_created += 1
                 except Exception as e:
                     logger.error(f"Failed to add {record_type} card: {e}")

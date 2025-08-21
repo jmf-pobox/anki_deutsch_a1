@@ -119,8 +119,8 @@ class Verb(BaseModel, FieldProcessor):
         """Get combined text for verb conjugation audio.
 
         Returns:
-            Combined text showing verb conjugations:
-            "gehen, ich gehe, du gehst, er geht"
+            Combined text showing verb conjugations including perfect tense:
+            "gehen, ich gehe, du gehst, er geht, hat gegangen"
         """
         parts = [self.verb]
         if self.present_ich:
@@ -129,4 +129,6 @@ class Verb(BaseModel, FieldProcessor):
             parts.append(f"du {self.present_du}")
         if self.present_er:
             parts.append(f"er {self.present_er}")
+        if self.perfect:
+            parts.append(self.perfect)
         return ", ".join(parts)
