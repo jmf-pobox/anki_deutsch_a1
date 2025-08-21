@@ -163,7 +163,7 @@ class StandardMediaEnricher(MediaEnricher):
             # Check if image already exists before generating search terms
             word = record["noun"]
             if not self.image_exists(word):
-                # Only generate search terms when actually needed - saves API calls!
+                # Generate search terms (API calls) only if image missing
                 search_strategy = noun.get_image_search_strategy()
                 search_terms = (
                     search_strategy()
@@ -202,7 +202,7 @@ class StandardMediaEnricher(MediaEnricher):
             # Check if image already exists before generating search terms
             word = record["word"]
             if not self.image_exists(word):
-                # Only generate search terms when actually needed - saves API calls!
+                # Generate search terms (API calls) only if image missing
                 search_strategy = adjective.get_image_search_strategy()
                 search_terms = (
                     search_strategy()
@@ -240,7 +240,7 @@ class StandardMediaEnricher(MediaEnricher):
             # Check if image already exists before generating search terms
             word = record["word"]
             if not self.image_exists(word):
-                # Only generate search terms when actually needed - saves API calls!
+                # Generate search terms (API calls) only if image missing
                 search_strategy = adverb.get_image_search_strategy()
                 search_terms = (
                     search_strategy()
@@ -278,7 +278,7 @@ class StandardMediaEnricher(MediaEnricher):
             # Check if image already exists before generating search terms
             word = record["word"]
             if not self.image_exists(word):
-                # Only generate search terms when actually needed - saves API calls!
+                # Generate search terms (API calls) only if image missing
                 search_strategy = negation.get_image_search_strategy()
                 search_terms = (
                     search_strategy()
@@ -378,8 +378,10 @@ class StandardMediaEnricher(MediaEnricher):
                 audio_path = self._get_or_generate_audio(combined_text)
                 if audio_path:
                     record["word_audio"] = f"[sound:{Path(audio_path).name}]"
-            except Exception:
+            except Exception as e:
                 # Fallback to simple infinitive audio if domain model creation fails
+                verb_name = record.get("verb", "unknown")
+                logger.warning(f"Verb model creation failed for {verb_name}: {e}")
                 audio_path = self._get_or_generate_audio(record["verb"])
                 if audio_path:
                     record["word_audio"] = f"[sound:{Path(audio_path).name}]"

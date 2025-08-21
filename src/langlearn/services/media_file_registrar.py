@@ -110,7 +110,34 @@ class MediaFileRegistrar:
         # Match [sound:filename.mp3] pattern (exclude empty filenames)
         audio_pattern = r"\[sound:([^]\s]+)\]"
         matches = re.findall(audio_pattern, content)
-        return [match for match in matches if match.strip()]
+        return [
+            match
+            for match in matches
+            if match.strip() and self._is_safe_filename(match.strip())
+        ]
+
+    def _is_safe_filename(self, filename: str) -> bool:
+        """Validate that filename is safe and doesn't contain path traversal sequences.
+
+        Args:
+            filename: Filename to validate
+
+        Returns:
+            True if filename is safe, False otherwise
+        """
+        # Check for path traversal attempts
+        if "../" in filename or "..\\" in filename:
+            return False
+
+        # Check for absolute paths
+        if filename.startswith("/") or filename.startswith("\\"):
+            return False
+
+        # Check for invalid characters (keep alphanumeric, dots, dashes, underscores)
+        import string
+
+        allowed_chars = string.ascii_letters + string.digits + ".-_"
+        return all(c in allowed_chars for c in filename)
 
     def _extract_image_references(self, content: str) -> list[str]:
         """Extract image file references from content.
@@ -124,7 +151,7 @@ class MediaFileRegistrar:
         # Match <img src="filename.jpg"> pattern (various formats)
         img_pattern = r'<img[^>]+src=[\'"]([^>\'"]+)[\'"][^>]*>'
         matches = re.findall(img_pattern, content)
-        return matches
+        return [match for match in matches if self._is_safe_filename(match)]
 
     def _register_audio_file(self, filename: str, backend: DeckBackend) -> bool:
         """Register an audio file with the backend.

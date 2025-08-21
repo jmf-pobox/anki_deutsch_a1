@@ -429,9 +429,11 @@ class DeckBuilder:
                     perfect=rec.perfect,
                     example=rec.example,
                 )
-        except Exception:
+        except Exception as e:
             # If anything goes wrong, just fall back to the record itself
-            pass
+            logger.debug(
+                f"Domain model conversion failed for {type(rec).__name__}: {e}"
+            )
 
         # For other record types (verb, phrase, preposition, etc.),
         # StandardMediaEnricher should be extended to operate on record dicts directly.
