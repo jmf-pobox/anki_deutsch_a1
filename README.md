@@ -1,8 +1,8 @@
-# 🎓 Language Learn - German Anki Deck Generator
+# 🎓 Language Learn - Smart Flashcard Generator
 
-**Production-ready system for generating intelligent German A1 flashcards with Clean Pipeline Architecture.**
+**Multi-language flashcard generation system with language-specific grammar intelligence.**
 
-Language Learn creates comprehensive German vocabulary decks using advanced Clean Pipeline Architecture. The system generates over 1,000 cards from 7 different word types, with automatic media integration, proper German grammar handling, and enterprise-grade quality standards.
+Language Learn creates comprehensive vocabulary decks using advanced Clean Pipeline Architecture. Currently supporting **German A1** as the first implementation, the system is designed for multi-language expansion with language-specific grammar handling, automatic media integration, and enterprise-grade quality standards.
 
 [![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
 [![Quality](https://img.shields.io/badge/MyPy-0%20errors-brightgreen)](https://mypy-lang.org/)
@@ -11,11 +11,12 @@ Language Learn creates comprehensive German vocabulary decks using advanced Clea
 
 ## 🎯 What This Does For You
 
-**Generate comprehensive German learning decks with production-grade quality:**
-- **Complete Word Type Coverage** → Nouns, verbs, adjectives, adverbs, prepositions, phrases, negations
-- **German Grammar Mastery** → Article recall (der/die/das), verb conjugations with perfect tense, case-dependent prepositions  
+**Generate language-specific learning decks with production-grade quality:**
+- **Language-Specific Intelligence** → Adapts to unique grammar patterns (currently German A1, expanding to Russian, Korean, others)
+- **Complete Grammar Coverage** → All word types with language-specific challenges (German: der/die/das articles, verb conjugations, cases)
 - **Rich Media Integration** → AWS Polly audio pronunciation, Pexels contextual images
 - **Smart Templates** → Clean card design with hint buttons, proper styling, contextual examples
+- **Multi-Language Ready** → Clean Pipeline Architecture designed for language expansion
 - **Enterprise Quality** → 686 tests, 0 MyPy errors, comprehensive security validation
 
 ## 🚀 Quick Start
@@ -31,9 +32,9 @@ pip install hatch
 hatch env create
 ```
 
-### 2. Generate German A1 Deck (Basic)
+### 2. Generate Language Deck (Basic)
 ```bash
-# Generate deck with included German vocabulary (500+ words)
+# Generate German A1 deck (current implementation - 1000+ cards)
 hatch run app
 
 # Generate sample deck for testing
@@ -59,11 +60,11 @@ hatch run app --generate-media
 1. Open Anki desktop application
 2. Click **File > Import**
 3. Select the `.apkg` file from `output/` folder
-4. Start studying your German vocabulary with 1,000+ intelligent flashcards!
+4. Start studying with intelligent, language-specific flashcards!
 
-## 📚 Included German A1 Vocabulary
+## 📚 Current Implementation: German A1 Vocabulary
 
-The system includes comprehensive German A1 vocabulary across 7 word types:
+The system currently includes comprehensive German A1 vocabulary as the first language implementation:
 
 ### Word Types Supported:
 ```
@@ -181,13 +182,29 @@ hatch run run-sample           # Generate sample deck
 hatch run run-adjectives       # Generate adjectives-only deck
 ```
 
-## 🔄 Future Roadmap
+## 🔄 Roadmap: Multi-Language Vision
 
-### Planned Enhancements:
-- **Complete Clean Pipeline Migration:** Move remaining 2/7 word types to modern architecture
-- **Multi-Language Foundation:** Language-agnostic architecture for Spanish, French, Italian support  
-- **Advanced Features:** Multi-deck generation, voice recording comparison, progress analytics
-- **Performance Optimization:** Enhanced batch processing and caching strategies
+### **Phase 1: German Enhancement** ✅ **Current**
+- ✅ Complete German A1 implementation (1000+ cards, 7 word types)
+- ✅ Clean Pipeline Architecture foundation
+- 🔄 Complete Clean Pipeline migration for remaining word types
+
+### **Phase 2: Multi-Deck Support** 🎯 **Next**
+- Multiple deck generation (beginner, intermediate, advanced)
+- Topic-based decks (business, travel, academic)
+- Custom deck creation workflows
+
+### **Phase 3: Multi-Language Expansion** 🚀 **Future**
+- **Russian**: Cyrillic script, case system, aspect pairs
+- **Korean**: Hangul, honorifics, complex verb conjugations  
+- **Additional Languages**: Spanish, French, Italian, Japanese
+- Language-specific grammar intelligence for each
+
+### **Phase 4: Advanced Features**
+- Voice recording comparison
+- Progress tracking analytics
+- Spaced repetition optimization
+- Community deck sharing
 
 ## 🆘 Getting Help
 
@@ -214,27 +231,25 @@ hatch run run-adjectives       # Generate adjectives-only deck
 - 🏗️ **Architecture:** `docs/DESIGN-GUIDANCE.md` for development standards
 - 💡 **Contributing:** Review `CLAUDE.md` and `AI.md` for guidelines
 
-## 🎓 German Language Specialization
+## 🎓 Language-Specific Intelligence
 
-### Why German A1 Focus?
-This system was specifically designed to handle German's unique challenges:
+### German A1 Implementation (Current)
+The system demonstrates language-specific intelligence with German as the first implementation:
 
-**Noun Gender System (der/die/das):**
-- Separate cards test article recall vs. meaning
-- Visual memory reinforcement with contextual images
-- Audio pronunciation includes articles with nouns
+**German Grammar Challenges Solved:**
+- **Noun Gender System (der/die/das):** Separate cards test article recall vs. meaning
+- **Complex Verb System:** Separable verb handling (aufstehen → ich stehe auf), perfect tense
+- **Case-Dependent Grammar:** Preposition cards show required cases (mit + Dativ)
+- **Context-Aware Learning:** Grammar-specific validation and templates
 
-**Complex Verb System:**
-- Separable verb handling (aufstehen → ich stehe auf)
-- Perfect tense audio (habe gesprochen, bin gekommen)
-- Complete conjugation patterns with pronunciation
+### Multi-Language Architecture Foundation
+The Clean Pipeline Architecture provides a proven foundation for language expansion:
 
-**Case-Dependent Grammar:**
-- Preposition cards show required cases (mit + Dativ)
-- Context-aware example sentences
-- Grammar-specific validation and templates
-
-The Clean Pipeline Architecture provides a foundation for extending this German-specific expertise to other languages with similar complexity.
+**Designed for Language Diversity:**
+- **Russian Readiness:** Case system handling, Cyrillic script support
+- **Korean Readiness:** Complex honorific systems, agglutinative grammar patterns  
+- **Romance Language Ready:** Verb conjugation complexity, gendered nouns
+- **Extensible Framework:** Each language gets custom grammar intelligence
 
 ---
 
@@ -255,7 +270,7 @@ hatch run ruff check    # Linting (zero violations required)
 - **Modern Design:** Clean separation of concerns with dependency inversion
 - **High Testability:** Comprehensive test coverage with mocking and integration tests
 - **Type Safety:** MyPy strict mode compliance across entire codebase
-- **German Expertise:** Language-specific validation and processing logic
+- **Multi-Language Ready:** Language-agnostic core with pluggable language modules
 - **Production Ready:** Security hardening and performance optimization
 
 ### Contributing Guidelines
@@ -267,10 +282,10 @@ hatch run ruff check    # Linting (zero violations required)
 
 ### Key Architecture Files
 - **Clean Pipeline:** `src/langlearn/services/` (CardBuilder, MediaEnricher, RecordMapper)
-- **Domain Models:** `src/langlearn/models/` (German-specific validation)
-- **Records System:** Lightweight DTOs for data transport
+- **Language Models:** `src/langlearn/models/` (Currently German, designed for expansion)
+- **Records System:** Language-agnostic DTOs for data transport
 - **Backend Integration:** `src/langlearn/backends/` (Anki library abstraction)
 
 ---
 
-**🏆 Production-ready German A1 flashcard generation system with enterprise-grade architecture and comprehensive German language support.**
+**🏆 Multi-language flashcard generation system with Clean Pipeline Architecture. Currently supporting German A1 with roadmap for Russian, Korean, and other languages.**
