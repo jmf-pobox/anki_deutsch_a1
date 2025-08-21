@@ -316,6 +316,7 @@ class TestCardBuilder:
             "adverb",
             "negation",
             "verb",
+            "phrase",
             "verb_conjugation",
             "verb_imperative",
         }
@@ -651,8 +652,8 @@ class TestCardBuilderIntegration:
         assert "verb_conjugation" in supported_types
         assert "verb_imperative" in supported_types
         assert (
-            len(supported_types) == 7
-        )  # noun, adjective, adverb, negation, verb, verb_conjugation, verb_imperative
+            len(supported_types) == 8
+        )  # noun, adjective, adverb, negation, verb, phrase, verb_conj, verb_imp
 
     def test_validate_verb_conjugation_record_validation(
         self, card_builder: CardBuilder
