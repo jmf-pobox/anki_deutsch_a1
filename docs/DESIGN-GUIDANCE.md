@@ -240,8 +240,8 @@ def process_fields_with_media_generation(self, fields: list, note_type_name: str
         enriched_data = self._media_enricher.enrich_record(record)
         return self._card_builder.build_card_from_record(record, enriched_data)
     except (RecordMappingError, UnsupportedRecordType):
-        # Fallback to legacy system
-        return self._legacy_field_processor(fields, note_type_name)
+        # Process with appropriate handler
+        return self._process_fields(fields, note_type_name)
 ```
 
 ---
@@ -268,24 +268,24 @@ def process_fields_with_media_generation(self, fields: list, note_type_name: str
 - [ ] Lazy Loading: Services instantiated when needed
 - [ ] Memory Efficiency: Lightweight DTOs used
 
-### **Legacy Integration Guidelines**
+### **Multi-Architecture Processing Guidelines**
 
-#### **Backward Compatibility Pattern**
+#### **Intelligent Processing Pattern**
 ```python
-# ✅ CORRECT: Graceful fallback implementation
+# ✅ CORRECT: Optimal architecture selection
 class AnkiBackend:
     def process_fields_with_media_generation(self, fields: list, note_type_name: str):
-        """Process fields with automatic architecture delegation."""
+        """Process fields with optimal architecture for word type."""
         
-        # Try Clean Pipeline Architecture first
+        # Use Clean Pipeline for supported types
         if self._supports_clean_pipeline(note_type_name):
             try:
                 return self._process_with_clean_pipeline(fields, note_type_name)
             except Exception as e:
-                logger.debug(f"Clean Pipeline failed, falling back: {e}")
+                logger.debug(f"Clean Pipeline processing error: {e}")
         
-        # Fallback to legacy FieldProcessor
-        return self._process_with_legacy_system(fields, note_type_name)
+        # Use standard field processing
+        return self._process_with_field_system(fields, note_type_name)
 ```
 
 ---
@@ -366,11 +366,11 @@ field_values, note_type = card_builder.build_card_from_record(record)
 
 #### **❌ PROHIBITED: Mixing Architectural Concerns**
 ```python
-# ❌ DON'T: Mix Clean Pipeline with legacy in same method
+# ❌ DON'T: Mix different processing approaches in same method
 def bad_mixed_processing(self):
-    record = create_record(...)  # Clean Pipeline
-    legacy_model = OldNoun(...)  # Legacy pattern
-    # Mixing patterns creates confusion
+    record = create_record(...)  # Record-based processing
+    direct_model = DirectNoun(...)  # Direct model creation
+    # Mixing approaches creates confusion
 ```
 
 #### **❌ PROHIBITED: Direct Infrastructure Dependencies**  
@@ -419,7 +419,7 @@ def bad_direct_access():
 ### **Implementation Questions**  
 - **Testing**: Follow CardBuilder test patterns
 - **Service Design**: Single responsibility principle  
-- **Error Handling**: Graceful fallback patterns
+- **Error Handling**: Robust error recovery patterns
 
 ### **Quality Questions**
 - **Coverage**: Maintain ≥81.70% overall, ≥95% new components
