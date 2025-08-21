@@ -673,7 +673,7 @@ class PhraseRecord(BaseRecord):
             phrase=fields[0].strip(),
             english=fields[1].strip(),
             context=fields[2].strip(),
-            related=fields[3].strip() if len(fields) > 3 else "",
+            related=fields[3].strip(),
         )
 
     def to_dict(self) -> dict[str, Any]:
