@@ -1,234 +1,86 @@
 # Clean Pipeline Architecture Migration TODO
 
-## Overview
-Migrate from current architecture (domain models handling infrastructure) to Clean Pipeline Architecture with proper separation of concerns.
+Last updated: 2025-08-21 07:45
 
-**Target Architecture:**
-```
-CSV Data → Raw Records → Domain Models → Enriched Records → Cards
-    ↓           ↓            ↓              ↓           ↓
-CSVLoader → RecordMapper → Validator → MediaEnricher → CardBuilder
-```
+## Current status (honest snapshot)
 
-## Quality Requirements
-- ✅ All tests must pass after each phase
-- ✅ Coverage must not decrease (currently 73.84%)
-- ✅ All linting/formatting must pass
-- ✅ Software must remain functional throughout migration
-- ✅ No breaking changes to public APIs until final phase
+Short version: The Clean Pipeline components are largely built, but the main application flow is not fully using them yet. Media assets are not being embedded into the .apkg because the Clean Pipeline path does not enrich records with audio/image references.
 
-## Phase 1: Extract MediaEnricher Service (Foundation)
+What works now:
+- RecordMapper supports 9 record types (noun, adjective, adverb, negation, verb, phrase, preposition, verb_conjugation, verb_imperative).
+- CardBuilder builds notes for all 9 types and maps fields to templates.
+- MediaFileRegistrar correctly scans card fields for [sound:...] and <img ...> and registers real files with the backend for APKG export.
+- DeckBuilder loads CSVs into Records and builds notes via CardBuilder; legacy MVP paths remain for nouns/adjectives/adverbs/negations.
 
-### 1.1 Create Core Infrastructure
-- [x] **Create `src/langlearn/services/media_enricher.py`** ✅
-  - [x] Define `MediaEnricher` interface ✅
-  - [x] Implement existence checking for all media types ✅
-  - [x] Handle image, audio generation coordination ✅
-  - [x] Add comprehensive unit tests (27 tests) ✅
+What’s not wired end-to-end yet (root causes):
+1) Missing media enrichment in Clean Pipeline
+   - DeckBuilder.generate_all_cards currently sets enriched_data_list = [{}] * len(records) and never invokes MediaEnricher. Result: cards lack audio/image references, so MediaFileRegistrar has nothing to register into the apkg.
+2) Partial type coverage in MediaEnricher
+   - StandardMediaEnricher implements noun/adjective/adverb/negation enrichment, but not verb, preposition, phrase (and no special handling for verb_conjugation/verb_imperative).
+3) Legacy-domain backfill limited to 4 types
+   - DeckBuilder reconstructs legacy domain models (noun/adjective/adverb/negation) for backward compatibility only. MediaEnricher expects domain-model behavior (e.g., get_image_search_strategy), so we either need domain-model shims for additional types or teach MediaEnricher to operate on record dicts for those types.
+4) Templates must be verified for new types
+   - CardBuilder has field mappings for all 9 types; ensure TemplateService serves templates for verb, phrase, preposition, verb_conjugation, verb_imperative.
 
-### 1.2 Create Record Types ✅
-- [x] **Create `src/langlearn/models/records.py`** ✅
-  - [x] Define `BaseRecord` class for structured CSV data ✅
-  - [x] Define `NounRecord`, `AdjectiveRecord`, etc. ✅
-  - [x] Pure data containers (no business logic) ✅
-  - [x] Add validation and tests (34 comprehensive unit tests) ✅
+Impact:
+- Media files don’t get embedded in exported .apkg on the Clean Pipeline path because media references are never added to the card fields.
 
-### 1.3 Update Existing Components ✅
-- [x] **Modify domain models to be pure** ✅
-  - [x] Remove `FieldProcessor` inheritance from domain models ✅
-  - [x] Remove `process_fields_for_media_generation` methods ✅
-  - [x] Keep only business logic (validation, German grammar rules) ✅
-  - [x] Add tests for pure domain models ✅
+## Plan to fix (incremental, minimal-risk)
 
-### 1.4 Quality Checkpoint ✅
-- [x] Run full test suite: `hatch run test` (533 passed, 44 skipped, 7 failed - major improvement) ✅
-- [x] Check coverage: `hatch run test-cov` (maintained >73.84%) ✅
-- [x] Lint: `hatch run ruff check --fix` (all issues resolved) ✅
-- [x] Format: `hatch run format` (clean formatting) ✅
-- [x] Update AnkiBackend to use Clean Pipeline Architecture for core models ✅
+A) Wire MediaEnricher into DeckBuilder.generate_all_cards (MVP)
+- For each record in each type-group, build or reconstruct an appropriate domain model and call media_enricher.enrich_record(rec.to_dict(), domain_model).
+- Merge only media-related fields into enriched_data_list (image, word_audio, example_audio, plus phrase/verb specific fields as applicable).
+- Keep try/except per-record to avoid stopping the run.
 
-## Phase 2: Create RecordMapper (CSV Processing)
+B) Extend MediaEnricher to cover missing types (basic support first)
+- verb: at least word_audio for infinitive and example_audio; optional image.
+- phrase: phrase_audio and optional image.
+- preposition: word_audio and example1/2 audio; optional image.
+- verb_conjugation: word_audio for infinitive/tense context and example_audio.
+- verb_imperative: word_audio for infinitive; du/ihr/sie example audios (du_audio, ihr_audio, sie_audio).
+- If domain-model helpers are missing, operate directly on record dicts (best-effort) to avoid blocking.
 
-### 2.1 Implement CSV to Record Mapping  
-- [ ] **Create `src/langlearn/services/record_mapper.py`**
-  - [ ] Handle CSV field array → Record conversion
-  - [ ] Type-specific mapping logic
-  - [ ] Field validation and error handling
-  - [ ] Comprehensive unit tests
+C) Verify TemplateService mappings and assets
+- Ensure templates exist and are resolvable for verb, phrase, preposition, verb_conjugation, verb_imperative.
+- Confirm CardBuilder fields line up with template field names.
 
-### 2.2 Integrate with Existing CSV Processing
-- [ ] **Update `CSVService` to use RecordMapper**
-  - [ ] Maintain backward compatibility
-  - [ ] Add new methods that return Records
-  - [ ] Update integration tests
+D) Validate media registration end-to-end
+- Run DeckBuilder with generate_media=True and sample CSVs.
+- Confirm generated cards include [sound:...] and <img ...> so MediaFileRegistrar registers files.
+- Export .apkg and verify media present in Anki’s media manager.
 
-### 2.3 Quality Checkpoint
-- [ ] Run full test suite: `hatch run test`
-- [ ] Check coverage: `hatch run test-cov`
-- [ ] Lint: `hatch run ruff check --fix`
-- [ ] Format: `hatch run format`
+E) Tests and safety
+- Add or adjust unit tests to cover the enrichment call and minimal new-type enrichment branches.
+- Keep existing tests green; avoid broad refactors.
 
-## Phase 3: Implement MediaEnricher Integration
+Success criteria
+- Clean Pipeline path produces cards with media references for at least the 4 legacy-covered types immediately; others gain basic audio support shortly after.
+- Exported .apkg contains corresponding media files (verified by MediaFileRegistrar counts and Anki import).
+- No regressions in existing tests; any new tests pass.
 
-### 3.1 Integrate MediaEnricher with Backend
-- [ ] **Update `AnkiBackend` to use MediaEnricher**
-  - [ ] Replace domain model field processing
-  - [ ] Use MediaEnricher for all media operations
-  - [ ] Maintain existing card generation API
+## Concrete next steps (execution order)
 
-### 3.2 Update Card Generators  
-- [ ] **Modify card generators to use new flow**
-  - [ ] Use Records + MediaEnricher instead of domain field processing
-  - [ ] Maintain same output format
-  - [ ] Update unit tests
+1) DeckBuilder.generate_all_cards: replace enrichment placeholder with real calls
+   - Introduce a helper _record_to_domain_model(rec) returning existing domain models where available, else fallback to rec.
+   - Build enriched_data_list using StandardMediaEnricher for each record when generate_media=True.
+2) Minimal MediaEnricher extensions for verb/phrase/preposition
+   - Implement straightforward audio generation using record dicts; add fields CardBuilder expects (e.g., phrase_audio, example1_audio, example2_audio).
+3) Verify templates exist and are mapped in TemplateService for all types
+   - Especially verb/phrase/preposition and verb_conjugation/verb_imperative templates.
+4) Manual e2e check
+   - Load small CSVs, generate cards with media, export deck, confirm media embedded.
+5) Add targeted tests (optional but recommended if time allows)
+   - A unit test asserting that generate_all_cards invokes MediaFileRegistrar with non-empty media for a noun once media exists.
 
-### 3.3 Performance Verification
-- [ ] **Test performance improvements**
-  - [ ] Verify no AI calls when media exists
-  - [ ] Benchmark processing time per word
-  - [ ] Compare to pre-optimization performance
-
-### 3.4 Quality Checkpoint
-- [ ] Run full test suite: `hatch run test`
-- [ ] Check coverage: `hatch run test-cov`
-- [ ] Lint: `hatch run ruff check --fix`
-- [ ] Format: `hatch run format`
-
-## Phase 4: Implement CardBuilder (Final Assembly)
-
-### 4.1 Create CardBuilder Service
-- [ ] **Create `src/langlearn/services/card_builder.py`**
-  - [ ] Handle enriched record → card conversion
-  - [ ] Template application logic
-  - [ ] Field formatting and validation
-  - [ ] Comprehensive unit tests
-
-### 4.2 Integration with Existing Systems
-- [ ] **Update deck generation to use CardBuilder**
-  - [ ] Maintain existing deck output format
-  - [ ] Ensure template compatibility
-  - [ ] Update integration tests
-
-### 4.3 Quality Checkpoint
-- [ ] Run full test suite: `hatch run test`
-- [ ] Check coverage: `hatch run test-cov`  
-- [ ] Lint: `hatch run ruff check --fix`
-- [ ] Format: `hatch run format`
-
-## Phase 5: Clean Up and Finalize
-
-### 5.1 Remove Legacy Code
-- [ ] **Clean up domain models**
-  - [ ] Remove all infrastructure code from domain models
-  - [ ] Remove unused field processing methods
-  - [ ] Ensure only business logic remains
-
-### 5.2 Update Tests
-- [ ] **Remove test fixtures for hiding images**
-  - [ ] Clean up complex mocking in field processing tests
-  - [ ] Simplify test structure with new architecture
-  - [ ] Ensure all edge cases covered
-
-### 5.3 Update Documentation
-- [ ] **Update CLAUDE.md**
-  - [ ] Document new architecture
-  - [ ] Update development workflow
-  - [ ] Remove references to old field processing
-
-### 5.4 Final Quality Checkpoint
-- [ ] Run full test suite: `hatch run test` (all tests pass)
-- [ ] Check coverage: `hatch run test-cov` (>73.84%)
-- [ ] Lint: `hatch run ruff check --fix` (no issues)
-- [ ] Format: `hatch run format` (clean)
-- [ ] Integration test: `hatch run test-integration` (all pass)
-
-## Success Criteria
-
-### Architecture Goals
-- ✅ Domain models contain only business logic (German grammar rules)
-- ✅ Media existence checks handled in single MediaEnricher service
-- ✅ Clear data flow: CSV → Records → Domain validation → Enrichment → Cards
-- ✅ Each component has single responsibility
-
-### Performance Goals  
-- ✅ No AI calls when media files already exist
-- ✅ Processing time per word under 100ms for existing media
-- ✅ Scalable architecture for future media types
-
-### Quality Goals
-- ✅ All 499+ unit tests pass
-- ✅ All 24+ integration tests pass  
-- ✅ Test coverage maintained above 73.84%
-- ✅ Zero linting issues
-- ✅ Clean separation of concerns
-- ✅ Simple, maintainable test structure
-
-## Risk Mitigation
-
-### Rollback Strategy
-- Each phase maintains backward compatibility until Phase 5
-- Git commits at each checkpoint for easy rollback
-- Feature flags for new components during transition
-
-### Testing Strategy
-- Test-driven development for new components
-- Maintain existing test coverage throughout
-- Integration tests verify end-to-end functionality
-- Performance benchmarks at each phase
-
-### Quality Assurance
-- Mandatory quality checkpoint after each phase
-- No progression to next phase until all quality bars met
-- Continuous integration checks at each commit
+Notes
+- MediaService paths: by default use project_root/data/audio and data/images; MediaFileRegistrar defaults to data/audio and data/images relative to CWD. Running from repo root keeps paths aligned.
+- Performance: StandardMediaEnricher checks for existing files before computing search terms; API calls are avoided when assets already exist.
 
 ---
 
-## Current Status: Phase 1 Complete ✅ - Ready for Phase 2
+Reference pointers (for implementers)
+- DeckBuilder.generate_all_cards: media enrichment placeholder is at lines ~527–536 (enriched_data_list = [{}] * len(records)).
+- StandardMediaEnricher currently supports noun/adjective/adverb/negation methods; extend for other types.
+- MediaFileRegistrar already plugged in after backend.add_note; no change needed there.
 
-**✅ PHASE 1 COMPLETE: Clean Pipeline Architecture Foundation**
-
-**Completed:** 
-- ✅ **Phase 1.1: MediaEnricher Service** - Created comprehensive MediaEnricher service with:
-  - Abstract interface for media enrichment operations
-  - StandardMediaEnricher implementation using existing services  
-  - Type-specific enrichment for Noun, Adjective, Adverb, Negation models
-  - Existence checking for audio/image files to prevent regeneration
-  - 27 comprehensive unit tests covering all functionality
-  - Clean integration with existing domain models and services
-
-- ✅ **Phase 1.2: Record Types** - Created pure data container record types with:
-  - Abstract BaseRecord class with common interface methods
-  - NounRecord, AdjectiveRecord, AdverbRecord, NegationRecord implementations
-  - CSV field parsing with validation and error handling
-  - Factory pattern with RECORD_TYPE_REGISTRY and create_record() function
-  - 34 comprehensive unit tests covering all record functionality
-  - Pure data containers with no business logic (follows SRP)
-
-- ✅ **Phase 1.3: Domain Model Purification** - Successfully removed infrastructure concerns:
-  - Removed FieldProcessor inheritance from all core domain models (Noun, Adjective, Adverb, Negation)
-  - Removed `process_fields_for_media_generation` methods from domain models
-  - Preserved German grammar business logic (validation, concreteness checking, search terms generation)
-  - All domain model business logic tests passing (37/37 tests)
-
-- ✅ **Phase 1.4: Architecture Integration** - Successfully integrated Clean Pipeline Architecture:
-  - Updated AnkiBackend to use MediaEnricher + Records for Noun, Adjective, Adverb, Negation
-  - Created seamless bridge maintaining backward compatibility
-  - Deprecated 44 obsolete field processing tests with proper skip markers
-  - Reduced failures from 53 to 7 tests (92% improvement)
-  - All integration tests for core models now working with new architecture
-
-**Architecture Successfully Transformed**:
-```
-OLD: CSV → FieldProcessor Domain Models → Cards (mixed concerns)
-NEW: CSV → Records → Domain Models → MediaEnricher → Enriched Records → Cards (clean separation)
-```
-
-**Quality Metrics Maintained**:
-- ✅ 533 tests passing (up from 507)
-- ✅ 44 tests properly deprecated
-- ✅ Only 7 failing tests remain (old FieldProcessor interface tests)
-- ✅ Coverage maintained above 73.84%
-- ✅ Zero linting issues
-- ✅ Clean code formatting
-
-**Next Action:** Begin Phase 2 - Create RecordMapper for CSV Processing integration
+This document reflects the current, practical status and the exact steps to “flip the switch” safely. Once Step 1 is merged, media will start flowing into the apkg for the covered types, addressing the immediate blocker. 

@@ -129,6 +129,17 @@ class StandardMediaEnricher(MediaEnricher):
         elif model_type == "negation":
             return self._enrich_negation_record(enriched, domain_model)
         else:
+            # Fallback enrichment for record types without legacy
+            # domain models (key-based detection)
+            try:
+                if "preposition" in enriched:
+                    return self._enrich_preposition_record(enriched)
+                if "phrase" in enriched:
+                    return self._enrich_phrase_record(enriched)
+                if "verb" in enriched:
+                    return self._enrich_verb_record(enriched)
+            except Exception as e:
+                logger.warning(f"Fallback enrichment failed for {model_type}: {e}")
             logger.warning(f"Unknown model type: {model_type}")
             return enriched
 
@@ -149,12 +160,23 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image (only for concrete nouns)
         if not record.get("image") and noun.is_concrete():
-            search_terms = noun.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["noun"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms
+            word = record["noun"]
+            if not self.image_exists(word):
+                # Generate search terms (API calls) only if image missing
+                search_strategy = noun.get_image_search_strategy()
+                search_terms = (
+                    search_strategy()
+                )  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -177,12 +199,23 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image
         if not record.get("image"):
-            search_terms = adjective.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["word"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms
+            word = record["word"]
+            if not self.image_exists(word):
+                # Generate search terms (API calls) only if image missing
+                search_strategy = adjective.get_image_search_strategy()
+                search_terms = (
+                    search_strategy()
+                )  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -204,12 +237,23 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image
         if not record.get("image"):
-            search_terms = adverb.get_image_search_terms()
-            image_path = self._get_or_generate_image(
-                record["word"], search_terms, record["english"]
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            # Check if image already exists before generating search terms
+            word = record["word"]
+            if not self.image_exists(word):
+                # Generate search terms (API calls) only if image missing
+                search_strategy = adverb.get_image_search_strategy()
+                search_terms = (
+                    search_strategy()
+                )  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -231,27 +275,186 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image
         if not record.get("image"):
-            search_terms = negation.get_image_search_terms()
+            # Check if image already exists before generating search terms
+            word = record["word"]
+            if not self.image_exists(word):
+                # Generate search terms (API calls) only if image missing
+                search_strategy = negation.get_image_search_strategy()
+                search_terms = (
+                    search_strategy()
+                )  # Anthropic API call happens here, only when needed
+                image_path = self._get_or_generate_image(
+                    word, search_terms, record["english"]
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_preposition_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Enrich preposition record with basic audio support.
+
+        Fields expected in record dict:
+        - preposition, english, case, example1, example2
+        Populates:
+        - word_audio, example1_audio, example2_audio
+        """
+        # Word audio
+        if not record.get("word_audio") and record.get("preposition"):
+            audio_path = self._get_or_generate_audio(record["preposition"])
+            if audio_path:
+                record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Example 1 audio
+        if not record.get("example1_audio") and record.get("example1"):
+            audio_path = self._get_or_generate_audio(record["example1"])
+            if audio_path:
+                record["example1_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Example 2 audio
+        if not record.get("example2_audio") and record.get("example2"):
+            audio_path = self._get_or_generate_audio(record["example2"])
+            if audio_path:
+                record["example2_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        return record
+
+    def _enrich_phrase_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Enrich phrase record with audio and image based on the phrase itself.
+
+        - Image: use the phrase text as the filename/search key; fallback to
+          context or english for search terms when available.
+        - Audio: generate pronunciation for the full phrase (back-side only).
+        """
+        # Phrase audio
+        if not record.get("phrase_audio") and record.get("phrase"):
+            audio_path = self._get_or_generate_audio(record["phrase"])
+            if audio_path:
+                record["phrase_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Phrase image (front-side visual cue). Use phrase for filename and search.
+        if not record.get("image") and record.get("phrase"):
+            phrase_text = record.get("phrase", "")
+            # Prefer context as an assisting hint if present; else english
+            fallback_terms = record.get("context") or record.get("english") or ""
             image_path = self._get_or_generate_image(
-                record["word"], search_terms, record["english"]
+                word=phrase_text,
+                search_terms=phrase_text,
+                fallback=fallback_terms,
             )
             if image_path:
                 record["image"] = f'<img src="{Path(image_path).name}">'
 
         return record
 
+    def _enrich_verb_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Enrich simple verb record with audio and image support."""
+        # Prefer example sentence audio and infinitive audio
+        if not record.get("example_audio") and record.get("example"):
+            audio_path = self._get_or_generate_audio(record["example"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        if not record.get("word_audio") and record.get("verb"):
+            # Create domain model to use get_combined_audio_text() for full conjugations
+            try:
+                from langlearn.models.verb import Verb
+
+                verb_model = Verb(
+                    verb=record["verb"],
+                    english=record.get("english", ""),
+                    present_ich=record.get("present_ich", ""),
+                    present_du=record.get("present_du", ""),
+                    present_er=record.get("present_er", ""),
+                    perfect=record.get("perfect", ""),
+                    example=record.get("example", ""),
+                )
+                # Use combined audio with all conjugated forms and pronouns
+                combined_text = verb_model.get_combined_audio_text()
+                audio_path = self._get_or_generate_audio(combined_text)
+                if audio_path:
+                    record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+            except Exception as e:
+                # Fallback to simple infinitive audio if domain model creation fails
+                verb_name = record.get("verb", "unknown")
+                verb_fields = [
+                    "verb",
+                    "english",
+                    "present_ich",
+                    "present_du",
+                    "present_er",
+                    "perfect",
+                ]
+                verb_data = {k: v for k, v in record.items() if k in verb_fields}
+                logger.warning(
+                    f"Verb model creation failed for '{verb_name}' "
+                    f"(type: {type(e).__name__}): {e}. Data: {verb_data}"
+                )
+                audio_path = self._get_or_generate_audio(record["verb"])
+                if audio_path:
+                    record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example sentence (like nouns do)
+        if not record.get("image") and record.get("verb") and record.get("example"):
+            verb = record["verb"]
+            if not self.image_exists(verb):
+                # Use example sentence as search terms for verb image generation
+                search_terms = record["example"]
+                fallback = record.get("english", verb)
+                image_path = self._get_or_generate_image(verb, search_terms, fallback)
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(verb)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def enrich_records(
+        self, record_dicts: list[dict[str, Any]], domain_models: list[Any]
+    ) -> list[dict[str, Any]]:
+        """Batch enrich multiple records for improved performance.
+
+        Args:
+            record_dicts: List of record dictionaries to enrich
+            domain_models: Corresponding list of domain models (can contain None)
+
+        Returns:
+            List of enriched record dictionaries
+        """
+        enriched_records = []
+
+        for record_dict, domain_model in zip(record_dicts, domain_models, strict=False):
+            try:
+                enriched = self.enrich_record(record_dict, domain_model)
+                enriched_records.append(enriched)
+            except Exception as e:
+                word = record_dict.get("word", "unknown")
+                logger.warning(f"Record enrichment failed for {word}: {e}")
+                enriched_records.append({})
+
+        return enriched_records
+
     def _get_or_generate_audio(self, text: str) -> str | None:
-        """Get existing audio or generate if not exists."""
+        """Get existing audio or generate if not exists.
+
+        Ensures filename scheme matches MediaService (md5 hex). Also supports
+        legacy filenames (audio_<8charhash>.mp3) for backward compatibility.
+        """
         if not text or not text.strip():
             return None
 
-        # Check if audio already exists
-        if self.audio_exists(text):
-            # Return existing audio path
-            audio_filename = self._get_audio_filename(text)
-            return str(self._audio_base_path / audio_filename)
+        # Check if audio already exists (support both current and legacy naming)
+        existing_filename = self._find_existing_audio_filename(text)
+        if existing_filename:
+            return str(self._audio_base_path / existing_filename)
 
-        # Generate new audio
+        # Generate new audio using MediaService and return its actual path
         return self.generate_audio(text)
 
     def _get_or_generate_image(
@@ -271,12 +474,10 @@ class StandardMediaEnricher(MediaEnricher):
         return self.generate_image(search_terms, fallback)
 
     def audio_exists(self, text: str) -> bool:
-        """Check if audio file exists for given text."""
+        """Check if audio file exists for given text (current or legacy name)."""
         if not text:
             return False
-
-        audio_filename = self._get_audio_filename(text)
-        return (self._audio_base_path / audio_filename).exists()
+        return self._find_existing_audio_filename(text) is not None
 
     def image_exists(self, word: str) -> bool:
         """Check if image file exists for given word."""
@@ -303,13 +504,45 @@ class StandardMediaEnricher(MediaEnricher):
             return None
 
     def _get_audio_filename(self, text: str) -> str:
-        """Get standardized audio filename for text."""
-        # This should match the existing MediaService logic
-        # For now, using a simple hash-based approach
+        """Get standardized (legacy) audio filename for text.
+
+        Legacy scheme expected by tests and existing datasets:
+        "audio_<first8_of_md5>.mp3". We keep full-md5 variant as a fallback
+        in candidate search for forward compatibility.
+        """
         import hashlib
 
-        text_hash = hashlib.md5(text.encode()).hexdigest()[:8]
-        return f"audio_{text_hash}.mp3"
+        md5_hex = hashlib.md5(text.encode()).hexdigest()
+        return f"audio_{md5_hex[:8]}.mp3"
+
+    def _candidate_audio_filenames(self, text: str) -> list[str]:
+        """Return possible audio filenames for text (legacy first, then full md5)."""
+        import hashlib
+
+        md5_hex = hashlib.md5(text.encode()).hexdigest()
+        legacy = f"audio_{md5_hex[:8]}.mp3"
+        full_md5 = f"{md5_hex}.mp3"
+        return [legacy, full_md5]
+
+    def _find_existing_audio_filename(self, text: str) -> str | None:
+        """Find an existing audio filename among known naming schemes.
+
+        Priority order:
+        1) The exact name from _get_audio_filename (patchable in tests)
+        2) Other known candidates (legacy/full-md5)
+        """
+        # 1) Try the primary scheme first (supports test patching)
+        primary = self._get_audio_filename(text)
+        if (self._audio_base_path / primary).exists():
+            return primary
+
+        # 2) Try other candidates
+        for name in self._candidate_audio_filenames(text):
+            if name == primary:
+                continue
+            if (self._audio_base_path / name).exists():
+                return name
+        return None
 
     def _get_image_filename(self, word: str) -> str:
         """Get standardized image filename for word."""

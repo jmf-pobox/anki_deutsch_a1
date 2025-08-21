@@ -1,0 +1,24 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="phrase-info">
+    <div class="phrase-with-audio">
+        <span class="german">{{Phrase}}</span>
+        {{#PhraseAudio}}<span class="inline-audio">🔊 {{PhraseAudio}}</span>{{/PhraseAudio}}
+    </div>
+
+    <div class="translation">{{English}}</div>
+
+    {{#Context}}
+    <div class="context-block">
+        <div class="context-label">Kontext</div>
+        <div class="context-value">{{Context}}</div>
+    </div>
+    {{/Context}}
+
+    {{#Related}}
+    <div class="related-block">
+        <div class="related-label">Verwandte Ausdrücke</div>
+        <div class="related-value">{{Related}}</div>
+    </div>
+    {{/Related}}
+</div>

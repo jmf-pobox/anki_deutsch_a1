@@ -407,7 +407,16 @@ class CardBuilder:
         # Apply field-specific formatting
         if (
             field_name
-            in ["WordAudio", "ExampleAudio", "DuAudio", "IhrAudio", "SieAudio"]
+            in [
+                "WordAudio",
+                "ExampleAudio",
+                "Example1Audio",
+                "Example2Audio",
+                "PhraseAudio",
+                "DuAudio",
+                "IhrAudio",
+                "SieAudio",
+            ]
             and str_value
         ):
             # Ensure audio fields have proper Anki format

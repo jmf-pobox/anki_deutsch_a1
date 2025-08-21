@@ -376,6 +376,9 @@ class TestCSVServiceRecords:
             "adjective",
             "adverb",
             "negation",
+            "verb",
+            "preposition",
+            "phrase",
             "verb_conjugation",
             "verb_imperative",
         }

@@ -1,0 +1,63 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="verb-conjugation">
+    <div class="infinitive-with-audio">
+        <span class="german">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="verb-info">
+        <div class="info-item"><strong>Classification:</strong> {{Classification}}</div>
+        {{#Separable}}<div class="info-item"><strong>Separable:</strong> Yes</div>{{/Separable}}
+        <div class="info-item"><strong>Auxiliary:</strong> {{Auxiliary}}</div>
+    </div>
+    
+    <div class="conjugation-table">
+        <div class="tense-header">{{Tense}}</div>
+        <div class="conjugation-grid">
+            <div class="conjugation-row">
+                <span class="pronoun">ich</span>
+                <span class="conjugated-form">{{Ich}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">du</span>
+                <span class="conjugated-form">{{Du}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">er/sie/es</span>
+                <span class="conjugated-form">{{Er}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">wir</span>
+                <span class="conjugated-form">{{Wir}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">ihr</span>
+                <span class="conjugated-form">{{Ihr}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">sie</span>
+                <span class="conjugated-form">{{Sie}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="example-with-audio">
+    <span class="example-sentence">{{Example}}</span>
+    {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
+    <div id="back-hint-content" class="hint-content hidden">{{Meaning}}</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

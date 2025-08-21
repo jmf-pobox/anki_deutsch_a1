@@ -1,0 +1,52 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="preposition-info">
+    <div class="preposition-with-audio">
+        <span class="german">{{Preposition}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="translation">{{English}}</div>
+    
+    <div class="case-info">
+        <div class="case-label">Required Case:</div>
+        <div class="case-value">{{Case}}</div>
+    </div>
+</div>
+
+<div class="examples-section">
+    <div class="examples-header">Usage Examples</div>
+    
+    <div class="example-item">
+        <div class="example-with-audio">
+            <span class="example-text">{{Example1}}</span>
+            {{#Example1Audio}}<span class="inline-audio">🔊 {{Example1Audio}}</span>{{/Example1Audio}}
+        </div>
+    </div>
+    
+    <div class="example-item">
+        <div class="example-with-audio">
+            <span class="example-text">{{Example2}}</span>
+            {{#Example2Audio}}<span class="inline-audio">🔊 {{Example2Audio}}</span>{{/Example2Audio}}
+        </div>
+    </div>
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Show More Info</button>
+    <div id="back-hint-content" class="hint-content hidden">
+        <div class="case-explanation">
+            <strong>{{Case}}</strong>: This preposition requires the {{Case}} case.
+            Pay attention to article and adjective endings in the examples above.
+        </div>
+    </div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>
