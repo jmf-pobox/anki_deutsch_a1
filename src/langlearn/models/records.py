@@ -848,6 +848,279 @@ class PhraseRecord(BaseRecord):
         return ["phrase", "english", "context", "related"]
 
 
+class ArticleRecord(BaseRecord):
+    """Record for German definite articles from CSV."""
+
+    article: str = Field(..., description="German article form (der, die, das, etc.)")
+    type: str = Field(..., description="Article type (definite)")
+    gender: str = Field(..., description="Gender (masculine, feminine, neuter)")
+    case: str = Field(
+        ..., description="Case (nominative, accusative, dative, genitive)"
+    )
+    english: str = Field(..., description="English translation")
+    example: str = Field(..., description="Example sentence")
+    related_noun: str = Field(..., description="Related noun for context")
+
+    # Media fields (populated during enrichment)
+    article_audio: str | None = Field(
+        default=None, description="Article audio reference"
+    )
+    example_audio: str | None = Field(
+        default=None, description="Example audio reference"
+    )
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v: str) -> str:
+        """Validate gender values."""
+        valid_genders = {"masculine", "feminine", "neuter"}
+        if v not in valid_genders:
+            raise ValueError(f"Invalid gender: {v}. Must be one of {valid_genders}")
+        return v
+
+    @field_validator("case")
+    @classmethod
+    def validate_case(cls, v: str) -> str:
+        """Validate case values."""
+        valid_cases = {"nominative", "accusative", "dative", "genitive"}
+        if v not in valid_cases:
+            raise ValueError(f"Invalid case: {v}. Must be one of {valid_cases}")
+        return v
+
+    @classmethod
+    def from_csv_fields(cls, fields: list[str]) -> "ArticleRecord":
+        """Create ArticleRecord from CSV fields."""
+        if len(fields) != cls.get_expected_field_count():
+            expected = cls.get_expected_field_count()
+            raise ValueError(
+                f"ArticleRecord expects {expected} fields, got {len(fields)}"
+            )
+
+        return cls(
+            article=fields[0].strip(),
+            type=fields[1].strip(),
+            gender=fields[2].strip(),
+            case=fields[3].strip(),
+            english=fields[4].strip(),
+            example=fields[5].strip(),
+            related_noun=fields[6].strip(),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for media enrichment."""
+        return {
+            "article": self.article,
+            "type": self.type,
+            "gender": self.gender,
+            "case": self.case,
+            "english": self.english,
+            "example": self.example,
+            "related_noun": self.related_noun,
+            "article_audio": self.article_audio,
+            "example_audio": self.example_audio,
+        }
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Expected CSV field count for articles."""
+        return 7
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Field names for article CSV."""
+        return [
+            "article",
+            "type",
+            "gender",
+            "case",
+            "english",
+            "example",
+            "related_noun",
+        ]
+
+
+class IndefiniteArticleRecord(BaseRecord):
+    """Record for German indefinite articles from CSV."""
+
+    article: str = Field(..., description="German indefinite article (ein, eine, etc.)")
+    type: str = Field(..., description="Article type (indefinite)")
+    gender: str = Field(..., description="Gender (masculine, feminine, neuter)")
+    case: str = Field(
+        ..., description="Case (nominative, accusative, dative, genitive)"
+    )
+    english: str = Field(..., description="English translation")
+    example: str = Field(..., description="Example sentence")
+    related_noun: str = Field(..., description="Related noun for context")
+
+    # Media fields (populated during enrichment)
+    article_audio: str | None = Field(
+        default=None, description="Article audio reference"
+    )
+    example_audio: str | None = Field(
+        default=None, description="Example audio reference"
+    )
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v: str) -> str:
+        """Validate gender values."""
+        valid_genders = {"masculine", "feminine", "neuter"}
+        if v not in valid_genders:
+            raise ValueError(f"Invalid gender: {v}. Must be one of {valid_genders}")
+        return v
+
+    @field_validator("case")
+    @classmethod
+    def validate_case(cls, v: str) -> str:
+        """Validate case values."""
+        valid_cases = {"nominative", "accusative", "dative", "genitive"}
+        if v not in valid_cases:
+            raise ValueError(f"Invalid case: {v}. Must be one of {valid_cases}")
+        return v
+
+    @classmethod
+    def from_csv_fields(cls, fields: list[str]) -> "IndefiniteArticleRecord":
+        """Create IndefiniteArticleRecord from CSV fields."""
+        if len(fields) != cls.get_expected_field_count():
+            expected = cls.get_expected_field_count()
+            raise ValueError(
+                f"IndefiniteArticleRecord expects {expected} fields, got {len(fields)}"
+            )
+
+        return cls(
+            article=fields[0].strip(),
+            type=fields[1].strip(),
+            gender=fields[2].strip(),
+            case=fields[3].strip(),
+            english=fields[4].strip(),
+            example=fields[5].strip(),
+            related_noun=fields[6].strip(),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for media enrichment."""
+        return {
+            "article": self.article,
+            "type": self.type,
+            "gender": self.gender,
+            "case": self.case,
+            "english": self.english,
+            "example": self.example,
+            "related_noun": self.related_noun,
+            "article_audio": self.article_audio,
+            "example_audio": self.example_audio,
+        }
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Expected CSV field count for indefinite articles."""
+        return 7
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Field names for indefinite article CSV."""
+        return [
+            "article",
+            "type",
+            "gender",
+            "case",
+            "english",
+            "example",
+            "related_noun",
+        ]
+
+
+class NegativeArticleRecord(BaseRecord):
+    """Record for German negative articles from CSV."""
+
+    article: str = Field(..., description="German negative article (kein, keine, etc.)")
+    type: str = Field(..., description="Article type (negative)")
+    gender: str = Field(..., description="Gender (masculine, feminine, neuter)")
+    case: str = Field(
+        ..., description="Case (nominative, accusative, dative, genitive)"
+    )
+    english: str = Field(..., description="English translation")
+    example: str = Field(..., description="Example sentence")
+    related_noun: str = Field(..., description="Related noun for context")
+
+    # Media fields (populated during enrichment)
+    article_audio: str | None = Field(
+        default=None, description="Article audio reference"
+    )
+    example_audio: str | None = Field(
+        default=None, description="Example audio reference"
+    )
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v: str) -> str:
+        """Validate gender values."""
+        valid_genders = {"masculine", "feminine", "neuter"}
+        if v not in valid_genders:
+            raise ValueError(f"Invalid gender: {v}. Must be one of {valid_genders}")
+        return v
+
+    @field_validator("case")
+    @classmethod
+    def validate_case(cls, v: str) -> str:
+        """Validate case values."""
+        valid_cases = {"nominative", "accusative", "dative", "genitive"}
+        if v not in valid_cases:
+            raise ValueError(f"Invalid case: {v}. Must be one of {valid_cases}")
+        return v
+
+    @classmethod
+    def from_csv_fields(cls, fields: list[str]) -> "NegativeArticleRecord":
+        """Create NegativeArticleRecord from CSV fields."""
+        if len(fields) != cls.get_expected_field_count():
+            expected = cls.get_expected_field_count()
+            raise ValueError(
+                f"NegativeArticleRecord expects {expected} fields, got {len(fields)}"
+            )
+
+        return cls(
+            article=fields[0].strip(),
+            type=fields[1].strip(),
+            gender=fields[2].strip(),
+            case=fields[3].strip(),
+            english=fields[4].strip(),
+            example=fields[5].strip(),
+            related_noun=fields[6].strip(),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for media enrichment."""
+        return {
+            "article": self.article,
+            "type": self.type,
+            "gender": self.gender,
+            "case": self.case,
+            "english": self.english,
+            "example": self.example,
+            "related_noun": self.related_noun,
+            "article_audio": self.article_audio,
+            "example_audio": self.example_audio,
+        }
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Expected CSV field count for negative articles."""
+        return 7
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Field names for negative article CSV."""
+        return [
+            "article",
+            "type",
+            "gender",
+            "case",
+            "english",
+            "example",
+            "related_noun",
+        ]
+
+
 # Registry for mapping model types to record types
 RECORD_TYPE_REGISTRY = {
     "noun": NounRecord,
@@ -859,6 +1132,9 @@ RECORD_TYPE_REGISTRY = {
     "preposition": PrepositionRecord,
     "verb_conjugation": VerbConjugationRecord,
     "verb_imperative": VerbImperativeRecord,
+    "article": ArticleRecord,
+    "indefinite_article": IndefiniteArticleRecord,
+    "negative_article": NegativeArticleRecord,
 }
 
 
@@ -909,6 +1185,24 @@ def create_record(
 
 
 @overload
+def create_record(
+    model_type: Literal["article"], fields: list[str]
+) -> ArticleRecord: ...
+
+
+@overload
+def create_record(
+    model_type: Literal["indefinite_article"], fields: list[str]
+) -> IndefiniteArticleRecord: ...
+
+
+@overload
+def create_record(
+    model_type: Literal["negative_article"], fields: list[str]
+) -> NegativeArticleRecord: ...
+
+
+@overload
 def create_record(model_type: str, fields: list[str]) -> BaseRecord: ...
 
 
@@ -917,7 +1211,8 @@ def create_record(model_type: str, fields: list[str]) -> BaseRecord:
 
     Args:
         model_type: Type of model (noun, adjective, adverb, negation,
-                   verb, phrase, preposition, verb_conjugation, verb_imperative)
+                   verb, phrase, preposition, verb_conjugation, verb_imperative,
+                   article, indefinite_article, negative_article)
         fields: CSV field values
 
     Returns:

@@ -10,8 +10,11 @@ from langlearn.models.records import (
     RECORD_TYPE_REGISTRY,
     AdjectiveRecord,
     AdverbRecord,
+    ArticleRecord,
     BaseRecord,
+    IndefiniteArticleRecord,
     NegationRecord,
+    NegativeArticleRecord,
     NounRecord,
     PhraseRecord,
     PrepositionRecord,
@@ -333,6 +336,9 @@ class TestRecordTypeRegistry:
             "preposition",
             "verb_conjugation",
             "verb_imperative",
+            "article",
+            "indefinite_article",
+            "negative_article",
         }
         assert set(RECORD_TYPE_REGISTRY.keys()) == expected_types
 
@@ -345,6 +351,9 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["preposition"] == PrepositionRecord
         assert RECORD_TYPE_REGISTRY["verb_conjugation"] == VerbConjugationRecord
         assert RECORD_TYPE_REGISTRY["verb_imperative"] == VerbImperativeRecord
+        assert RECORD_TYPE_REGISTRY["article"] == ArticleRecord
+        assert RECORD_TYPE_REGISTRY["indefinite_article"] == IndefiniteArticleRecord
+        assert RECORD_TYPE_REGISTRY["negative_article"] == NegativeArticleRecord
 
     def test_create_record_noun(self) -> None:
         """Test creating noun record via factory function."""

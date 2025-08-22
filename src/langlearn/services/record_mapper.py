@@ -71,7 +71,8 @@ class RecordMapper:
         """Map CSV row dictionary to Record instance.
 
         Args:
-            record_type: Type of record (noun, adjective, adverb, negation)
+            record_type: Type of record (noun, adjective, adverb, negation,
+                        article, indefinite_article, negative_article)
             csv_row: Dictionary from csv.DictReader
 
         Returns:
@@ -164,6 +165,16 @@ class RecordMapper:
                     csv_row.get("context", ""),
                     csv_row.get("related", ""),
                 ]
+            elif record_type in ["article", "indefinite_article", "negative_article"]:
+                fields = [
+                    csv_row.get("article", ""),
+                    csv_row.get("type", ""),
+                    csv_row.get("gender", ""),
+                    csv_row.get("case", ""),
+                    csv_row.get("english", ""),
+                    csv_row.get("example", ""),
+                    csv_row.get("related_noun", ""),
+                ]
             else:
                 raise ValueError(f"Unsupported record type: {record_type}")
 
@@ -189,6 +200,9 @@ class RecordMapper:
             "phrase",
             "verb_conjugation",
             "verb_imperative",
+            "article",
+            "indefinite_article",
+            "negative_article",
         ]
 
     def is_supported_record_type(self, record_type: str) -> bool:
@@ -360,13 +374,29 @@ class RecordMapper:
                 logger.debug("Detected phrase CSV format")
                 return "phrase"
 
+            # Detect article formats - distinguish by article type field or filename
+            article_indicators = {"article", "type", "gender", "case", "english"}
+            if article_indicators.issubset(headers):
+                # Check filename to distinguish article types
+                filename_lower = str(csv_path).lower()
+                if "indefinite" in filename_lower:
+                    logger.debug("Detected indefinite article CSV format")
+                    return "indefinite_article"
+                elif "negative" in filename_lower:
+                    logger.debug("Detected negative article CSV format")
+                    return "negative_article"
+                else:
+                    logger.debug("Detected definite article CSV format")
+                    return "article"
+
             # If no patterns match, raise error
             raise ValueError(
                 f"Cannot detect record type for CSV with headers: {headers}. "
                 f"Supported formats: verb conjugation (with tense/ich/du/er/wir/ihr/sie), "  # noqa: E501
                 f"verb imperative (with du_form/ihr_form/sie_form), "
                 f"noun (with noun/article), adjective (with word/comparative), "
-                f"adverb/negation (with word/type)"
+                f"adverb/negation (with word/type), "
+                f"articles (with article/type/gender/case/english)"
             )
 
         except Exception as e:

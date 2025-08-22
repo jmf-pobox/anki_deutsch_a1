@@ -56,7 +56,7 @@ def clean_csv_file(file_path: Path, fields_to_clean: list[str]) -> int:
         fieldnames = reader.fieldnames
 
         for row in reader:
-            original_row = row.copy()
+            row.copy()
 
             # Clean specified fields
             for field in fields_to_clean:

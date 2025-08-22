@@ -235,8 +235,8 @@ class TestRecordMapperVerbSupport:
         assert "verb_conjugation" in supported
         assert "verb_imperative" in supported
         assert (
-            len(supported) == 9
-        )  # noun, adjective, adverb, negation, verb, preposition, phrase + 2 verb types
+            len(supported) == 12
+        )  # noun, adjective, adverb, negation, verb, preposition, phrase + 2 verb types + 3 article types
 
     def test_is_supported_verb_record_types(self) -> None:
         """Test verb record type support checking."""

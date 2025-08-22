@@ -276,6 +276,10 @@ class DeckBuilder:
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
             "verbs_unified.csv": "verb_conjugation",  # Use modern multi-tense verb system
+            # Article system for German case learning
+            "articles.csv": "article",
+            "indefinite_articles.csv": "indefinite_article",
+            "negative_articles.csv": "negative_article",
             # Legacy verb CSVs disabled - all verb data is now in verbs_unified.csv
             # "verbs.csv": "verb",
             # "regular_verbs.csv": "verb",
