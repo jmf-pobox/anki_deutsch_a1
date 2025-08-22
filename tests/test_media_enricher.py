@@ -455,7 +455,7 @@ class TestStandardMediaEnricher:
         # Should generate new image
         assert result == "/fake/image.jpg"
         mock_media_service.generate_image.assert_called_once_with(
-            "search terms", "fallback"
+            word="newword", search_query="search terms", example_sentence="fallback"
         )
 
     def test_abstract_noun_no_image_generation(

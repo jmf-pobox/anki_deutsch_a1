@@ -3,8 +3,10 @@
 import hashlib
 import logging
 import os
+import re
 import shutil
 import tempfile
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -260,7 +262,11 @@ class AnkiBackend(DeckBackend):
         note = self._collection.new_note(notetype)
         for i, field_value in enumerate(processed_fields):
             if i < len(note.fields):
-                note.fields[i] = field_value
+                # Extract and add media files from HTML content before setting field
+                processed_field_value = self._extract_and_add_media_from_html(
+                    field_value
+                )
+                note.fields[i] = processed_field_value
                 if "[sound:" in field_value:
                     print(f"DEBUG: Setting field {i} to audio: {field_value}")
 
@@ -591,11 +597,13 @@ class AnkiBackend(DeckBackend):
 
         # Copy to collection media directory
         filename = os.path.basename(file_path)
-        logger.info(f"   📂 Copying to Anki collection: {filename}")
+        # Normalize filename to NFC form for consistent Unicode handling
+        normalized_filename = unicodedata.normalize("NFC", filename)
+        logger.info(f"   📂 Copying to Anki collection: {normalized_filename}")
         self._collection.media.add_file(file_path)
 
         # Generate reference based on expected media type and file extension
-        reference = filename
+        reference = normalized_filename
         file_ext = Path(file_path).suffix.lower()
         logger.info(f"   📄 File extension: '{file_ext}'")
 
@@ -641,6 +649,52 @@ class AnkiBackend(DeckBackend):
             f"media_type='{media_file.media_type}'"
         )
         return media_file
+
+    def _extract_and_add_media_from_html(self, html_content: str) -> str:
+        """Extract media references from HTML and add files to collection.
+
+        Args:
+            html_content: HTML content that may contain <img> or [sound:] references
+
+        Returns:
+            Updated HTML content with verified media references
+        """
+        if not html_content:
+            return html_content
+
+        # Extract image references from <img src="filename">
+        img_pattern = r'<img\s+src="([^"]+)"[^>]*>'
+        img_matches = re.findall(img_pattern, html_content, re.IGNORECASE)
+
+        for img_filename in img_matches:
+            # Try to find the image file in the images directory
+            image_path = Path("data/images") / img_filename
+            if image_path.exists():
+                try:
+                    logger.info(f"   🖼️ Adding image from HTML: {img_filename}")
+                    self.add_media_file(str(image_path), "image")
+                except Exception as e:
+                    logger.warning(f"   ⚠️ Failed to add image {img_filename}: {e}")
+            else:
+                logger.warning(f"   ⚠️ Image file not found: {image_path}")
+
+        # Extract audio references from [sound:filename]
+        sound_pattern = r"\[sound:([^\]]+)\]"
+        sound_matches = re.findall(sound_pattern, html_content)
+
+        for audio_filename in sound_matches:
+            # Try to find the audio file in the audio directory
+            audio_path = Path("data/audio") / audio_filename
+            if audio_path.exists():
+                try:
+                    logger.info(f"   🔊 Adding audio from HTML: {audio_filename}")
+                    self.add_media_file(str(audio_path), "audio")
+                except Exception as e:
+                    logger.warning(f"   ⚠️ Failed to add audio {audio_filename}: {e}")
+            else:
+                logger.warning(f"   ⚠️ Audio file not found: {audio_path}")
+
+        return html_content
 
     def export_deck(self, output_path: str) -> None:
         """Export the deck to a file."""

@@ -577,8 +577,8 @@ class StandardMediaEnricher(MediaEnricher):
             image_filename = self._get_image_filename(word)
             return str(self._image_base_path / image_filename)
 
-        # Generate new image
-        return self.generate_image(search_terms, fallback)
+        # Generate new image - pass word for filename generation
+        return self.generate_image_with_word(word, search_terms, fallback)
 
     def audio_exists(self, text: str) -> bool:
         """Check if audio file exists for given text (current or legacy name)."""
@@ -605,9 +605,28 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_image(self, search_terms: str, fallback: str) -> str | None:
         """Generate image file for search terms."""
         try:
+            # Note: MediaService expects generate_image(word, search_query, example_sentence)
+            # But this method signature has (search_terms, fallback) which is different context
+            # This suggests MediaService has multiple overloads or the call is incorrect
             return self._media_service.generate_image(search_terms, fallback)  # type: ignore[no-any-return]
         except Exception as e:
             logger.warning(f"Image generation failed for '{search_terms}': {e}")
+            return None
+
+    def generate_image_with_word(
+        self, word: str, search_terms: str, fallback: str
+    ) -> str | None:
+        """Generate image file with proper word for filename."""
+        try:
+            # Fix: Pass word for filename, search_terms as search_query, fallback as example_sentence
+            result = self._media_service.generate_image(
+                word=word, search_query=search_terms, example_sentence=fallback
+            )
+            return result  # type: ignore[no-any-return]
+        except Exception as e:
+            logger.warning(
+                f"Image generation failed for '{word}' with search '{search_terms}': {e}"
+            )
             return None
 
     def _get_audio_filename(self, text: str) -> str:
@@ -653,10 +672,15 @@ class StandardMediaEnricher(MediaEnricher):
 
     def _get_image_filename(self, word: str) -> str:
         """Get standardized image filename for word."""
-        # Clean word for filename (match existing logic)
+        import unicodedata
+
+        # Clean word for filename (match MediaService logic exactly)
+        # Normalize to NFC form to ensure consistent Unicode encoding
+        normalized_word = unicodedata.normalize("NFC", word)
         safe_word = (
-            "".join(c for c in word.lower() if c.isalnum() or c in (" ", "-", "_"))
+            "".join(c for c in normalized_word if c.isalnum() or c in (" ", "-", "_"))
             .rstrip()
             .replace(" ", "_")
+            .lower()
         )
         return f"{safe_word}.jpg"
