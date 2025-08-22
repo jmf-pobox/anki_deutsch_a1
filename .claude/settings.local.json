@@ -52,7 +52,10 @@
       "Bash(gh pr comment:*)",
       "Bash(git pull:*)",
       "Bash(git branch:*)",
-      "Bash(PYTHONPATH:*)"
+      "Bash(PYTHONPATH:*)",
+      "Bash(for:*)",
+      "Bash(do echo \"--- $file ---\")",
+      "Bash(done)"
     ],
     "deny": []
   }
