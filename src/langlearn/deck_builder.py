@@ -273,12 +273,14 @@ class DeckBuilder:
             "adjectives.csv": "adjective",
             "adverbs.csv": "adverb",
             "negations.csv": "negation",
-            "verbs.csv": "verb",
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
-            "regular_verbs.csv": "verb",
-            "irregular_verbs.csv": "verb",
-            "separable_verbs.csv": "verb",
+            "verbs_unified.csv": "verb_conjugation",  # Use modern multi-tense verb system
+            # Legacy verb CSVs disabled - all verb data is now in verbs_unified.csv
+            # "verbs.csv": "verb",
+            # "regular_verbs.csv": "verb",
+            # "irregular_verbs.csv": "verb",
+            # "separable_verbs.csv": "verb",
         }
 
         for filename, record_type in csv_to_record_type.items():
@@ -646,6 +648,7 @@ class DeckBuilder:
                     "du_audio",
                     "ihr_audio",
                     "sie_audio",
+                    "wir_audio",
                 }
                 for enriched in enriched_list:
                     if isinstance(enriched, dict):
@@ -660,9 +663,26 @@ class DeckBuilder:
 
             # Step 3: Card building via CardBuilder service
             logger.info(f"Building cards for {record_type} records...")
-            cards = self._card_builder.build_cards_from_records(
-                records, enriched_data_list
-            )
+
+            # Special handling for verb conjugation records - use multi-card generation
+            if record_type == "verbconjugation":
+                from .models.records import VerbConjugationRecord
+
+                # Cast records to the proper type for verb conjugation processing
+                verb_records = [
+                    r for r in records if isinstance(r, VerbConjugationRecord)
+                ]
+                logger.info(
+                    f"Using verb conjugation multi-card generation for {len(verb_records)} records"
+                )
+                cards = self._card_builder.build_verb_conjugation_cards(
+                    verb_records, enriched_data_list
+                )
+            else:
+                # Standard single-card generation for other record types
+                cards = self._card_builder.build_cards_from_records(
+                    records, enriched_data_list
+                )
 
             # Step 4: Create note types and add cards to backend via AnkiBackend
             cards_created = 0

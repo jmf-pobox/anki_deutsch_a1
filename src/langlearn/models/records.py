@@ -9,7 +9,7 @@ fields and domain models.
 from abc import ABC, abstractmethod
 from typing import Any, Literal, overload
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class BaseRecord(BaseModel, ABC):
@@ -379,7 +379,7 @@ class VerbConjugationRecord(BaseRecord):
     """
 
     infinitive: str = Field(..., description="German infinitive verb")
-    meaning: str = Field(..., description="English meaning")
+    english: str = Field(..., description="English meaning")
     classification: str = Field(
         ..., description="Verb type (regelmäßig/unregelmäßig/gemischt)"
     )
@@ -387,13 +387,15 @@ class VerbConjugationRecord(BaseRecord):
     auxiliary: str = Field(..., description="Auxiliary verb (haben/sein)")
     tense: str = Field(..., description="Tense (present/preterite/perfect/future)")
 
-    # Six conjugation forms
-    ich: str = Field(..., description="First person singular form")
-    du: str = Field(..., description="Second person singular form")
-    er: str = Field(..., description="Third person singular form (er/sie/es)")
-    wir: str = Field(..., description="First person plural form")
-    ihr: str = Field(..., description="Second person plural form")
-    sie: str = Field(..., description="Third person plural/formal form (sie/Sie)")
+    # Six conjugation forms (optional for imperative/perfect tenses)
+    ich: str = Field(default="", description="First person singular form")
+    du: str = Field(default="", description="Second person singular form")
+    er: str = Field(default="", description="Third person singular form (er/sie/es)")
+    wir: str = Field(default="", description="First person plural form")
+    ihr: str = Field(default="", description="Second person plural form")
+    sie: str = Field(
+        default="", description="Third person plural/formal form (sie/Sie)"
+    )
 
     example: str = Field(..., description="Example sentence using this tense")
 
@@ -410,7 +412,7 @@ class VerbConjugationRecord(BaseRecord):
     @classmethod
     def validate_classification(cls, v: str) -> str:
         """Validate verb classification."""
-        valid_classifications = {"regelmäßig", "unregelmäßig", "gemischt"}
+        valid_classifications = {"regelmäßig", "unregelmäßig", "gemischt", "modal"}
         if v not in valid_classifications:
             raise ValueError(
                 f"Invalid classification: {v}. Must be one of {valid_classifications}"
@@ -432,18 +434,81 @@ class VerbConjugationRecord(BaseRecord):
     @classmethod
     def validate_tense(cls, v: str) -> str:
         """Validate tense name."""
-        valid_tenses = {"present", "preterite", "perfect", "future", "subjunctive"}
+        valid_tenses = {
+            "present",
+            "preterite",
+            "perfect",
+            "future",
+            "subjunctive",
+            "imperative",
+        }
         if v not in valid_tenses:
             raise ValueError(f"Invalid tense: {v}. Must be one of {valid_tenses}")
         return v
 
     @field_validator("ich", "du", "er", "wir", "ihr", "sie")
     @classmethod
-    def validate_conjugation_not_empty(cls, v: str) -> str:
-        """Ensure conjugation forms are not empty."""
-        if not v or v.strip() == "":
-            raise ValueError("Conjugation forms cannot be empty")
+    def validate_conjugation_forms(cls, v: str) -> str:
+        """Validate conjugation forms, allowing empty for specific tenses."""
+        # Allow empty/None values for imperative and perfect tenses
+        # These will be validated in model_validator for completeness
+        if v is None or v == "":
+            return ""
         return v.strip()
+
+    @model_validator(mode="after")
+    def validate_tense_completeness(self) -> "VerbConjugationRecord":
+        """Validate that required conjugation forms are present for each tense."""
+        tense = self.tense.lower()
+
+        # Impersonal verbs (weather verbs) only need 3rd person singular
+        impersonal_verbs = {"regnen", "schneien", "hageln", "donnern", "blitzen"}
+        is_impersonal = self.infinitive in impersonal_verbs
+
+        if tense in {"present", "preterite", "subjunctive"}:
+            if is_impersonal:
+                # Impersonal verbs only need 3rd person singular (sie field)
+                if not self.sie or self.sie.strip() == "":
+                    raise ValueError(
+                        f"Impersonal verb {self.infinitive} requires 'sie' form"
+                    )
+            else:
+                # Regular verbs require all 6 persons
+                required_forms = [
+                    self.ich,
+                    self.du,
+                    self.er,
+                    self.wir,
+                    self.ihr,
+                    self.sie,
+                ]
+                empty_forms = [
+                    i
+                    for i, form in enumerate(required_forms)
+                    if not form or form.strip() == ""
+                ]
+                if empty_forms:
+                    person_names = ["ich", "du", "er", "wir", "ihr", "sie"]
+                    missing = [person_names[i] for i in empty_forms]
+                    raise ValueError(
+                        f"{tense} tense requires all persons: "
+                        f"missing {', '.join(missing)}"
+                    )
+
+        elif tense == "imperative":
+            # Imperative requires only du and ihr forms (sie/Sie can be optional)
+            if not self.du or self.du.strip() == "":
+                raise ValueError("Imperative tense requires 'du' form")
+            if not self.ihr or self.ihr.strip() == "":
+                raise ValueError("Imperative tense requires 'ihr' form")
+            # ich, er, wir can be empty for imperatives
+
+        elif tense == "perfect" and (not self.sie or self.sie.strip() == ""):
+            # Perfect tense uses auxiliary form in sie field (legacy compatibility)
+            raise ValueError("Perfect tense requires auxiliary form in 'sie' field")
+            # Other persons can be empty for perfect tense
+
+        return self
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbConjugationRecord":
@@ -453,27 +518,33 @@ class VerbConjugationRecord(BaseRecord):
                 f"VerbConjugationRecord requires at least 12 fields, got {len(fields)}"
             )
 
+        # Helper function to safely strip string or return empty string
+        def safe_strip(field: str | None) -> str:
+            if field is None:
+                return ""
+            return field.strip() if isinstance(field, str) else ""
+
         return cls(
-            infinitive=fields[0].strip(),
-            meaning=fields[1].strip(),
-            classification=fields[2].strip(),
-            separable=fields[3].strip().lower() in ("true", "1", "yes"),
-            auxiliary=fields[4].strip(),
-            tense=fields[5].strip(),
-            ich=fields[6].strip(),
-            du=fields[7].strip(),
-            er=fields[8].strip(),
-            wir=fields[9].strip(),
-            ihr=fields[10].strip(),
-            sie=fields[11].strip(),
-            example=fields[12].strip() if len(fields) > 12 else "",
+            infinitive=safe_strip(fields[0]),
+            english=safe_strip(fields[1]),
+            classification=safe_strip(fields[2]),
+            separable=safe_strip(fields[3]).lower() in ("true", "1", "yes"),
+            auxiliary=safe_strip(fields[4]),
+            tense=safe_strip(fields[5]),
+            ich=safe_strip(fields[6]),
+            du=safe_strip(fields[7]),
+            er=safe_strip(fields[8]),
+            wir=safe_strip(fields[9]),
+            ihr=safe_strip(fields[10]),
+            sie=safe_strip(fields[11]),
+            example=safe_strip(fields[12]) if len(fields) > 12 else "",
         )
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for MediaEnricher."""
         return {
             "infinitive": self.infinitive,
-            "meaning": self.meaning,
+            "english": self.english,
             "classification": self.classification,
             "separable": self.separable,
             "auxiliary": self.auxiliary,
@@ -500,7 +571,7 @@ class VerbConjugationRecord(BaseRecord):
         """Field names for verb conjugation CSV."""
         return [
             "infinitive",
-            "meaning",
+            "english",
             "classification",
             "separable",
             "auxiliary",
@@ -523,7 +594,7 @@ class VerbImperativeRecord(BaseRecord):
     """
 
     infinitive: str = Field(..., description="German infinitive verb")
-    meaning: str = Field(..., description="English meaning")
+    english: str = Field(..., description="English meaning")
     classification: str = Field(
         ..., description="Verb type (regelmäßig/unregelmäßig/gemischt)"
     )
@@ -577,7 +648,7 @@ class VerbImperativeRecord(BaseRecord):
 
         return cls(
             infinitive=fields[0].strip(),
-            meaning=fields[1].strip(),
+            english=fields[1].strip(),
             classification=fields[2].strip(),
             separable=fields[3].strip().lower() in ("true", "1", "yes"),
             du_form=fields[4].strip(),
@@ -592,7 +663,7 @@ class VerbImperativeRecord(BaseRecord):
         """Convert to dictionary for MediaEnricher."""
         return {
             "infinitive": self.infinitive,
-            "meaning": self.meaning,
+            "english": self.english,
             "classification": self.classification,
             "separable": self.separable,
             "du_form": self.du_form,
@@ -618,7 +689,7 @@ class VerbImperativeRecord(BaseRecord):
         """Field names for verb imperative CSV."""
         return [
             "infinitive",
-            "meaning",
+            "english",
             "classification",
             "separable",
             "du_form",

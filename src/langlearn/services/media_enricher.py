@@ -128,6 +128,8 @@ class StandardMediaEnricher(MediaEnricher):
             return self._enrich_adverb_record(enriched, domain_model)
         elif model_type == "negation":
             return self._enrich_negation_record(enriched, domain_model)
+        elif model_type == "verbconjugationrecord":
+            return self._enrich_verb_conjugation_record(enriched, domain_model)
         else:
             # Fallback enrichment for record types without legacy
             # domain models (key-based detection)
@@ -138,6 +140,9 @@ class StandardMediaEnricher(MediaEnricher):
                     return self._enrich_phrase_record(enriched)
                 if "verb" in enriched:
                     return self._enrich_verb_record(enriched)
+                if "infinitive" in enriched:
+                    # Handle VerbConjugationRecord that falls through
+                    return self._enrich_verb_conjugation_record_fallback(enriched)
             except Exception as e:
                 logger.warning(f"Fallback enrichment failed for {model_type}: {e}")
             logger.warning(f"Unknown model type: {model_type}")
@@ -294,6 +299,108 @@ class StandardMediaEnricher(MediaEnricher):
                 record["image"] = f'<img src="{image_filename}">'
 
         return record
+
+    def _enrich_verb_conjugation_record(
+        self, record: dict[str, Any], verb_record: Any
+    ) -> dict[str, Any]:
+        """Enrich verb conjugation record with media.
+
+        Args:
+            record: Record dictionary with verb conjugation data
+            verb_record: VerbConjugationRecord instance with media fields
+
+        Returns:
+            Enriched record with media references
+        """
+        # Generate word audio (combined infinitive + conjugated forms with pronouns)
+        if not record.get("word_audio") and record.get("infinitive"):
+            combined_audio_text = self._get_verb_combined_audio_text(record)
+            audio_path = self._get_or_generate_audio(combined_audio_text)
+            if audio_path:
+                record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate example audio
+        if not record.get("example_audio") and record.get("example"):
+            audio_path = self._get_or_generate_audio(record["example"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example sentence (representing the action)
+        if (
+            not record.get("image")
+            and record.get("infinitive")
+            and record.get("example")
+        ):
+            infinitive = record["infinitive"]
+            if not self.image_exists(infinitive):
+                # Use example sentence as search terms for better verb visualization
+                search_terms = record["example"]
+                fallback = record.get("english", infinitive)
+                image_path = self._get_or_generate_image(
+                    infinitive, search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(infinitive)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_verb_conjugation_record_fallback(
+        self, record: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Fallback enrichment for VerbConjugationRecord when domain model is None."""
+        # This is essentially the same logic but without domain model dependency
+        return self._enrich_verb_conjugation_record(record, None)
+
+    def _get_verb_combined_audio_text(self, record: dict[str, Any]) -> str:
+        """Generate combined audio text for verb conjugations.
+
+        Creates audio text that includes the infinitive plus all conjugated forms
+        with their pronouns, similar to how adjectives work.
+
+        For present/perfect/preterite: "infinitive, ich form, du form, er form, wir form, ihr form, sie form"
+        For imperative: "infinitive, du form, ihr form, Sie form, wir form"
+
+        Args:
+            record: VerbConjugationRecord data dictionary
+
+        Returns:
+            Combined audio text string
+        """
+        infinitive = record.get("infinitive", "")
+        tense = record.get("tense", "")
+
+        parts = [infinitive]
+
+        if tense == "imperative":
+            # For imperatives: du form, ihr form, Sie form, wir form
+            if record.get("du"):
+                parts.append(f"du {record['du']}")
+            if record.get("ihr"):
+                parts.append(f"ihr {record['ihr']}")
+            if record.get("sie"):
+                parts.append(f"Sie {record['sie']}")
+            if record.get("wir"):
+                parts.append(f"wir {record['wir']}")
+        else:
+            # For conjugations (present/perfect/preterite): all 6 persons
+            if record.get("ich"):
+                parts.append(f"ich {record['ich']}")
+            if record.get("du"):
+                parts.append(f"du {record['du']}")
+            if record.get("er"):
+                parts.append(f"er {record['er']}")
+            if record.get("wir"):
+                parts.append(f"wir {record['wir']}")
+            if record.get("ihr"):
+                parts.append(f"ihr {record['ihr']}")
+            if record.get("sie"):
+                parts.append(f"sie {record['sie']}")
+
+        return ", ".join(parts)
 
     def _enrich_preposition_record(self, record: dict[str, Any]) -> dict[str, Any]:
         """Enrich preposition record with basic audio support.

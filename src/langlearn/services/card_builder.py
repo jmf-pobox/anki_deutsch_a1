@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from langlearn.backends.base import CardTemplate, NoteType
-from langlearn.models.records import BaseRecord
+from langlearn.models.records import BaseRecord, VerbConjugationRecord
 from langlearn.services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class CardBuilder:
         self._project_root = project_root or Path.cwd()
 
         if template_service is None:
-            template_dir = self._project_root / "templates"
+            template_dir = self._project_root / "src" / "langlearn" / "templates"
             template_service = TemplateService(template_dir)
 
         self._template_service = template_service
@@ -235,11 +235,13 @@ class CardBuilder:
             "verb_imperative": [
                 "Infinitive",
                 "English",
+                "Meaning",
                 "Classification",
                 "Separable",
                 "DuForm",
                 "IhrForm",
                 "SieForm",
+                "WirForm",
                 "ExampleDu",
                 "ExampleIhr",
                 "ExampleSie",
@@ -248,6 +250,7 @@ class CardBuilder:
                 "DuAudio",
                 "IhrAudio",
                 "SieAudio",
+                "WirAudio",
             ],
         }
 
@@ -344,7 +347,8 @@ class CardBuilder:
             },
             "verb_conjugation": {
                 "Infinitive": "infinitive",
-                "English": "meaning",
+                "English": "english",
+                "Meaning": "english",
                 "Classification": "classification",
                 "Separable": "separable",
                 "Auxiliary": "auxiliary",
@@ -358,18 +362,21 @@ class CardBuilder:
             },
             "verb_imperative": {
                 "Infinitive": "infinitive",
-                "English": "meaning",
+                "English": "english",
+                "Meaning": "english",
                 "Classification": "classification",
                 "Separable": "separable",
                 "DuForm": "du_form",
                 "IhrForm": "ihr_form",
                 "SieForm": "sie_form",
+                "WirForm": "wir_form",
                 "ExampleDu": "example_du",
                 "ExampleIhr": "example_ihr",
                 "ExampleSie": "example_sie",
                 "DuAudio": "du_audio",
                 "IhrAudio": "ihr_audio",
                 "SieAudio": "sie_audio",
+                "WirAudio": "wir_audio",
             },
         }
 
@@ -495,10 +502,10 @@ class CardBuilder:
             "verb": ["verb", "english", "present_ich", "present_du", "present_er"],
             "phrase": ["phrase", "english", "context"],
             "preposition": ["preposition", "english", "case", "example1", "example2"],
-            "verb_conjugation": ["infinitive", "meaning", "tense", "ich", "du", "er"],
+            "verb_conjugation": ["infinitive", "english", "tense", "ich", "du", "er"],
             "verb_imperative": [
                 "infinitive",
-                "meaning",
+                "english",
                 "du_form",
                 "ihr_form",
                 "sie_form",
@@ -532,3 +539,31 @@ class CardBuilder:
         }
 
         return class_to_type.get(class_name, class_name.lower())
+
+    def build_verb_conjugation_cards(
+        self,
+        records: list[VerbConjugationRecord],
+        enriched_data_list: list[dict[str, Any]] | None = None,
+    ) -> list[tuple[list[str], NoteType]]:
+        """Build multiple tense-specific cards from verb conjugation records.
+
+        This method implements the verb card generation modernization,
+        creating 3-4 cards per verb instead of 1 card per verb.
+
+        Args:
+            records: List of VerbConjugationRecord instances
+            enriched_data_list: Optional enriched data for each record
+
+        Returns:
+            List of (field_values, note_type) tuples for multiple cards per verb
+        """
+        logger.info("Building verb conjugation cards from %d records", len(records))
+
+        # Import here to avoid circular dependency
+        from langlearn.services.verb_conjugation_processor import (
+            VerbConjugationProcessor,
+        )
+
+        # Create processor and delegate to it
+        processor = VerbConjugationProcessor(self)
+        return processor.process_verb_records(records, enriched_data_list)

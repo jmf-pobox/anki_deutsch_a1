@@ -94,6 +94,40 @@ This directory contains design documentation for **Language Learn** - Multi-Lang
 
 ---
 
+### **[PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)** - CSV Data Standards
+**Target Audience**: All Engineers, Data Contributors  
+**Purpose**: Canonical CSV format specifications for all word types  
+**When to Use**:
+- Creating or modifying CSV data files
+- Understanding data structure requirements
+- Implementing new word type support
+- Ensuring data consistency
+
+**Content**:
+- Column naming conventions and language separation
+- Validation rules for each word type
+- UTF-8 encoding and format standards
+- Migration guidelines for legacy data
+
+---
+
+### **[PROD-CSV-INVENTORY.md](./PROD-CSV-INVENTORY.md)** - CSV File Status
+**Target Audience**: Engineers, Product Managers  
+**Purpose**: Complete inventory of all CSV files and their integration status  
+**When to Use**:
+- Understanding available vocabulary data
+- Planning new word type integrations
+- Identifying cleanup opportunities
+- Tracking data migration progress
+
+**Content**:
+- Active, unintegrated, and legacy CSV files
+- Integration priorities and recommendations
+- Data quality status for each file
+- Migration and cleanup tasks
+
+---
+
 ## 🎯 **Multi-Language Foundation - PHASE 1 SUCCESS**
 
 ### **German A1 Implementation Complete**:
@@ -129,10 +163,12 @@ All documentation has been updated to reflect the completed Clean Pipeline Archi
 
 | **Document** | **Status** | **Last Updated** |
 |--------------|------------|------------------|
-| **ENG-DESIGN-INDEX.md** | ✅ Current | Clean Pipeline Migration |
+| **ENG-DESIGN-INDEX.md** | ✅ Current | Added CSV documentation |
 | **ENG-QUALITY-METRICS.md** | ✅ Updated | Current metrics and status |
 | **ENG-DEVELOPMENT-STANDARDS.md** | ✅ Updated | Clean Architecture practices |
 | **ENG-COMPONENT-INVENTORY.md** | ✅ Updated | Component responsibilities |
+| **PROD-CSV-SPEC.md** | ✅ Created | CSV format specifications |
+| **PROD-CSV-INVENTORY.md** | ✅ Created | CSV file status and inventory |
 
 ---
 

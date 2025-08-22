@@ -1,0 +1,241 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Perfect Tense Conjugation</div>
+
+<div class="verb-prompt">
+    <div class="infinitive-with-audio">
+        <span class="german infinitive">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="auxiliary-selection">
+        <div class="challenge-instruction">Which auxiliary verb does this take?</div>
+        <div class="auxiliary-options">
+            <div class="aux-option haben">haben</div>
+            <div class="aux-option sein">sein</div>
+        </div>
+    </div>
+    
+    <div class="conjugation-challenge">
+        <div class="challenge-instruction">Complete the perfect tense conjugations:</div>
+        <div class="perfect-grid">
+            <div class="perfect-item">
+                <span class="pronoun">ich</span>
+                <span class="auxiliary-blank">___</span>
+                <span class="participle-hint">+ past participle</span>
+            </div>
+            <div class="perfect-item">
+                <span class="pronoun">du</span>
+                <span class="auxiliary-blank">___</span>
+                <span class="participle-hint">+ past participle</span>
+            </div>
+            <div class="perfect-item">
+                <span class="pronoun">er/sie/es</span>
+                <span class="auxiliary-blank">___</span>
+                <span class="participle-hint">+ past participle</span>
+            </div>
+            <div class="perfect-item">
+                <span class="pronoun">wir</span>
+                <span class="auxiliary-blank">___</span>
+                <span class="participle-hint">+ past participle</span>
+            </div>
+            <div class="perfect-item">
+                <span class="pronoun">ihr</span>
+                <span class="auxiliary-blank">___</span>
+                <span class="participle-hint">+ past participle</span>
+            </div>
+            <div class="perfect-item">
+                <span class="pronoun">sie</span>
+                <span class="auxiliary-blank">___</span>
+                <span class="participle-hint">+ past participle</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Show Meaning</button>
+    <div id="hint-content" class="hint-content hidden">
+        <strong>English:</strong> {{Meaning}}
+    </div>
+</div>
+
+<div class="grammar-tip">
+    <button class="tip-button" onclick="showGrammarTip()">📚 Perfect Tense Help</button>
+    <div id="grammar-tip-content" class="tip-content hidden">
+        <strong>Perfect Tense Formation:</strong><br>
+        • Use <strong>haben</strong> for most verbs<br>
+        • Use <strong>sein</strong> for motion verbs (gehen, fahren) and change of state (werden)<br>
+        • Past participle usually ends in <em>-t</em> (regular) or <em>-en</em> (irregular)
+    </div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+
+function showGrammarTip() {
+    var tip = document.getElementById('grammar-tip-content');
+    var button = document.querySelector('.tip-button');
+    tip.classList.remove('hidden');
+    button.style.display = 'none';
+}
+
+// Interactive auxiliary selection
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.aux-option').forEach(function(option) {
+        option.addEventListener('click', function() {
+            // Remove previous selection
+            document.querySelectorAll('.aux-option').forEach(function(opt) {
+                opt.classList.remove('selected');
+            });
+            // Add selection to clicked option
+            this.classList.add('selected');
+        });
+    });
+});
+</script>
+
+<style>
+.infinitive {
+    font-size: 1.3em;
+    color: #0066cc;
+    font-weight: bold;
+}
+
+.auxiliary-selection {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.auxiliary-options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 15px 0;
+}
+
+.aux-option {
+    padding: 10px 20px;
+    border: 2px solid #007bff;
+    border-radius: 25px;
+    background-color: white;
+    color: #007bff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.aux-option:hover {
+    background-color: #007bff;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.aux-option.selected {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.challenge-instruction {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+    text-align: center;
+}
+
+.perfect-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.perfect-item {
+    display: grid;
+    grid-template-columns: 100px 80px 1fr;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    gap: 15px;
+}
+
+.pronoun {
+    font-weight: bold;
+    color: #495057;
+    text-align: center;
+}
+
+.auxiliary-blank {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 1.1em;
+    text-align: center;
+    border-bottom: 2px dashed #6c757d;
+    padding: 4px 8px;
+    background-color: white;
+    border-radius: 4px;
+}
+
+.participle-hint {
+    font-size: 0.85em;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.hint-container, .grammar-tip {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.hint-button, .tip-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin: 5px;
+}
+
+.hint-button:hover, .tip-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.hint-content, .tip-content {
+    margin-top: 10px;
+    padding: 12px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #2196f3;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    .perfect-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .auxiliary-options {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>

@@ -1,0 +1,345 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="verb-conjugation">
+    <div class="infinitive-with-audio">
+        <span class="german infinitive">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+        <div class="meaning">{{Meaning}}</div>
+    </div>
+    
+    <div class="auxiliary-info">
+        <div class="auxiliary-announcement">
+            <span class="auxiliary-verb {{Auxiliary}}">{{Auxiliary}}</span>
+            <span class="auxiliary-label">+ past participle</span>
+        </div>
+        {{#eq Auxiliary "sein"}}
+        <div class="auxiliary-reason">
+            <strong>Why "sein"?</strong> Motion or change of state verb
+        </div>
+        {{else}}
+        <div class="auxiliary-reason">
+            <strong>Standard auxiliary:</strong> Most German verbs use "haben"
+        </div>
+        {{/eq}}
+    </div>
+    
+    <div class="conjugation-table">
+        <div class="tense-header">Perfect Tense (Perfekt)</div>
+        <div class="conjugation-grid">
+            <div class="conjugation-row">
+                <span class="pronoun">ich</span>
+                <span class="auxiliary-form">{{#eq Auxiliary "haben"}}habe{{else}}bin{{/eq}}</span>
+                <span class="participle">{{Sie}}</span>
+                <span class="phonetic">{{#IchAudio}}🔊{{/IchAudio}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">du</span>
+                <span class="auxiliary-form">{{#eq Auxiliary "haben"}}hast{{else}}bist{{/eq}}</span>
+                <span class="participle">{{Sie}}</span>
+                <span class="phonetic">{{#DuAudio}}🔊{{/DuAudio}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">er/sie/es</span>
+                <span class="auxiliary-form">{{#eq Auxiliary "haben"}}hat{{else}}ist{{/eq}}</span>
+                <span class="participle">{{Sie}}</span>
+                <span class="phonetic">{{#ErAudio}}🔊{{/ErAudio}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">wir</span>
+                <span class="auxiliary-form">{{#eq Auxiliary "haben"}}haben{{else}}sind{{/eq}}</span>
+                <span class="participle">{{Sie}}</span>
+                <span class="phonetic">{{#WirAudio}}🔊{{/WirAudio}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">ihr</span>
+                <span class="auxiliary-form">{{#eq Auxiliary "haben"}}habt{{else}}seid{{/eq}}</span>
+                <span class="participle">{{Sie}}</span>
+                <span class="phonetic">{{#IhrAudio}}🔊{{/IhrAudio}}</span>
+            </div>
+            <div class="conjugation-row">
+                <span class="pronoun">sie</span>
+                <span class="auxiliary-form">{{#eq Auxiliary "haben"}}haben{{else}}sind{{/eq}}</span>
+                <span class="participle">{{Sie}}</span>
+                <span class="phonetic">{{#SieAudio}}🔊{{/SieAudio}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="participle-formation">
+        <div class="formation-header">Past Participle Formation:</div>
+        <div class="formation-info">
+            {{#Classification}}
+            {{#eq Classification "regelmäßig"}}
+            <div class="formation-rule regular">
+                <strong>Regular:</strong> ge- + stem + -t
+                <div class="formation-example">({{Infinitive}} → {{Sie}})</div>
+            </div>
+            {{else}}
+            <div class="formation-rule irregular">
+                <strong>Irregular:</strong> ge- + changed stem + -en
+                <div class="formation-example">({{Infinitive}} → {{Sie}})</div>
+            </div>
+            {{/eq}}
+            {{/Classification}}
+        </div>
+    </div>
+</div>
+
+<div class="example-section">
+    <div class="example-header">Perfect Tense in Context:</div>
+    <div class="example-with-audio">
+        <span class="example-sentence">{{Example}}</span>
+        {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+    </div>
+    <div class="example-translation">
+        <em>This expresses a completed action in the past</em>
+    </div>
+</div>
+
+<div class="usage-tip">
+    <div class="tip-header">💡 Usage Tip:</div>
+    <div class="tip-content">
+        Perfect tense is the <strong>most common past tense</strong> in spoken German. 
+        Use it for completed actions, just like "I have done" in English.
+    </div>
+</div>
+
+<script>
+// Auto-play functionality for pronunciation
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for audio
+    document.querySelectorAll('.phonetic').forEach(function(element) {
+        if (element.textContent.includes('🔊')) {
+            element.style.cursor = 'pointer';
+            element.style.color = '#007bff';
+        }
+    });
+});
+</script>
+
+<style>
+.infinitive {
+    font-size: 1.4em;
+    color: #0066cc;
+    font-weight: bold;
+}
+
+.meaning {
+    font-size: 0.9em;
+    color: #666;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+.auxiliary-info {
+    margin: 20px 0;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+.auxiliary-announcement {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.auxiliary-verb {
+    font-size: 1.3em;
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background-color: rgba(255,255,255,0.2);
+}
+
+.auxiliary-verb.haben {
+    background-color: rgba(40, 167, 69, 0.8);
+}
+
+.auxiliary-verb.sein {
+    background-color: rgba(220, 53, 69, 0.8);
+}
+
+.auxiliary-label {
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+.auxiliary-reason {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+.conjugation-table {
+    margin: 20px 0;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tense-header {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.conjugation-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.conjugation-row {
+    display: grid;
+    grid-template-columns: 100px 80px 1fr 40px;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    border-left: 3px solid #6f42c1;
+}
+
+.pronoun {
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.95em;
+}
+
+.auxiliary-form {
+    font-size: 1em;
+    color: #6f42c1;
+    font-weight: bold;
+    text-align: center;
+}
+
+.participle {
+    font-size: 1.1em;
+    color: #dc3545;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: #dc3545;
+    text-decoration-thickness: 2px;
+}
+
+.phonetic {
+    text-align: center;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.participle-formation {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #fff3cd;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+.formation-header {
+    font-weight: bold;
+    color: #856404;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.formation-rule {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 5px 0;
+}
+
+.formation-rule.regular {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left: 3px solid #28a745;
+}
+
+.formation-rule.irregular {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 3px solid #dc3545;
+}
+
+.formation-example {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.example-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+}
+
+.example-header {
+    font-weight: bold;
+    color: #155724;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.example-sentence {
+    font-size: 1.1em;
+    color: #155724;
+    line-height: 1.4;
+}
+
+.example-translation {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.usage-tip {
+    margin: 20px 0;
+    padding: 12px;
+    background-color: #d1ecf1;
+    border-radius: 8px;
+    border-left: 4px solid #17a2b8;
+}
+
+.tip-header {
+    font-weight: bold;
+    color: #0c5460;
+    margin-bottom: 6px;
+}
+
+.tip-content {
+    color: #0c5460;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.inline-audio {
+    margin-left: 8px;
+    cursor: pointer;
+    color: #007bff;
+}
+
+.inline-audio:hover {
+    color: #0056b3;
+}
+
+@media (max-width: 480px) {
+    .conjugation-row {
+        grid-template-columns: 80px 60px 1fr 30px;
+        padding: 6px 8px;
+    }
+    
+    .auxiliary-announcement {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+</style>

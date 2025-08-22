@@ -80,8 +80,8 @@ class TestCardBuilder:
         # Test with default initialization
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
-            template_dir = temp_path / "templates"
-            template_dir.mkdir()
+            template_dir = temp_path / "src" / "langlearn" / "templates"
+            template_dir.mkdir(parents=True)
 
             # Create a minimal template file
             (template_dir / "noun_front.html").write_text("{{Noun}}")
@@ -545,22 +545,24 @@ class TestCardBuilderIntegration:
 
         field_values, note_type = card_builder.build_card_from_record(record)
 
-        # Verify field count and values
-        assert len(field_values) == 15  # All verb imperative fields
+        # Verify field count and values (updated for new fields)
+        assert len(field_values) == 18  # All verb imperative fields including new ones
         assert field_values[0] == "arbeiten"  # Infinitive
         assert field_values[1] == "to work"  # English
-        assert field_values[2] == "regelmäßig"  # Classification
-        assert field_values[3] == ""  # Separable (False -> "")
-        assert field_values[4] == "arbeite"  # DuForm
-        assert field_values[5] == "arbeitet"  # IhrForm
-        assert field_values[6] == "arbeiten Sie"  # SieForm
-        assert field_values[7] == "Arbeite schneller!"  # ExampleDu
-        assert field_values[8] == "Arbeitet zusammen!"  # ExampleIhr
-        assert field_values[9] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[2] == "to work"  # Meaning (same as English)
+        assert field_values[3] == "regelmäßig"  # Classification
+        assert field_values[4] == ""  # Separable (False -> "")
+        assert field_values[5] == "arbeite"  # DuForm
+        assert field_values[6] == "arbeitet"  # IhrForm
+        assert field_values[7] == "arbeiten Sie"  # SieForm
+        assert field_values[8] == ""  # WirForm (not provided)
+        assert field_values[9] == "Arbeite schneller!"  # ExampleDu
+        assert field_values[10] == "Arbeitet zusammen!"  # ExampleIhr
+        assert field_values[11] == "Arbeiten Sie bitte hier!"  # ExampleSie
 
         # Verify note type
         assert note_type.name == "German Verb Imperative with Media"
-        assert len(note_type.fields) == 15
+        assert len(note_type.fields) == 18  # Updated for new fields
 
     def test_verb_record_separable_formatting(self, card_builder: CardBuilder) -> None:
         """Test that separable verb field is formatted correctly."""
@@ -637,11 +639,11 @@ class TestCardBuilderIntegration:
 
         field_values, _ = card_builder.build_card_from_record(record, enriched_data)
 
-        # Check audio field formatting
-        assert field_values[11] == "[sound:arbeiten.mp3]"  # WordAudio
-        assert field_values[12] == "[sound:arbeite.mp3]"  # DuAudio
-        assert field_values[13] == "[sound:arbeitet.mp3]"  # IhrAudio
-        assert field_values[14] == "[sound:arbeiten_sie.mp3]"  # SieAudio
+        # Check audio field formatting (updated indices for new field order)
+        assert field_values[13] == "[sound:arbeiten.mp3]"  # WordAudio
+        assert field_values[14] == "[sound:arbeite.mp3]"  # DuAudio
+        assert field_values[15] == "[sound:arbeitet.mp3]"  # IhrAudio
+        assert field_values[16] == "[sound:arbeiten_sie.mp3]"  # SieAudio
 
     def test_get_supported_record_types_includes_verbs(
         self, card_builder: CardBuilder

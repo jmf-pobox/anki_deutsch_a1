@@ -84,7 +84,7 @@ class TestVerbCardMultiplier:
         """Sample present tense conjugation record."""
         return VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -103,7 +103,7 @@ class TestVerbCardMultiplier:
         """Sample subjunctive tense conjugation record."""
         return VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -122,7 +122,7 @@ class TestVerbCardMultiplier:
         """Sample imperative record."""
         return VerbImperativeRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             du_form="arbeite",
@@ -387,7 +387,7 @@ class TestVerbCardMultiplier:
         # Create a valid record but test error handling during processing
         valid_record = VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -415,7 +415,7 @@ class TestVerbCardMultiplier:
         """Test processing of separable verbs."""
         separable_conjugation = VerbConjugationRecord(
             infinitive="aufstehen",
-            meaning="to get up",
+            english="to get up",
             classification="unregelmäßig",
             separable=True,
             auxiliary="sein",
@@ -442,7 +442,7 @@ class TestVerbCardMultiplier:
         """Test processing multiple tenses for the same verb."""
         present_record = VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -458,7 +458,7 @@ class TestVerbCardMultiplier:
 
         preterite_record = VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -486,7 +486,7 @@ class TestVerbCardMultiplier:
         """Test that higher CEFR levels include more tenses."""
         subjunctive_record = VerbConjugationRecord(
             infinitive="haben",
-            meaning="to have",
+            english="to have",
             classification="unregelmäßig",
             separable=False,
             auxiliary="haben",
@@ -523,7 +523,7 @@ class TestVerbCardMultiplierIntegration:
             # arbeiten - regular verb, multiple tenses
             VerbConjugationRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="regelmäßig",
                 separable=False,
                 auxiliary="haben",
@@ -538,7 +538,7 @@ class TestVerbCardMultiplierIntegration:
             ),
             VerbConjugationRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="regelmäßig",
                 separable=False,
                 auxiliary="haben",
@@ -554,7 +554,7 @@ class TestVerbCardMultiplierIntegration:
             # aufstehen - separable verb
             VerbConjugationRecord(
                 infinitive="aufstehen",
-                meaning="to get up",
+                english="to get up",
                 classification="unregelmäßig",
                 separable=True,
                 auxiliary="sein",
@@ -570,7 +570,7 @@ class TestVerbCardMultiplierIntegration:
             # Imperative for arbeiten
             VerbImperativeRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="regelmäßig",
                 separable=False,
                 du_form="arbeite",
@@ -610,7 +610,7 @@ class TestVerbCardMultiplierIntegration:
             # Present - A1 level
             VerbConjugationRecord(
                 infinitive="sein",
-                meaning="to be",
+                english="to be",
                 classification="unregelmäßig",
                 separable=False,
                 auxiliary="sein",
@@ -626,7 +626,7 @@ class TestVerbCardMultiplierIntegration:
             # Future - A2 level
             VerbConjugationRecord(
                 infinitive="sein",
-                meaning="to be",
+                english="to be",
                 classification="unregelmäßig",
                 separable=False,
                 auxiliary="sein",
@@ -642,7 +642,7 @@ class TestVerbCardMultiplierIntegration:
             # Subjunctive - B1 level
             VerbConjugationRecord(
                 infinitive="sein",
-                meaning="to be",
+                english="to be",
                 classification="unregelmäßig",
                 separable=False,
                 auxiliary="sein",

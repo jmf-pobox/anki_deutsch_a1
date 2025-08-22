@@ -248,7 +248,7 @@ class TestRecordMapperVerbSupport:
         """Test mapping CSV row to verb conjugation record."""
         row = {
             "infinitive": "arbeiten",
-            "meaning": "to work",
+            "english": "to work",
             "classification": "regelmäßig",
             "separable": "false",
             "auxiliary": "haben",
@@ -266,7 +266,7 @@ class TestRecordMapperVerbSupport:
 
         assert isinstance(record, VerbConjugationRecord)
         assert record.infinitive == "arbeiten"
-        assert record.meaning == "to work"
+        assert record.english == "to work"
         assert record.tense == "present"
         assert record.ich == "arbeite"
         assert record.separable is False
@@ -275,7 +275,7 @@ class TestRecordMapperVerbSupport:
         """Test mapping CSV row to verb imperative record."""
         row = {
             "infinitive": "arbeiten",
-            "meaning": "to work",
+            "english": "to work",
             "classification": "regelmäßig",
             "separable": "false",
             "du_form": "arbeite",

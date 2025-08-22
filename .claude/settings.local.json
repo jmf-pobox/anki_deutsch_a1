@@ -49,7 +49,10 @@
       "Bash(gh pr create:*)",
       "Bash(gh issue list:*)",
       "Bash(gh issue:*)",
-      "Bash(gh pr comment:*)"
+      "Bash(gh pr comment:*)",
+      "Bash(git pull:*)",
+      "Bash(git branch:*)",
+      "Bash(PYTHONPATH:*)"
     ],
     "deny": []
   }

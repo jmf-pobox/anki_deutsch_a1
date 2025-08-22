@@ -1,6 +1,6 @@
 phrase,english,context,related
-Guten Morgen!,Good morning!,Morning greeting (until about 11 AM),Guten Tag! Guten Abend!
-Guten Tag!,Good day!/Hello!,Formal greeting (from late morning to evening),Guten Morgen! Guten Abend!
+Guten Morgen!,Good morning!,Morning greeting,Guten Tag! Guten Abend!
+Guten Tag!,Good day!/Hello!,Formal greeting,Guten Morgen! Guten Abend!
 Guten Abend!,Good evening!,Evening greeting,Guten Morgen! Guten Tag!
 Gute Nacht!,Good night!,When saying goodbye before sleeping,Schlaf gut!
 Hallo!,Hello!,Informal greeting,Guten Tag! Hi!
@@ -9,44 +9,44 @@ Tschüss!,Bye!,Informal goodbye,Auf Wiedersehen! Bis später!
 Bis bald!,See you soon!,Informal goodbye when expecting to meet again soon,Bis später! Bis morgen!
 Bis später!,See you later!,Informal goodbye when expecting to meet again the same day,Bis bald! Tschüss!
 Bis morgen!,See you tomorrow!,When you will meet the person the next day,Bis bald! Bis später!
-Wie geht es Ihnen?,How are you? (formal),Asking about well-being (formal),Wie geht's? Wie geht es dir?
-Wie geht es dir?,How are you? (informal),Asking about well-being (informal),Wie geht's? Wie geht es Ihnen?
+Wie geht es Ihnen?,How are you? (formal),Asking about well-being,Wie geht's? Wie geht es dir?
+Wie geht es dir?,How are you? (informal),Asking about well-being,Wie geht's? Wie geht es Ihnen?
 Wie geht's?,How's it going? (very informal),Very casual way to ask about well-being,Wie geht es dir?
-Mir geht es gut.,I'm doing well.,Responding to "Wie geht es dir/Ihnen?",Danke gut.
-Danke gut.,Fine thanks.,Short response to "Wie geht es dir/Ihnen?",Mir geht es gut.
+Mir geht es gut.,I'm doing well.,"Responding to ""Wie geht es dir/Ihnen?""",Danke gut.
+Danke gut.,Fine thanks.,"Short response to ""Wie geht es dir/Ihnen?""",Mir geht es gut.
 Es geht.,I'm okay.,Neutral response when not feeling particularly good or bad,Mir geht es gut.
-Nicht so gut.,Not so good.,Negative response to "Wie geht es dir/Ihnen?",Es geht.
-Wie heißen Sie?,What is your name? (formal),Asking for someone's name (formal),Wie heißt du? Wie ist Ihr Name?
-Wie heißt du?,What is your name? (informal),Asking for someone's name (informal),Wie heißen Sie? Wie ist dein Name?
-Ich heiße...,My name is...,Responding to "Wie heißt du/Wie heißen Sie?",Mein Name ist...
-Mein Name ist...,My name is...,Responding to "Wie heißt du/Wie heißen Sie?",Ich heiße...
+Nicht so gut.,Not so good.,"Negative response to ""Wie geht es dir/Ihnen?""",Es geht.
+Wie heißen Sie?,What is your name? (formal),Asking for someone's name,Wie heißt du? Wie ist Ihr Name?
+Wie heißt du?,What is your name? (informal),Asking for someone's name,Wie heißen Sie? Wie ist dein Name?
+Ich heiße...,My name is...,"Responding to ""Wie heißt du/Wie heißen Sie?""",Mein Name ist...
+Mein Name ist...,My name is...,"Responding to ""Wie heißt du/Wie heißen Sie?""",Ich heiße...
 Freut mich!,Nice to meet you!,When meeting someone for the first time,Schön Sie kennenzulernen!
 Schön dich/Sie kennenzulernen!,Nice to meet you!,When meeting someone for the first time,Freut mich!
-Woher kommen Sie?,Where are you from? (formal),Asking about origin (formal),Woher kommst du?
-Woher kommst du?,Where are you from? (informal),Asking about origin (informal),Woher kommen Sie?
-Ich komme aus...,I come from...,Responding to "Woher kommst du/kommen Sie?",Ich bin aus...
-Wo wohnen Sie?,Where do you live? (formal),Asking about residence (formal),Wo wohnst du?
-Wo wohnst du?,Where do you live? (informal),Asking about residence (informal),Wo wohnen Sie?
-Ich wohne in...,I live in...,Responding to "Wo wohnst du/wohnen Sie?","Meine Adresse ist..."
-Was sind Sie von Beruf?,What is your profession? (formal),Asking about job (formal),Was machst du beruflich?
-Was machst du beruflich?,What do you do for a living? (informal),Asking about job (informal),Was sind Sie von Beruf?
-Ich bin...,I am...,Responding to "Was sind Sie von Beruf?",Ich arbeite als...
-Ich arbeite als...,I work as...,Responding to "Was machst du beruflich?",Ich bin...
-Sprechen Sie Deutsch?,Do you speak German? (formal),Asking about language skills (formal),Sprichst du Deutsch?
-Sprichst du Deutsch?,Do you speak German? (informal),Asking about language skills (informal),Sprechen Sie Deutsch?
+Woher kommen Sie?,Where are you from? (formal),Asking about origin,Woher kommst du?
+Woher kommst du?,Where are you from? (informal),Asking about origin,Woher kommen Sie?
+Ich komme aus...,I come from...,"Responding to ""Woher kommst du/kommen Sie?""",Ich bin aus...
+Wo wohnen Sie?,Where do you live? (formal),Asking about residence,Wo wohnst du?
+Wo wohnst du?,Where do you live? (informal),Asking about residence,Wo wohnen Sie?
+Ich wohne in...,I live in...,"Responding to ""Wo wohnst du/wohnen Sie?""",Meine Adresse ist...
+Was sind Sie von Beruf?,What is your profession? (formal),Asking about job,Was machst du beruflich?
+Was machst du beruflich?,What do you do for a living? (informal),Asking about job,Was sind Sie von Beruf?
+Ich bin...,I am...,"Responding to ""Was sind Sie von Beruf?""",Ich arbeite als...
+Ich arbeite als...,I work as...,"Responding to ""Was machst du beruflich?""",Ich bin...
+Sprechen Sie Deutsch?,Do you speak German? (formal),Asking about language skills,Sprichst du Deutsch?
+Sprichst du Deutsch?,Do you speak German? (informal),Asking about language skills,Sprechen Sie Deutsch?
 Ich spreche ein bisschen Deutsch.,I speak a little German.,Describing limited language ability,Ich lerne Deutsch.
 Ich verstehe nicht.,I don't understand.,When you don't understand something,Was bedeutet das?
-Können Sie bitte langsamer sprechen?,Could you please speak slower? (formal),Asking someone to speak slower (formal),Kannst du bitte langsamer sprechen?
-Kannst du bitte langsamer sprechen?,Could you please speak slower? (informal),Asking someone to speak slower (informal),Können Sie bitte langsamer sprechen?
+Können Sie bitte langsamer sprechen?,Could you please speak slower? (formal),Asking someone to speak slower,Kannst du bitte langsamer sprechen?
+Kannst du bitte langsamer sprechen?,Could you please speak slower? (informal),Asking someone to speak slower,Können Sie bitte langsamer sprechen?
 Wie bitte?,Pardon? / Come again?,When you didn't hear or understand something,Entschuldigung?
 Entschuldigung?,Excuse me?,When you didn't hear or understand something,Wie bitte?
-Können Sie das bitte wiederholen?,Could you please repeat that? (formal),Asking for repetition (formal),Kannst du das bitte wiederholen?
-Kannst du das bitte wiederholen?,Could you please repeat that? (informal),Asking for repetition (informal),Können Sie das bitte wiederholen?
+Können Sie das bitte wiederholen?,Could you please repeat that? (formal),Asking for repetition,Kannst du das bitte wiederholen?
+Kannst du das bitte wiederholen?,Could you please repeat that? (informal),Asking for repetition,Können Sie das bitte wiederholen?
 Was bedeutet...?,What does ... mean?,Asking for the meaning of a word,Wie sagt man...?
 Wie sagt man ... auf Deutsch?,How do you say ... in German?,Asking for vocabulary,Was bedeutet...?
 Wie spricht man das aus?,How do you pronounce that?,Asking for pronunciation help,Wie sagt man das?
 Entschuldigung!,Excuse me!/I'm sorry!,Getting attention or apologizing,Verzeihung!
-Verzeihung!,Excuse me!/Pardon me!,Getting attention or apologizing (slightly more formal),Entschuldigung!
+Verzeihung!,Excuse me!/Pardon me!,Getting attention or apologizing,Entschuldigung!
 Es tut mir leid.,I'm sorry.,Apologizing for something,Entschuldigung!
 Kein Problem!,No problem!,Responding to an apology,Das macht nichts.
 Das macht nichts.,That's nothing./It doesn't matter.,Responding to an apology,Kein Problem!
@@ -63,9 +63,9 @@ Prost!,Cheers!,When drinking,Zum Wohl!
 Guten Appetit!,Enjoy your meal!,Before starting to eat,Mahlzeit!
 Wie spät ist es?,What time is it?,Asking for the time,Haben Sie die Uhrzeit?
 Es ist ... Uhr.,It is ... o'clock.,Telling the time,Es ist halb...
-Haben Sie die Uhrzeit?,Do you have the time? (formal),Asking for the time (formal),Wie spät ist es?
+Haben Sie die Uhrzeit?,Do you have the time? (formal),Asking for the time,Wie spät ist es?
 Wie viel kostet das?,How much does that cost?,Asking for the price,Wie teuer ist das?
-Das kostet ... Euro.,That costs ... euros.,Responding to "Wie viel kostet das?",Der Preis ist...
+Das kostet ... Euro.,That costs ... euros.,"Responding to ""Wie viel kostet das?""",Der Preis ist...
 Ich möchte bezahlen.,I would like to pay.,In a restaurant or shop,Die Rechnung bitte.
 Die Rechnung bitte.,The bill please.,In a restaurant,Ich möchte bezahlen.
 Kann ich mit Karte bezahlen?,Can I pay by card?,Asking about payment method,Nehmen Sie Kreditkarten?
@@ -75,20 +75,20 @@ Wie komme ich zum...?,How do I get to...?,Asking for directions,Wo ist...?
 Geradeaus!,Straight ahead!,Giving directions,Links! Rechts!
 Links!,Left!,Giving directions,Rechts! Geradeaus!
 Rechts!,Right!,Giving directions,Links! Geradeaus!
-Können Sie mir helfen?,Can you help me? (formal),Asking for help (formal),Kannst du mir helfen?
-Kannst du mir helfen?,Can you help me? (informal),Asking for help (informal),Können Sie mir helfen?
+Können Sie mir helfen?,Can you help me? (formal),Asking for help,Kannst du mir helfen?
+Kannst du mir helfen?,Can you help me? (informal),Asking for help,Können Sie mir helfen?
 Ich brauche Hilfe.,I need help.,Asking for assistance,Können Sie mir helfen?
 Hilfe!,Help!,Emergency situation,Ich brauche Hilfe.
 Notfall!,Emergency!,Emergency situation,Hilfe!
-Rufen Sie einen Arzt!,Call a doctor! (formal),Medical emergency (formal),Rufen Sie einen Krankenwagen!
-Rufen Sie einen Krankenwagen!,Call an ambulance! (formal),Medical emergency (formal),Rufen Sie einen Arzt!
+Rufen Sie einen Arzt!,Call a doctor! (formal),Medical emergency,Rufen Sie einen Krankenwagen!
+Rufen Sie einen Krankenwagen!,Call an ambulance! (formal),Medical emergency,Rufen Sie einen Arzt!
 Ich habe mich verlaufen.,I'm lost.,When you don't know where you are,Ich habe mich verirrt.
 Es ist dringend.,It's urgent.,When something is very important,Es ist wichtig.
 Ich verstehe die Frage nicht.,I don't understand the question.,When confused about a question,Können Sie das erklären?
-Können Sie das erklären?,Can you explain that? (formal),Asking for clarification (formal),Kannst du das erklären?
-Kannst du das erklären?,Can you explain that? (informal),Asking for clarification (informal),Können Sie das erklären?
+Können Sie das erklären?,Can you explain that? (formal),Asking for clarification,Kannst du das erklären?
+Kannst du das erklären?,Can you explain that? (informal),Asking for clarification,Können Sie das erklären?
 Ich weiß nicht.,I don't know.,When you don't have the answer,Keine Ahnung.
-Keine Ahnung.,No idea.,Informal way of saying "I don't know",Ich weiß nicht.
+Keine Ahnung.,No idea.,"Informal way of saying ""I don't know""",Ich weiß nicht.
 Das stimmt.,That's correct.,Agreeing with something,Genau!
 Genau!,Exactly!,Strong agreement,Das stimmt!
 Das stimmt nicht.,That's not correct.,Disagreeing with something,Nein das ist falsch.

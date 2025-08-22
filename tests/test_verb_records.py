@@ -34,7 +34,7 @@ class TestVerbConjugationRecord:
         record = VerbConjugationRecord.from_csv_fields(fields)
 
         assert record.infinitive == "arbeiten"
-        assert record.meaning == "to work"
+        assert record.english == "to work"
         assert record.classification == "regelmäßig"
         assert record.separable is False
         assert record.auxiliary == "haben"
@@ -127,7 +127,7 @@ class TestVerbConjugationRecord:
         with pytest.raises(ValidationError, match="Invalid classification"):
             VerbConjugationRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="invalid",
                 separable=False,
                 auxiliary="haben",
@@ -145,7 +145,7 @@ class TestVerbConjugationRecord:
         with pytest.raises(ValidationError, match="Invalid auxiliary"):
             VerbConjugationRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="regelmäßig",
                 separable=False,
                 auxiliary="invalid",
@@ -160,10 +160,10 @@ class TestVerbConjugationRecord:
             )
 
         # Empty conjugation form
-        with pytest.raises(ValidationError, match="Conjugation forms cannot be empty"):
+        with pytest.raises(ValidationError, match="present tense requires all persons"):
             VerbConjugationRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="regelmäßig",
                 separable=False,
                 auxiliary="haben",
@@ -188,7 +188,7 @@ class TestVerbConjugationRecord:
         """Test converting conjugation record to dictionary."""
         record = VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -205,7 +205,7 @@ class TestVerbConjugationRecord:
         result = record.to_dict()
 
         assert result["infinitive"] == "arbeiten"
-        assert result["meaning"] == "to work"
+        assert result["english"] == "to work"
         assert result["classification"] == "regelmäßig"
         assert result["separable"] is False
         assert result["auxiliary"] == "haben"
@@ -218,7 +218,7 @@ class TestVerbConjugationRecord:
         """Test field names for conjugation record."""
         expected = [
             "infinitive",
-            "meaning",
+            "english",
             "classification",
             "separable",
             "auxiliary",
@@ -257,7 +257,7 @@ class TestVerbImperativeRecord:
         record = VerbImperativeRecord.from_csv_fields(fields)
 
         assert record.infinitive == "arbeiten"
-        assert record.meaning == "to work"
+        assert record.english == "to work"
         assert record.classification == "regelmäßig"
         assert record.separable is False
         assert record.du_form == "arbeite"
@@ -310,7 +310,7 @@ class TestVerbImperativeRecord:
         with pytest.raises(ValidationError, match="Invalid classification"):
             VerbImperativeRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="invalid",
                 separable=False,
                 du_form="arbeite",
@@ -323,7 +323,7 @@ class TestVerbImperativeRecord:
         with pytest.raises(ValidationError, match="Imperative forms cannot be empty"):
             VerbImperativeRecord(
                 infinitive="arbeiten",
-                meaning="to work",
+                english="to work",
                 classification="regelmäßig",
                 separable=False,
                 du_form="",  # Empty
@@ -343,7 +343,7 @@ class TestVerbImperativeRecord:
         """Test converting imperative record to dictionary."""
         record = VerbImperativeRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             du_form="arbeite",
@@ -355,7 +355,7 @@ class TestVerbImperativeRecord:
         result = record.to_dict()
 
         assert result["infinitive"] == "arbeiten"
-        assert result["meaning"] == "to work"
+        assert result["english"] == "to work"
         assert result["classification"] == "regelmäßig"
         assert result["separable"] is False
         assert result["du_form"] == "arbeite"
@@ -367,7 +367,7 @@ class TestVerbImperativeRecord:
         """Test field names for imperative record."""
         expected = [
             "infinitive",
-            "meaning",
+            "english",
             "classification",
             "separable",
             "du_form",
@@ -460,7 +460,7 @@ class TestVerbRecordIntegration:
         record = VerbConjugationRecord.from_csv_fields(fields)
 
         assert record.infinitive == "arbeiten"
-        assert record.meaning == "to work"
+        assert record.english == "to work"
         assert record.classification == "regelmäßig"
         assert record.ich == "arbeite"
 
@@ -522,7 +522,7 @@ class TestVerbRecordIntegration:
         """Test that media fields default to None."""
         record = VerbConjugationRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             auxiliary="haben",
@@ -544,7 +544,7 @@ class TestVerbRecordIntegration:
         """Test imperative record media fields."""
         record = VerbImperativeRecord(
             infinitive="arbeiten",
-            meaning="to work",
+            english="to work",
             classification="regelmäßig",
             separable=False,
             du_form="arbeite",

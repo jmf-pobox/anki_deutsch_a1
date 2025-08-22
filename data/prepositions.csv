@@ -1,13 +1,13 @@
 preposition,english,case,example1,example2
-in,in,Accusative/Dative,Ich gehe in die Schule. (ACC),Ich bin in der Schule. (DAT)
-auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch. (ACC),Das Buch liegt auf dem Tisch. (DAT)
-unter,under,Accusative/Dative,Ich stelle die Schuhe unter den Tisch. (ACC),Die Schuhe stehen unter dem Tisch. (DAT)
-über,over/above,Accusative/Dative,Ich hänge das Bild über den Schreibtisch. (ACC),Das Bild hängt über dem Schreibtisch. (DAT)
-vor,in front of,Accusative/Dative,Ich stelle den Stuhl vor das Fenster. (ACC),Der Stuhl steht vor dem Fenster. (DAT)
-hinter,behind,Accusative/Dative,Ich stelle das Regal hinter die Tür. (ACC),Das Regal steht hinter der Tür. (DAT)
-neben,next to,Accusative/Dative,Ich setze mich neben den Mann. (ACC),Ich sitze neben dem Mann. (DAT)
-zwischen,between,Accusative/Dative,Ich setze mich zwischen die Kinder. (ACC),Ich sitze zwischen den Kindern. (DAT)
-an,at/on,Accusative/Dative,Ich hänge das Bild an die Wand. (ACC),Das Bild hängt an der Wand. (DAT)
+in,in,Accusative/Dative,Ich gehe in die Schule.,Ich bin in der Schule.
+auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch.,Das Buch liegt auf dem Tisch.
+unter,under,Accusative/Dative,Ich stelle die Schuhe unter den Tisch.,Die Schuhe stehen unter dem Tisch.
+über,over/above,Accusative/Dative,Ich hänge das Bild über den Schreibtisch.,Das Bild hängt über dem Schreibtisch.
+vor,in front of,Accusative/Dative,Ich stelle den Stuhl vor das Fenster.,Der Stuhl steht vor dem Fenster.
+hinter,behind,Accusative/Dative,Ich stelle das Regal hinter die Tür.,Das Regal steht hinter der Tür.
+neben,next to,Accusative/Dative,Ich setze mich neben den Mann.,Ich sitze neben dem Mann.
+zwischen,between,Accusative/Dative,Ich setze mich zwischen die Kinder.,Ich sitze zwischen den Kindern.
+an,at/on,Accusative/Dative,Ich hänge das Bild an die Wand.,Das Bild hängt an der Wand.
 mit,with,Dative,Ich fahre mit dem Bus.,Ich spreche mit meiner Freundin.
 zu,to,Dative,Ich gehe zu meiner Freundin.,Er geht zum Arzt.
 aus,from/out of,Dative,Ich komme aus Deutschland.,Die Tasche ist aus Leder.

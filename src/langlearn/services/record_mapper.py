@@ -113,7 +113,7 @@ class RecordMapper:
             elif record_type == "verb_conjugation":
                 fields = [
                     csv_row.get("infinitive", ""),
-                    csv_row.get("meaning", ""),
+                    csv_row.get("english", ""),
                     csv_row.get("classification", ""),
                     csv_row.get("separable", ""),
                     csv_row.get("auxiliary", ""),
@@ -129,7 +129,7 @@ class RecordMapper:
             elif record_type == "verb_imperative":
                 fields = [
                     csv_row.get("infinitive", ""),
-                    csv_row.get("meaning", ""),
+                    csv_row.get("english", ""),
                     csv_row.get("classification", ""),
                     csv_row.get("separable", ""),
                     csv_row.get("du_form", ""),
