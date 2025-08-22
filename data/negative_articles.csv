@@ -1,0 +1,13 @@
+article,type,gender,case,english,example,related_noun
+kein,negative,masculine,nominative,no/not a,Kein Mann ist hier.,Mann
+keine,negative,feminine,nominative,no/not a,Keine Frau arbeitet heute.,Frau
+kein,negative,neuter,nominative,no/not a,Kein Kind spielt draußen.,Kind
+keinen,negative,masculine,accusative,no/not a,Ich sehe keinen Mann.,Mann
+keine,negative,feminine,accusative,no/not a,Ich sehe keine Frau.,Frau
+kein,negative,neuter,accusative,no/not a,Ich sehe kein Kind.,Kind
+keinem,negative,masculine,dative,no/not a,Ich gebe keinem Mann das Buch.,Mann
+keiner,negative,feminine,dative,no/not a,Ich gebe keiner Frau das Buch.,Frau
+keinem,negative,neuter,dative,no/not a,Ich gebe keinem Kind das Buch.,Kind
+keines,negative,masculine,genitive,no/not a,Das Auto keines Mannes ist hier.,Mann
+keiner,negative,feminine,genitive,no/not a,Das Auto keiner Frau ist hier.,Frau
+keines,negative,neuter,genitive,no/not a,Das Spielzeug keines Kindes ist hier.,Kind
