@@ -389,18 +389,14 @@ class VerbConjugationProcessor:
         mapping = {
             "Infinitive": "infinitive",
             "English": "english",
-            "Meaning": "english",  # Both English and Meaning map to same field
-            "Classification": "classification",
-            "Separable": "separable",
-            "DuForm": "du_form",
-            "IhrForm": "ihr_form",
-            "SieForm": "sie_form",
-            "WirForm": "wir_form",
+            "Du": "du",
+            "Ihr": "ihr",
+            "Sie": "sie",
+            "Wir": "wir",
             "Example": "example",
             "ExampleDu": "example",
             "ExampleIhr": "example",
             "ExampleSie": "example",
-            "ExampleWir": "example",
             "Image": "image",
             "WordAudio": "word_audio",
         }

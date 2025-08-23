@@ -6,29 +6,25 @@
         {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
     </div>
     
-    <div class="verb-info">
-        <div class="info-item"><strong>Classification:</strong> {{Classification}}</div>
-        {{#Separable}}<div class="info-item"><strong>Separable:</strong> Yes</div>{{/Separable}}
-    </div>
     
     <div class="imperative-table">
         <div class="imperative-header">Imperative Forms</div>
         <div class="imperative-grid">
             <div class="imperative-row">
                 <span class="form-type">du-form:</span>
-                <span class="imperative-form">{{DuForm}}</span>
+                <span class="imperative-form">{{Du}}</span>
             </div>
             <div class="imperative-row">
                 <span class="form-type">ihr-form:</span>
-                <span class="imperative-form">{{IhrForm}}</span>
+                <span class="imperative-form">{{Ihr}}</span>
             </div>
             <div class="imperative-row">
                 <span class="form-type">Sie-form:</span>
-                <span class="imperative-form">{{SieForm}}</span>
+                <span class="imperative-form">{{Sie}}</span>
             </div>
             <div class="imperative-row">
                 <span class="form-type">wir-form:</span>
-                <span class="imperative-form">{{WirForm}}</span>
+                <span class="imperative-form">{{Wir}}</span>
             </div>
         </div>
     </div>
@@ -44,15 +40,12 @@
         <div class="example-item">
             <strong>Sie:</strong> {{ExampleSie}}
         </div>
-        <div class="example-item">
-            <strong>wir:</strong> {{ExampleWir}}
-        </div>
     </div>
 </div>
 
 <div class="back-hint-container">
     <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
-    <div id="back-hint-content" class="hint-content hidden">{{Meaning}}</div>
+    <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 
 <script>
