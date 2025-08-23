@@ -732,19 +732,19 @@ class DeckBuilder:
 
                 if noun_records:
                     logger.info(
-                        f"Generating noun-article practice cards for "
-                        f"{len(noun_records)} noun records"
+                        f"Skipping noun-article practice cards for "
+                        f"{len(noun_records)} noun records (temporarily disabled for cloze testing)"
                     )
-                    # Create empty enrichment data for noun records
-                    # (enriched_data_list is for article records, not noun records)
-                    noun_enriched_data: list[dict[str, Any]] = [{}] * len(noun_records)
-                    noun_article_cards = (
-                        self._article_service.generate_noun_article_cards(
-                            noun_records, noun_enriched_data
-                        )
-                    )
-                    # Combine pattern cards and noun-article cards
-                    cards = pattern_cards + noun_article_cards
+                    # TEMPORARY: Disable noun-article cards to focus on testing cloze deletion system
+                    # TODO: Update ArticleApplicationService to use cloze deletion instead of templates
+                    # noun_enriched_data: list[dict[str, Any]] = [{}] * len(noun_records)
+                    # noun_article_cards = (
+                    #     self._article_service.generate_noun_article_cards(
+                    #         noun_records, noun_enriched_data
+                    #     )
+                    # )
+                    # For now, only use pattern cards (cloze deletion)
+                    cards = pattern_cards
                 else:
                     logger.info("No noun records found for noun-article integration")
                     cards = pattern_cards

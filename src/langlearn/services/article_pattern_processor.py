@@ -99,6 +99,10 @@ class ArticlePatternProcessor:
     ) -> list[tuple[list[str], NoteType]]:
         """Generate 5 cloze deletion cards for a single article record.
 
+        Creates comprehensive German article learning cards:
+        - 1 Gender Recognition Card (learn der/die/das for gender)
+        - 4 Case Context Cards (learn article changes in nom/acc/dat/gen)
+
         Args:
             record: Single article record
             enriched_data: Optional enriched data
@@ -111,7 +115,7 @@ class ArticlePatternProcessor:
         # Card 1: Gender Recognition Cloze
         cards.append(self._create_gender_cloze_card(record, enriched_data))
 
-        # Cards 2-5: Case Context Cloze cards
+        # Cards 2-5: Case Context Cloze cards (different grammar concepts)
         cases = ["nominative", "accusative", "dative", "genitive"]
         for case in cases:
             cards.append(self._create_case_cloze_card(record, case, enriched_data))
