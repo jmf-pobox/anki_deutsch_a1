@@ -679,11 +679,24 @@ class CardBuilder:
             "preposition": ["preposition", "english", "case", "example1", "example2"],
             "verb_conjugation": ["infinitive", "english", "tense", "ich", "du", "er"],
             "verb_imperative": [
+                # Core verb information
                 "infinitive",
                 "english",
+                "meaning",
+                "classification",
+                "separable",
+                # All imperative forms
                 "du_form",
-                "ihr_form",
+                "ihr_form", 
                 "sie_form",
+                "wir_form",
+                # Examples for each form
+                "example_du",
+                "example_ihr",
+                "example_sie",
+                # Media assets
+                "image",
+                "word_audio",
             ],
         }
 
