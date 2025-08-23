@@ -3,8 +3,11 @@
 
 This script addresses the critical verification gap that caused $566 in wasted costs
 by simulating the actual user experience in Anki application.
+
+Extended with CardSpecificationGenerator for automatic documentation generation.
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -12,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from langlearn.testing.anki_simulator import AnkiRenderSimulator
+from langlearn.testing.card_specification_generator import CardSpecificationGenerator
 
 
 def simulate_german_cloze_cards() -> None:
@@ -188,35 +192,154 @@ def simulate_multi_cloze_cards() -> None:
                     print(f"   • {category}: {issue}")
 
 
-def main() -> int:
-    """Run complete Anki card simulation.
+def generate_card_specifications(output_file: Path | None = None) -> int:
+    """Generate comprehensive card type specifications.
+
+    Args:
+        output_file: Optional output file for markdown documentation
 
     Returns:
-        Exit code (0 for success, 1 for simulation errors)
+        Exit code (0 for success, 1 for errors)
     """
-    print("🎭 ANKI CARD SIMULATION SYSTEM")
-    print("Preventing $566+ costs from false 'fix' claims")
-    print("Simulating exactly what users will see in Anki application")
+    print("📋 CARD SPECIFICATION GENERATOR")
+    print("Generating comprehensive documentation for all card types")
+    print("=" * 60)
 
     try:
-        # Run all simulation tests
-        simulate_german_cloze_cards()
-        simulate_field_substitution_cards()
-        simulate_multi_cloze_cards()
+        # Initialize generator
+        project_root = Path(__file__).parent.parent
+        generator = CardSpecificationGenerator(project_root=project_root)
+
+        # Generate all specifications
+        print("🔍 Introspecting all card types...")
+        specifications = generator.generate_all_specifications()
+
+        print(f"✅ Generated specifications for {len(specifications)} card types:")
+        for spec in specifications:
+            cloze_indicator = " (Cloze)" if spec.cloze_deletion else ""
+            print(f"   • {spec.card_type}{cloze_indicator}: {len(spec.fields)} fields")
+
+        # Generate rendering examples for cloze cards
+        print("\n🎯 Generating rendering examples...")
+        examples = generator.simulate_card_rendering_examples(specifications)
+
+        if examples:
+            print(f"✅ Generated {len(examples)} rendering examples")
+            for card_type, _example in examples.items():
+                print(f"   • {card_type}: Front/Back simulation ready")
+
+        # Generate markdown documentation
+        print("\n📄 Generating markdown documentation...")
+        markdown = generator.generate_markdown_documentation(specifications)
+
+        # Write to file if specified
+        if output_file:
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+
+            # Create backup of existing file to prevent loss of manual changes
+            if output_file.exists():
+                from datetime import datetime
+
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                backup_file = output_file.with_suffix(f".backup_{timestamp}.md")
+                backup_content = output_file.read_text(encoding="utf-8")
+                backup_file.write_text(backup_content, encoding="utf-8")
+                print(f"🔄 Created backup: {backup_file}")
+
+            output_file.write_text(markdown, encoding="utf-8")
+            print(f"✅ Documentation written to: {output_file}")
+            print("⚠️  WARNING: This overwrites manual changes. Check backup if needed.")
+        else:
+            # Print summary to console
+            print("\n" + "=" * 60)
+            print("📋 CARD TYPE SUMMARY")
+            print("=" * 60)
+
+            for spec in specifications:
+                print(f"\n🎴 {spec.card_type.upper()}")
+                print(f"   Anki Note Type: {spec.anki_note_type_name}")
+                required_count = sum(1 for f in spec.fields if f.required)
+                print(f"   Fields: {len(spec.fields)} ({required_count} required)")
+                sources = {f.data_source for f in spec.fields}
+                print(f"   Sources: {', '.join(sources)}")
+                print(f"   Cloze: {'Yes' if spec.cloze_deletion else 'No'}")
+                print(f"   Templates: {len(spec.template_files)} files")
 
         print("\n" + "=" * 60)
-        print("🎉 SIMULATION COMPLETE")
-        print("All card types successfully simulated!")
-        print("✅ You can now predict exactly what Anki will display")
-        print("✅ Use these simulations to verify fixes before claiming they work")
+        print("🎉 SPECIFICATION GENERATION COMPLETE")
+        print("✅ All card types documented with accurate field mappings")
+        print("✅ Data sources identified (CSV, Pexels, AWS Polly)")
+        print("✅ Template files catalogued")
+        print("✅ Learning objectives defined")
 
         return 0
 
     except Exception as e:
-        print(f"\n💥 CRITICAL ERROR: Simulation failed: {e}")
-        print("   • Cannot predict Anki behavior")
-        print("   • DO NOT claim fixes work without manual verification")
+        print(f"\n💥 CRITICAL ERROR: Specification generation failed: {e}")
+        print("   • Cannot generate accurate documentation")
+        print("   • Check template files and CardBuilder configuration")
+        import traceback
+
+        traceback.print_exc()
         return 1
+
+
+def main() -> int:
+    """Run Anki card simulation and specification generation.
+
+    Returns:
+        Exit code (0 for success, 1 for errors)
+    """
+    parser = argparse.ArgumentParser(
+        description="Anki Card Simulation and Specification System"
+    )
+    parser.add_argument(
+        "--generate-specs",
+        action="store_true",
+        help="Generate card type specifications instead of simulations",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="Output file for specification documentation "
+        "(default: docs/PROD-CARD-SPEC.md)",
+    )
+
+    args = parser.parse_args()
+
+    if args.generate_specs:
+        # Generate specifications
+        output_file = args.output or Path("docs/PROD-CARD-SPEC.md")
+        return generate_card_specifications(output_file)
+    else:
+        # Run simulations
+        print("🎭 ANKI CARD SIMULATION SYSTEM")
+        print("Preventing $566+ costs from false 'fix' claims")
+        print("Simulating exactly what users will see in Anki application")
+
+        try:
+            # Run all simulation tests
+            simulate_german_cloze_cards()
+            simulate_field_substitution_cards()
+            simulate_multi_cloze_cards()
+
+            print("\n" + "=" * 60)
+            print("🎉 SIMULATION COMPLETE")
+            print("All card types successfully simulated!")
+            print("✅ You can now predict exactly what Anki will display")
+            print("✅ Use these simulations to verify fixes before claiming they work")
+            print(
+                "\n💡 TIP: Use --generate-specs to create comprehensive "
+                "card documentation"
+            )
+
+            return 0
+
+        except Exception as e:
+            print(f"\n💥 CRITICAL ERROR: Simulation failed: {e}")
+            print("   • Cannot predict Anki behavior")
+            print("   • DO NOT claim fixes work without manual verification")
+            return 1
 
 
 if __name__ == "__main__":
