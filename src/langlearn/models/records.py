@@ -621,23 +621,22 @@ class VerbImperativeRecord(BaseRecord):
     )
     separable: bool = Field(..., description="Whether verb is separable")
 
-    # Three imperative forms
+    # Four imperative forms (complete set)
     du_form: str = Field(..., description="Imperative for du (informal singular)")
     ihr_form: str = Field(..., description="Imperative for ihr (informal plural)")
     sie_form: str = Field(..., description="Imperative for Sie (formal)")
+    wir_form: str = Field(..., description="Imperative for wir (let's...)")
 
     # Examples for each form
     example_du: str = Field(..., description="Example sentence with du-form")
     example_ihr: str = Field(default="", description="Example sentence with ihr-form")
     example_sie: str = Field(default="", description="Example sentence with Sie-form")
+    example_wir: str = Field(default="", description="Example sentence with wir-form")
 
-    # Media fields (populated during enrichment)
+    # Media fields (populated during enrichment) - simplified to single audio
     word_audio: str | None = Field(
-        default=None, description="Infinitive audio reference"
+        default=None, description="Combined imperative audio reference"
     )
-    du_audio: str | None = Field(default=None, description="Du-form audio reference")
-    ihr_audio: str | None = Field(default=None, description="Ihr-form audio reference")
-    sie_audio: str | None = Field(default=None, description="Sie-form audio reference")
     image: str | None = Field(default=None, description="Image reference")
 
     @field_validator("classification")
@@ -651,7 +650,7 @@ class VerbImperativeRecord(BaseRecord):
             )
         return v
 
-    @field_validator("du_form", "ihr_form", "sie_form")
+    @field_validator("du_form", "ihr_form", "sie_form", "wir_form")
     @classmethod
     def validate_imperative_forms(cls, v: str) -> str:
         """Ensure imperative forms are not empty."""
@@ -662,9 +661,9 @@ class VerbImperativeRecord(BaseRecord):
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbImperativeRecord":
         """Create VerbImperativeRecord from CSV fields."""
-        if len(fields) < 7:
+        if len(fields) < 8:
             raise ValueError(
-                f"VerbImperativeRecord requires at least 7 fields, got {len(fields)}"
+                f"VerbImperativeRecord requires at least 8 fields, got {len(fields)}"
             )
 
         return cls(
@@ -675,9 +674,11 @@ class VerbImperativeRecord(BaseRecord):
             du_form=fields[4].strip(),
             ihr_form=fields[5].strip(),
             sie_form=fields[6].strip(),
-            example_du=fields[7].strip() if len(fields) > 7 else "",
-            example_ihr=fields[8].strip() if len(fields) > 8 else "",
-            example_sie=fields[9].strip() if len(fields) > 9 else "",
+            wir_form=fields[7].strip(),
+            example_du=fields[8].strip() if len(fields) > 8 else "",
+            example_ihr=fields[9].strip() if len(fields) > 9 else "",
+            example_sie=fields[10].strip() if len(fields) > 10 else "",
+            example_wir=fields[11].strip() if len(fields) > 11 else "",
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -690,20 +691,19 @@ class VerbImperativeRecord(BaseRecord):
             "du_form": self.du_form,
             "ihr_form": self.ihr_form,
             "sie_form": self.sie_form,
+            "wir_form": self.wir_form,
             "example_du": self.example_du,
             "example_ihr": self.example_ihr,
             "example_sie": self.example_sie,
+            "example_wir": self.example_wir,
             "word_audio": self.word_audio,
-            "du_audio": self.du_audio,
-            "ihr_audio": self.ihr_audio,
-            "sie_audio": self.sie_audio,
             "image": self.image,
         }
 
     @classmethod
     def get_expected_field_count(cls) -> int:
         """Expected CSV field count for verb imperatives."""
-        return 10
+        return 12
 
     @classmethod
     def get_field_names(cls) -> list[str]:
@@ -716,9 +716,11 @@ class VerbImperativeRecord(BaseRecord):
             "du_form",
             "ihr_form",
             "sie_form",
+            "wir_form",
             "example_du",
             "example_ihr",
             "example_sie",
+            "example_wir",
         ]
 
 

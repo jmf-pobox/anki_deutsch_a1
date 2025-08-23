@@ -537,16 +537,18 @@ class TestCardBuilderIntegration:
                 "arbeite",
                 "arbeitet",
                 "arbeiten Sie",
+                "arbeiten wir",
                 "Arbeite schneller!",
                 "Arbeitet zusammen!",
                 "Arbeiten Sie bitte hier!",
+                "Arbeiten wir zusammen!",
             ],
         )
 
         field_values, note_type = card_builder.build_card_from_record(record)
 
         # Verify field count and values (updated for new fields)
-        assert len(field_values) == 18  # All verb imperative fields including new ones
+        assert len(field_values) == 15  # All verb imperative fields (removed 4 redundant audio, added 1 ExampleWir)
         assert field_values[0] == "arbeiten"  # Infinitive
         assert field_values[1] == "to work"  # English
         assert field_values[2] == "to work"  # Meaning (same as English)
@@ -555,14 +557,17 @@ class TestCardBuilderIntegration:
         assert field_values[5] == "arbeite"  # DuForm
         assert field_values[6] == "arbeitet"  # IhrForm
         assert field_values[7] == "arbeiten Sie"  # SieForm
-        assert field_values[8] == ""  # WirForm (not provided)
+        assert field_values[8] == "arbeiten wir"  # WirForm (now provided)
         assert field_values[9] == "Arbeite schneller!"  # ExampleDu
         assert field_values[10] == "Arbeitet zusammen!"  # ExampleIhr
         assert field_values[11] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[12] == "Arbeiten wir zusammen!"  # ExampleWir (now provided)
+        assert field_values[13] == ""  # Image (not provided)
+        assert field_values[14] == ""  # WordAudio (not provided)
 
         # Verify note type
         assert note_type.name == "German Verb Imperative with Media"
-        assert len(note_type.fields) == 18  # Updated for new fields
+        assert len(note_type.fields) == 15  # Updated for new field count
 
     def test_verb_record_separable_formatting(self, card_builder: CardBuilder) -> None:
         """Test that separable verb field is formatted correctly."""
@@ -717,9 +722,11 @@ class TestCardBuilderIntegration:
                 "arbeite",
                 "arbeitet",
                 "arbeiten Sie",
+                "arbeiten wir",
                 "Arbeite!",
                 "Arbeitet!",
                 "Arbeiten Sie!",
+                "Arbeiten wir!",
             ],
         )
 
