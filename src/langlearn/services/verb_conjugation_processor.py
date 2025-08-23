@@ -400,12 +400,9 @@ class VerbConjugationProcessor:
             "ExampleDu": "example",
             "ExampleIhr": "example",
             "ExampleSie": "example",
+            "ExampleWir": "example",
             "Image": "image",
             "WordAudio": "word_audio",
-            "DuAudio": "du_audio",
-            "IhrAudio": "ihr_audio",
-            "SieAudio": "sie_audio",
-            "WirAudio": "wir_audio",
         }
 
         return mapping.get(field_name, field_name.lower())

@@ -265,12 +265,9 @@ class CardBuilder:
                 "ExampleDu",
                 "ExampleIhr",
                 "ExampleSie",
+                "ExampleWir",
                 "Image",
                 "WordAudio",
-                "DuAudio",
-                "IhrAudio",
-                "SieAudio",
-                "WirAudio",
             ],
             "artikel_gender_cloze": [
                 "Text",
@@ -484,10 +481,7 @@ class CardBuilder:
                 "ExampleDu": "example_du",
                 "ExampleIhr": "example_ihr",
                 "ExampleSie": "example_sie",
-                "DuAudio": "du_audio",
-                "IhrAudio": "ihr_audio",
-                "SieAudio": "sie_audio",
-                "WirAudio": "wir_audio",
+                "ExampleWir": "example_wir",
             },
             # Article cloze deletion cards
             "artikel_gender_cloze": {
@@ -694,6 +688,7 @@ class CardBuilder:
                 "example_du",
                 "example_ihr",
                 "example_sie",
+                "example_wir",
                 # Media assets
                 "image",
                 "word_audio",
