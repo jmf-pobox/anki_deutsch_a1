@@ -392,7 +392,21 @@ class ArticlePatternProcessor:
         # Create cloze text: "{{c1::Der}} Mann ist hier"
         example_sentence = getattr(record, "example_nom", "") or "ist hier"
         article = record.nominative
-        cloze_text = example_sentence.replace(article, f"{{{{c1::{article}}}}}", 1)
+
+        # Case-insensitive replacement to handle capitalized articles in sentences
+        import re
+
+        pattern = re.compile(re.escape(article), re.IGNORECASE)
+        match = pattern.search(example_sentence)
+        if match:
+            # Preserve the original capitalization from the sentence
+            original_article = match.group()
+            cloze_text = example_sentence.replace(
+                original_article, f"{{{{c1::{original_article}}}}}", 1
+            )
+        else:
+            # Fallback if article not found - create a simple cloze
+            cloze_text = f"{{{{c1::{article.title()}}}}} ist hier"
 
         # Generate German explanation
         explanation = self._explanation_factory.create_gender_recognition_explanation(
@@ -451,7 +465,19 @@ class ArticlePatternProcessor:
         )
 
         # Create cloze text: "Ich sehe {{c1::den}} Mann"
-        cloze_text = example_sentence.replace(article, f"{{{{c1::{article}}}}}", 1)
+        import re
+
+        pattern = re.compile(re.escape(article), re.IGNORECASE)
+        match = pattern.search(example_sentence)
+        if match:
+            # Preserve the original capitalization from the sentence
+            original_article = match.group()
+            cloze_text = example_sentence.replace(
+                original_article, f"{{{{c1::{original_article}}}}}", 1
+            )
+        else:
+            # Fallback if article not found - create a simple cloze
+            cloze_text = f"{{{{c1::{article.title()}}}}} Wort"
 
         # Generate German case explanation
         explanation = self._explanation_factory.create_case_explanation(
