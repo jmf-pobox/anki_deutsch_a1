@@ -263,9 +263,7 @@ class TestAnkiValidator:
 
     def test_validate_card_complete_multiple_issues(self) -> None:
         """Test comprehensive validation with multiple issue types."""
-        content = (
-            "{{UndefinedField}} {{c0::{{Word}}}}"  # Missing field + invalid cloze
-        )
+        content = "{{UndefinedField}} {{c0::{{Word}}}}"  # Missing field + invalid cloze
         fields = {"Word": ""}  # Empty field that will cause blank card
 
         valid, issues = AnkiValidator.validate_card_complete(content, fields)

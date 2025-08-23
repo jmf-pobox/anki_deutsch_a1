@@ -23,11 +23,12 @@ This document provides a complete inventory of all CSV files in the German Langu
 | negations.csv | ✅ ACTIVE | negation | ~10 | Clean Pipeline | Negation patterns |
 | prepositions.csv | ✅ ACTIVE | preposition | ~30 | Legacy FieldProcessor | Case requirements |
 | phrases.csv | ✅ ACTIVE | phrase | ~50 | Legacy FieldProcessor | Common expressions |
+| verbs.csv | ✅ ACTIVE | verb | ~97 | Legacy FieldProcessor | Single-tense conjugations with separable info |
 | verbs_unified.csv | ✅ ACTIVE | verb_conjugation | ~500 | Clean Pipeline | Multi-tense conjugations |
 
 ### Integration Status:
 - **Clean Pipeline Architecture**: noun, adjective, adverb, negation, verb_conjugation
-- **Legacy FieldProcessor**: preposition, phrase (backward compatibility)
+- **Legacy FieldProcessor**: verb, preposition, phrase (backward compatibility)
 
 ## Unintegrated CSV Files (Valid but Not in System)
 
@@ -52,18 +53,25 @@ This document provides a complete inventory of all CSV files in the German Langu
 | personal_pronouns.csv | 🔧 UNINTEGRATED | ~40 | ich, du, er, sie, etc. | Create PersonalPronounRecord |
 | other_pronouns.csv | 🔧 UNINTEGRATED | ~60 | Possessive, demonstrative | Create PronounRecord |
 
-## ✅ Removed Legacy CSV Files  
+## Legacy and Backup Files
+
+### ⚠️ Verb File Versions
+
+| File | Status | Rows | Purpose | Notes |
+|------|--------|------|---------|-------|
+| verbs.csv | ✅ ACTIVE | ~97 | Current single-tense version | Contains separable column |
+| verbs_enhanced.csv | ⚠️ LEGACY | ~97 | Enhanced version without separable | Intermediate evolution |
+| verbs_backup_original.csv | ⚠️ LEGACY | ~97 | Original simpler version | 7 columns only |
 
 ### ✅ Old Verb System (REMOVED)
 
 | File | Status | Rows | Replaced By | Action Completed |
 |------|--------|------|-------------|------------------|
-| ~~verbs.csv~~ | ✅ REMOVED | ~50 | verbs_unified.csv | ✅ Deleted 2025-08-22 |
 | ~~regular_verbs.csv~~ | ✅ REMOVED | ~100 | verbs_unified.csv | ✅ Deleted 2025-08-22 |
 | ~~irregular_verbs.csv~~ | ✅ REMOVED | ~80 | verbs_unified.csv | ✅ Deleted 2025-08-22 |
 | ~~separable_verbs.csv~~ | ✅ REMOVED | ~40 | verbs_unified.csv | ✅ Deleted 2025-08-22 |
 
-**✅ CLEANUP COMPLETE**: All legacy verb files have been successfully removed after verification that verbs_unified.csv contains all necessary data.
+**Note**: verbs.csv was retained and evolved rather than removed, alongside verbs_unified.csv for different use cases.
 
 ## ✅ Removed Backup Files  
 
@@ -149,10 +157,10 @@ csv_files = {
     "phrases.csv": "phrase",
     "verbs_unified.csv": "verb_conjugation",
     # Legacy disabled:
-    # "verbs.csv": "verb",
-    # "regular_verbs.csv": "verb",
-    # "irregular_verbs.csv": "verb",
-    # "separable_verbs.csv": "verb",
+    "verbs.csv": "verb",
+    # "regular_verbs.csv": "verb",  # REMOVED
+    # "irregular_verbs.csv": "verb",  # REMOVED
+    # "separable_verbs.csv": "verb",  # REMOVED
 }
 ```
 

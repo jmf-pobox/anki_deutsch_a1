@@ -279,11 +279,47 @@ The article card system has been completely transformed:
 
 ---
 
+## 🔍 VALIDATION SYSTEM SCOPE EXPANSION - Future Consideration
+
+**STATUS**: ⚠️ **IDENTIFIED LIMITATION** - Current validation system has narrow scope
+
+**CURRENT COVERAGE** ✅:
+- Cloze deletion cards (`{{c1::text}}` syntax)
+- Field substitution within cloze (`{{c1::{{Word}}}}`)
+- Basic media path validation (`[sound:file.mp3]`, `<img src="...">`)
+
+**MISSING COVERAGE** ❌ (20+ word types):
+- **Verb cards**: Conjugation validation, separable verb handling, irregular forms
+- **Noun cards**: Gender/case template validation, plural forms, article consistency  
+- **Adjective cards**: Declension validation, comparative forms
+- **Preposition cards**: Case dependency validation, usage contexts
+- **Other word types**: Pronouns, conjunctions, interjections, ordinal/cardinal numbers
+- **Template validation**: HTML/CSS syntax, field mapping correctness
+- **Backend compatibility**: genanki vs anki library differences
+- **German language rules**: Grammar correctness, authentic usage validation
+
+**PROPOSED EXPANSION PHASES**:
+1. **Phase 1**: Extend to verb/noun/adjective validation (most common card types)
+2. **Phase 2**: Template and backend compatibility validation  
+3. **Phase 3**: German language rule validation
+4. **Phase 4**: Complete coverage for all 20+ word types
+
+**PRIORITY ASSESSMENT**: 🤔 **To Be Determined**
+- May not be immediate next priority
+- Should be evaluated against other pending tasks
+- Consider user impact vs development effort
+- Focus on validation gaps that cause real user issues
+
+**RECOMMENDATION**: Document for future consideration, prioritize based on user feedback and actual validation failures in production usage.
+
+---
+
 ## 📋 IMMEDIATE NEXT STEPS
 
 **Priority 1**: 🧹 **Legacy Cleanup** - Remove obsolete templates and simplify codebase
 **Priority 2**: 👥 **User Testing** - Validate cloze cards work correctly in real Anki usage  
 **Priority 3**: 📚 **Documentation** - Update all docs to reflect new cloze-first approach
+**Future Priority**: 🔍 **Validation Expansion** - Extend validation to other card types (see above)
 
 **Current Status**: ✅ **Cloze deletion implementation complete and successful!**
 **Awaiting**: User feedback from testing the generated Anki deck

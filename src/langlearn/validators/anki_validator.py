@@ -66,10 +66,9 @@ class AnkiValidator:
                 issues.append("Cloze numbering must start with c1")
 
             # Check for gaps in numbering (but only if more than one unique number)
-            if (
-                len(unique_numbers) > 1
-                and max(unique_numbers) - min(unique_numbers) + 1 != len(unique_numbers)
-            ):
+            if len(unique_numbers) > 1 and max(unique_numbers) - min(
+                unique_numbers
+            ) + 1 != len(unique_numbers):
                 issues.append("Cloze numbering has gaps (e.g., c1, c3 without c2)")
 
         # Check field references exist
@@ -126,8 +125,7 @@ class AnkiValidator:
                 and f"{{{{{field_name}}}}}" in template
             ):
                 issues.append(
-                    f"Critical field '{field_name}' is empty but referenced "
-                    f"in template"
+                    f"Critical field '{field_name}' is empty but referenced in template"
                 )
 
         return (len(issues) == 0, issues)

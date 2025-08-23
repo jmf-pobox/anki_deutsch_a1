@@ -272,6 +272,30 @@ This document defines the canonical CSV format specifications for the Anki Germa
 - `type` values: possessive, demonstrative, reflexive, relative, interrogative
 - `gender` values: Masculine, Feminine, Neuter, Plural
 
+### 15. Articles Unified (articles_unified.csv)
+
+**Purpose**: German article declensions across all cases and genders
+
+**Columns**:
+| Column | Required | Type | Description | Example |
+|--------|----------|------|-------------|---------|
+| artikel_typ | Yes | string | Article type | bestimmt |
+| geschlecht | Yes | string | Gender/Number | maskulin |
+| nominativ | Yes | string | Nominative case form | der |
+| akkusativ | Yes | string | Accusative case form | den |
+| dativ | Yes | string | Dative case form | dem |
+| genitiv | Yes | string | Genitive case form | des |
+| beispiel_nom | No | string | Nominative example | Der Mann ist hier |
+| beispiel_akk | No | string | Accusative example | Ich sehe den Mann |
+| beispiel_dat | No | string | Dative example | mit dem Mann |
+| beispiel_gen | No | string | Genitive example | das Auto des Mannes |
+
+**Validation**:
+- `artikel_typ` values: bestimmt (definite), unbestimmt (indefinite), verneinend (negative)
+- `geschlecht` values: maskulin, feminin, neutral, plural
+- All case forms must be valid German articles
+- Examples should demonstrate proper case usage
+
 ## Legacy CSV Files (Deprecated)
 
 The following CSV files are maintained for backward compatibility but should not be used for new development:
