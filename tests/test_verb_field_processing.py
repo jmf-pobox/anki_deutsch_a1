@@ -260,7 +260,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "arbeiten, ich arbeite, du arbeitest, er arbeitet, hat gearbeitet"
+        expected = "arbeiten, Präsens, ich arbeite, du arbeitest, er sie es arbeitet, Perfekt, er sie es hat gearbeitet"
 
         assert combined_text == expected
 
@@ -280,7 +280,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "sein, ich bin, er ist, ist gewesen"  # Skip empty, include perfect
+        expected = "sein, Präsens, ich bin, er sie es ist, Perfekt, er sie es ist gewesen"  # Skip empty, include perfect
 
         assert combined_text == expected
 
@@ -300,7 +300,7 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "verstehen, hat verstanden"  # Should include infinitive and perfect
+        expected = "verstehen, Perfekt, er sie es hat verstanden"  # Should include infinitive and perfect
 
         assert combined_text == expected
 

@@ -475,11 +475,15 @@ class StandardMediaEnricher(MediaEnricher):
                 verb_model = Verb(
                     verb=record["verb"],
                     english=record.get("english", ""),
+                    classification=record.get("classification", ""),
                     present_ich=record.get("present_ich", ""),
                     present_du=record.get("present_du", ""),
                     present_er=record.get("present_er", ""),
+                    präteritum=record.get("präteritum", ""),
+                    auxiliary=record.get("auxiliary", ""),
                     perfect=record.get("perfect", ""),
                     example=record.get("example", ""),
+                    separable=record.get("separable", False),
                 )
                 # Use combined audio with all conjugated forms and pronouns
                 combined_text = verb_model.get_combined_audio_text()
@@ -492,10 +496,15 @@ class StandardMediaEnricher(MediaEnricher):
                 verb_fields = [
                     "verb",
                     "english",
+                    "classification",
                     "present_ich",
                     "present_du",
                     "present_er",
+                    "präteritum",
+                    "auxiliary", 
                     "perfect",
+                    "example",
+                    "separable",
                 ]
                 verb_data = {k: v for k, v in record.items() if k in verb_fields}
                 logger.warning(
