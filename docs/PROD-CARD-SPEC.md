@@ -3,6 +3,14 @@
 This document provides comprehensive specifications for all German language card types in the system.
 Generated automatically by CardSpecificationGenerator to ensure accuracy and completeness.
 
+This specification describes the accurate active/inactive state of 
+sub-decks and cards. This specification states requirements for each card 
+type and sub-deck; however, those requirements may not be reflected in the 
+current code.  There should be gh issues for each area of difference 
+between the specification and the code.  Differences tend to me whether 
+fields exist or not and whether they are mandatory or not.  Also, there is 
+an overall gh issue related to the templating system.
+
 **Total Card Types**: 15
 
 ## Table of Contents - Organized by Sub-deck
@@ -520,6 +528,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 | `Auxiliary` | verbs.csv | ✅ | Back | Auxiliary verb for perfect tense (haben or sein) | `haben` |
 | `Perfect` | verbs.csv | ✅ | Back | Perfect tense 3rd person singular (auxiliary + past participle) | `hat gearbeitet` |
 | `Example` | verbs.csv | ✅ | Back | Example sentence using the verb in present tense | `Er arbeitet in einer Bank.` |
+| `Separable` | verbs.csv | ✅ | Back | Whether the verb is separable (true) or not (false) | `false` |
 | `WordAudio` | AWS_Polly | ✅ | Back | Generated pronunciation audio for infinitive form | `[sound:arbeiten_pronunciation.mp3]` |
 | `ExampleAudio` | AWS_Polly | ✅ | Back | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
 
