@@ -530,46 +530,41 @@ class TestCardBuilderIntegration:
         record = create_record(
             "verb_imperative",
             [
-                "arbeiten",
-                "to work",
-                "regelmäßig",
-                "false",
-                "arbeite",
-                "arbeitet",
-                "arbeiten Sie",
-                "arbeiten wir",
-                "Arbeite schneller!",
-                "Arbeitet zusammen!",
-                "Arbeiten Sie bitte hier!",
-                "Arbeiten wir zusammen!",
+                "arbeiten",  # infinitive
+                "to work",  # english
+                "arbeite",  # du
+                "arbeitet",  # ihr
+                "arbeiten Sie",  # sie
+                "arbeiten wir",  # wir
+                "Arbeite schneller!",  # example_du
+                "Arbeitet zusammen!",  # example_ihr
+                "Arbeiten Sie bitte hier!",  # example_sie
+                "",  # word_audio
+                "",  # image
             ],
         )
 
         field_values, note_type = card_builder.build_card_from_record(record)
 
-        # Verify field count and values (updated for new fields)
-        assert (
-            len(field_values) == 15
-        )  # All verb imperative fields (removed 4 redundant audio, added 1 ExampleWir)
-        assert field_values[0] == "arbeiten"  # Infinitive
+        # Verify field count matches new PROD-CARD-SPEC.md structure
+        assert len(field_values) == 11  # All verb imperative fields per specification
+        assert field_values[0] == ""  # Image
         assert field_values[1] == "to work"  # English
-        assert field_values[2] == "to work"  # Meaning (same as English)
-        assert field_values[3] == "regelmäßig"  # Classification
-        assert field_values[4] == ""  # Separable (False -> "")
-        assert field_values[5] == "arbeite"  # DuForm
-        assert field_values[6] == "arbeitet"  # IhrForm
-        assert field_values[7] == "arbeiten Sie"  # SieForm
-        assert field_values[8] == "arbeiten wir"  # WirForm (now provided)
-        assert field_values[9] == "Arbeite schneller!"  # ExampleDu
-        assert field_values[10] == "Arbeitet zusammen!"  # ExampleIhr
-        assert field_values[11] == "Arbeiten Sie bitte hier!"  # ExampleSie
-        assert field_values[12] == "Arbeiten wir zusammen!"  # ExampleWir (now provided)
-        assert field_values[13] == ""  # Image (not provided)
-        assert field_values[14] == ""  # WordAudio (not provided)
+        assert field_values[2] == "arbeiten"  # Infinitive
+        assert field_values[3] == "arbeite"  # Du
+        assert field_values[4] == "arbeitet"  # Ihr
+        assert field_values[5] == "arbeiten Sie"  # Sie
+        assert field_values[6] == "arbeiten wir"  # Wir
+        assert field_values[7] == "Arbeite schneller!"  # ExampleDu
+        assert field_values[8] == "Arbeitet zusammen!"  # ExampleIhr
+        assert field_values[9] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[10] == ""  # WordAudio
 
         # Verify note type
         assert note_type.name == "German Verb Imperative with Media"
-        assert len(note_type.fields) == 15  # Updated for new field count
+        assert (
+            len(note_type.fields) == 11
+        )  # Updated for new field count per PROD-CARD-SPEC.md
 
     def test_verb_record_separable_formatting(self, card_builder: CardBuilder) -> None:
         """Test that separable verb field is formatted correctly."""
@@ -624,33 +619,28 @@ class TestCardBuilderIntegration:
         record = create_record(
             "verb_imperative",
             [
-                "arbeiten",
-                "to work",
-                "regelmäßig",
-                "false",
-                "arbeite",
-                "arbeitet",
-                "arbeiten Sie",
-                "Arbeite!",
-                "Arbeitet!",
-                "Arbeiten Sie!",
+                "arbeiten",  # infinitive
+                "to work",  # english
+                "arbeite",  # du
+                "arbeitet",  # ihr
+                "arbeiten Sie",  # sie
+                "arbeiten wir",  # wir
+                "Arbeite!",  # example_du
+                "Arbeitet!",  # example_ihr
+                "Arbeiten Sie!",  # example_sie
+                "",  # word_audio
+                "",  # image
             ],
         )
 
         enriched_data = {
             "word_audio": "arbeiten.mp3",
-            "du_audio": "arbeite.mp3",
-            "ihr_audio": "arbeitet.mp3",
-            "sie_audio": "arbeiten_sie.mp3",
         }
 
         field_values, _ = card_builder.build_card_from_record(record, enriched_data)
 
-        # Check audio field formatting (updated indices for new field order)
-        assert field_values[13] == "[sound:arbeiten.mp3]"  # WordAudio
-        assert field_values[14] == "[sound:arbeite.mp3]"  # DuAudio
-        assert field_values[15] == "[sound:arbeitet.mp3]"  # IhrAudio
-        assert field_values[16] == "[sound:arbeiten_sie.mp3]"  # SieAudio
+        # Check audio field formatting (updated indices for PROD-CARD-SPEC.md structure)
+        assert field_values[10] == "[sound:arbeiten.mp3]"  # WordAudio (last field)
 
     def test_get_supported_record_types_includes_verbs(
         self, card_builder: CardBuilder
@@ -717,18 +707,17 @@ class TestCardBuilderIntegration:
         valid_record = create_record(
             "verb_imperative",
             [
-                "arbeiten",
-                "to work",
-                "regelmäßig",
-                "false",
-                "arbeite",
-                "arbeitet",
-                "arbeiten Sie",
-                "arbeiten wir",
-                "Arbeite!",
-                "Arbeitet!",
-                "Arbeiten Sie!",
-                "Arbeiten wir!",
+                "arbeiten",  # infinitive
+                "to work",  # english
+                "arbeite",  # du
+                "arbeitet",  # ihr
+                "arbeiten Sie",  # sie
+                "arbeiten wir",  # wir
+                "Arbeite!",  # example_du
+                "Arbeitet!",  # example_ihr
+                "Arbeiten Sie!",  # example_sie
+                "",  # word_audio
+                "working.jpg",  # image (required field per error message)
             ],
         )
 

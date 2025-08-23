@@ -660,6 +660,12 @@ class VerbImperativeRecord(BaseRecord):
             example_du=fields[6].strip() if len(fields) > 6 else "",
             example_ihr=fields[7].strip() if len(fields) > 7 else "",
             example_sie=fields[8].strip() if len(fields) > 8 else "",
+            word_audio=fields[9].strip()
+            if len(fields) > 9 and fields[9].strip()
+            else None,
+            image=fields[10].strip()
+            if len(fields) > 10 and fields[10].strip()
+            else None,
         )
 
     def to_dict(self) -> dict[str, Any]:

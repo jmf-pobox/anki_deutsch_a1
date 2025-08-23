@@ -1,5 +1,10 @@
 # German Imperative Coverage Analysis & Implementation
 
+Note: This document describes a completed migration/coverage improvement. It is retained for historical context only. For current and canonical specifications, see:
+- PROD-CARD-SPEC.md → Verb_Imperative
+- DATA-DICTIONARY.md → Verbs Unified (imperative tense mapping)
+- UX-CARD-DESIGN.md → Imperative card UX patterns
+
 ## Executive Summary
 
 This document details the comprehensive imperative coverage implementation for the German A1 Anki deck generator, addressing the critical gap where only 37 of 153 verbs had imperative forms, and only 2 of 4 imperative forms were represented.

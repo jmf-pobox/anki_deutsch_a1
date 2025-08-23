@@ -308,8 +308,7 @@ class TestVerbFieldProcessing:
 
         combined_text = verb.get_combined_audio_text()
         expected = (
-            "verstehen, <break strength='strong'/>Perfekt, "
-            "er sie es hat verstanden"
+            "verstehen, <break strength='strong'/>Perfekt, er sie es hat verstanden"
         )
 
         assert combined_text == expected

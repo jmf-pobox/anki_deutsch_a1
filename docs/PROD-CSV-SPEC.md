@@ -4,6 +4,8 @@
 
 This document defines the canonical CSV format specifications for the Anki German Language Deck Generator project. All CSV files must conform to these standards to ensure consistency, maintainability, and extensibility to future languages.
 
+Important DRY note: Field-level column definitions and constraints are maintained authoritatively in DATA-DICTIONARY.md. Any detailed column tables in this file are informational and may be trimmed; if discrepancies exist, DATA-DICTIONARY.md is the source of truth.
+
 ## Core Principles
 
 ### 1. Language Separation
@@ -43,72 +45,23 @@ This document defines the canonical CSV format specifications for the Anki Germa
 
 ## Word Type Specifications
 
-### 1. Nouns (nouns.csv)
+Authoritative field-level definitions and constraints are maintained in DATA-DICTIONARY.md. This section provides a high-level overview with links to the corresponding dictionary sections to avoid duplication.
 
-**Purpose**: German nouns with articles, plural forms, and declensions
+- Nouns (nouns.csv)
+  - Purpose: German nouns with articles, plural forms, and examples
+  - See DATA-DICTIONARY.md → "Nouns (nouns.csv)"
 
-**Columns**:
-| Column | Required | Type | Description | Example |
-|--------|----------|------|-------------|---------|
-| noun | Yes | string | German noun (capitalized) | Haus |
-| article | Yes | string | Definite article (der/die/das) | das |
-| english | Yes | string | English translation | house |
-| plural | No | string | Plural form | Häuser |
-| example | No | string | Example sentence in German | Mein Haus ist sehr klein. |
-| related | No | string | Related words/synonyms | die Wohnung, das Zimmer |
+- Adjectives (adjectives.csv)
+  - Purpose: Adjectives with comparative/superlative forms
+  - See DATA-DICTIONARY.md → "Adjectives (adjectives.csv)"
 
-**Validation**:
-- `noun` must start with capital letter (German noun rule)
-- `article` must be one of: der, die, das
-- `plural` if provided, should differ from singular
+- Verbs - Simple Format (verbs.csv)
+  - Purpose: Basic verb conjugations for common verbs
+  - See DATA-DICTIONARY.md → "Verbs (verbs.csv)"
 
-### 2. Adjectives (adjectives.csv)
-
-**Purpose**: German adjectives with comparative and superlative forms
-
-**Columns**:
-| Column | Required | Type | Description | Example |
-|--------|----------|------|-------------|---------|
-| word | Yes | string | German adjective (base form) | groß |
-| english | Yes | string | English translation | big/tall |
-| example | No | string | Example sentence in German | Er ist sehr groß. |
-| comparative | No | string | Comparative form | größer |
-| superlative | No | string | Superlative form | am größten |
-
-**Validation**:
-- `word` typically lowercase unless proper adjective
-- `comparative` usually ends in -er
-- `superlative` typically starts with "am" and ends in -sten/-ten
-
-### 3. Verbs - Simple Format (verbs.csv)
-
-**Purpose**: Basic verb conjugations for common verbs
-
-**Columns**:
-| Column | Required | Type | Description | Example |
-|--------|----------|------|-------------|---------|
-| verb | Yes | string | Infinitive form | sein |
-| english | Yes | string | English translation | to be |
-| present_ich | No | string | Present tense - ich | bin |
-| present_du | No | string | Present tense - du | bist |
-| present_er | No | string | Present tense - er/sie/es | ist |
-| perfect | No | string | Perfect tense form | ist gewesen |
-| example | No | string | Example sentence | Ich bin zu Hause. |
-
-### 4. Verbs - Unified Format (verbs_unified.csv)
-
-**Purpose**: Comprehensive verb conjugation data supporting multiple tenses
-
-**Columns**:
-| Column | Required | Type | Description | Example |
-|--------|----------|------|-------------|---------|
-| infinitive | Yes | string | Infinitive form | abfahren |
-| english | Yes | string | English translation | to depart |
-| classification | Yes | string | Verb type | unregelmäßig |
-| separable | Yes | boolean | Is separable verb | true |
-| auxiliary | Yes | string | Auxiliary verb (haben/sein) | sein |
-| tense | Yes | string | Tense name | present |
-| ich | No | string | ich conjugation | fahre ab |
+- Verbs - Unified Format (verbs_unified.csv)
+  - Purpose: Multi-tense conjugation records
+  - See DATA-DICTIONARY.md → "Verbs Unified (verbs_unified.csv)"
 | du | No | string | du conjugation | fährst ab |
 | er | No | string | er/sie/es conjugation | fährt ab |
 | wir | No | string | wir conjugation | fahren ab |

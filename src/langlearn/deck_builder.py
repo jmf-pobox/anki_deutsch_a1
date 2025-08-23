@@ -692,9 +692,11 @@ class DeckBuilder:
                     f"Using verb conjugation multi-card generation for "
                     f"{len(verb_records)} records"
                 )
+
                 cards = self._card_builder.build_verb_conjugation_cards(
                     verb_records, enriched_data_list
                 )
+
             # Special handling for unified article records with noun integration
             elif record_type == "unified_article":
                 from .models.records import (

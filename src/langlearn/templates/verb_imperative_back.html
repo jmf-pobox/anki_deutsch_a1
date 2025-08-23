@@ -6,29 +6,38 @@
         {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
     </div>
     
-    <div class="verb-info">
-        <div class="info-item"><strong>Classification:</strong> {{Classification}}</div>
-        {{#Separable}}<div class="info-item"><strong>Separable:</strong> Yes</div>{{/Separable}}
-    </div>
-    
     <div class="imperative-table">
         <div class="imperative-header">Imperative Forms</div>
         <div class="imperative-grid">
             <div class="imperative-row">
                 <span class="form-type">du-form:</span>
-                <span class="imperative-form">{{DuForm}}</span>
-                {{#DuAudio}}<span class="inline-audio">🔊 {{DuAudio}}</span>{{/DuAudio}}
+                <span class="imperative-form">{{Du}}</span>
             </div>
             <div class="imperative-row">
                 <span class="form-type">ihr-form:</span>
-                <span class="imperative-form">{{IhrForm}}</span>
-                {{#IhrAudio}}<span class="inline-audio">🔊 {{IhrAudio}}</span>{{/IhrAudio}}
+                <span class="imperative-form">{{Ihr}}</span>
             </div>
             <div class="imperative-row">
                 <span class="form-type">Sie-form:</span>
-                <span class="imperative-form">{{SieForm}}</span>
-                {{#SieAudio}}<span class="inline-audio">🔊 {{SieAudio}}</span>{{/SieAudio}}
+                <span class="imperative-form">{{Sie}}</span>
             </div>
+            <div class="imperative-row">
+                <span class="form-type">wir-form:</span>
+                <span class="imperative-form">{{Wir}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="examples-section">
+        <div class="examples-header">Examples</div>
+        <div class="example-item">
+            <strong>du:</strong> {{ExampleDu}}
+        </div>
+        <div class="example-item">
+            <strong>ihr:</strong> {{ExampleIhr}}
+        </div>
+        <div class="example-item">
+            <strong>Sie:</strong> {{ExampleSie}}
         </div>
     </div>
 </div>

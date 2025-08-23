@@ -102,102 +102,137 @@ hatch run format        # Apply formatting
 hatch run test-cov      # Full test suite with coverage
 ```
 
-### Micro-Commit Development Flow:
-1. **Diagnose**: If fixing a bug, READ THE ERROR MESSAGE FIRST
-2. **Plan**: Identify ONE specific change (5-10 minute scope max)
+## DEVELOPMENT WORKFLOW (MANDATORY)
+
+**🚨 CRITICAL: These workflows MUST be followed - NO EXCEPTIONS!**
+
+### For Bug Fixes:
+1. **Diagnose**: READ THE ERROR MESSAGE FIRST - it tells you exactly what to fix
+2. **Plan**: Identify ONE specific change (5-10 minute scope max)  
 3. **Implement**: Make the MINIMAL change that fixes the ROOT CAUSE
-4. **Verify**: Run Tier 1 checks (instant feedback)
-5. **Test**: For bug fixes, test the SPECIFIC broken functionality
-6. **Commit**: Create atomic commit with clear message
-7. **Iterate**: Repeat for next micro-change
-8. **Push**: Every 3-5 commits OR every 30 minutes
+4. **Quality Gates**: Run all 5 commands below before commit
+5. **Commit**: Create atomic commit with clear message on feature branch
+6. **User Verification**: Request user confirmation before claiming success
 
-### Commit Message Standards:
-- Format: `type(scope): description [impact]`
-- Examples:
-  - `refactor(utils): extract rate_limit_reached() [no behavior change]`
+### For Feature Development:
+1. **Plan**: Update appropriate CSV files in `data/` for new vocabulary
+2. **Validate**: Ensure Pydantic validation passes
+3. **Enrich**: Use enrichment scripts to add audio/images
+4. **Generate**: Create cards using card generators
+5. **Quality Gates**: Run all 5 commands below before commit
+6. **Build**: Use AnkiDeckGenerator to create final .apkg file
+
+### Commit Standards:
+- **Format**: `type(scope): description [impact]`
+- **Examples**: 
   - `fix(pexels): handle empty API key [prevents KeyError]`
-  - `test(utils): add environment detection tests [+15 tests]`
+  - `feat(cards): add verb conjugation templates [+3 card types]`
+  - `refactor(utils): extract rate_limit_reached() [no behavior change]`
+- **Push frequency**: Every 3-5 commits OR every 30 minutes
 
-## MANDATORY DEVELOPMENT WORKFLOW
+### Required Quality Gates (MANDATORY):
 
-**🚨 CRITICAL: These steps MUST be followed but applied to MICRO-COMMITS - NO EXCEPTIONS!**
-
-**⚠️ WARNING: We cannot allow MyPy/Ruff/Test degradation. Quality gates are ABSOLUTE.**
-
-### Required Quality Gate Steps (MANDATORY AFTER EVERY CODE CHANGE):
-
-**⚠️ CRITICAL NEW REQUIREMENT**: After experiencing $566 in wasted costs from false "fix" claims, an additional validation layer is now MANDATORY.
-
-#### Standard Code Quality Gates (Layers 1-2):
-
-1. **Run MyPy Type Check**: `hatch run type`
-   - ✅ **ZERO MyPy errors allowed** - Must show "Success: no issues found in 112 source files"
-   - ❌ **STOP IMMEDIATELY** if ANY MyPy error exists - Fix before proceeding
-   - 🚫 **NO CODE CHANGES** are allowed that introduce MyPy errors
-
-2. **Run Linting with Auto-fix**: `hatch run ruff check --fix`
-   - ✅ **ZERO Ruff errors allowed** - Fix all automatically fixable issues
-   - ❌ **STOP IMMEDIATELY** if unfixable issues remain - Address manually
-   - 🚫 **NO CODE CHANGES** are allowed that introduce Ruff violations
-
-3. **Run Code Formatting**: `hatch run format`
-   - ✅ **Perfect formatting required** - All code must be properly formatted
-   - ❌ **STOP IMMEDIATELY** if formatting issues exist - Fix them
-
-4. **Run Full Tests**: `hatch run test`
-   - ✅ **ALL tests must pass** - Currently 772 unit + integration tests
-   - ❌ **STOP IMMEDIATELY** if ANY test fails - Fix before proceeding
-   - 🚫 **NO CODE CHANGES** are allowed that break existing tests
-
-5. **Check Coverage**: `hatch run test-cov`
-   - ✅ **Coverage must not decrease** (currently >73%)
-   - ✅ View detailed report in `htmlcov/index.html`
-   - ❌ **STOP IMMEDIATELY** if coverage drops - Add tests to maintain quality gate
-
-#### NEW MANDATORY: Anki Application Validation (Layer 3):
-
-6. **Run Anki Format Validation**: `hatch run validate-anki` *(IMPLEMENTATION REQUIRED)*
-   - ✅ **Cloze deletion syntax validated** - Verify {{c1::text}} format correctness
-   - ✅ **Field references validated** - Ensure all {{Field}} references exist
-   - ✅ **Media paths validated** - Verify [sound:...] and <img src="..."> paths
-   - ❌ **STOP IMMEDIATELY** if validation fails - Fix Anki compatibility issues
-
-7. **Run Card Rendering Simulation**: `hatch run simulate-cards` *(IMPLEMENTATION REQUIRED)*
-   - ✅ **No blank cards detected** - Simulate Anki's rendering to catch display issues
-   - ✅ **No duplicate notes detected** - Verify uniqueness in generated content
-   - ✅ **Template syntax validated** - Ensure HTML/CSS will render correctly in Anki
-   - ❌ **STOP IMMEDIATELY** if simulation shows user-facing issues
-
-8. **Verify Final State**: `hatch run type && hatch run test && hatch run validate-anki`
-   - ✅ **Final verification** - All layers pass before claiming any fix works
-   - ❌ If anything broke during workflow, investigate and fix immediately
-
-### Workflow Summary (MANDATORY - NO SHORTCUTS):
 ```bash
-# MANDATORY workflow after ANY code change - NO EXCEPTIONS:
-hatch run type                         # 1. ZERO MyPy errors (ABSOLUTE REQUIREMENT)
-hatch run ruff check --fix            # 2. ZERO Ruff violations (ABSOLUTE REQUIREMENT)
-hatch run format                       # 3. Perfect formatting (ABSOLUTE REQUIREMENT)
-hatch run test                         # 4. ALL tests pass (ABSOLUTE REQUIREMENT)
-hatch run test-cov                     # 5. Coverage maintained (ABSOLUTE REQUIREMENT)
-hatch run validate-anki                # 6. Anki format validation (NEW REQUIREMENT)
-hatch run simulate-cards               # 7. Card rendering simulation (NEW REQUIREMENT)  
-hatch run type && hatch run test && hatch run validate-anki  # 8. Final verification
+# Run after EVERY code change - NO SHORTCUTS:
+hatch run type                    # 1. ZERO MyPy errors (ABSOLUTE REQUIREMENT)
+hatch run ruff check --fix       # 2. ZERO Ruff violations (ABSOLUTE REQUIREMENT) 
+hatch run format                  # 3. Perfect formatting (ABSOLUTE REQUIREMENT)
+hatch run test                    # 4. ALL tests pass (ABSOLUTE REQUIREMENT)
+hatch run test-cov                # 5. Coverage maintained (ABSOLUTE REQUIREMENT)
 ```
+
+### Branch Workflow (MANDATORY):
+- **ALL development** must use feature branches - NO direct commits to main
+- **Branch naming**: `feature/`, `fix/`, `refactor/`, `docs/`, `test/`
+- **Micro-commits**: 1-2 files, <50 lines preferred, <100 lines max
+- **Push frequency**: Every 3-5 commits OR every 30 minutes
+- **Create draft PR early** for continuous CI feedback
 
 **🚨 ABSOLUTE REQUIREMENTS - NO EXCEPTIONS:**
 - **Error Messages First**: When fixing bugs, address the EXACT error shown
 - **MyPy --strict**: ZERO errors allowed in any file
-- **Ruff linting**: ZERO violations allowed
-- **Test suite**: ALL tests must pass (667 unit + 24 integration)
+- **Ruff linting**: ZERO violations allowed  
+- **Test suite**: ALL tests must pass
 - **Coverage**: Must not decrease from current levels
 - **User Verification**: Bug fixes require user confirmation before claiming success
-- **Complete workflow**: ALL 8 steps must pass before code change is complete
+- **Branch-based development**: Create branch → develop → test → PR → review → merge
 
-**⚠️ CRITICAL**: Use `hatch run test-cov` (not `test-unit-cov`) for accurate coverage measurement.
+**🚫 A CODE CHANGE IS NOT COMPLETE UNTIL ALL 5 QUALITY GATES PASS!**
 
-**🚫 A CODE CHANGE IS NOT COMPLETE UNTIL ALL 8 STEPS PASS SUCCESSFULLY!**
+## GITHUB ISSUE MANAGEMENT (MANDATORY)
+
+**🚨 CRITICAL: GitHub issues are NOT documentation - they are brief pointers to misalignment**
+
+### Purpose of GitHub Issues
+GitHub issues serve as **state management markers** that identify where code diverges from authoritative specifications. They are NOT:
+- ❌ Replacement for design documentation
+- ❌ Duplicate of specification details
+- ❌ Comprehensive implementation guides
+- ❌ Alternative source of truth
+
+### Issue Creation Principles (MANDATORY)
+
+1. **Brief Summary Only**: Issues should contain:
+   - **Problem**: One sentence describing the misalignment
+   - **Location**: Which component/file is affected
+   - **Reference**: Link to authoritative spec (e.g., PROD-CARD-SPEC.md)
+   - **Impact**: What functionality is blocked or broken
+
+2. **Defer to Authoritative Docs**: 
+   - ✅ "Card generation missing required fields - see PROD-CARD-SPEC.md section 3.2"
+   - ❌ "Card generation needs DuForm, SieForm, IhrForm fields with specific formatting..."
+
+3. **Avoid Specification Duplication**:
+   - Issues should NOT repeat detailed requirements from specs
+   - This prevents conflicting directions when specs are updated
+   - Single source of truth principle must be maintained
+
+4. **State Management Focus**:
+   - Issues track WHAT needs fixing, not HOW to fix it
+   - Implementation details belong in documentation
+   - Issues are checkpoints, not instruction manuals
+
+### Issue Template (REQUIRED FORMAT)
+```markdown
+## Misalignment Detected
+**Component**: [specific file/service]
+**Specification**: [link to authoritative doc#section]
+**Current Behavior**: [one sentence]
+**Expected Behavior**: [one sentence referencing spec]
+**Blocked Work**: [what can't proceed until fixed]
+
+⚠️ See specification document for implementation requirements.
+```
+
+### Integration with Workflow
+
+**When to Create Issues**:
+- During code review when detecting spec violations
+- When user reports functionality not matching requirements
+- Before starting work that depends on unimplemented specs
+- As markers for technical debt that blocks progress
+
+**When NOT to Create Issues**:
+- For bugs with clear error messages (fix immediately)
+- For minor formatting or style violations (fix in current commit)
+- To document how something should work (use design docs)
+- As a todo list for features (use TodoWrite tool)
+
+### Anti-Patterns to Avoid
+- ❌ Creating issues that duplicate specification content
+- ❌ Using issues as alternative documentation
+- ❌ Writing implementation details in issue descriptions
+- ❌ Creating issues for work you can complete immediately
+- ❌ Closing issues without verifying alignment with specs
+
+### Issue Lifecycle
+1. **Create**: Brief pointer to misalignment
+2. **Reference**: Link to authoritative specification
+3. **Fix**: Implement according to specification (not issue description)
+4. **Verify**: Confirm alignment with specification
+5. **Close**: Only after verification against authoritative docs
+
+**🚨 REMEMBER**: Issues expire, specifications endure. Always implement from specs, not from issue descriptions.
 
 ## CRITICAL COMMUNICATION PROTOCOL (MANDATORY)
 
@@ -295,47 +330,15 @@ hatch run run-adjectives    # Run adjectives-only deck creation
 
 ### Testing Strategy
 The project uses separate test categories with comprehensive coverage measurement:
-- **Unit tests**: Mock external dependencies, run with `hatch run test-unit` (562 tests passing)
-- **Integration tests**: Require live API keys, marked with `@pytest.mark.live`, run with `hatch run test-integration` (24 tests)
-- **Coverage testing**: Use `hatch run test-cov` for complete measurement (current: **81.69%**, target: >85%)
-  - **CardBuilder Service**: 97.83% coverage with 15 comprehensive tests
-  - **Clean Pipeline Architecture**: Full test coverage for all components
+- **Unit tests**: Mock external dependencies, run with `hatch run test-unit`
+- **Integration tests**: Require live API keys, marked with `@pytest.mark.live`, run with `hatch run test-integration`
+- **Coverage testing**: Use `hatch run test-cov` for complete measurement (target: >85%)
 - API keys are managed via the system keyring using the `api_keyring.py` utility
 
-### Code Quality Standards
-**CRITICAL**: A change is not considered complete unless it meets ALL of the following ABSOLUTE requirements:
-
-1. **MyPy Type Checking**: `hatch run type` - **ZERO errors allowed** (mypy --strict mode)
-   - ✅ Must show "Success: no issues found in 112 source files"
-   - 🚫 **NO EXCEPTIONS** - ANY MyPy error means STOP and fix immediately
-
-2. **Ruff Linting**: `hatch run ruff check --fix` - **ZERO violations allowed**
-   - ✅ All linting rules must pass
-   - 🚫 **NO EXCEPTIONS** - ANY Ruff violation means STOP and fix immediately
-
-3. **All Tests Pass**: `hatch run test` - **ALL tests must pass**
-   - ✅ Currently 667 unit + 24 integration tests (691 total)
-   - 🚫 **NO EXCEPTIONS** - ANY test failure means STOP and fix immediately
-
-4. **Test Coverage**: `hatch run test-cov` - **Coverage must not decrease**
-   - ✅ Currently >73% - must maintain or improve
-   - 🚫 **NO EXCEPTIONS** - Coverage drops mean STOP and add tests
-
-5. **Code Formatting**: `hatch run format` - **Perfect formatting required**
-   - ✅ All code must be properly formatted
-   - 🚫 **NO EXCEPTIONS** - Formatting issues mean STOP and fix
-
-6. **Unit Tests for New Code**: All new code must have comprehensive unit tests
-   - ✅ High coverage with edge cases and error handling
-   - 🚫 **NO EXCEPTIONS** - New code without tests is not allowed
-
-**🔄 REFERENCE THE MANDATORY DEVELOPMENT WORKFLOW ABOVE** - ALL 6 quality gate steps must pass after every single code change.
-
-**🚨 DEGRADATION IS NOT ALLOWED**: We will never allow MyPy/Ruff/Test quality to degrade again.
 
 Additional verification commands:
 ```bash
-hatch run test-unit      # All tests must pass (452 tests)
+hatch run test-unit      # All tests must pass
 hatch run test-unit-cov  # Run tests with coverage report
 hatch run format         # Auto-fix formatting
 hatch run lint           # Check linting rules
@@ -367,9 +370,8 @@ The project uses **Clean Pipeline Architecture** for data processing with clear 
    - **External APIs**: AWS Polly, Pexels, Anthropic integration
 
 3. **Backends** (`src/langlearn/backends/`): 
-   - **AnkiBackend**: Official Anki library with MediaEnricher integration
-   - **Clean Pipeline Support**: Automatic delegation to Clean Pipeline Architecture
-   - **Legacy Fallback**: Graceful fallback to FieldProcessor for unsupported types
+   - **DeckBackend**: Abstract interface for deck generation
+   - **AnkiBackend**: Implementation using official Anki library to create .apkg files
 
 4. **Utils** (`src/langlearn/utils/`): API key management, audio/image utilities
 
@@ -389,10 +391,10 @@ The project uses **Clean Pipeline Architecture** for data processing with clear 
   - **CardBuilder**: Pure transformation service (Records → Formatted Cards)
   - **Separation of Concerns**: German grammar logic separate from infrastructure
 
-- **Dual Architecture Support**: Hybrid system supporting both modern and legacy patterns
-  - **Clean Pipeline**: noun, adjective, adverb, negation (fully migrated)
-  - **Legacy FieldProcessor**: verb, preposition, phrase (backward compatibility)
-  - **Automatic Delegation**: AnkiBackend automatically chooses appropriate architecture
+- **Unified Architecture**: Records-based system with CardBuilder service
+  - **Record Types**: All word types use Pydantic BaseRecord models for validation
+  - **CardBuilder**: Single service handles card generation for all word types
+  - **MediaEnricher**: Handles audio/image generation with existence checking
 
 - **Performance Optimizations**: 
   - **Hash-based Caching**: Avoids duplicate API calls for media generation
@@ -449,215 +451,42 @@ This project addresses unique aspects of German language learning:
 - **Adjective declensions**: Support for all declension patterns
 - **Audio pronunciation**: All words include AWS Polly audio with German voice
 
-## Development Workflow
 
-1. **Add new vocabulary**: Update appropriate CSV files in `data/`
-2. **Validate models**: Run `hatch run test-unit` to ensure Pydantic validation passes
-3. **Enrich content**: Use enrichment scripts to add audio/images
-4. **Generate cards**: Create cards using the card generators (in development)
-5. **Build deck**: Use `AnkiDeckGenerator` to create final .apkg file
-6. **Quality assurance**: Run full test suite with `hatch run check`
+## Current Status
 
-## Current Status - Clean Pipeline Architecture Migration ✅ COMPLETE
+### Quality Metrics
+- **Tests**: 813 passing (792 unit + 21 integration)
+- **Coverage**: 24.79% overall
+- **Type Safety**: 0 MyPy errors in strict mode (133 source files)
+- **Linting**: 0 Ruff violations
+- **Architecture**: Clean Pipeline with SRP implementation
 
-✅ **Complete**: Clean Pipeline Architecture migration with comprehensive test coverage and backward compatibility
-✅ **Complete**: All Pydantic models, CSV data, AWS Polly integration, Pexels integration, CardBuilder service
-✅ **Complete**: Official Anki backend with MediaEnricher integration, 586 tests, 81.69% coverage
-📋 **Planned**: CLI interface, multi-language support, advanced scheduling algorithms
+### Supported Word Types
+- **Fully Supported**: noun, adjective, adverb, negation, verb (via Records + CardBuilder)
+- **Legacy Support**: preposition, phrase (via fallback system)
+- **Total Coverage**: All 7 German A1 word types functional
 
-### Clean Pipeline Architecture Migration Status ✅ COMPLETE
-- ✅ **Phase 1 Complete**: Record system (NounRecord, AdjectiveRecord, AdverbRecord, NegationRecord)
-- ✅ **Phase 2 Complete**: RecordMapper service for CSV → Records conversion  
-- ✅ **Phase 3 Complete**: MediaEnricher integration with existence checking and caching
-- ✅ **Phase 4 Complete**: CardBuilder service with 97.83% test coverage
-- ✅ **Phase 5 Complete**: Documentation updated, imports organized, backward compatibility maintained
+## Project Structure
 
-### Architecture Support Status
-- ✅ **Clean Pipeline Architecture**: noun, adjective, adverb, negation (4/7 word types)
-- ✅ **Legacy FieldProcessor**: verb, preposition, phrase (3/7 word types - graceful fallback)
-- ✅ **Automatic Delegation**: AnkiBackend seamlessly chooses appropriate architecture
+See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete project structure details.
 
-## RECENT FIXES - ISSUES RESOLVED ✅
+Key directories:
+- `src/langlearn/` - Main application code
+- `data/` - CSV vocabulary files and generated media
+- `tests/` - Unit and integration tests  
+- `docs/` - Comprehensive documentation
 
-### Media Integration Test Failure - RESOLVED
-**STATUS**: ✅ **FIXED** - Domain model architecture compatibility issue resolved
+## Quality Maintenance
 
-**Problem Resolved**: Test failure due to architectural mismatch after domain model delegation:
-- ✅ **Root Cause**: Test was mocking old backend methods instead of new domain model services  
-- ✅ **Architecture Fix**: Updated test to mock MediaService used by DomainMediaGenerator
-- ✅ **Clean Architecture**: Domain models properly delegate to MediaGenerator interface
-- ✅ **Test Coverage**: All 496 tests now pass including previously failing media integration test
+### Absolute Requirements (NO EXCEPTIONS)
 
-**Successful Fix**:
-1. **Test Architecture Alignment**: Updated `test_process_fields_with_media_noun()` to mock correct service layer ✅
-2. **Domain Model Validation**: Confirmed Noun field processing works correctly with real services ✅
-3. **Infrastructure Separation**: Maintained clean separation between domain logic and infrastructure ✅
-4. **Backward Compatibility**: Old and new architectures work together seamlessly ✅
+1. **MyPy Compliance**: 0 errors required in strict mode
+2. **Ruff Linting**: 0 violations required
+3. **Test Suite**: All 813 tests must pass
+4. **Coverage**: Must not decrease from 24.79%
+5. **Branch Workflow**: All changes via feature branches
 
-**Current State**: 
-- Tests: ✅ All 496 tests passing
-- Domain Models: ✅ Working correctly with proper media generation
-- Architecture: ✅ Clean separation of concerns maintained
-- Integration: ✅ Domain models properly integrated with infrastructure services
-
-**Project Status**: All technical issues resolved - architecture refactoring successful
-
-## PRIORITY 1 CODE QUALITY - COMPLETED ✅
-
-### Test Coverage Improvements - COMPLETED
-**STATUS**: ✅ **MAJOR SUCCESS** - All Priority 1 test coverage targets exceeded
-
-**Achievement Summary**:
-- ✅ **Overall Coverage**: 56.27% → **73.84%** (+17.57 percentage points)
-- ✅ **Total Tests**: 263 → **401** tests (138 new comprehensive test cases)
-- ✅ **New Test Files**: 3 dedicated unit test files created
-- ✅ **All Targets Exceeded**: Every priority file achieved 85%+ or perfect 100% coverage
-
-**Priority Files Completed**:
-- ✅ `german_deck_builder.py`: 54.36% → **81.79%** (main orchestrator)
-- ✅ `audio.py`: 54.93% → **100%** (AWS Polly service)  
-- ✅ `csv_service.py`: 50.00% → **100%** (data loading)
-- ✅ `german_language_service.py`: 40.98% → **95.61%** (language logic)
-- ✅ `pexels_service.py`: 43.61% → **100%** (Pexels API service)
-
-**Quality Improvements**:
-- ✅ **Comprehensive Exception Handling**: Rate limits, network errors, API failures, file system errors
-- ✅ **Edge Case Coverage**: Empty inputs, malformed data, missing resources, invalid configurations
-- ✅ **Business Logic Testing**: German language patterns, context extraction, backoff strategies
-- ✅ **Integration Scenarios**: Service interactions, configuration variations, backend compatibility
-
-**Test Coverage Tracking**:
-- ✅ **Coverage Reports**: Use `hatch run test-cov` for complete measurement (includes integration tests)
-- ✅ **HTML Reports**: Detailed coverage available in `htmlcov/index.html`
-- ✅ **Quality Gate**: Coverage must not decrease with any code changes
-
-## MYPY --STRICT COMPLIANCE - ACHIEVED ✅
-
-**STATUS**: ✅ **ULTIMATE SUCCESS** - Complete MyPy --strict compliance achieved!
-
-**Final Achievement**:
-- ✅ **MyPy Errors**: 502 → **0 errors** (100% elimination!)
-- ✅ **Source Files**: All 112 files pass strict type checking
-- ✅ **Test Coverage**: All 667 unit tests + 24 integration tests pass
-- ✅ **Quality Gates**: Perfect MyPy + Ruff + Test compliance maintained
-
-**Key Success Factors**:
-1. **Systematic Pattern Recognition**: Fixed repetitive errors in batches rather than individually
-2. **Deprecated Code Cleanup**: Removed all legacy FieldProcessor tests and patterns
-3. **Type Safety Excellence**: Proper union type handling, mock typing, and strict compliance
-4. **Zero Tolerance Policy**: Complete elimination of all type checking errors
-
-**CRITICAL MAINTENANCE**: This achievement must be preserved - NO degradation allowed!
-
-## File Structure Notes
-
-- `src/langlearn/backends/`: Backend abstraction layer for different Anki libraries
-  - `base.py`: Abstract base classes for deck generation
-  - `genanki_backend.py`: genanki library implementation
-  - `anki_backend.py`: Official Anki library implementation (Phase 1 prototype)
-- `src/langlearn/genanki.pyi`: Type stubs for the genanki library
-- `pytest.ini`: Configures test markers for live API tests
-- `languages/`: Language-specific documentation for grammar rules and CSV structures
-- `output/`: Generated Anki deck files (.apkg format)
-- `examples/backend_demonstration.py`: Demo script showing backend abstraction
-## BRANCH-BASED DEVELOPMENT WORKFLOW (MANDATORY)
-
-**🚨 CRITICAL: ALL development MUST use feature branches - NO direct commits to main**
-
-**🛡️ PROTECTION**: This workflow protects our hard-won quality achievements (502→0 MyPy errors, 691 passing tests)**
-
-### Feature Branch Workflow (IMPROVED):
-
-1. **Create Micro-Feature Branch**:
-   ```bash
-   git checkout -b feature/extract-rate-limit-util  # Single focused change
-   # OR for micro-fixes:
-   git checkout -b fix/handle-empty-api-key        # One specific bug
-   # OR for micro-refactor:
-   git checkout -b refactor/consolidate-env-detection  # One architectural improvement
-   ```
-
-2. **Develop with Micro-Commits**:
-   - Make ONE focused change (5-10 minutes max)
-   - Run Tier 2 validation (type + test-unit) 
-   - Commit immediately if passing
-   - Repeat for next micro-change
-   - Push every 3-5 commits
-
-3. **Create "Draft PR" Early**:
-   ```bash
-   git push -u origin feature/extract-rate-limit-util
-   gh pr create --draft --title "Extract rate limit utility" --body "WIP: Micro-commits in progress"
-   ```
-
-4. **Progressive Development**:
-   - Continue micro-commits on branch
-   - Get CI feedback continuously 
-   - Convert to "Ready for Review" when complete
-   - Maximum 10 commits per PR
-   - Maximum 200 lines of change per PR
-
-5. **Quality Gate Enforcement**:
-   - Run Tier 3 comprehensive checks before "Ready for Review"
-   - Verify all CI/CD checks pass: MyPy ✅ Ruff ✅ Tests ✅ Coverage ✅
-   - Self-review against architectural principles
-
-6. **Fast Merge Process**:
-   - PRs with <50 lines: immediate merge after CI passes
-   - PRs with 50-200 lines: brief review then merge
-   - Use "Squash and merge" for clean history
-   - Delete branch after merge
-
-### Branch Naming Convention:
-- `feature/` - New features or enhancements
-- `fix/` - Bug fixes  
-- `refactor/` - Code refactoring
-- `docs/` - Documentation updates
-- `test/` - Test additions or fixes
-
-### PROHIBITED Actions (🚫 NEVER ALLOWED):
-- ❌ Direct commits to main branch
-- ❌ Large batch commits (>200 lines or >5 files)
-- ❌ Cross-layer changes in single commit (services + models + tests)
-- ❌ Merging without passing quality gates  
-- ❌ Bypassing branch protection rules
-- ❌ Force pushing to main
-- ❌ Merging PRs with failing CI/CD checks
-- ❌ "Fix everything" commits that accumulate multiple changes
-
-## CRITICAL QUALITY MAINTENANCE RULES
-
-**🚨 ABSOLUTE REQUIREMENTS - NO EXCEPTIONS:**
-
-1. **MyPy --Strict Compliance**: Run `hatch run type` after EVERY code change
-   - ✅ Must show "Success: no issues found in 112 source files"
-   - 🚫 **ZERO tolerance** for any MyPy errors - fix immediately regardless of cause
-   - 🚨 **NO DEGRADATION ALLOWED** - we will never allow quality to degrade again
-
-2. **Ruff Linting Compliance**: Run `hatch run ruff check --fix` after EVERY code change
-   - ✅ Must show zero violations
-   - 🚫 **ZERO tolerance** for any Ruff violations - fix immediately
-
-3. **Test Suite Integrity**: Run `hatch run test` after EVERY code change
-   - ✅ ALL 691 tests must pass (667 unit + 24 integration)
-   - 🚫 **ZERO tolerance** for any test failures - fix immediately
-
-4. **Branch-Based Development**: ALL changes must go through feature branches and PRs
-   - ✅ Create branch → develop → test → PR → review → merge
-   - 🚫 **ZERO direct commits to main** - use branch workflow
-
-5. **Micro-Commit Discipline**: All changes must be broken into atomic commits
-   - ✅ Single responsibility per commit
-   - 🚫 **ZERO tolerance** for large batch changes - split immediately
-
-6. **Error-First Debugging**: When fixing bugs, ALWAYS start with the error message
-   - The error message is your roadmap - follow it exactly
-   - Fix the root cause before any peripheral issues
-   - Keep debugging tools until user confirms the fix works
-
-7. **Design Consultation**: Ask for design direction when facing new issues
-   - Present multiple options with pros and cons  
-   - Get approval before implementing significant changes
+See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete quality gate requirements and workflow.
 
 ## SUCCESS RATE TRACKING
 

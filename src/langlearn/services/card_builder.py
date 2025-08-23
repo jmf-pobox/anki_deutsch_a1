@@ -668,8 +668,7 @@ class CardBuilder:
             "preposition": ["preposition", "english", "case", "example1", "example2"],
             "verb_conjugation": ["infinitive", "english", "tense", "ich", "du", "er"],
             "verb_imperative": [
-                # Core fields from PROD-CARD-SPEC.md
-                "image",
+                # Core fields from CSV data (not enriched media fields)
                 "english",
                 "infinitive",
                 "du",
@@ -679,7 +678,8 @@ class CardBuilder:
                 "example_du",
                 "example_ihr",
                 "example_sie",
-                "word_audio",
+                # Note: image and word_audio are optional media fields
+                # populated during enrichment
             ],
         }
 

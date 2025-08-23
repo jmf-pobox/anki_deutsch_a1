@@ -322,11 +322,12 @@ class VerbConjugationProcessor:
             "english": record.english,
             "classification": record.classification,
             "separable": record.separable,
-            # Map conjugation fields to imperative forms
-            "du_form": record.du,  # du form
-            "ihr_form": record.ihr,  # ihr form
-            "sie_form": record.sie,  # Sie form (formal)
-            "wir_form": record.wir,  # wir form (let's...)
+            # Map conjugation fields to imperative forms (use expected keys)
+            "du": record.du,  # du form
+            "ihr": record.ihr,  # ihr form
+            "sie": record.sie,  # Sie form (formal)
+            "wir": record.wir,  # wir form (let's...)
+            # Single example used for all example fields per mapping
             "example": record.example,
         }
 

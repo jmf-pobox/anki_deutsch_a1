@@ -10,30 +10,32 @@
         <div class="imperative-header">Befehlsform</div>
         <div class="imperative-row">
             <span class="pronoun">du</span>
-            <span class="imperative-form">{{DuForm}}!</span>
+            <span class="imperative-form">{{Du}}!</span>
         </div>
         <div class="imperative-row">
             <span class="pronoun">ihr</span>
-            <span class="imperative-form">{{IhrForm}}!</span>
+            <span class="imperative-form">{{Ihr}}!</span>
         </div>
         <div class="imperative-row">
             <span class="pronoun">Sie</span>
-            <span class="imperative-form">{{SieForm}}!</span>
+            <span class="imperative-form">{{Sie}}!</span>
         </div>
         <div class="imperative-row">
             <span class="pronoun">wir</span>
-            <span class="imperative-form">{{WirForm}}!</span>
+            <span class="imperative-form">{{Wir}}!</span>
         </div>
     </div>
 </div>
 
-<div class="example-with-audio">
-    <span class="example-sentence">{{ExampleDu}}</span>
-    {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+<div class="examples-section">
+    <div class="examples-header">Beispiele</div>
+    <div class="example-item"><strong>du:</strong> {{ExampleDu}}</div>
+    <div class="example-item"><strong>ihr:</strong> {{ExampleIhr}}</div>
+    <div class="example-item"><strong>Sie:</strong> {{ExampleSie}}</div>
 </div>
 
 <div class="back-hint-container">
-    <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
+    <button class="hint-button" onclick="showBackHint()">💡 Hinweis</button>
     <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 

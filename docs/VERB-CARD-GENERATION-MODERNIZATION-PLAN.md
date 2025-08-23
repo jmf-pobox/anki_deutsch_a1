@@ -1,5 +1,10 @@
 # German Verb Card Generation Modernization Plan
 
+Note: This plan documents a completed modernization initiative. For the current, canonical state:
+- See PROD-CARD-SPEC.md for actual card types and requirements
+- See DATA-DICTIONARY.md for field definitions
+- See ENG-QUALITY-METRICS.md for coverage and status
+
 ## Executive Summary
 
 This document outlines a comprehensive plan to modernize our verb card generation system to leverage the rich German verb data we have built (604 verb records with complete conjugation patterns). Currently, we create only one card per verb with limited conjugation information. This plan addresses the gap between our comprehensive data and simplified card generation.
