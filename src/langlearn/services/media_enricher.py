@@ -501,7 +501,7 @@ class StandardMediaEnricher(MediaEnricher):
                     "present_du",
                     "present_er",
                     "präteritum",
-                    "auxiliary", 
+                    "auxiliary",
                     "perfect",
                     "example",
                     "separable",
