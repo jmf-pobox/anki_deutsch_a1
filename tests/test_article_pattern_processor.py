@@ -68,14 +68,12 @@ class TestArticlePatternProcessor:
         )
 
         def get_template_mock(template_type: str) -> CardTemplate:
-            if template_type == "artikel_gender_cloze":
-                return gender_cloze_template
-            elif template_type == "artikel_context_cloze":
-                return context_cloze_template
-            elif template_type == "artikel_gender":
-                return gender_template
-            else:
-                return context_template
+            template_map = {
+                "artikel_gender_cloze": gender_cloze_template,
+                "artikel_context_cloze": context_cloze_template,
+                "artikel_gender": gender_template,
+            }
+            return template_map.get(template_type, context_template)
 
         template_service.get_template.side_effect = get_template_mock
 

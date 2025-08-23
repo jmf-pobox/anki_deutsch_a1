@@ -733,11 +733,16 @@ class DeckBuilder:
                 if noun_records:
                     logger.info(
                         f"Skipping noun-article practice cards for "
-                        f"{len(noun_records)} noun records (temporarily disabled for cloze testing)"
+                        f"{len(noun_records)} noun records "
+                        f"(temporarily disabled for cloze testing)"
                     )
-                    # TEMPORARY: Disable noun-article cards to focus on testing cloze deletion system
-                    # TODO: Update ArticleApplicationService to use cloze deletion instead of templates
-                    # noun_enriched_data: list[dict[str, Any]] = [{}] * len(noun_records)
+                    # TEMPORARY: Disable noun-article cards to focus on testing
+                    # cloze deletion system
+                    # TODO: Update ArticleApplicationService to use cloze deletion
+                    # instead of templates
+                    # noun_enriched_data: list[dict[str, Any]] = [{}] * len(
+                    #     noun_records
+                    # )
                     # noun_article_cards = (
                     #     self._article_service.generate_noun_article_cards(
                     #         noun_records, noun_enriched_data
