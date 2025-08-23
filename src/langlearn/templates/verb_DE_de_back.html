@@ -8,13 +8,13 @@
     
     {{#Classification}}
     <div class="verb-classification">
-        <strong>Classification:</strong> <span class="classification-{{Classification}}">{{Classification}}</span>
-        {{#Separable}}<span class="separable-indicator">• Separable: {{Separable}}</span>{{/Separable}}
+        <strong>Klassifikation:</strong> <span class="classification-{{Classification}}">{{Classification}}</span>
+        {{#Separable}}<span class="separable-indicator">• Trennbar: {{Separable}}</span>{{/Separable}}
     </div>
     {{/Classification}}
     
     <div class="conjugation-table">
-        <h3>Present Tense</h3>
+        <h3>Präsens</h3>
         <table>
             <tr>
                 <td><strong>ich</strong></td>
@@ -36,7 +36,7 @@
         {{/Präteritum}}
         
         {{#Perfect}}
-        <h3>Perfect</h3>
+        <h3>Perfekt</h3>
         <p><strong>{{Auxiliary}}:</strong> {{Perfect}}</p>
         {{/Perfect}}
     </div>
@@ -48,7 +48,7 @@
 </div>
 
 <div class="back-hint-container">
-    <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
+    <button class="hint-button" onclick="showBackHint()">💡 Tipp</button>
     <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 
