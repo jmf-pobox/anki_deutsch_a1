@@ -13,7 +13,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 ### Adverbs Sub-deck
 2. [Adverb](#adverb)
 
-### Articles Sub-deck
+### Unified_articles Sub-deck
 3. [Artikel_Context](#artikel-context)
 4. [Artikel_Context_Cloze](#artikel-context-cloze)
 5. [Artikel_Gender](#artikel-gender)
@@ -27,10 +27,10 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 ### Nouns Sub-deck
 10. [Noun](#noun)
 
-### Phrases Sub-deck (DISABLED)
+### Phrases Sub-deck
 11. [Phrase](#phrase)
 
-### Prepositions Sub-deck (DISABLED)
+### Prepositions Sub-deck
 12. [Preposition](#preposition)
 
 ### Verbs Sub-deck
@@ -116,7 +116,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 
 ---
 
-# Articles Sub-deck
+# Unified_articles Sub-deck
 
 ## Artikel_Context
 
@@ -125,7 +125,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Master German article changes in different grammatical cases
 **Cloze Deletion**: No
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Articles` (Main Deck::Articles)
+**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
 
 ### Card Content
 
@@ -166,7 +166,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Practice German case usage through cloze deletion
 **Cloze Deletion**: Yes
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Articles` (Main Deck::Articles)
+**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
 
 ### Card Content
 
@@ -195,7 +195,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Learn to recognize German noun genders (der/die/das)
 **Cloze Deletion**: No
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Articles` (Main Deck::Articles)
+**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
 
 ### Card Content
 
@@ -233,7 +233,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Practice German gender recognition through cloze deletion
 **Cloze Deletion**: Yes
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Articles` (Main Deck::Articles)
+**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
 
 ### Card Content
 
@@ -262,7 +262,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Learn which article goes with each German noun
 **Cloze Deletion**: No
 **CSV Data Source**: `nouns.csv + articles_unified.csv`
-**Sub-deck**: `Articles` (Main Deck::Articles)
+**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
 
 ### Card Content
 
@@ -300,7 +300,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Master German noun declension in different cases
 **Cloze Deletion**: No
 **CSV Data Source**: `nouns.csv + articles_unified.csv`
-**Sub-deck**: `Articles` (Main Deck::Articles)
+**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
 
 ### Card Content
 
@@ -410,7 +410,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 
 ---
 
-# Phrases Sub-deck (DISABLED)
+# Phrases Sub-deck
 
 ## Phrase
 
@@ -419,7 +419,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Learn common German phrases and expressions with context
 **Cloze Deletion**: No
 **CSV Data Source**: `phrases.csv`
-**Sub-deck**: `Phrases` (Main Deck::Phrases) - **CURRENTLY DISABLED**
+**Sub-deck**: `Phrases` (Main Deck::Phrases)
 
 ### Card Content
 
@@ -445,7 +445,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 
 ---
 
-# Prepositions Sub-deck (DISABLED)
+# Prepositions Sub-deck
 
 ## Preposition
 
@@ -454,7 +454,7 @@ Generated automatically by CardSpecificationGenerator to ensure accuracy and com
 **Learning Objective**: Master German prepositions with their required grammatical cases
 **Cloze Deletion**: No
 **CSV Data Source**: `prepositions.csv`
-**Sub-deck**: `Prepositions` (Main Deck::Prepositions) - **CURRENTLY DISABLED**
+**Sub-deck**: `Prepositions` (Main Deck::Prepositions)
 
 ### Card Content
 
