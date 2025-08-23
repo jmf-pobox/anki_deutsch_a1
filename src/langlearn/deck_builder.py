@@ -282,8 +282,8 @@ class DeckBuilder:
             "verbs_unified.csv": "verb_conjugation",  # Modern multi-tense verb system
             # Unified Article system for German case learning
             "articles_unified.csv": "unified_article",
-            # Legacy verb CSVs disabled - all verb data is now in verbs_unified.csv
-            # "verbs.csv": "verb",
+            # Re-enabled basic verb cards (Issue #26)
+            "verbs.csv": "verb",
             # "regular_verbs.csv": "verb",
             # "irregular_verbs.csv": "verb",
             # "separable_verbs.csv": "verb",

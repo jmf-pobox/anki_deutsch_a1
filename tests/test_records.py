@@ -393,22 +393,30 @@ class TestRecordTypeRegistry:
         fields = [
             "arbeiten",
             "to work",
+            "regelmäßig",
             "arbeite",
             "arbeitest",
             "arbeitet",
+            "arbeitete",
+            "haben",
             "hat gearbeitet",
-            "Ich arbeite bei Siemens.",
+            "Er arbeitet in einer Bank.",
+            "false",
         ]
         record = create_record("verb", fields)
 
         assert isinstance(record, VerbRecord)
         assert record.verb == "arbeiten"
         assert record.english == "to work"
+        assert record.classification == "regelmäßig"
         assert record.present_ich == "arbeite"
         assert record.present_du == "arbeitest"
         assert record.present_er == "arbeitet"
+        assert record.präteritum == "arbeitete"
+        assert record.auxiliary == "haben"
         assert record.perfect == "hat gearbeitet"
-        assert record.example == "Ich arbeite bei Siemens."
+        assert record.example == "Er arbeitet in einer Bank."
+        assert record.separable is False
 
     def test_create_record_preposition(self) -> None:
         """Test creating preposition record via factory function."""

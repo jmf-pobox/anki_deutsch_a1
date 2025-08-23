@@ -286,18 +286,24 @@ class NegationRecord(BaseRecord):
 class VerbRecord(BaseRecord):
     """Record for German verb data from CSV.
 
-    Simple Clean Pipeline migration for current verb CSV structure.
-    Matches existing verbs.csv format:
-    verb,english,present_ich,present_du,present_er,perfect,example
+    Enhanced Clean Pipeline for complete verb CSV structure.
+    Matches enhanced verbs.csv format:
+    verb,english,classification,present_ich,present_du,present_er,präteritum,auxiliary,perfect,example,separable
     """
 
     verb: str = Field(..., description="German verb in infinitive form")
     english: str = Field(..., description="English translation")
+    classification: str = Field(
+        ..., description="Verb classification (regelmäßig, unregelmäßig, gemischt)"
+    )
     present_ich: str = Field(..., description="First person singular present")
     present_du: str = Field(..., description="Second person singular present")
     present_er: str = Field(..., description="Third person singular present")
+    präteritum: str = Field(..., description="Präteritum 3rd person singular form")
+    auxiliary: str = Field(..., description="Auxiliary verb (haben or sein)")
     perfect: str = Field(..., description="Perfect tense form")
     example: str = Field(..., description="Example sentence")
+    separable: bool = Field(..., description="Whether the verb is separable")
 
     # Media fields (populated during enrichment)
     word_audio: str | None = Field(
@@ -314,8 +320,8 @@ class VerbRecord(BaseRecord):
 
         Args:
             fields: Array of CSV field values in order:
-                [verb, english, present_ich, present_du, present_er,
-                 perfect, example]
+                [verb, english, classification, present_ich, present_du, present_er,
+                 präteritum, auxiliary, perfect, example, separable]
 
         Returns:
             VerbRecord instance
@@ -327,14 +333,21 @@ class VerbRecord(BaseRecord):
             expected = cls.get_expected_field_count()
             raise ValueError(f"VerbRecord expects {expected} fields, got {len(fields)}")
 
+        # Convert separable from string to boolean
+        separable_bool = fields[10].strip().lower() == "true"
+
         return cls(
-            verb=fields[0],
-            english=fields[1],
-            present_ich=fields[2],
-            present_du=fields[3],
-            present_er=fields[4],
-            perfect=fields[5],
-            example=fields[6],
+            verb=fields[0].strip(),
+            english=fields[1].strip(),
+            classification=fields[2].strip(),
+            present_ich=fields[3].strip(),
+            present_du=fields[4].strip(),
+            present_er=fields[5].strip(),
+            präteritum=fields[6].strip(),
+            auxiliary=fields[7].strip(),
+            perfect=fields[8].strip(),
+            example=fields[9].strip(),
+            separable=separable_bool,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -342,11 +355,15 @@ class VerbRecord(BaseRecord):
         return {
             "verb": self.verb,
             "english": self.english,
+            "classification": self.classification,
             "present_ich": self.present_ich,
             "present_du": self.present_du,
             "present_er": self.present_er,
+            "präteritum": self.präteritum,
+            "auxiliary": self.auxiliary,
             "perfect": self.perfect,
             "example": self.example,
+            "separable": self.separable,
             "word_audio": self.word_audio,
             "example_audio": self.example_audio,
             "image": self.image,
@@ -355,7 +372,7 @@ class VerbRecord(BaseRecord):
     @classmethod
     def get_expected_field_count(cls) -> int:
         """Expected number of CSV fields for verbs."""
-        return 7
+        return 11
 
     @classmethod
     def get_field_names(cls) -> list[str]:
@@ -363,11 +380,15 @@ class VerbRecord(BaseRecord):
         return [
             "verb",
             "english",
+            "classification",
             "present_ich",
             "present_du",
             "present_er",
+            "präteritum",
+            "auxiliary",
             "perfect",
             "example",
+            "separable",
         ]
 
 

@@ -6,6 +6,13 @@
         {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
     </div>
     
+    {{#Classification}}
+    <div class="verb-classification">
+        <strong>Classification:</strong> <span class="classification-{{Classification}}">{{Classification}}</span>
+        {{#Separable}}<span class="separable-indicator">• Separable: {{Separable}}</span>{{/Separable}}
+    </div>
+    {{/Classification}}
+    
     <div class="conjugation-table">
         <h3>Present Tense</h3>
         <table>
@@ -23,9 +30,14 @@
             </tr>
         </table>
         
+        {{#Präteritum}}
+        <h3>Präteritum</h3>
+        <p><strong>er/sie/es:</strong> {{Präteritum}}</p>
+        {{/Präteritum}}
+        
         {{#Perfect}}
         <h3>Perfect</h3>
-        <p><strong>Perfect:</strong> {{Perfect}}</p>
+        <p><strong>{{Auxiliary}}:</strong> {{Perfect}}</p>
         {{/Perfect}}
     </div>
 </div>

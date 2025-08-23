@@ -144,11 +144,15 @@ class RecordMapper:
                 fields = [
                     csv_row.get("verb", ""),
                     csv_row.get("english", ""),
+                    csv_row.get("classification", ""),
                     csv_row.get("present_ich", ""),
                     csv_row.get("present_du", ""),
                     csv_row.get("present_er", ""),
+                    csv_row.get("präteritum", ""),
+                    csv_row.get("auxiliary", ""),
                     csv_row.get("perfect", ""),
                     csv_row.get("example", ""),
+                    csv_row.get("separable", ""),
                 ]
             elif record_type == "preposition":
                 fields = [
