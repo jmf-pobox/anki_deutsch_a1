@@ -126,11 +126,11 @@ class Verb(BaseModel, FieldProcessor):
         ]
 
     def get_combined_audio_text(self) -> str:
-        """Get combined text for verb conjugation audio with German tense labels and pauses.
+        """Get combined text for verb conjugation audio with German tense labels.
 
         Returns:
-            Combined text with German tense labels, all conjugations, and SSML pause tags:
-            "arbeiten, <break strength='strong'/>Präsens ich arbeite, du arbeitest, er sie es arbeitet, <break strength='strong'/>Präteritum er sie es arbeitete, <break strength='strong'/>Perfekt er sie es hat gearbeitet"
+            Combined text with German labels, conjugations, and SSML pause tags:
+            "arbeiten, Präsens ich arbeite, du arbeitest, Perfekt hat gearbeitet"
         """
         parts = [self.verb]
 

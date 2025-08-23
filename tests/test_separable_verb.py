@@ -73,15 +73,30 @@ def test_separable_verb_from_csv() -> None:
     csv_data = {
         "verb": "ausgehen",
         "english": "to go out",
+        "classification": "unregelmäßig",
         "present_ich": "gehe aus",
         "present_du": "gehst aus",
         "present_er": "geht aus",
+        "präteritum": "ging aus",
+        "auxiliary": "sein",
         "perfect": "ist ausgegangen",
         "example": "Wir gehen heute Abend aus.",
         "prefix": "aus",
     }
 
-    verb = SeparableVerb(**csv_data)
+    verb = SeparableVerb(
+        verb=csv_data["verb"],
+        english=csv_data["english"],
+        classification=csv_data["classification"],
+        present_ich=csv_data["present_ich"],
+        present_du=csv_data["present_du"],
+        present_er=csv_data["present_er"],
+        präteritum=csv_data["präteritum"],
+        auxiliary=csv_data["auxiliary"],
+        perfect=csv_data["perfect"],
+        example=csv_data["example"],
+        prefix=csv_data["prefix"],
+    )
     assert verb.verb == "ausgehen"
     assert verb.prefix == "aus"
     assert verb.validate_separable_conjugation() is True

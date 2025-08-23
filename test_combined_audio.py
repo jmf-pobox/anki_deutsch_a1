@@ -20,7 +20,7 @@ def test_combined_audio():
         # Present tense
         VerbConjugationRecord(
             infinitive="sprechen",
-            meaning="to speak",
+            english="to speak",
             classification="unregelmäßig",
             separable=False,
             auxiliary="haben",
@@ -36,7 +36,7 @@ def test_combined_audio():
         # Imperative
         VerbConjugationRecord(
             infinitive="sprechen",
-            meaning="to speak",
+            english="to speak",
             classification="unregelmäßig",
             separable=False,
             auxiliary="haben",

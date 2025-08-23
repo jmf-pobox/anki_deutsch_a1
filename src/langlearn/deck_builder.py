@@ -284,7 +284,7 @@ class DeckBuilder:
             # Re-enabled basic verb cards (Issue #26) - processed first
             "verbs.csv": "verb",
             # Modern multi-tense verb system - same subdeck as basic verbs
-            "verbs_unified.csv": "verb_conjugation",  # Keep special processing but will be moved to Verbs subdeck
+            "verbs_unified.csv": "verb_conjugation",  # Multi-tense verb system
             # "regular_verbs.csv": "verb",
             # "irregular_verbs.csv": "verb",
             # "separable_verbs.csv": "verb",

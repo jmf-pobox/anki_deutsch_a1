@@ -260,7 +260,11 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "arbeiten, <break strength='strong'/>Präsens, ich arbeite, du arbeitest, er sie es arbeitet, <break strength='strong'/>Perfekt, er sie es hat gearbeitet"
+        expected = (
+            "arbeiten, <break strength='strong'/>Präsens, ich arbeite, "
+            "du arbeitest, er sie es arbeitet, <break strength='strong'/>"
+            "Perfekt, er sie es hat gearbeitet"
+        )
 
         assert combined_text == expected
 
@@ -280,7 +284,10 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "sein, <break strength='strong'/>Präsens, ich bin, er sie es ist, <break strength='strong'/>Perfekt, er sie es ist gewesen"  # Skip empty, include perfect
+        expected = (
+            "sein, <break strength='strong'/>Präsens, ich bin, er sie es ist, "
+            "<break strength='strong'/>Perfekt, er sie es ist gewesen"
+        )
 
         assert combined_text == expected
 
@@ -300,7 +307,10 @@ class TestVerbFieldProcessing:
         )
 
         combined_text = verb.get_combined_audio_text()
-        expected = "verstehen, <break strength='strong'/>Perfekt, er sie es hat verstanden"  # Should include infinitive and perfect
+        expected = (
+            "verstehen, <break strength='strong'/>Perfekt, "
+            "er sie es hat verstanden"
+        )
 
         assert combined_text == expected
 
