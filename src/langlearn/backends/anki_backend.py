@@ -317,6 +317,12 @@ class AnkiBackend(DeckBackend):
                 "German Phrase with Media": "phrase",
                 "German Preposition": "preposition",
                 "German Preposition with Media": "preposition",
+                "German Artikel Gender with Media": "artikel_gender",
+                "German Artikel Context with Media": "artikel_context",
+                "German Noun_Case_Context with Media": "noun_case_context",
+                "German Noun_Article_Recognition with Media": (
+                    "noun_article_recognition"
+                ),
             }
 
             # Check if we support this note type with new architecture

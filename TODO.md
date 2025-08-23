@@ -1,194 +1,176 @@
-# Project TODO - German Grammar Alignment & CSV Standardization
+# Project TODO - Article Card Cloze Deletion Implementation
 
-Last updated: 2025-08-22 
+Last updated: 2025-08-23
 
-## 🚨 CRITICAL PRIORITY - German Grammar Alignment
+## 🚨 CURRENT PRIORITY - Article Card Redesign
 
-**STATUS**: 📋 **ANALYSIS COMPLETE** - Major grammar alignment issues identified requiring immediate action
+**STATUS**: 🔄 **IN PROGRESS** - Phase 1 Cloze Deletion Implementation
 
-### Gap Analysis Summary:
-- **Missing Files**: 8 critical files needed for proper German grammar
-- **Files to Modify**: 3 files need major restructuring
-- **Files to Deprecate**: 1 file (negations.csv) needs redistribution
-- **Integration Needed**: 6 unintegrated files awaiting system integration
+### Context
+The current article card system has critical issues:
+- Templates reference non-existent fields (`{{NounOnly}}`, `{{NounEnglish}}`) causing blank cards
+- Pedagogically weak: shows "_____ Haus" with no grammatical context  
+- Complex 5-template system with 22+ field mappings prone to errors
 
----
-
-## 📊 DETAILED GAP ANALYSIS
-
-### CRITICAL GAPS - Missing Files (8 files)
-
-**PRIORITY 1: Articles System (2 files) - MOST CRITICAL**
-- 🚨 **`articles.csv`** - Definite articles (der/die/das) with case declensions - **MISSING**
-- 🚨 **`indefinite_articles.csv`** - Indefinite articles (ein/eine) with cases - **MISSING**
-- **Impact**: Critical pedagogical gap - students cannot learn German gender/case system
-
-**PRIORITY 2: Proper Pronoun Classification (5 files)**
-- 📋 **`possessive_pronouns.csv`** - mein, dein, sein, etc. - **MISSING**
-- 📋 **`demonstrative_pronouns.csv`** - dieser, jener, etc. - **MISSING**
-- 📋 **`interrogative_pronouns.csv`** - wer, was, welcher, etc. - **MISSING**
-- 📋 **`reflexive_pronouns.csv`** - mich, dich, sich, etc. - **MISSING**
-- 📋 **`indefinite_pronouns.csv`** - man, jemand, etwas, etc. - **MISSING**
-
-**PRIORITY 3: Negative Articles (1 file)**
-- 📋 **`negative_articles.csv`** - kein, keine with declensions - **MISSING**
-
-### MAJOR RESTRUCTURING - Files to Modify (3 files)
-
-**CRITICAL REDISTRIBUTION**
-- ⚠️ **`negations.csv`** - Contains 4 different grammar classes mixed together - **NEEDS REDISTRIBUTION**
-  - `nicht, nie, niemals` → move to `adverbs.csv`
-  - `kein, keine` → move to new `negative_articles.csv`
-  - `nichts, niemand` → move to new `indefinite_pronouns.csv`
-  - `weder...noch` → move to `conjunctions.csv`
-
-**INTEGRATION NEEDED**
-- 🔧 **`other_pronouns.csv`** - Arbitrary category, needs proper grammatical classification
-- 🔧 **`personal_pronouns.csv`** - Valid but unintegrated
-
-### SYSTEM INTEGRATION - Unintegrated Files (6 files)
-
-**Ready for Integration**
-- 🔧 **`cardinal_numbers.csv`** - Numbers 1-100 - **UNINTEGRATED**
-- 🔧 **`ordinal_numbers.csv`** - First, second, third - **UNINTEGRATED**  
-- 🔧 **`conjunctions.csv`** - und, aber, oder - **UNINTEGRATED**
-- 🔧 **`interjections.csv`** - Ach, Oh, Na ja - **UNINTEGRATED**
-- 🔧 **`personal_pronouns.csv`** - ich, du, er, sie - **UNINTEGRATED**
-- 🔧 **`other_pronouns.csv`** - Needs reclassification first
+**Solution**: Migrate to Anki's native Cloze Deletion feature with German explanations
 
 ---
 
-## 🎯 IMPLEMENTATION PLAN
+## 📋 PHASE 1: CLOZE DELETION IMPLEMENTATION
 
-### Phase 1: CRITICAL FIXES (Week 1) - HIGHEST PRIORITY
+### 🎯 CURRENT TASKS (Week 1)
 
-**TASK 1.1: Create Articles System (4-6 hours)**
-- [ ] Create `articles.csv` with definite articles (der/die/das) + all case declensions
-- [ ] Create `indefinite_articles.csv` with ein/eine + all case declensions  
-- [ ] Create `negative_articles.csv` with kein/keine + all case declensions
-- [ ] Add ArticleRecord, IndefiniteArticleRecord, NegativeArticleRecord classes
-- [ ] Create article card templates for gender/case practice
+**TASK 1.1: Design and Documentation (IN PROGRESS)**
+- [x] Phase 0: Create comprehensive ArticlePatternProcessor test coverage  
+- [x] Fix all failing tests in test suite (6/6 tests now passing)
+- [x] Design cloze deletion system with German explanations
+- [x] Update ARTICLE.md with German explanation system
+- [x] Update TODO.md with current task list
+- [ ] Get design-guardian review of updated documentation
 
-**TASK 1.2: Fix Negation Misclassification (2-3 hours)**
-- [ ] Redistribute `negations.csv` content to proper grammatical categories:
-  - [ ] Move `nicht, nie, niemals, nirgends` → `adverbs.csv`
-  - [ ] Move `kein, keine, keinen` → `negative_articles.csv`
-  - [ ] Move `nichts, niemand` → new `indefinite_pronouns.csv`
-  - [ ] Move `weder...noch` → `conjunctions.csv`
-- [ ] Update CSV specifications to reflect changes
-- [ ] Deprecate `negations.csv` file
+**TASK 1.2: German Explanation System (PENDING)**
+- [ ] Implement German case explanation generator
+- [ ] Create gender + case combination explanations
+- [ ] Add article type explanations (bestimmt/unbestimmt/verneinend)
 
-**TASK 1.3: Critical System Integration (3-4 hours)**
-- [ ] Integrate `personal_pronouns.csv` - Create PersonalPronounRecord
-- [ ] Integrate `conjunctions.csv` - Create ConjunctionRecord
-- [ ] Update RecordMapper for new record types
-- [ ] Add to deck_builder.py mapping
+**TASK 1.3: Cloze Template Creation (PENDING)**
+- [ ] Create cloze deletion templates for Anki
+- [ ] Add "Text", "Explanation", "Image", "Audio" field structure
+- [ ] Test cloze template rendering in Anki
 
-### Phase 2: PRONOUN SYSTEM RESTRUCTURING (Week 2)
+**TASK 1.4: ArticlePatternProcessor Rewrite (PENDING)**
+- [ ] Add `_create_gender_cloze_card()` method
+- [ ] Add `_create_case_cloze_card()` method  
+- [ ] Replace template-based card generation with cloze generation
+- [ ] Update field mappings to use cloze structure
 
-**TASK 2.1: Complete Pronoun Classification (6-8 hours)**
-- [ ] Analyze `other_pronouns.csv` and reclassify content
-- [ ] Create proper pronoun category files:
-  - [ ] `possessive_pronouns.csv` - mein, dein, sein
-  - [ ] `demonstrative_pronouns.csv` - dieser, jener
-  - [ ] `interrogative_pronouns.csv` - wer, was, welcher
-  - [ ] `reflexive_pronouns.csv` - mich, dich, sich
-  - [ ] `indefinite_pronouns.csv` - man, jemand, etwas
-- [ ] Create corresponding Record classes for each type
-- [ ] Add pronoun declension patterns for A1 level
+### 🎯 PHASE 1 SUCCESS CRITERIA
 
-**TASK 2.2: System Integration (4-5 hours)**
-- [ ] Update RecordMapper to handle all new pronoun types
-- [ ] Create card templates for each pronoun category
-- [ ] Add comprehensive validation rules
-- [ ] Update CSV specification documentation
+#### Technical Requirements
+- [ ] **Zero template-field mismatches**: No more blank cards
+- [ ] **German explanations**: All explanations in German for immersive learning
+- [ ] **Maintained functionality**: Still 5 cards per article record
+- [ ] **Simplified architecture**: Single "Text" field vs 22+ field mappings
+- [ ] **Test coverage**: All cloze generation methods tested
 
-### Phase 3: COMPLETE INTEGRATION (Week 3)
+#### Pedagogical Requirements  
+- [ ] **Contextual learning**: Full sentences instead of "_____ Haus"
+- [ ] **Case understanding**: Clear German explanations of when to use each case
+- [ ] **Grammar reinforcement**: "Akkusativ (wen/was? direktes Objekt)" format
+- [ ] **Article comprehension**: Students understand why specific articles are used
 
-**TASK 3.1: Number System Integration (2-3 hours)**
-- [ ] Integrate `cardinal_numbers.csv` - Create CardinalNumberRecord
-- [ ] Integrate `ordinal_numbers.csv` - Create OrdinalNumberRecord
-- [ ] Add number-specific validation rules
-- [ ] Create number practice card templates
+#### Examples of Success
+**Before (Broken)**:
+- Card shows: "_____ Haus" (no context)
+- No explanation of why "das" is correct
+- Template-field mismatch causes blank cards
 
-**TASK 3.2: Grammar Components Integration (2-3 hours)**  
-- [ ] Integrate `interjections.csv` - Create InterjectionRecord
-- [ ] Update system to handle all 14 word types
-- [ ] Verify complete German grammar coverage per PM-GERMAN-GRAMMAR.md
+**After (Cloze)**:
+- Card shows: "_____ Haus ist sehr groß" (contextual)
+- Answer: "**Das** Haus ist sehr groß"  
+- Explanation: "Neutrum - Nominativ (wer/was? Subjekt des Satzes)"
 
-**TASK 3.3: Final Validation & Testing (3-4 hours)**
-- [ ] Verify all CSV files meet PROD-CSV-SPEC.md standards
-- [ ] Ensure all "english" column naming is consistent
-- [ ] Run comprehensive test suite
-- [ ] Update documentation to reflect complete grammar coverage
+---
+
+## 📋 PHASE 2: INTEGRATION & TESTING (Week 2)
+
+### 🎯 INTEGRATION TASKS (PLANNED)
+
+**TASK 2.1: CardBuilder Integration**
+- [ ] Update CardBuilder field mappings for cloze cards
+- [ ] Add "artikel_gender_cloze" and "artikel_context_cloze" support
+- [ ] Simplify from 22+ fields to 4 fields: Text, Explanation, Image, Audio
+
+**TASK 2.2: Backend Integration**  
+- [ ] Update AnkiBackend note type mappings
+- [ ] Add cloze deletion note type support
+- [ ] Test Anki deck generation with cloze cards
+
+**TASK 2.3: Template System Cleanup**
+- [ ] Remove 6 obsolete article template files
+- [ ] Clean up complex field mappings  
+- [ ] Update template service for cloze support
+
+### 🎯 TESTING & VALIDATION
+
+**TASK 2.4: Comprehensive Testing**
+- [ ] Unit tests for cloze text generation
+- [ ] Integration tests with real German sentences
+- [ ] Manual testing: Import deck and verify in Anki
+- [ ] Verify all quality gates pass (MyPy, Ruff, tests)
+
+---
+
+## 📋 PHASE 3: VALIDATION & DEPLOYMENT (Week 3)
+
+### 🎯 VALIDATION TASKS (PLANNED)
+
+**TASK 3.1: End-to-End Testing**
+- [ ] Generate complete article deck with cloze cards
+- [ ] Test all article types: bestimmt, unbestimmt, verneinend
+- [ ] Test all cases: Nominativ, Akkusativ, Dativ, Genitiv  
+- [ ] Test all genders: Maskulin, Feminin, Neutrum
+
+**TASK 3.2: Performance & Quality**
+- [ ] Measure card generation performance improvement
+- [ ] Verify reduced complexity (6 templates → 0, 44+ fields → 8)
+- [ ] Confirm maintained test coverage  
+- [ ] Document lessons learned
 
 ---
 
 ## 📈 SUCCESS METRICS
 
 ### Technical Metrics
-- [ ] **German Grammar Completeness**: 10/10 word classes properly represented
-- [ ] **Article System**: 48+ article entries (4 cases × 3 genders × definite/indefinite)
-- [ ] **Pronoun Coverage**: 5 proper pronoun categories with declensions
-- [ ] **CSV Standards**: 100% compliance with PROD-CSV-SPEC.md
-- [ ] **Quality Gates**: All tests pass, 0 MyPy errors, coverage maintained
+- [ ] **Zero Template Errors**: No more field mismatch issues
+- [ ] **Reduced Complexity**: 85% reduction in field mappings
+- [ ] **Test Coverage**: Maintained 100% ArticlePatternProcessor coverage
+- [ ] **Quality Gates**: All MyPy, Ruff, test requirements met
 
-### Pedagogical Metrics  
-- [ ] **Gender Learning**: Students can practice articles separately from nouns
-- [ ] **Case System**: Systematic coverage of all 4 German cases
-- [ ] **Grammar Clarity**: No mixed grammatical categories
-- [ ] **A1 Compliance**: Full coverage of CEFR A1 grammatical requirements
+### Pedagogical Metrics
+- [ ] **Contextual Learning**: Students see complete German sentences
+- [ ] **Case Comprehension**: Clear German explanations for each case
+- [ ] **Grammar Retention**: Immersive German explanations reinforce learning
+- [ ] **User Experience**: Cards provide enough context to answer correctly
 
 ---
 
 ## 🔥 RISK ASSESSMENT
 
-### HIGH RISK
-- **Negation Redistribution**: Breaking change that affects existing cards
-- **Pronoun Restructuring**: May impact existing other_pronouns.csv users
+### LOW RISK  
+- **Cloze deletion is native Anki**: Well-tested, reliable feature
+- **Comprehensive test coverage**: 21 tests covering all edge cases
+- **Gradual implementation**: Can implement alongside existing system
+
+### MEDIUM RISK
+- **ArticlePatternProcessor rewrite**: Core logic changes need thorough testing
+- **Field mapping updates**: Must ensure CardBuilder handles cloze fields correctly
 
 ### MITIGATION STRATEGY
-- **Dual Support Period**: Keep deprecated files while adding new structure
-- **Migration Scripts**: Automatic conversion tools for existing decks
-- **Backward Compatibility**: Maintain old paths during transition
-- **Testing**: Comprehensive validation before removing deprecated files
+- **Test-first approach**: Modify existing tests before changing implementation
+- **Parallel development**: Keep old system running while building new
+- **Quality gates**: No code changes without passing all tests
 
 ---
 
 ## 📋 IMMEDIATE NEXT ACTIONS (TODAY)
 
-1. **START HERE**: Create articles.csv with complete case declension system
-2. **HIGH PRIORITY**: Redistribute negations.csv to proper grammatical categories  
-3. **INTEGRATION**: Add personal_pronouns.csv and conjunctions.csv to system
-4. **DOCUMENTATION**: Update CSV specs to reflect grammatical requirements
+1. **GET DESIGN REVIEW**: Have design-guardian review ARTICLE.md and TODO.md
+2. **IMPLEMENT GERMAN EXPLANATIONS**: Create explanation generation system
+3. **CREATE CLOZE TEMPLATES**: Build Anki cloze deletion templates  
+4. **START PROCESSOR REWRITE**: Begin ArticlePatternProcessor cloze methods
 
 ---
 
 ## 🎯 LONG-TERM VISION
 
-Once grammar alignment is complete, system will provide:
-- ✅ **Pedagogically Correct**: Proper German grammatical classification
-- ✅ **Complete A1 Coverage**: All essential word types for basic German
-- ✅ **Gender/Case Mastery**: Dedicated article practice system
-- ✅ **Scalable Foundation**: Clean architecture for A2/B1 expansion
+**Phase 1 Complete**: Article cards use pedagogically sound cloze deletion
+**Phase 2 Future**: Apply same cloze approach to other word types (verbs, prepositions)
+**Phase 3 Future**: German grammar alignment and CSV standardization
 
-**Target Completion**: 3 weeks for complete German grammar alignment
-**Current Priority**: Phase 1 critical fixes to address major pedagogical gaps
+**Target Completion**: 3 weeks for complete article card redesign
+**Current Priority**: Get design approval and implement German explanation system
 
 ---
 
-## 🚀 BEYOND GRAMMAR ALIGNMENT
-
-### Phase 4: Multi-Deck Support (Future)
-- Multiple proficiency levels (A1, A2, B1)
-- Topic-based decks (Business, Travel, Academic)
-- Custom vocabulary workflows
-
-### Phase 5: Multi-Language Expansion (Future)  
-- Russian: Cyrillic, 6-case system, verbal aspects
-- Korean: Hangul, honorific system, complex verb endings
-- Architecture ready for rapid language addition
-
----
-
-*German grammar alignment is foundational - everything else builds upon this solid pedagogical base.*
+*Once article cards are pedagogically sound, we can address the broader German grammar alignment identified in previous analysis.*
