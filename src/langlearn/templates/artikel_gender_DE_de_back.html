@@ -1,0 +1,33 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="article-forms">
+    <div class="word-with-audio">
+        <span class="german">{{BackText}}</span>
+        {{#ArticleAudio}}<span class="inline-audio">🔊 {{ArticleAudio}}</span>{{/ArticleAudio}}
+    </div>
+    <div class="gender-form">
+        <div class="form-item"><strong>Gender:</strong> {{Gender}}</div>
+        <div class="form-item"><strong>Article:</strong> {{BackText}} (nominative)</div>
+    </div>
+</div>
+
+{{#ExampleNom}}
+<div class="example-with-audio">
+    <span class="example-sentence">{{ExampleNom}}</span>
+    {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+</div>
+{{/ExampleNom}}
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Remember</button>
+    <div id="back-hint-content" class="hint-content hidden">{{Gender}} gender always uses "{{BackText}}" as the base article</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

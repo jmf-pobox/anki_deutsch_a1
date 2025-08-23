@@ -1,0 +1,25 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">
+{{#ArtikelTypBestimmt}}Bestimmter Artikel{{/ArtikelTypBestimmt}}
+{{#ArtikelTypUnbestimmt}}Unbestimmter Artikel{{/ArtikelTypUnbestimmt}}
+{{#ArtikelTypVerneinend}}Verneinender Artikel{{/ArtikelTypVerneinend}}
+</div>
+
+<div class="german">_____ {{NounOnly}}</div>
+
+<div class="question-text">Fülle die Lücke aus</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Tipp</button>
+    <div id="hint-content" class="hint-content hidden">{{NounEnglish}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

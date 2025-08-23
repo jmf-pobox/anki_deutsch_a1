@@ -159,7 +159,7 @@ class TestVerbConjugationProcessor:
                 record.classification = "regelmäßig"
                 records.append(record)
 
-        # Should expect 6 cards (2 verbs × 3 tenses)
+        # Should expect 6 cards (2 verbs x 3 tenses)
         expected_count = processor.get_expected_card_count(records)  # type: ignore[arg-type]
         assert expected_count == 6
 

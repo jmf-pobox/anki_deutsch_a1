@@ -65,8 +65,20 @@ class TemplateService:
         try:
             template_files = self._get_template_files(card_type)
 
+            # Handle special naming for article templates
+            if card_type == "artikel_gender":
+                template_name = "German Artikel Gender with Media"
+            elif card_type == "artikel_context":
+                template_name = "German Artikel Context with Media"
+            elif card_type == "artikel_gender_cloze":
+                template_name = "German Artikel Gender Cloze"
+            elif card_type == "artikel_context_cloze":
+                template_name = "German Artikel Context Cloze"
+            else:
+                template_name = f"German {card_type.title()} with Media"
+
             return CardTemplate(
-                name=f"German {card_type.title()} with Media",
+                name=template_name,
                 front_html=template_files.front_html,
                 back_html=template_files.back_html,
                 css=template_files.css,

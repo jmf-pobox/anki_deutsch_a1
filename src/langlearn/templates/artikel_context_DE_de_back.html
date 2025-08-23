@@ -1,0 +1,26 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="article-forms">
+    <div class="word-with-audio">
+        <span class="german">{{BackText}}</span>
+        {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+    </div>
+    <div class="case-form">
+        <div class="form-item"><strong>Rule:</strong> {{CaseRule}}</div>
+        <div class="form-item"><strong>Usage:</strong> {{CaseUsage}}</div>
+    </div>
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Pattern</button>
+    <div id="back-hint-content" class="hint-content hidden">{{Gender}} {{Case}} is used for {{CaseUsage}}</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

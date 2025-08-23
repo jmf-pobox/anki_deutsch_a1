@@ -361,7 +361,8 @@ class StandardMediaEnricher(MediaEnricher):
         Creates audio text that includes the infinitive plus all conjugated forms
         with their pronouns, similar to how adjectives work.
 
-        For present/perfect/preterite: "infinitive, ich form, du form, er form, wir form, ihr form, sie form"
+        For present/perfect/preterite: "infinitive, ich form, du form, er form,
+        wir form, ihr form, sie form"
         For imperative: "infinitive, du form, ihr form, Sie form, wir form"
 
         Args:
@@ -605,8 +606,10 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_image(self, search_terms: str, fallback: str) -> str | None:
         """Generate image file for search terms."""
         try:
-            # Note: MediaService expects generate_image(word, search_query, example_sentence)
-            # But this method signature has (search_terms, fallback) which is different context
+            # Note: MediaService expects generate_image(word, search_query,
+            # example_sentence)
+            # But this method signature has (search_terms, fallback) which is
+            # different context
             # This suggests MediaService has multiple overloads or the call is incorrect
             return self._media_service.generate_image(search_terms, fallback)  # type: ignore[no-any-return]
         except Exception as e:
@@ -618,14 +621,16 @@ class StandardMediaEnricher(MediaEnricher):
     ) -> str | None:
         """Generate image file with proper word for filename."""
         try:
-            # Fix: Pass word for filename, search_terms as search_query, fallback as example_sentence
+            # Fix: Pass word for filename, search_terms as search_query,
+            # fallback as example_sentence
             result = self._media_service.generate_image(
                 word=word, search_query=search_terms, example_sentence=fallback
             )
             return result  # type: ignore[no-any-return]
         except Exception as e:
             logger.warning(
-                f"Image generation failed for '{word}' with search '{search_terms}': {e}"
+                f"Image generation failed for '{word}' with search "
+                f"'{search_terms}': {e}"
             )
             return None
 

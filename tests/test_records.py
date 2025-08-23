@@ -339,6 +339,7 @@ class TestRecordTypeRegistry:
             "article",
             "indefinite_article",
             "negative_article",
+            "unified_article",
         }
         assert set(RECORD_TYPE_REGISTRY.keys()) == expected_types
 
@@ -354,6 +355,11 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["article"] == ArticleRecord
         assert RECORD_TYPE_REGISTRY["indefinite_article"] == IndefiniteArticleRecord
         assert RECORD_TYPE_REGISTRY["negative_article"] == NegativeArticleRecord
+
+        # Import at the function level to avoid circular imports
+        from langlearn.models.records import UnifiedArticleRecord
+
+        assert RECORD_TYPE_REGISTRY["unified_article"] == UnifiedArticleRecord
 
     def test_create_record_noun(self) -> None:
         """Test creating noun record via factory function."""

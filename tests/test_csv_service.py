@@ -384,6 +384,7 @@ class TestCSVServiceRecords:
             "article",
             "indefinite_article",
             "negative_article",
+            "unified_article",
         }
         assert set(types) == expected_types
 

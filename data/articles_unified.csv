@@ -1,0 +1,12 @@
+artikel_typ,geschlecht,nominativ,akkusativ,dativ,genitiv,beispiel_nom,beispiel_akk,beispiel_dat,beispiel_gen
+bestimmt,maskulin,der,den,dem,des,Der Mann ist hier,Ich sehe den Mann,mit dem Mann,das Auto des Mannes
+bestimmt,feminin,die,die,der,der,Die Frau ist hier,Ich sehe die Frau,mit der Frau,das Auto der Frau
+bestimmt,neutral,das,das,dem,des,Das Kind ist hier,Ich sehe das Kind,mit dem Kind,das Spielzeug des Kindes
+bestimmt,plural,die,die,den,der,Die Kinder sind hier,Ich sehe die Kinder,mit den Kindern,das Spielzeug der Kinder
+unbestimmt,maskulin,ein,einen,einem,eines,Ein Mann kommt,Ich sehe einen Mann,mit einem Mann,das Auto eines Mannes
+unbestimmt,feminin,eine,eine,einer,einer,Eine Frau kommt,Ich sehe eine Frau,mit einer Frau,das Auto einer Frau
+unbestimmt,neutral,ein,ein,einem,eines,Ein Kind spielt,Ich sehe ein Kind,mit einem Kind,das Spielzeug eines Kindes
+verneinend,maskulin,kein,keinen,keinem,keines,Kein Mann ist da,Ich sehe keinen Mann,mit keinem Mann,das Auto keines Mannes
+verneinend,feminin,keine,keine,keiner,keiner,Keine Frau ist da,Ich sehe keine Frau,mit keiner Frau,das Auto keiner Frau
+verneinend,neutral,kein,kein,keinem,keines,Kein Kind ist da,Ich sehe kein Kind,mit keinem Kind,das Spielzeug keines Kindes
+verneinend,plural,keine,keine,keinen,keiner,Keine Kinder sind da,Ich sehe keine Kinder,mit keinen Kindern,das Spielzeug keiner Kinder

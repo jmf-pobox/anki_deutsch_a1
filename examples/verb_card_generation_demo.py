@@ -180,10 +180,12 @@ def demo_verb_card_generation():
         f"  📝 Old System: {len(verbs)} verbs → {len(verbs)} cards (1 per verb)"
     )
     logger.info(
-        f"  ✨ New System: {len(verbs)} verbs → {len(cards)} cards ({len(cards) / len(verbs):.1f} per verb)"
+        f"  ✨ New System: {len(verbs)} verbs → {len(cards)} cards "
+        f"({len(cards) / len(verbs):.1f} per verb)"
     )
     logger.info(
-        f"  🚀 Improvement: {((len(cards) / len(verbs)) - 1) * 100:.0f}% more learning content!"
+        f"  🚀 Improvement: {((len(cards) / len(verbs)) - 1) * 100:.0f}% "
+        f"more learning content!"
     )
 
     return cards
@@ -245,7 +247,8 @@ def demo_record_mapper_integration():
             cards = card_builder.build_verb_conjugation_cards(sample_records)
 
             logger.info(
-                f"✅ Generated {len(cards)} cards from {len(sample_records)} CSV records"
+                f"✅ Generated {len(cards)} cards from "
+                f"{len(sample_records)} CSV records"
             )
 
             return cards

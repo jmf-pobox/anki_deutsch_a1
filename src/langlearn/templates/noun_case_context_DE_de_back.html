@@ -1,0 +1,49 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="word-with-audio">
+    <span class="german">{{BackText}}</span>
+    {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+</div>
+
+<div class="case-rule">{{CaseRule}}</div>
+
+<div class="noun-forms">
+    <div class="form-item"><strong>Noun:</strong> {{Noun}} ({{English}})</div>
+    <div class="form-item"><strong>Case:</strong> {{Case}} - {{CaseUsage}}</div>
+</div>
+
+<div class="related-words">
+    <strong>All cases for "{{Noun}}":</strong>
+    <div class="declension-grid">
+        <div class="case-row {{#CaseNominativ}}current-case{{/CaseNominativ}}">
+            <span class="case-label">Nom:</span>
+            <span class="case-form">der/die/das {{Noun}}</span>
+        </div>
+        <div class="case-row {{#CaseAkkusativ}}current-case{{/CaseAkkusativ}}">
+            <span class="case-label">Acc:</span>
+            <span class="case-form">den/die/das {{Noun}}</span>
+        </div>
+        <div class="case-row {{#CaseDativ}}current-case{{/CaseDativ}}">
+            <span class="case-label">Dat:</span>
+            <span class="case-form">dem/der/dem {{Noun}}</span>
+        </div>
+        <div class="case-row {{#CaseGenitiv}}current-case{{/CaseGenitiv}}">
+            <span class="case-label">Gen:</span>
+            <span class="case-form">des/der/des {{Noun}}es</span>
+        </div>
+    </div>
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Rule</button>
+    <div id="back-hint-content" class="hint-content hidden">{{Case}} case is used for {{CaseUsage}}</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

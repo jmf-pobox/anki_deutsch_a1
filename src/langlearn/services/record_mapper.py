@@ -167,13 +167,28 @@ class RecordMapper:
                 ]
             elif record_type in ["article", "indefinite_article", "negative_article"]:
                 fields = [
-                    csv_row.get("article", ""),
-                    csv_row.get("type", ""),
                     csv_row.get("gender", ""),
-                    csv_row.get("case", ""),
-                    csv_row.get("english", ""),
-                    csv_row.get("example", ""),
-                    csv_row.get("related_noun", ""),
+                    csv_row.get("nominative", ""),
+                    csv_row.get("accusative", ""),
+                    csv_row.get("dative", ""),
+                    csv_row.get("genitive", ""),
+                    csv_row.get("example_nom", ""),
+                    csv_row.get("example_acc", ""),
+                    csv_row.get("example_dat", ""),
+                    csv_row.get("example_gen", ""),
+                ]
+            elif record_type == "unified_article":
+                fields = [
+                    csv_row.get("artikel_typ", ""),
+                    csv_row.get("geschlecht", ""),
+                    csv_row.get("nominativ", ""),
+                    csv_row.get("akkusativ", ""),
+                    csv_row.get("dativ", ""),
+                    csv_row.get("genitiv", ""),
+                    csv_row.get("beispiel_nom", ""),
+                    csv_row.get("beispiel_akk", ""),
+                    csv_row.get("beispiel_dat", ""),
+                    csv_row.get("beispiel_gen", ""),
                 ]
             else:
                 raise ValueError(f"Unsupported record type: {record_type}")
@@ -203,6 +218,7 @@ class RecordMapper:
             "article",
             "indefinite_article",
             "negative_article",
+            "unified_article",
         ]
 
     def is_supported_record_type(self, record_type: str) -> bool:
@@ -374,19 +390,46 @@ class RecordMapper:
                 logger.debug("Detected phrase CSV format")
                 return "phrase"
 
-            # Detect article formats - distinguish by article type field or filename
-            article_indicators = {"article", "type", "gender", "case", "english"}
-            if article_indicators.issubset(headers):
+            # Detect unified article format (with German terminology)
+            unified_article_indicators = {
+                "artikel_typ",
+                "geschlecht",
+                "nominativ",
+                "akkusativ",
+                "dativ",
+                "genitiv",
+                "beispiel_nom",
+                "beispiel_akk",
+                "beispiel_dat",
+                "beispiel_gen",
+            }
+            if unified_article_indicators.issubset(headers):
+                logger.debug("Detected unified article CSV format (German terminology)")
+                return "unified_article"
+
+            # Detect article pattern formats - legacy declension grid structure
+            article_pattern_indicators = {
+                "gender",
+                "nominative",
+                "accusative",
+                "dative",
+                "genitive",
+                "example_nom",
+                "example_acc",
+                "example_dat",
+                "example_gen",
+            }
+            if article_pattern_indicators.issubset(headers):
                 # Check filename to distinguish article types
                 filename_lower = str(csv_path).lower()
                 if "indefinite" in filename_lower:
-                    logger.debug("Detected indefinite article CSV format")
+                    logger.debug("Detected indefinite article pattern CSV format")
                     return "indefinite_article"
                 elif "negative" in filename_lower:
-                    logger.debug("Detected negative article CSV format")
+                    logger.debug("Detected negative article pattern CSV format")
                     return "negative_article"
                 else:
-                    logger.debug("Detected definite article CSV format")
+                    logger.debug("Detected definite article pattern CSV format")
                     return "article"
 
             # If no patterns match, raise error
@@ -396,7 +439,8 @@ class RecordMapper:
                 f"verb imperative (with du_form/ihr_form/sie_form), "
                 f"noun (with noun/article), adjective (with word/comparative), "
                 f"adverb/negation (with word/type), "
-                f"articles (with article/type/gender/case/english)"
+                f"article patterns (with gender/nominative/accusative/dative/"
+                f"genitive/examples)"
             )
 
         except Exception as e:

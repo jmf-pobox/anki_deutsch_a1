@@ -39,7 +39,21 @@ class TestArticlePatternProcessor:
         template_service = Mock()
         card_builder._template_service = template_service
 
-        # Mock templates
+        # Mock templates for cloze cards
+        gender_cloze_template = CardTemplate(
+            name="German Artikel Gender Cloze",
+            front_html="<div>{{cloze:Text}}</div>",
+            back_html="<div>{{Explanation}}</div>",
+            css="body { font-family: Arial; }",
+        )
+        context_cloze_template = CardTemplate(
+            name="German Artikel Context Cloze",
+            front_html="<div>{{cloze:Text}}</div>",
+            back_html="<div>{{Explanation}}</div>",
+            css="body { font-family: Arial; }",
+        )
+
+        # Legacy templates (kept for backward compatibility tests)
         gender_template = CardTemplate(
             name="German Artikel Gender with Media",
             front_html="<div>{{NounOnly}}</div>",
@@ -53,15 +67,28 @@ class TestArticlePatternProcessor:
             css="body { font-family: Arial; }",
         )
 
-        template_service.get_template.side_effect = lambda template_type: (
-            gender_template if template_type == "artikel_gender" else context_template
-        )
+        def get_template_mock(template_type: str) -> CardTemplate:
+            if template_type == "artikel_gender_cloze":
+                return gender_cloze_template
+            elif template_type == "artikel_context_cloze":
+                return context_cloze_template
+            elif template_type == "artikel_gender":
+                return gender_template
+            else:
+                return context_template
+
+        template_service.get_template.side_effect = get_template_mock
 
         # Mock note type creation
         def mock_create_note_type(record_type: str, template: CardTemplate) -> NoteType:
-            fields = ["FrontText", "BackText", "Gender", "NounOnly", "NounEnglish"]
-            if record_type == "artikel_context":
-                fields.extend(["Case", "CaseRule", "ArticleForm", "CaseUsage"])
+            if record_type in ["artikel_gender_cloze", "artikel_context_cloze"]:
+                # Cloze templates use simplified field structure
+                fields = ["Text", "Explanation", "Image", "Audio"]
+            else:
+                # Legacy template fields
+                fields = ["FrontText", "BackText", "Gender", "NounOnly", "NounEnglish"]
+                if record_type == "artikel_context":
+                    fields.extend(["Case", "CaseRule", "ArticleForm", "CaseUsage"])
             return NoteType(name=template.name, fields=fields, templates=[template])
 
         card_builder._create_note_type_for_record.side_effect = mock_create_note_type
@@ -72,6 +99,18 @@ class TestArticlePatternProcessor:
         ) -> list[str]:
             # Define field mappings like real CardBuilder
             field_mappings = {
+                "artikel_gender_cloze": {
+                    "Text": "Text",
+                    "Explanation": "Explanation",
+                    "Image": "Image",
+                    "Audio": "Audio",
+                },
+                "artikel_context_cloze": {
+                    "Text": "Text",
+                    "Explanation": "Explanation",
+                    "Image": "Image",
+                    "Audio": "Audio",
+                },
                 "artikel_gender": {
                     "FrontText": "front_text",
                     "BackText": "back_text",
@@ -229,8 +268,8 @@ class TestArticlePatternProcessor:
 
         # Verify card types by checking note type names
         note_type_names = [note_type.name for _, note_type in result]
-        assert "German Artikel Gender with Media" in note_type_names
-        assert note_type_names.count("German Artikel Context with Media") == 4
+        assert "German Artikel Gender Cloze" in note_type_names
+        assert note_type_names.count("German Artikel Context Cloze") == 4
 
     def test_create_gender_recognition_card(
         self, processor: ArticlePatternProcessor, sample_article_record: ArticleRecord
@@ -343,12 +382,14 @@ class TestArticlePatternProcessor:
 
         # Check gender card has correct article
         gender_card = next(
-            (r for r in result if r[1].name == "German Artikel Gender with Media"), None
+            (r for r in result if r[1].name == "German Artikel Gender Cloze"), None
         )
         assert gender_card is not None
         field_values, note_type = gender_card
         field_dict = dict(zip(note_type.fields, field_values, strict=False))
-        assert field_dict.get("BackText") == "eine"
+        # In cloze cards, the article is encoded in the Text field
+        text_field = field_dict.get("Text", "").lower()
+        assert "eine" in text_field
 
     def test_negative_article_record_processing(
         self,
@@ -363,12 +404,14 @@ class TestArticlePatternProcessor:
 
         # Check gender card has correct article
         gender_card = next(
-            (r for r in result if r[1].name == "German Artikel Gender with Media"), None
+            (r for r in result if r[1].name == "German Artikel Gender Cloze"), None
         )
         assert gender_card is not None
         field_values, note_type = gender_card
         field_dict = dict(zip(note_type.fields, field_values, strict=False))
-        assert field_dict.get("BackText") == "kein"
+        # In cloze cards, the article is encoded in the Text field
+        text_field = field_dict.get("Text", "").lower()
+        assert "kein" in text_field
 
     def test_unified_article_record_processing(
         self, processor: ArticlePatternProcessor

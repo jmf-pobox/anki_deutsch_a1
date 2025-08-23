@@ -21,6 +21,7 @@ from .models.negation import Negation
 from .models.noun import Noun
 from .models.records import BaseRecord
 from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
+from .services.article_application_service import ArticleApplicationService
 from .services.card_builder import CardBuilder
 from .services.csv_service import CSVService
 from .services.media_file_registrar import MediaFileRegistrar
@@ -96,6 +97,9 @@ class DeckBuilder:
 
         # Initialize CardBuilder service for Clean Pipeline
         self._card_builder = CardBuilder(template_service=self._template_service)
+
+        # Initialize ArticleApplicationService for unified article system
+        self._article_service = ArticleApplicationService(self._card_builder)
 
         # Initialize StandardMediaEnricher (type annotation)
         self._media_enricher: Any = None  # Will be properly initialized later
@@ -275,11 +279,9 @@ class DeckBuilder:
             "negations.csv": "negation",
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
-            "verbs_unified.csv": "verb_conjugation",  # Use modern multi-tense verb system
-            # Article system for German case learning
-            "articles.csv": "article",
-            "indefinite_articles.csv": "indefinite_article",
-            "negative_articles.csv": "negative_article",
+            "verbs_unified.csv": "verb_conjugation",  # Modern multi-tense verb system
+            # Unified Article system for German case learning
+            "articles_unified.csv": "unified_article",
             # Legacy verb CSVs disabled - all verb data is now in verbs_unified.csv
             # "verbs.csv": "verb",
             # "regular_verbs.csv": "verb",
@@ -598,6 +600,11 @@ class DeckBuilder:
         records_by_type: dict[str, list[BaseRecord]] = {}
         for record in self._loaded_records:
             record_type = record.__class__.__name__.replace("Record", "").lower()
+
+            # Handle special naming for unified article records
+            if record_type == "unifiedarticle":
+                record_type = "unified_article"
+
             if record_type not in records_by_type:
                 records_by_type[record_type] = []
             records_by_type[record_type].append(record)
@@ -677,11 +684,70 @@ class DeckBuilder:
                     r for r in records if isinstance(r, VerbConjugationRecord)
                 ]
                 logger.info(
-                    f"Using verb conjugation multi-card generation for {len(verb_records)} records"
+                    f"Using verb conjugation multi-card generation for "
+                    f"{len(verb_records)} records"
                 )
                 cards = self._card_builder.build_verb_conjugation_cards(
                     verb_records, enriched_data_list
                 )
+            # Special handling for unified article records with noun integration
+            elif record_type == "unified_article":
+                from .models.records import (
+                    ArticleRecord,
+                    IndefiniteArticleRecord,
+                    NegativeArticleRecord,
+                    NounRecord,
+                    UnifiedArticleRecord,
+                )
+
+                # Filter unified article records
+                unified_article_records = [
+                    r for r in records if isinstance(r, UnifiedArticleRecord)
+                ]
+                logger.info(
+                    f"Processing unified article system with "
+                    f"{len(unified_article_records)} article pattern records"
+                )
+
+                # Generate article pattern cards (same as before)
+                from typing import cast
+
+                article_records_for_pattern = cast(
+                    "list[ArticleRecord | IndefiniteArticleRecord | "
+                    "NegativeArticleRecord | UnifiedArticleRecord]",
+                    unified_article_records,
+                )
+                pattern_cards = self._card_builder.build_article_pattern_cards(
+                    article_records_for_pattern, enriched_data_list
+                )
+
+                # Get noun records for noun-article practice cards
+                noun_records = [
+                    r
+                    for r_type, record_list in records_by_type.items()
+                    if r_type == "noun"
+                    for r in record_list
+                    if isinstance(r, NounRecord)
+                ]
+
+                if noun_records:
+                    logger.info(
+                        f"Generating noun-article practice cards for "
+                        f"{len(noun_records)} noun records"
+                    )
+                    # Create empty enrichment data for noun records
+                    # (enriched_data_list is for article records, not noun records)
+                    noun_enriched_data: list[dict[str, Any]] = [{}] * len(noun_records)
+                    noun_article_cards = (
+                        self._article_service.generate_noun_article_cards(
+                            noun_records, noun_enriched_data
+                        )
+                    )
+                    # Combine pattern cards and noun-article cards
+                    cards = pattern_cards + noun_article_cards
+                else:
+                    logger.info("No noun records found for noun-article integration")
+                    cards = pattern_cards
             else:
                 # Standard single-card generation for other record types
                 cards = self._card_builder.build_cards_from_records(
@@ -719,7 +785,10 @@ class DeckBuilder:
                 except Exception as e:
                     logger.error(f"Failed to add {record_type} card: {e}")
 
-            results[f"{record_type}s"] = cards_created
+            # Format result key to match expected output format
+            # (remove underscores, add 's')
+            result_key = record_type.replace("_", "") + "s"
+            results[result_key] = cards_created
             logger.info(f"Created {cards_created} {record_type} cards")
 
             # Step 5: Reset to main deck after processing this word type

@@ -1,0 +1,20 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Nomen • {{Case}}</div>
+
+<div class="english-prompt">{{FrontText}}</div>
+<div class="question-text">Fill in the correct article</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Hint</button>
+    <div id="hint-content" class="hint-content hidden">Think about the noun's gender and case usage: {{CaseUsage}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>
