@@ -325,17 +325,30 @@ class TestCardBuilder:
     def test_validate_record_for_card_building_valid(
         self, card_builder: CardBuilder
     ) -> None:
-        """Test validation with valid records."""
-        # Valid noun
+        """Test validation with valid records including media fields.
+
+        CardBuilder runs after MediaEnricher, so records must have media fields.
+        """
+        # Valid noun with all required fields including media
         noun_record = create_record(
             "noun", ["Katze", "die", "cat", "Katzen", "Example", "Tier"]
         )
+        # Add media fields that MediaEnricher would have added
+        noun_record.image = "<img src='cat.jpg'>"
+        noun_record.word_audio = "[sound:katze.mp3]"
+        noun_record.example_audio = "[sound:example.mp3]"
+
         assert card_builder.validate_record_for_card_building(noun_record) is True
 
-        # Valid adjective
+        # Valid adjective with all required fields including media
         adj_record = create_record(
             "adjective", ["schön", "beautiful", "Example", "schöner", "am schönsten"]
         )
+        # Add media fields that MediaEnricher would have added
+        adj_record.image = "<img src='beautiful.jpg'>"
+        adj_record.word_audio = "[sound:schoen.mp3]"
+        adj_record.example_audio = "[sound:example.mp3]"
+
         assert card_builder.validate_record_for_card_building(adj_record) is True
 
     def test_validate_record_for_card_building_invalid(
@@ -679,6 +692,10 @@ class TestCardBuilderIntegration:
                 "Ich arbeite.",
             ],
         )
+        # Add media fields that MediaEnricher would have added
+        valid_record.image = "<img src='work.jpg'>"
+        valid_record.word_audio = "[sound:arbeiten.mp3]"
+        valid_record.example_audio = "[sound:example.mp3]"
 
         assert card_builder.validate_record_for_card_building(valid_record) is True
 
@@ -716,8 +733,8 @@ class TestCardBuilderIntegration:
                 "Arbeite!",  # example_du
                 "Arbeitet!",  # example_ihr
                 "Arbeiten Sie!",  # example_sie
-                "",  # word_audio
-                "working.jpg",  # image (required field per error message)
+                "[sound:arbeiten.mp3]",  # word_audio (must be present)
+                "<img src='working.jpg'>",  # image (must be properly formatted)
             ],
         )
 
