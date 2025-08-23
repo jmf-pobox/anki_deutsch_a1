@@ -6,6 +6,49 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This project generates customized German language Anki decks for A1-level learners, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
 
+## CRITICAL DEBUGGING PRINCIPLES (READ FIRST - PREVENTS WASTED TIME)
+
+**🚨 LESSON FROM $566 WASTED**: Fixing peripheral issues while ignoring explicit error messages is PROHIBITED.
+
+### Johnson's Law (ABSOLUTE TRUTH)
+**"Any property of software that has not been verified, does not exist."**
+- This applies to: functionality, bug fixes, code quality, design compliance, EVERYTHING
+- You CANNOT verify end-to-end functionality - only the user can
+- NEVER claim something works without user confirmation
+
+### Root Cause First Protocol (MANDATORY)
+When encountering errors, follow this EXACT sequence:
+
+1. **READ THE ERROR MESSAGE** - It tells you EXACTLY what to fix
+   - Example: "Field 'DuForm' not found" → Fix the field name in templates
+   - Example: "KeyError: 'english'" → Add the missing key
+   - Example: "Template syntax error" → Fix the template syntax
+
+2. **FIX ONLY THE ROOT CAUSE** - Do NOT fix peripheral issues first
+   - ❌ WRONG: Fix unit tests, validation, formatting while error persists
+   - ✅ RIGHT: Fix the exact issue the error message indicates
+
+3. **VERIFY WITH MINIMAL TESTING** - Test ONLY the broken functionality
+   - Add targeted logging/debugging at the error point
+   - Run the specific failing operation
+   - Confirm error is resolved
+
+4. **KEEP DEBUGGING TOOLS** - NEVER remove logging until user confirms success
+   - Debugging code stays until user says "it works"
+   - Better to have extra logging than to be blind
+
+5. **REQUEST USER VERIFICATION** - You cannot determine if it works
+   - "Please test [specific functionality] and confirm"
+   - "Check if [specific error] still occurs"
+   - Wait for explicit confirmation before proceeding
+
+### Prohibited Behaviors That Waste Time
+- ❌ Claiming "I've fixed it" without user confirmation
+- ❌ Removing debugging tools before user verifies the fix
+- ❌ Fixing code quality issues while core functionality is broken
+- ❌ Making assumptions about what "should" work
+- ❌ Declaring victory based on unit tests passing
+
 ## REQUIRED READING
 
 **🚨 MANDATORY: You MUST read, understand, and follow these files before any development work:**
@@ -60,12 +103,14 @@ hatch run test-cov      # Full test suite with coverage
 ```
 
 ### Micro-Commit Development Flow:
-1. **Plan**: Identify ONE specific change (5-10 minute scope max)
-2. **Implement**: Make the minimal change required
-3. **Verify**: Run Tier 1 checks (instant feedback)
-4. **Commit**: Create atomic commit with clear message
-5. **Iterate**: Repeat for next micro-change
-6. **Push**: Every 3-5 commits OR every 30 minutes
+1. **Diagnose**: If fixing a bug, READ THE ERROR MESSAGE FIRST
+2. **Plan**: Identify ONE specific change (5-10 minute scope max)
+3. **Implement**: Make the MINIMAL change that fixes the ROOT CAUSE
+4. **Verify**: Run Tier 1 checks (instant feedback)
+5. **Test**: For bug fixes, test the SPECIFIC broken functionality
+6. **Commit**: Create atomic commit with clear message
+7. **Iterate**: Repeat for next micro-change
+8. **Push**: Every 3-5 commits OR every 30 minutes
 
 ### Commit Message Standards:
 - Format: `type(scope): description [impact]`
@@ -142,11 +187,13 @@ hatch run type && hatch run test && hatch run validate-anki  # 8. Final verifica
 ```
 
 **🚨 ABSOLUTE REQUIREMENTS - NO EXCEPTIONS:**
+- **Error Messages First**: When fixing bugs, address the EXACT error shown
 - **MyPy --strict**: ZERO errors allowed in any file
 - **Ruff linting**: ZERO violations allowed
 - **Test suite**: ALL tests must pass (667 unit + 24 integration)
 - **Coverage**: Must not decrease from current levels
-- **Complete workflow**: ALL 6 steps must pass before code change is complete
+- **User Verification**: Bug fixes require user confirmation before claiming success
+- **Complete workflow**: ALL 8 steps must pass before code change is complete
 
 **⚠️ CRITICAL**: Use `hatch run test-cov` (not `test-unit-cov`) for accurate coverage measurement.
 
@@ -154,7 +201,9 @@ hatch run type && hatch run test && hatch run validate-anki  # 8. Final verifica
 
 ## CRITICAL COMMUNICATION PROTOCOL (MANDATORY)
 
-**🚨 NEVER CLAIM "FIXED" WITHOUT ANKI VALIDATION**
+**🚨 NEVER CLAIM "FIXED" WITHOUT USER VALIDATION**
+
+**Johnson's Law Reminder**: You CANNOT verify if something works. Only the user can.
 
 After experiencing $566 in wasted costs from false success claims, the following communication protocol is MANDATORY:
 
@@ -164,38 +213,51 @@ After experiencing $566 in wasted costs from false success claims, the following
 "The duplicates are eliminated"  
 "This should work now"
 "The issue has been resolved"
-"You are right" followed by overly sycophantic responses
+"Everything is working perfectly"
+"The problem is completely solved"
+"All issues have been addressed"
+Any claim of success without user confirmation
 ```
 
 ### ✅ REQUIRED Communication Protocol:
 ```
-"I've implemented changes that SHOULD address the issue:
+"I've implemented changes targeting the EXACT error you reported:
+
+**Root Cause Addressed**:
+- Error Message: [exact error from user/logs]
+- Fix Applied: [specific change to address that exact error]
+- File Modified: [specific file:line that had the error]
 
 **Changes Made**:
 - Modified: [specific files and line numbers]
-- Logic: [brief explanation of what changed]
+- Logic: [brief explanation focusing on the root cause fix]
 
 **Internal Validation**:
+- ✅ Error-specific test: [tested the exact failing scenario]
 - ✅ MyPy: All type checks pass
 - ✅ Tests: All 772 tests pass  
-- ✅ Anki Format: [validation results when implemented]
-- ✅ Simulation: [rendering results when implemented]
+- ⚠️  Debugging logs: KEPT IN PLACE for your verification
 
 **Critical Limitation**: 
-Cannot verify actual Anki application behavior without importing the deck.
+I cannot verify if this actually fixes your issue. Per Johnson's Law,
+only you can confirm if the functionality works.
 
 **Required User Testing**:
-Please import the fresh german_a1_vocabulary.apkg (35MB) and verify:
-1. [Specific behavior to check]
-2. [Another specific behavior]
-3. [Screenshot/report what you see]
+Please test the SPECIFIC issue that was failing:
+1. [Exact operation that was broken]
+2. [Expected vs actual behavior]
+3. Report if the error message still appears
+
+**Debugging Output**:
+The code includes logging that will show:
+- [What the logging will display]
+- [Where to find the output]
 
 **If Issues Persist**:
 Please provide:
-- Screenshot of problematic card(s)
-- Card template from Anki browser (Tools > Manage Note Types)
-- Exact field values shown in browser
-- Console errors if any (Tools > Debug Console)
+- The NEW error message (if different)
+- Screenshot showing the issue
+- Any debugging output from the logs
 ```
 
 ### 🔄 Iterative Problem Solving:
@@ -588,7 +650,12 @@ This project addresses unique aspects of German language learning:
    - ✅ Single responsibility per commit
    - 🚫 **ZERO tolerance** for large batch changes - split immediately
 
-6. **Design Consultation**: Ask for design direction when facing new issues
+6. **Error-First Debugging**: When fixing bugs, ALWAYS start with the error message
+   - The error message is your roadmap - follow it exactly
+   - Fix the root cause before any peripheral issues
+   - Keep debugging tools until user confirms the fix works
+
+7. **Design Consultation**: Ask for design direction when facing new issues
    - Present multiple options with pros and cons  
    - Get approval before implementing significant changes
 
@@ -662,3 +729,25 @@ With this setup, the noisy interpreter message disappears, and Hatch commands be
 - always run the code quality tools after each 2-4 edits
 - do not say things are solved unless you have proven it or I have confirmed it.
 - always run the app before stating you have complete work.  Look for obvious errors and address them before declaring the job is done.
+## FINAL REMINDERS - CORE PRINCIPLES
+
+### Johnson's Law (NEVER FORGET)
+**"Any property of software that has not been verified, does not exist."**
+- You CANNOT verify end-to-end functionality - only the user can
+- Do NOT claim bugs are fixed until the user confirms
+- Do NOT remove debugging code until the user confirms the fix works
+- Do NOT declare victory based on unit tests alone
+
+### Error Messages Are Sacred
+When you see an error like "Field 'DuForm' not found":
+1. That IS the problem - fix THAT field name
+2. Do NOT fix unit tests first
+3. Do NOT refactor code first  
+4. Do NOT clean up formatting first
+5. Fix the EXACT issue the error describes, THEN handle other concerns
+
+### Communication Discipline
+- State what you changed and why
+- Explain what needs user verification
+- Never claim success without user confirmation
+- Keep responses focused on solving the actual problem
