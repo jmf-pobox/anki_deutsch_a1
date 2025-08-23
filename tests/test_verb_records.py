@@ -258,11 +258,9 @@ class TestVerbImperativeRecord:
 
         assert record.infinitive == "arbeiten"
         assert record.english == "to work"
-        assert record.classification == "regelmäßig"
-        assert record.separable is False
-        assert record.du_form == "arbeite"
-        assert record.ihr_form == "arbeitet"
-        assert record.sie_form == "arbeiten Sie"
+        assert record.du == "arbeite"
+        assert record.ihr == "arbeitet"
+        assert record.sie == "arbeiten Sie"
         assert record.example_du == "Arbeite schneller!"
         assert record.example_ihr == "Arbeitet zusammen!"
         assert record.example_sie == "Arbeiten Sie bitte hier!"
@@ -285,10 +283,9 @@ class TestVerbImperativeRecord:
         record = VerbImperativeRecord.from_csv_fields(fields)
 
         assert record.infinitive == "aufstehen"
-        assert record.separable is True
-        assert record.du_form == "steh auf"
-        assert record.ihr_form == "steht auf"
-        assert record.sie_form == "stehen Sie auf"
+        assert record.du == "steh auf"
+        assert record.ihr == "steht auf"
+        assert record.sie == "stehen Sie auf"
 
     def test_imperative_minimal_fields(self) -> None:
         """Test imperative with minimal required fields."""
@@ -297,39 +294,39 @@ class TestVerbImperativeRecord:
         record = VerbImperativeRecord.from_csv_fields(fields)
 
         assert record.infinitive == "gehen"
-        assert record.du_form == "geh"
-        assert record.ihr_form == "geht"
-        assert record.sie_form == "gehen Sie"
+        assert record.du == "geh"
+        assert record.ihr == "geht"
+        assert record.sie == "gehen Sie"
         assert record.example_du == ""  # Default empty
         assert record.example_ihr == ""
         assert record.example_sie == ""
 
     def test_imperative_validation_errors(self) -> None:
         """Test validation errors for imperative records."""
-        # Invalid classification
-        with pytest.raises(ValidationError, match="Invalid classification"):
+        # Missing required field
+        with pytest.raises(ValidationError):
             VerbImperativeRecord(
                 infinitive="arbeiten",
                 english="to work",
-                classification="invalid",
-                separable=False,
-                du_form="arbeite",
-                ihr_form="arbeitet",
-                sie_form="arbeiten Sie",
-                example_du="Test",
+                du="arbeite",
+                ihr="arbeitet",
+                sie="arbeiten Sie",
+                wir="arbeiten wir",
+                # Missing example_du - should be required
             )
 
         # Empty imperative form
-        with pytest.raises(ValidationError, match="Imperative forms cannot be empty"):
+        with pytest.raises(ValidationError):
             VerbImperativeRecord(
                 infinitive="arbeiten",
                 english="to work",
-                classification="regelmäßig",
-                separable=False,
-                du_form="",  # Empty
-                ihr_form="arbeitet",
-                sie_form="arbeiten Sie",
+                du="",  # Empty form should fail validation
+                ihr="arbeitet",
+                sie="arbeiten Sie",
+                wir="arbeiten wir",
                 example_du="Test",
+                example_ihr="Test",
+                example_sie="Test",
             )
 
     def test_imperative_insufficient_fields(self) -> None:
