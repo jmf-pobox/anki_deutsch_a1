@@ -364,3 +364,117 @@ class ArticlePatternProcessor:
                 return clean_word.capitalize()
 
         return "Wort"  # Fallback
+
+    # New cloze deletion methods
+
+    def _create_gender_cloze_card(
+        self,
+        record: (
+            ArticleRecord
+            | IndefiniteArticleRecord
+            | NegativeArticleRecord
+            | UnifiedArticleRecord
+        ),
+        enriched_data: dict[str, Any] | None = None,
+    ) -> tuple[list[str], NoteType]:
+        """Create gender recognition cloze deletion card.
+
+        Generates: "{{c1::Der}} Mann ist hier" for gender recognition learning.
+        Uses German explanations like "Maskulin - Geschlecht erkennen".
+
+        Args:
+            record: Article record
+            enriched_data: Optional enriched data
+
+        Returns:
+            Cloze card with German explanation
+        """
+        # Create cloze text: "{{c1::Der}} Mann ist hier"
+        example_sentence = getattr(record, "example_nom", "") or "ist hier"
+        article = record.nominative
+        cloze_text = example_sentence.replace(article, f"{{{{c1::{article}}}}}", 1)
+
+        # Generate German explanation
+        explanation = self._explanation_factory.create_gender_recognition_explanation(
+            record.gender
+        )
+
+        # Prepare card data for cloze template
+        card_data = {
+            "Text": cloze_text,
+            "Explanation": explanation,
+            "Image": enriched_data.get("image_url") if enriched_data else "",
+            "Audio": enriched_data.get("audio_file") if enriched_data else "",
+        }
+
+        # Use cloze template
+        template = self._card_builder._template_service.get_template(
+            "artikel_gender_cloze"
+        )
+        note_type = self._card_builder._create_note_type_for_record(
+            "artikel_gender_cloze", template
+        )
+        field_values = self._card_builder._extract_field_values(
+            "artikel_gender_cloze", card_data, note_type
+        )
+
+        return field_values, note_type
+
+    def _create_case_cloze_card(
+        self,
+        record: (
+            ArticleRecord
+            | IndefiniteArticleRecord
+            | NegativeArticleRecord
+            | UnifiedArticleRecord
+        ),
+        case: str,
+        enriched_data: dict[str, Any] | None = None,
+    ) -> tuple[list[str], NoteType]:
+        """Create case context cloze deletion card.
+
+        Generates: "Ich sehe {{c1::den}} Mann" for case context learning.
+        Uses German explanations like "den - Maskulin Akkusativ (wen/was?)".
+
+        Args:
+            record: Article record
+            case: Case name (nominative, accusative, dative, genitive)
+            enriched_data: Optional enriched data
+
+        Returns:
+            Cloze card with German case explanation
+        """
+        # Get case-specific data
+        article = getattr(record, case)
+        example_sentence = (
+            getattr(record, f"example_{case[:3]}", "") or f"{article} Wort"
+        )
+
+        # Create cloze text: "Ich sehe {{c1::den}} Mann"
+        cloze_text = example_sentence.replace(article, f"{{{{c1::{article}}}}}", 1)
+
+        # Generate German case explanation
+        explanation = self._explanation_factory.create_case_explanation(
+            record.gender, case, article
+        )
+
+        # Prepare card data for cloze template
+        card_data = {
+            "Text": cloze_text,
+            "Explanation": explanation,
+            "Image": enriched_data.get("image_url") if enriched_data else "",
+            "Audio": enriched_data.get("audio_file") if enriched_data else "",
+        }
+
+        # Use cloze template
+        template = self._card_builder._template_service.get_template(
+            "artikel_context_cloze"
+        )
+        note_type = self._card_builder._create_note_type_for_record(
+            "artikel_context_cloze", template
+        )
+        field_values = self._card_builder._extract_field_values(
+            "artikel_context_cloze", card_data, note_type
+        )
+
+        return field_values, note_type
