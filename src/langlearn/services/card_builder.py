@@ -255,7 +255,7 @@ class CardBuilder:
             "verb_imperative": [
                 "Image",
                 "English",
-                "Infinitive", 
+                "Infinitive",
                 "Du",
                 "Ihr",
                 "Sie",
@@ -471,7 +471,7 @@ class CardBuilder:
                 "Classification": "classification",
                 "Separable": "separable",
                 "Du": "du",
-                "Ihr": "ihr", 
+                "Ihr": "ihr",
                 "Sie": "sie",
                 "Wir": "wir",
                 "ExampleDu": "example_du",
@@ -670,7 +670,7 @@ class CardBuilder:
             "verb_imperative": [
                 # Core fields from PROD-CARD-SPEC.md
                 "image",
-                "english", 
+                "english",
                 "infinitive",
                 "du",
                 "ihr",

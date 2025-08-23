@@ -172,7 +172,7 @@ class VerbConjugationProcessor:
             Cards are ordered: imperative, present, perfect, preterite
         """
         cards = []
-        
+
         # Sort records in desired learning order: imperative first, then present, perfect, preterite
         def tense_sort_key(record: VerbConjugationRecord) -> int:
             if record.tense == "imperative":
@@ -185,7 +185,7 @@ class VerbConjugationProcessor:
                 return 4  # Fourth
             else:
                 return 5  # Any other tenses last
-        
+
         sorted_records = sorted(verb_records, key=tense_sort_key)
 
         for record in sorted_records:

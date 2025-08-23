@@ -802,7 +802,7 @@ class DeckBuilder:
             else:
                 # (remove underscores, add 's')
                 result_key = record_type.replace("_", "") + "s"
-            
+
             # Accumulate cards for consolidated result keys
             if result_key in results:
                 results[result_key] += cards_created

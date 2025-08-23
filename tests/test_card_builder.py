@@ -548,7 +548,9 @@ class TestCardBuilderIntegration:
         field_values, note_type = card_builder.build_card_from_record(record)
 
         # Verify field count and values (updated for new fields)
-        assert len(field_values) == 15  # All verb imperative fields (removed 4 redundant audio, added 1 ExampleWir)
+        assert (
+            len(field_values) == 15
+        )  # All verb imperative fields (removed 4 redundant audio, added 1 ExampleWir)
         assert field_values[0] == "arbeiten"  # Infinitive
         assert field_values[1] == "to work"  # English
         assert field_values[2] == "to work"  # Meaning (same as English)

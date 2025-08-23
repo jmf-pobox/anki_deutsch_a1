@@ -688,7 +688,7 @@ class VerbImperativeRecord(BaseRecord):
         """Field names for verb imperative CSV."""
         return [
             "infinitive",
-            "english", 
+            "english",
             "du",
             "ihr",
             "sie",
