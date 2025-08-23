@@ -169,10 +169,26 @@ class VerbConjugationProcessor:
 
         Returns:
             List of cards for this verb (one per available tense)
+            Cards are ordered: imperative, present, perfect, preterite
         """
         cards = []
+        
+        # Sort records in desired learning order: imperative first, then present, perfect, preterite
+        def tense_sort_key(record: VerbConjugationRecord) -> int:
+            if record.tense == "imperative":
+                return 1  # First
+            elif record.tense == "present":
+                return 2  # Second
+            elif record.tense == "perfect":
+                return 3  # Third
+            elif record.tense == "preterite":
+                return 4  # Fourth
+            else:
+                return 5  # Any other tenses last
+        
+        sorted_records = sorted(verb_records, key=tense_sort_key)
 
-        for record in verb_records:
+        for record in sorted_records:
             try:
                 # Skip tenses that shouldn't generate cards
                 if not self._should_create_card_for_tense(record):

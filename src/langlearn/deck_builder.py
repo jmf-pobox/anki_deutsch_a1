@@ -279,11 +279,12 @@ class DeckBuilder:
             "negations.csv": "negation",
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
-            "verbs_unified.csv": "verb_conjugation",  # Modern multi-tense verb system
             # Unified Article system for German case learning
             "articles_unified.csv": "unified_article",
-            # Re-enabled basic verb cards (Issue #26)
+            # Re-enabled basic verb cards (Issue #26) - processed first
             "verbs.csv": "verb",
+            # Modern multi-tense verb system - same subdeck as basic verbs
+            "verbs_unified.csv": "verb_conjugation",  # Keep special processing but will be moved to Verbs subdeck
             # "regular_verbs.csv": "verb",
             # "irregular_verbs.csv": "verb",
             # "separable_verbs.csv": "verb",
@@ -615,9 +616,13 @@ class DeckBuilder:
             logger.info(f"Processing {len(records)} {record_type} records")
 
             # Step 1.5: Create subdeck for this word type
-            subdeck_name = record_type.capitalize() + (
-                "s" if not record_type.endswith("s") else ""
-            )
+            # Special case: verb_conjugation cards go to "Verbs" subdeck (with basic verbs)
+            if record_type == "verb_conjugation":
+                subdeck_name = "Verbs"
+            else:
+                subdeck_name = record_type.capitalize() + (
+                    "s" if not record_type.endswith("s") else ""
+                )
             self.create_subdeck(subdeck_name)
             logger.info(f"Created subdeck: {subdeck_name}")
 
