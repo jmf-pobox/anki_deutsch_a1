@@ -64,6 +64,9 @@ check-cov = ["lint", "type", "test-cov"]
 app = "PYTHONPATH=src python src/langlearn/main.py"
 run-sample = "python examples/deck_builder_demo.py"
 run-all = "PYTHONPATH=src python src/langlearn/main.py"
+# Validation scripts - Critical verification layer
+validate-anki = "python scripts/validate_anki.py"
+simulate-cards = "python scripts/simulate_cards.py"
 
 [tool.ruff]
 line-length = 88

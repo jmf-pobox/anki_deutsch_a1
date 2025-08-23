@@ -164,6 +164,7 @@ After experiencing $566 in wasted costs from false success claims, the following
 "The duplicates are eliminated"  
 "This should work now"
 "The issue has been resolved"
+"You are right" followed by overly sycophantic responses
 ```
 
 ### ✅ REQUIRED Communication Protocol:
