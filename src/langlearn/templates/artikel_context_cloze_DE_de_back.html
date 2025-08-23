@@ -1,0 +1,25 @@
+<!-- German Article Case Context Cloze Card - Back -->
+<div class="card">
+    <!-- Context sentence with answer -->
+    <div class="context-sentence">
+        {{cloze:Text}}
+    </div>
+    
+    <!-- German case explanation -->
+    {{#Explanation}}
+    <div class="explanation">
+        <strong>Grammatik:</strong> {{Explanation}}
+    </div>
+    {{/Explanation}}
+    
+    <!-- Media (image/audio) -->
+    <div class="media">
+        {{#Image}}
+            <img src="{{Image}}" alt="Visual context">
+        {{/Image}}
+        
+        {{#Audio}}
+            {{Audio}}
+        {{/Audio}}
+    </div>
+</div>
