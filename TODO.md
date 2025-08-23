@@ -1,6 +1,84 @@
-# Project TODO - Post-Cloze Implementation Cleanup & Next Steps
+# Project TODO - Critical Validation Layer Implementation Required
 
 Last updated: 2025-08-23
+
+## 🚨 CRITICAL PRIORITY - Anki Validation Layer Implementation
+
+**BACKGROUND**: After experiencing $566 in wasted costs from false "fix" claims, a fundamental verification gap was identified by the design-guardian agent. The current approach validates Python code correctness but cannot verify actual Anki application behavior.
+
+**CORE PROBLEM**: I've been claiming fixes work when they don't actually work in the real Anki application.
+
+**SOLUTION REQUIRED**: Implement three-layer verification system before any future fix claims.
+
+### **TASK 1.1: Create AnkiValidator Class** 🔴 HIGH PRIORITY
+- **File**: `src/langlearn/validators/anki_validator.py`  
+- **Purpose**: Validate content will work correctly in Anki application
+- **Functions Needed**:
+  - `validate_cloze_card(content: str, fields: dict) -> tuple[bool, list[str]]`
+  - `validate_field_references(template: str, fields: dict) -> bool`
+  - `validate_media_paths(card_content: str) -> bool`
+  - `detect_blank_cards(rendered: str) -> bool`
+- **Key Logic**:
+  - Check `{{c1::text}}` syntax correctness
+  - Verify all `{{Field}}` references exist in fields
+  - Simulate field replacement to detect blank cards
+  - Validate `[sound:...]` and `<img src="...">` paths
+
+### **TASK 1.2: Create AnkiRenderSimulator Class** 🔴 HIGH PRIORITY
+- **File**: `src/langlearn/testing/anki_simulator.py`
+- **Purpose**: Simulate exactly what Anki will display to users
+- **Functions Needed**:
+  - `simulate_card_display(note_data: dict, template: str) -> str`
+  - `render_cloze_deletion(content: str) -> str` 
+  - `apply_field_substitution(template: str, fields: dict) -> str`
+  - `detect_rendering_issues(rendered: str) -> list[str]`
+- **Key Logic**:
+  - Replace `{{Field}}` with actual field values
+  - Process cloze deletions as Anki would
+  - Apply CSS styling simulation
+  - Return final HTML as user would see
+
+### **TASK 1.3: Create Validation Test Suite** 🔴 HIGH PRIORITY
+- **File**: `tests/test_anki_validator.py`
+- **Purpose**: Comprehensive testing of validation logic
+- **Test Cases Needed**:
+  - Blank card detection (empty fields, missing cloze)
+  - Invalid cloze syntax (`{{c1:}}`, nested cloze)
+  - Missing field references (`{{NonExistentField}}`)
+  - Media path validation (`[sound:missing.mp3]`)
+  - Template rendering edge cases
+
+### **TASK 1.4: Integrate with Hatch Commands** 🔴 HIGH PRIORITY  
+- **Files**: `pyproject.toml`, validation scripts
+- **Purpose**: Add `validate-anki` and `simulate-cards` commands
+- **Implementation**:
+  - `hatch run validate-anki` → Run AnkiValidator on all generated cards
+  - `hatch run simulate-cards` → Run AnkiRenderSimulator on test cases
+  - Integrate with existing quality gate workflow
+  - Return non-zero exit codes on validation failures
+
+### **TASK 1.5: Create Debug Deck Generator** 🟡 MEDIUM PRIORITY
+- **File**: `src/langlearn/debug/debug_deck_generator.py`  
+- **Purpose**: Generate minimal decks for user issue reproduction
+- **Functions**:
+  - `create_debug_deck(issue_type: str) -> Path`
+  - `generate_test_cards(pattern: str, count: int) -> list`
+  - `add_diagnostic_fields(card_data: dict) -> dict`
+- **Use Cases**:
+  - Blank card reproduction
+  - Duplicate detection testing
+  - Template syntax validation
+  - User-reported issue isolation
+
+### **TASK 1.6: Update Communication Protocol** ✅ COMPLETED
+- **File**: `CLAUDE.md` ✅ Updated
+- **Changes Applied**:
+  - Added mandatory 8-step validation workflow
+  - Added prohibited vs required communication patterns
+  - Added user testing requirements
+  - Added iterative problem-solving protocol
+
+---
 
 ## 🎉 MAJOR MILESTONE ACHIEVED - Article Card Cloze Deletion Complete!
 
