@@ -610,14 +610,14 @@ class DeckBuilder:
                 records_by_type[record_type] = []
             records_by_type[record_type].append(record)
 
-        results = {}
+        results: dict[str, int] = {}
 
         for record_type, records in records_by_type.items():
             logger.info(f"Processing {len(records)} {record_type} records")
 
             # Step 1.5: Create subdeck for this word type
-            # Special case: verb_conjugation cards go to "Verbs" subdeck (with basic verbs)
-            if record_type == "verb_conjugation":
+            # Special case: all verb-related cards go to "Verbs" subdeck
+            if record_type in ["verb", "verbconjugation", "verbimperative"]:
                 subdeck_name = "Verbs"
             else:
                 subdeck_name = record_type.capitalize() + (
@@ -796,9 +796,18 @@ class DeckBuilder:
                     logger.error(f"Failed to add {record_type} card: {e}")
 
             # Format result key to match expected output format
-            # (remove underscores, add 's')
-            result_key = record_type.replace("_", "") + "s"
-            results[result_key] = cards_created
+            # Special case: consolidate all verb-related cards under "verbs" key
+            if record_type in ["verb", "verbconjugation", "verbimperative"]:
+                result_key = "verbs"
+            else:
+                # (remove underscores, add 's')
+                result_key = record_type.replace("_", "") + "s"
+            
+            # Accumulate cards for consolidated result keys
+            if result_key in results:
+                results[result_key] += cards_created
+            else:
+                results[result_key] = cards_created
             logger.info(f"Created {cards_created} {record_type} cards")
 
             # Step 5: Reset to main deck after processing this word type
