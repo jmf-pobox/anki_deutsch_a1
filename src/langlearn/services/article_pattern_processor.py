@@ -97,24 +97,24 @@ class ArticlePatternProcessor:
         ),
         enriched_data: dict[str, Any] | None = None,
     ) -> list[tuple[list[str], NoteType]]:
-        """Generate 5 cards for a single article record.
+        """Generate 5 cloze deletion cards for a single article record.
 
         Args:
             record: Single article record
             enriched_data: Optional enriched data
 
         Returns:
-            List of 5 cards (gender + 4 cases)
+            List of 5 cloze cards (gender + 4 cases) with German explanations
         """
         cards = []
 
-        # Card 1: Gender Recognition
-        cards.append(self._create_gender_recognition_card(record, enriched_data))
+        # Card 1: Gender Recognition Cloze
+        cards.append(self._create_gender_cloze_card(record, enriched_data))
 
-        # Cards 2-5: Case Context cards
+        # Cards 2-5: Case Context Cloze cards
         cases = ["nominative", "accusative", "dative", "genitive"]
         for case in cases:
-            cards.append(self._create_case_context_card(record, case, enriched_data))
+            cards.append(self._create_case_cloze_card(record, case, enriched_data))
 
         return cards
 
