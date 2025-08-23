@@ -121,17 +121,17 @@ class Verb(BaseModel, FieldProcessor):
         ]
 
     def get_combined_audio_text(self) -> str:
-        """Get combined text for verb conjugation audio with German tense labels.
+        """Get combined text for verb conjugation audio with German tense labels and pauses.
 
         Returns:
-            Combined text with German tense labels and all conjugations:
-            "arbeiten, Präsens ich arbeite, du arbeitest, er sie es arbeitet, Präteritum er sie es arbeitete, Perfekt er sie es hat gearbeitet"
+            Combined text with German tense labels, all conjugations, and SSML pause tags:
+            "arbeiten, <break strength='strong'/>Präsens ich arbeite, du arbeitest, er sie es arbeitet, <break strength='strong'/>Präteritum er sie es arbeitete, <break strength='strong'/>Perfekt er sie es hat gearbeitet"
         """
         parts = [self.verb]
         
         # Präsens (Present tense) with German label
         if self.present_ich or self.present_du or self.present_er:
-            parts.append("Präsens")
+            parts.append("<break strength='strong'/>Präsens")
             if self.present_ich:
                 parts.append(f"ich {self.present_ich}")
             if self.present_du:
@@ -141,11 +141,11 @@ class Verb(BaseModel, FieldProcessor):
         
         # Präteritum with German label
         if self.präteritum:
-            parts.extend(["Präteritum", f"er sie es {self.präteritum}"])
+            parts.extend(["<break strength='strong'/>Präteritum", f"er sie es {self.präteritum}"])
         
         # Perfekt with German label
         if self.perfect:
             # The perfect form typically already includes the auxiliary verb
-            parts.extend(["Perfekt", f"er sie es {self.perfect}"])
+            parts.extend(["<break strength='strong'/>Perfekt", f"er sie es {self.perfect}"])
         
         return ", ".join(parts)
