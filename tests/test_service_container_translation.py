@@ -2,12 +2,12 @@
 
 from unittest.mock import Mock, patch
 
-from src.langlearn.services.service_container import (
+from langlearn.services.service_container import (
     ServiceContainer,
     get_translation_service,
     reset_services,
 )
-from src.langlearn.services.translation_service import AnthropicTranslationService
+from langlearn.services.translation_service import AnthropicTranslationService
 
 
 class TestServiceContainerTranslation:
@@ -21,7 +21,7 @@ class TestServiceContainerTranslation:
         """Reset services after each test."""
         reset_services()
 
-    @patch("src.langlearn.services.service_container.AnthropicService")
+    @patch("langlearn.services.service_container.AnthropicService")
     def test_get_translation_service_success(self, mock_anthropic_class: Mock) -> None:
         """Test successful creation of translation service."""
         # Arrange
@@ -39,7 +39,7 @@ class TestServiceContainerTranslation:
         # Should reuse the same instance on subsequent calls
         assert container.get_translation_service() is translation_service
 
-    @patch("src.langlearn.services.service_container.AnthropicService")
+    @patch("langlearn.services.service_container.AnthropicService")
     def test_get_translation_service_anthropic_failure(
         self, mock_anthropic_class: Mock
     ) -> None:
@@ -55,8 +55,8 @@ class TestServiceContainerTranslation:
         # Assert
         assert translation_service is None
 
-    @patch("src.langlearn.services.service_container.AnthropicTranslationService")
-    @patch("src.langlearn.services.service_container.AnthropicService")
+    @patch("langlearn.services.service_container.AnthropicTranslationService")
+    @patch("langlearn.services.service_container.AnthropicService")
     def test_get_translation_service_translation_creation_failure(
         self, mock_anthropic_class: Mock, mock_translation_class: Mock
     ) -> None:
@@ -80,14 +80,14 @@ class TestServiceContainerTranslation:
         container = ServiceContainer()
 
         # Mock successful creation
-        with patch("src.langlearn.services.service_container.AnthropicService"):
+        with patch("langlearn.services.service_container.AnthropicService"):
             first_service = container.get_translation_service()
 
         # Act
         container.reset()
 
         # Mock successful creation again
-        with patch("src.langlearn.services.service_container.AnthropicService"):
+        with patch("langlearn.services.service_container.AnthropicService"):
             second_service = container.get_translation_service()
 
         # Assert
@@ -95,7 +95,7 @@ class TestServiceContainerTranslation:
         if first_service and second_service:
             assert first_service is not second_service
 
-    @patch("src.langlearn.services.service_container.AnthropicService")
+    @patch("langlearn.services.service_container.AnthropicService")
     def test_factory_function_get_translation_service(
         self, mock_anthropic_class: Mock
     ) -> None:
@@ -121,7 +121,7 @@ class TestServiceContainerTranslation:
         # Assert
         assert translation_service is None
 
-    @patch("src.langlearn.services.service_container.AnthropicService")
+    @patch("langlearn.services.service_container.AnthropicService")
     def test_singleton_behavior(self, mock_anthropic_class: Mock) -> None:
         """Test that service container maintains singleton behavior."""
         # Arrange
@@ -151,8 +151,8 @@ class TestTranslationServiceIntegrationWithDeckBuilder:
         """Reset services after each test."""
         reset_services()
 
-    @patch("src.langlearn.deck_builder.get_translation_service")
-    @patch("src.langlearn.services.media_enricher.StandardMediaEnricher")
+    @patch("langlearn.deck_builder.get_translation_service")
+    @patch("langlearn.services.media_enricher.StandardMediaEnricher")
     def test_deck_builder_injects_translation_service(
         self, mock_enricher_class: Mock, mock_get_translation: Mock
     ) -> None:
@@ -201,7 +201,7 @@ class TestTranslationServiceErrorHandling:
         """Reset services after each test."""
         reset_services()
 
-    @patch("src.langlearn.services.service_container.logger")
+    @patch("langlearn.services.service_container.logger")
     def test_service_creation_logs_appropriately(self, mock_logger: Mock) -> None:
         """Test that service creation logs appropriately."""
         # This test would verify logging behavior

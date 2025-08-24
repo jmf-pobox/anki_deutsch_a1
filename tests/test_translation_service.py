@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock, patch
 
-from src.langlearn.services.translation_service import (
+from langlearn.services.translation_service import (
     AnthropicTranslationService,
     MockTranslationService,
 )
@@ -207,7 +207,7 @@ class TestMockTranslationService:
 class TestTranslationServiceIntegration:
     """Integration tests for translation service with MediaEnricher."""
 
-    @patch("src.langlearn.services.translation_service.logger")
+    @patch("langlearn.services.translation_service.logger")
     def test_translation_service_logging(self, mock_logger: Mock) -> None:
         """Test that translation service logs appropriately."""
         # Arrange
