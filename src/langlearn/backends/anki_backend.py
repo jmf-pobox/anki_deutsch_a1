@@ -332,6 +332,44 @@ class AnkiBackend(DeckBackend):
                     record_type = rec_type
                     break
 
+            # Special handling for Artikel Cloze note types
+            # These do not have a dedicated record class; we enrich via key-based
+            # fallback in the MediaEnricher (keys: text, explanation, image, audio)
+            if note_type_name in {
+                "German Artikel Gender Cloze",
+                "German Artikel Context Cloze",
+            }:
+                # Expected Anki field order: Text, Explanation, Image, Audio
+                text = fields[0] if len(fields) > 0 else ""
+                explanation = fields[1] if len(fields) > 1 else ""
+                image_field = fields[2] if len(fields) > 2 else ""
+                audio_field = fields[3] if len(fields) > 3 else ""
+
+                # Only include media keys if they are non-empty so that enrichers
+                # (including stub test enrichers that use setdefault) can populate them
+                cloze_record = {
+                    "text": text,
+                    "explanation": explanation,
+                }
+                if image_field:
+                    cloze_record["image"] = image_field
+                if audio_field:
+                    cloze_record["audio"] = audio_field
+
+                try:
+                    enriched = self._media_enricher.enrich_record(
+                        cloze_record, domain_model=None
+                    )
+                except Exception:
+                    enriched = cloze_record
+
+                return [
+                    enriched.get("text", ""),
+                    enriched.get("explanation", ""),
+                    enriched.get("image", ""),
+                    enriched.get("audio", ""),
+                ]
+
             if record_type is not None:
                 # Use Clean Pipeline Architecture
                 logger.debug(f"Using Clean Pipeline Architecture for: {note_type_name}")
@@ -709,7 +747,7 @@ class AnkiBackend(DeckBackend):
         exporter = AnkiPackageExporter(self._collection)
         exporter.did = self._deck_id
         # Set include_media if the attribute exists (varies by Anki version)
-        if hasattr(exporter, 'include_media'):
+        if hasattr(exporter, "include_media"):
             exporter.include_media = True
 
         logger.info(f"Exporting deck with {len(self._media_files)} media files")
@@ -724,7 +762,7 @@ class AnkiBackend(DeckBackend):
                 # Fallback: use the collection export (signature varies by Anki version)
                 try:
                     # Use getattr to avoid mypy signature checking
-                    export_func = getattr(self._collection, 'export_anki_package', None)
+                    export_func = getattr(self._collection, "export_anki_package", None)
                     if export_func:
                         export_func(output_path, [self._deck_id], True)
                     else:
@@ -733,6 +771,7 @@ class AnkiBackend(DeckBackend):
                     logger.warning(f"Collection export API mismatch: {api_error}")
                     # Final fallback - just copy the collection file
                     import shutil
+
                     shutil.copy2(self._collection_path, output_path)
         except Exception as e:
             logger.error(f"Export failed with error: {e}")

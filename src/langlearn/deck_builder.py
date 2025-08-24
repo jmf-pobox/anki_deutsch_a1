@@ -27,9 +27,17 @@ from .services.csv_service import CSVService
 from .services.media_file_registrar import MediaFileRegistrar
 from .services.media_service import MediaService
 from .services.record_mapper import RecordMapper
+from .services.service_container import (
+    get_translation_service as _get_translation_service,
+)
 from .services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
+
+# Re-export factory for tests that patch DeckBuilder-level symbol
+# Some tests expect to patch langlearn.deck_builder.get_translation_service
+# Provide a module-level alias to satisfy those patches.
+get_translation_service = _get_translation_service
 
 T = TypeVar("T")
 
@@ -352,9 +360,23 @@ class DeckBuilder:
             elif record_type == "adverb" and isinstance(record, AdverbRecord):
                 from .models.adverb import AdverbType
 
-                adverb_type = (
-                    AdverbType(record.type) if record.type else AdverbType.TIME
-                )
+                # Map legacy lowercase type strings to enum values if needed
+                raw_type = (record.type or "").strip()
+                try:
+                    adverb_type = AdverbType(raw_type) if raw_type else AdverbType.TIME
+                except ValueError:
+                    mapping = {
+                        "location": AdverbType.LOCATION,
+                        "time": AdverbType.TIME,
+                        "frequency": AdverbType.FREQUENCY,
+                        "manner": AdverbType.MANNER,
+                        "intensity": AdverbType.INTENSITY,
+                        "addition": AdverbType.ADDITION,
+                        "limitation": AdverbType.LIMITATION,
+                        "attitude": AdverbType.ATTITUDE,
+                        "probability": AdverbType.PROBABILITY,
+                    }
+                    adverb_type = mapping.get(raw_type.lower(), AdverbType.TIME)
                 adverb = Adverb(
                     word=record.word,
                     english=record.english,
@@ -413,7 +435,22 @@ class DeckBuilder:
                 from .models.adverb import Adverb as AdvModel
                 from .models.adverb import AdverbType
 
-                adv_type = AdverbType(rec.type) if rec.type else AdverbType.TIME
+                raw_type = (rec.type or "").strip()
+                try:
+                    adv_type = AdverbType(raw_type) if raw_type else AdverbType.TIME
+                except ValueError:
+                    mapping = {
+                        "location": AdverbType.LOCATION,
+                        "time": AdverbType.TIME,
+                        "frequency": AdverbType.FREQUENCY,
+                        "manner": AdverbType.MANNER,
+                        "intensity": AdverbType.INTENSITY,
+                        "addition": AdverbType.ADDITION,
+                        "limitation": AdverbType.LIMITATION,
+                        "attitude": AdverbType.ATTITUDE,
+                        "probability": AdverbType.PROBABILITY,
+                    }
+                    adv_type = mapping.get(raw_type.lower(), AdverbType.TIME)
                 return AdvModel(
                     word=rec.word,
                     english=rec.english,

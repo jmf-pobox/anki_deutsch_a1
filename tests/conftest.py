@@ -75,3 +75,17 @@ def mock_external_services(
                     os.environ.pop(key, None)
                 else:
                     os.environ[key] = original_value
+
+
+# Shared media service mock for tests that need a simple stub
+@pytest.fixture
+def mock_media_service() -> Mock:
+    """Provide a basic mock media service with predictable outputs.
+
+    Some tests (e.g., translation integration in MediaEnricher tests) expect a
+    fixture named `mock_media_service` to be available at module scope.
+    """
+    service = Mock()
+    service.generate_audio.return_value = "/fake/audio.mp3"
+    service.generate_image.return_value = "/fake/image.jpg"
+    return service
