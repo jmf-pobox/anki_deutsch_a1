@@ -619,6 +619,8 @@ class DeckBuilder:
             # Special case: all verb-related cards go to "Verbs" subdeck
             if record_type in ["verb", "verbconjugation", "verbimperative"]:
                 subdeck_name = "Verbs"
+            elif record_type == "unified_article":
+                subdeck_name = "Articles"
             else:
                 subdeck_name = record_type.capitalize() + (
                     "s" if not record_type.endswith("s") else ""
@@ -801,6 +803,8 @@ class DeckBuilder:
             # Special case: consolidate all verb-related cards under "verbs" key
             if record_type in ["verb", "verbconjugation", "verbimperative"]:
                 result_key = "verbs"
+            elif record_type == "unified_article":
+                result_key = "articles"
             else:
                 # (remove underscores, add 's')
                 result_key = record_type.replace("_", "") + "s"

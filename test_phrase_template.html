@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phrase Template Test</title>
+    <style>
+        /* Include the updated CSS */
+        .card {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 20px;
+            color: #333;
+            max-width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .german {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 15px;
+        }
+
+        .phrase-info {
+            background: #f8f9fa;
+            border: 2px solid #2c5aa0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .word-with-audio {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .inline-audio {
+            font-size: 12px;
+            color: #666;
+            background: #f1f3f4;
+            padding: 4px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .inline-audio:hover {
+            background: #e8f0fe;
+            border-color: #2c5aa0;
+        }
+
+        .hint-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .hint-button:hover {
+            background: #45a049;
+        }
+
+        .hint-content {
+            font-size: 18px;
+            color: #2c5aa0;
+            font-weight: bold;
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 10px;
+            border: 2px solid #2c5aa0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .context-block {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .context-label {
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 5px;
+        }
+
+        .context-value {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .related-words {
+            font-size: 16px;
+            color: #666;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f0f4f8;
+            border-radius: 5px;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .image-container {
+            margin: 10px 0;
+        }
+
+        .image-container img {
+            max-width: 250px;
+            max-height: 170px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .part-of-speech {
+            font-size: 16px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phrase Template Test - Before vs After</h1>
+    
+    <h2>BACK CARD (New Design)</h2>
+    <div class="card">
+        <div class="image-container">
+            <img src="data/images/guten_abend.jpg" alt="Evening scene" style="width: 200px; height: 140px; background: #ddd; display: inline-block;">
+        </div>
+
+        <div class="phrase-info">
+            <div class="word-with-audio">
+                <span class="german">Guten Abend!</span>
+                <span class="inline-audio">🔊 Audio</span>
+            </div>
+        </div>
+
+        <div class="context-block">
+            <div class="context-label">Kontext</div>
+            <div class="context-value">am Abend (ab 18 Uhr)</div>
+        </div>
+
+        <div class="related-words">
+            <strong>Verwandte Ausdrücke:</strong> Guten Morgen! Guten Tag!
+        </div>
+
+        <div class="back-hint-container">
+            <button class="hint-button" onclick="showBackHint()">💡 Tipp</button>
+            <div id="back-hint-content" class="hint-content hidden">Good evening!</div>
+        </div>
+    </div>
+
+    <h2>FRONT CARD</h2>
+    <div class="card">
+        <div class="image-container">
+            <img src="data/images/guten_abend.jpg" alt="Evening scene" style="width: 200px; height: 140px; background: #ddd; display: inline-block;">
+        </div>
+
+        <div class="part-of-speech">Redewendung</div>
+
+        <div class="context-block">
+            <div class="context-label">Kontext</div>
+            <div class="context-value">am Abend (ab 18 Uhr)</div>
+        </div>
+
+        <div class="hint-container">
+            <button class="hint-button" onclick="showHint()">💡 Tipp</button>
+            <div id="hint-content" class="hint-content hidden">Good evening!</div>
+        </div>
+    </div>
+
+    <script>
+        function showHint() {
+            var hint = document.getElementById('hint-content');
+            var button = document.querySelector('.hint-button');
+            hint.classList.remove('hidden');
+            button.style.display = 'none';
+        }
+
+        function showBackHint() {
+            var hint = document.getElementById('back-hint-content');
+            var button = document.querySelector('.back-hint-container .hint-button');
+            hint.classList.remove('hidden');
+            button.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

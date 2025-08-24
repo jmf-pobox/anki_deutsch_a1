@@ -21,7 +21,7 @@ an overall gh issue related to the templating system.
 ### Adverbs Sub-deck
 2. [Adverb](#adverb)
 
-### Unified_articles Sub-deck
+### Articles Sub-deck
 3. [Artikel_Context](#artikel-context)
 4. [Artikel_Context_Cloze](#artikel-context-cloze)
 5. [Artikel_Gender](#artikel-gender)
@@ -121,7 +121,7 @@ an overall gh issue related to the templating system.
 
 ---
 
-# Unified_articles Sub-deck
+# Articles Sub-deck
 
 ## Artikel_Context
 
@@ -130,7 +130,7 @@ an overall gh issue related to the templating system.
 **Learning Objective**: Master German article changes in different grammatical cases
 **Cloze Deletion**: No
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
+**Sub-deck**: `Articles` (Main Deck::Articles)
 
 ### Card Content
 
@@ -171,7 +171,7 @@ an overall gh issue related to the templating system.
 **Learning Objective**: Practice German case usage through cloze deletion
 **Cloze Deletion**: Yes
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
+**Sub-deck**: `Articles` (Main Deck::Articles)
 
 ### Card Content
 
@@ -200,7 +200,7 @@ an overall gh issue related to the templating system.
 **Learning Objective**: Learn to recognize German noun genders (der/die/das)
 **Cloze Deletion**: No
 **CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
+**Sub-deck**: `Articles` (Main Deck::Articles)
 
 ### Card Content
 
@@ -267,7 +267,7 @@ an overall gh issue related to the templating system.
 **Learning Objective**: Learn which article goes with each German noun
 **Cloze Deletion**: No
 **CSV Data Source**: `nouns.csv + articles_unified.csv`
-**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
+**Sub-deck**: `Articles` (Main Deck::Articles)
 
 ### Card Content
 
@@ -305,7 +305,7 @@ an overall gh issue related to the templating system.
 **Learning Objective**: Master German noun declension in different cases
 **Cloze Deletion**: No
 **CSV Data Source**: `nouns.csv + articles_unified.csv`
-**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
+**Sub-deck**: `Articles` (Main Deck::Articles)
 
 ### Card Content
 

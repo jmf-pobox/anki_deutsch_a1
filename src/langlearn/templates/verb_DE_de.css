@@ -9,7 +9,7 @@
 .german {
     font-size: 28px;
     font-weight: bold;
-    color: #28a745;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -19,9 +19,9 @@
     margin: 15px 0;
     font-weight: 500;
     padding: 15px;
-    background: #d4edda;
+    background: #e8f4fd;
     border-radius: 10px;
-    border: 2px solid #28a745;
+    border: 2px solid #2c5aa0;
 }
 
 .example-sentence {
@@ -31,7 +31,7 @@
     margin: 15px 0;
     padding: 10px;
     background: #f0f4f8;
-    border-left: 3px solid #28a745;
+    border-left: 3px solid #2c5aa0;
     border-radius: 5px;
 }
 
@@ -69,7 +69,7 @@ img {
 
 .verb-forms {
     background: #f8f9fa;
-    border: 2px solid #28a745;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
@@ -97,8 +97,8 @@ img {
 }
 
 .inline-audio:hover {
-    background: #d4edda;
-    border-color: #28a745;
+    background: #e8f0fe;
+    border-color: #2c5aa0;
 }
 
 .hint-container {
@@ -110,7 +110,7 @@ img {
 }
 
 .hint-button {
-    background: #28a745;
+    background: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -121,18 +121,18 @@ img {
 }
 
 .hint-button:hover {
-    background: #218838;
+    background: #45a049;
 }
 
 .hint-content {
     font-size: 18px;
-    color: #28a745;
+    color: #2c5aa0;
     font-weight: bold;
     margin-top: 15px;
     padding: 15px;
-    background: #d4edda;
+    background: #e8f4fd;
     border-radius: 10px;
-    border: 2px solid #28a745;
+    border: 2px solid #2c5aa0;
 }
 
 .hidden {
@@ -177,15 +177,15 @@ img {
 
 /* Conjugation Table */
 .conjugation-table {
-    background-color: #fff;
+    background-color: #f8f9fa;
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
-    border-left: 4px solid #28a745;
+    border-left: 4px solid #2c5aa0;
 }
 
 .conjugation-table h3 {
-    color: #28a745;
+    color: #2c5aa0;
     font-size: 1.4em;
     margin: 0 0 15px 0;
     font-weight: 600;
@@ -209,7 +209,7 @@ img {
 }
 
 .conjugation-table td:last-child {
-    color: #28a745;
+    color: #2c5aa0;
     font-weight: 500;
 }
 
@@ -253,18 +253,18 @@ img {
     
     .verb-forms {
         background: #4a5568;
-        border-color: #48bb78;
+        border-color: #63b3ed;
     }
-    
+
     .english-prompt {
-        background: #2f855a;
-        border-color: #48bb78;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #e2e8f0;
     }
-    
+
     .hint-content {
-        background: #2f855a;
-        border-color: #48bb78;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #e2e8f0;
     }
     
