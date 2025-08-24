@@ -404,12 +404,12 @@ class StandardMediaEnricher(MediaEnricher):
         return ", ".join(parts)
 
     def _enrich_preposition_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Enrich preposition record with basic audio support.
+        """Enrich preposition record with audio and image support.
 
         Fields expected in record dict:
         - preposition, english, case, example1, example2
         Populates:
-        - word_audio, example1_audio, example2_audio
+        - word_audio, example1_audio, example2_audio, image
         """
         # Word audio
         if not record.get("word_audio") and record.get("preposition"):
@@ -423,11 +423,32 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example1_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Example 2 audio
+        # Example 2 audio (optional)
         if not record.get("example2_audio") and record.get("example2"):
             audio_path = self._get_or_generate_audio(record["example2"])
             if audio_path:
                 record["example2_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example1 sentence (required field)
+        if (
+            not record.get("image")
+            and record.get("preposition")
+            and record.get("example1")
+        ):
+            preposition = record["preposition"]
+            if not self.image_exists(preposition):
+                # Use example1 sentence as search terms for preposition visualization
+                search_terms = record["example1"]
+                fallback = record.get("english", preposition)
+                image_path = self._get_or_generate_image(
+                    preposition, search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(preposition)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
