@@ -1,6 +1,6 @@
 """Simple integration tests for translation functionality without external deps."""
 
-from typing import Any, Optional, cast
+from typing import Any, cast
 from unittest.mock import Mock
 
 
@@ -22,7 +22,9 @@ class TestTranslationLogic:
                 return text  # No service, return original
 
             try:
-                return cast(Optional[str], translation_service.translate_to_english(text))
+                return cast(
+                    "str | None", translation_service.translate_to_english(text)
+                )
             except Exception:
                 return text  # Fallback on error
 
@@ -53,7 +55,9 @@ class TestTranslationLogic:
                 return text  # No service, return original
 
             try:
-                return cast(Optional[str], translation_service.translate_to_english(text))
+                return cast(
+                    "str | None", translation_service.translate_to_english(text)
+                )
             except Exception:
                 return text  # Fallback on error
 
@@ -77,7 +81,9 @@ class TestTranslationLogic:
                 return text  # No service, return original
 
             try:
-                return cast(Optional[str], translation_service.translate_to_english(text))
+                return cast(
+                    "str | None", translation_service.translate_to_english(text)
+                )
             except Exception:
                 return text  # Fallback on error
 
@@ -104,7 +110,9 @@ class TestTranslationLogic:
                 return text
 
             try:
-                return cast(Optional[str], translation_service.translate_to_english(text))
+                return cast(
+                    "str | None", translation_service.translate_to_english(text)
+                )
             except Exception:
                 return text
 

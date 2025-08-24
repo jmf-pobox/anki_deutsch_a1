@@ -196,7 +196,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(word, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    word, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -231,7 +237,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(word, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    word, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -265,7 +277,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(word, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    word, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -299,7 +317,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(word, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    word, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -346,8 +370,12 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", infinitive)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
                 image_path = self._get_or_generate_image(
-                    infinitive, search_terms, fallback
+                    infinitive, final_search_terms, fallback
                 )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
@@ -451,8 +479,12 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example1"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", preposition)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
                 image_path = self._get_or_generate_image(
-                    preposition, search_terms, fallback
+                    preposition, final_search_terms, fallback
                 )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
@@ -484,9 +516,13 @@ class StandardMediaEnricher(MediaEnricher):
                 search_terms = self._translate_for_search(phrase_text)
                 # Prefer context as an assisting hint if present; else english
                 fallback_terms = record.get("context") or record.get("english") or ""
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback_terms
+                )
                 image_path = self._get_or_generate_image(
                     word=phrase_text,
-                    search_terms=search_terms,
+                    search_terms=final_search_terms,
                     fallback=fallback_terms,
                 )
                 if image_path:
@@ -628,7 +664,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example_nom"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("noun_english", noun)
-                image_path = self._get_or_generate_image(noun, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -670,7 +712,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example_nom"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("noun_english", noun)
-                image_path = self._get_or_generate_image(noun, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -708,7 +756,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english_meaning", noun)
-                image_path = self._get_or_generate_image(noun, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -748,7 +802,13 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", noun)
-                image_path = self._get_or_generate_image(noun, search_terms, fallback)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -794,8 +854,12 @@ class StandardMediaEnricher(MediaEnricher):
                     # Translate German sentence to English for better Pexels search
                     search_terms = self._translate_for_search(clean_text)
                     fallback = noun
+                    # Use fallback if translation failed
+                    final_search_terms = (
+                        search_terms if search_terms is not None else fallback
+                    )
                     image_path = self._get_or_generate_image(
-                        noun, search_terms, fallback
+                        noun, final_search_terms, fallback
                     )
                     if image_path:
                         record["image"] = f'<img src="{Path(image_path).name}">'
