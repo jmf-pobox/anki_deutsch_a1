@@ -192,7 +192,7 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             word = record["noun"]
             if not self.image_exists(word):
-                # Translate German example sentence to English for better Pexels search results
+                # Translate German example to English for better Pexels search
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
@@ -227,7 +227,7 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Translate German example sentence to English for better Pexels search results
+                # Translate German example to English for better Pexels search
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
@@ -261,7 +261,7 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Translate German example sentence to English for better Pexels search results
+                # Translate German example to English for better Pexels search
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
@@ -295,7 +295,7 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Translate German example sentence to English for better Pexels search results
+                # Translate German example to English for better Pexels search
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
@@ -889,7 +889,7 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_audio(self, text: str) -> str | None:
         """Generate audio file for text."""
         try:
-            return self._media_service.generate_audio(text)  # type: ignore[no-any-return]
+            return self._media_service.generate_audio(text)  # type: ignore
         except Exception as e:
             logger.warning(f"Audio generation failed for '{text[:50]}...': {e}")
             return None
@@ -902,7 +902,9 @@ class StandardMediaEnricher(MediaEnricher):
             # But this method signature has (search_terms, fallback) which is
             # different context
             # This suggests MediaService has multiple overloads or the call is incorrect
-            return self._media_service.generate_image(search_terms, fallback)  # type: ignore[no-any-return]
+            return self._media_service.generate_image(  # type: ignore[no-any-return]
+                search_terms, fallback
+            )
         except Exception as e:
             logger.warning(f"Image generation failed for '{search_terms}': {e}")
             return None

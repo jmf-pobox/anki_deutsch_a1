@@ -660,12 +660,12 @@ class VerbImperativeRecord(BaseRecord):
             example_du=fields[6].strip() if len(fields) > 6 else "",
             example_ihr=fields[7].strip() if len(fields) > 7 else "",
             example_sie=fields[8].strip() if len(fields) > 8 else "",
-            word_audio=fields[9].strip()
-            if len(fields) > 9 and fields[9].strip()
-            else None,
-            image=fields[10].strip()
-            if len(fields) > 10 and fields[10].strip()
-            else None,
+            word_audio=(
+                fields[9].strip() if len(fields) > 9 and fields[9].strip() else None
+            ),
+            image=(
+                fields[10].strip() if len(fields) > 10 and fields[10].strip() else None
+            ),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -1378,4 +1378,4 @@ def create_record(model_type: str, fields: list[str]) -> BaseRecord:
 
     record_class = RECORD_TYPE_REGISTRY[model_type]
     # Type ignore needed because mypy can't infer the exact return type from registry
-    return record_class.from_csv_fields(fields)  # type: ignore[no-any-return, attr-defined]
+    return record_class.from_csv_fields(fields)  # type: ignore

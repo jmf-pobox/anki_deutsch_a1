@@ -1,4 +1,4 @@
-"""Translation service for converting German text to English for image search optimization.
+"""Translation service for converting German text to English for image search.
 
 This service provides high-quality German-to-English translation specifically optimized
 for image search queries, improving Pexels API search results by using English terms

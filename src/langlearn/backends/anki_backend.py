@@ -274,7 +274,7 @@ class AnkiBackend(DeckBackend):
             note.tags = tags
 
         self._collection.add_note(note, self._deck_id)
-        return note.id
+        return int(note.id)
 
     def _process_fields_with_media(
         self, note_type_input: str, fields: list[str]
@@ -708,7 +708,9 @@ class AnkiBackend(DeckBackend):
 
         exporter = AnkiPackageExporter(self._collection)
         exporter.did = self._deck_id
-        exporter.include_media = True  # type: ignore[attr-defined]  # Anki API boundary - attribute may not exist in all versions
+        exporter.include_media = (
+            True  # Anki API boundary - attribute may not exist in all versions
+        )
 
         logger.info(f"Exporting deck with {len(self._media_files)} media files")
 
@@ -720,7 +722,9 @@ class AnkiBackend(DeckBackend):
                 exporter.exportInto(output_path)
             else:
                 # Fallback: use the collection export
-                self._collection.export_anki_package(output_path, [self._deck_id], True)  # type: ignore[misc,arg-type]  # Anki API boundary - signature varies by version
+                self._collection.export_anki_package(
+                    output_path, [self._deck_id], True
+                )  # Anki API boundary - signature varies by version
         except Exception as e:
             logger.error(f"Export failed with error: {e}")
             # As a last resort, create a simple export

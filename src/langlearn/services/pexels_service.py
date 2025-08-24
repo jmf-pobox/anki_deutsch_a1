@@ -142,12 +142,10 @@ class PexelsService:
         delay = min(delay, self.max_delay)
 
         # Add jitter to prevent thundering herd (±20%)
-        import random
-
         jitter = delay * 0.2 * (random.random() - 0.5)  # -10% to +10%
-        delay = int(delay + jitter)
+        delay_with_jitter = int(delay + jitter)
 
-        return max(delay, 1)  # Minimum 1 second
+        return max(delay_with_jitter, 1)  # Minimum 1 second
 
     def _make_request(self, url: str, params: dict[str, Any]) -> requests.Response:
         """Make a request to the Pexels API with exponential backoff retry logic.

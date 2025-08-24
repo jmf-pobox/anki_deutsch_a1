@@ -45,9 +45,9 @@ class RecordMapper:
             "Mapping %d fields to %s record: %s",
             len(fields),
             record_type,
-            fields[:3]
-            if len(fields) > 3
-            else fields,  # Log first few fields for debugging
+            (
+                fields[:3] if len(fields) > 3 else fields
+            ),  # Log first few fields for debugging
         )
 
         try:
@@ -281,7 +281,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_field_names()  # type: ignore[no-any-return, attr-defined]
+        return record_class.get_field_names()  # type: ignore
 
     def get_expected_field_count_for_record_type(self, record_type: str) -> int:
         """Get expected field count for a record type.
@@ -302,7 +302,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_expected_field_count()  # type: ignore[no-any-return, attr-defined]
+        return record_class.get_expected_field_count()  # type: ignore
 
     def detect_csv_record_type(self, csv_path: str | Path) -> str:
         """Detect the record type from CSV file headers.
