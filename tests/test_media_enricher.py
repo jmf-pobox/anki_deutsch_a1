@@ -543,7 +543,7 @@ class TestTranslationIntegration:
         # Act & Assert
         assert enricher_with_translation._translate_for_search("") == ""
         assert enricher_with_translation._translate_for_search("   ") == "   "
-        assert enricher_with_translation._translate_for_search(None) == None
+        assert enricher_with_translation._translate_for_search(None) is None
 
     @patch("langlearn.services.media_enricher.logger")
     def test_translate_for_search_exception_handling(

@@ -1,4 +1,4 @@
-"""Simple integration tests for translation functionality without external dependencies."""
+"""Simple integration tests for translation functionality without external deps."""
 
 from unittest.mock import Mock
 
@@ -104,7 +104,7 @@ class TestTranslationLogic:
         # Act & Assert
         assert mock_translate_for_search("", mock_service) == ""
         assert mock_translate_for_search("   ", mock_service) == "   "
-        assert mock_translate_for_search(None, mock_service) == None
+        assert mock_translate_for_search(None, mock_service) is None
 
         # Service should not be called for empty text
         mock_service.translate_to_english.assert_not_called()
@@ -332,14 +332,14 @@ class TestTranslationServiceMockBehavior:
 
         # Test empty text
         assert mock_translate_to_english("") == ""
-        assert mock_translate_to_english(None) == None
+        assert mock_translate_to_english(None) is None
 
 
 class TestExampleSentenceImageGeneration:
     """Test that all card types now use example sentences for better image quality."""
 
     def test_adjective_uses_example_sentence(self) -> None:
-        """Test that adjective image generation uses example sentence instead of AI-generated terms."""
+        """Test that adjective image generation uses example sentence not AI terms."""
 
         # Arrange - simulate adjective enrichment with example sentence
         def mock_enrich_adjective_with_example(
@@ -400,7 +400,7 @@ class TestExampleSentenceImageGeneration:
 
 
 class TestPhraseImageOptimization:
-    """Test phrase image generation optimization to avoid unnecessary translation calls."""
+    """Test phrase image generation optimization to avoid unnecessary translation."""
 
     def test_phrase_image_generation_with_existing_image(self) -> None:
         """Test that phrase image generation skips translation when image exists."""
@@ -477,7 +477,7 @@ class TestPhraseImageOptimization:
         mock_image_exists.assert_called_once_with("Ich gehe in die Schule")
 
     def test_phrase_image_generation_without_existing_image(self) -> None:
-        """Test that phrase image generation uses translation when image doesn't exist."""
+        """Test that phrase image generation uses translation when image missing."""
 
         # Arrange - simulate optimized phrase enrichment
         def mock_enrich_phrase_optimized(

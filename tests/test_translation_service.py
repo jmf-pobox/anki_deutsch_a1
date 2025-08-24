@@ -40,7 +40,7 @@ class TestAnthropicTranslationService:
         # Act & Assert
         assert service.translate_to_english("") == ""
         assert service.translate_to_english("   ") == "   "
-        assert service.translate_to_english(None) == None
+        assert service.translate_to_english(None) is None
 
         # No API calls should be made
         mock_anthropic._generate_response.assert_not_called()
@@ -201,7 +201,7 @@ class TestMockTranslationService:
         service = MockTranslationService()
 
         # Act & Assert
-        assert service.translate_to_english(None) == None
+        assert service.translate_to_english(None) is None
 
 
 class TestTranslationServiceIntegration:

@@ -156,7 +156,7 @@ class TestTranslationServiceIntegrationWithDeckBuilder:
     def test_deck_builder_injects_translation_service(
         self, mock_enricher_class: Mock, mock_get_translation: Mock
     ) -> None:
-        """Test that DeckBuilder properly injects translation service into MediaEnricher."""
+        """Test that DeckBuilder properly injects translation service."""
         # Arrange
         mock_translation_service = Mock()
         mock_get_translation.return_value = mock_translation_service
@@ -218,7 +218,7 @@ class TestTranslationServiceErrorHandling:
         )
 
     def test_multiple_service_requests_handle_failures_gracefully(self) -> None:
-        """Test that multiple requests for unavailable service handle failures gracefully."""
+        """Test that multiple requests for unavailable service handle failures."""
         # Act - multiple requests should not crash
         service1 = get_translation_service()
         service2 = get_translation_service()
