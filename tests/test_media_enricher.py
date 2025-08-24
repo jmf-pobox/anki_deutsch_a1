@@ -17,6 +17,7 @@ from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.negation import Negation, NegationType
 from langlearn.models.noun import Noun
 from langlearn.services.media_enricher import MediaEnricher, StandardMediaEnricher
+from langlearn.services.translation_service import MockTranslationService
 
 
 class TestMediaEnricher:
@@ -487,3 +488,160 @@ class TestStandardMediaEnricher:
         assert "word_audio" in result
         assert "example_audio" in result
         assert result.get("image") is None or result.get("image") == ""
+
+
+class TestTranslationIntegration:
+    """Test translation service integration with MediaEnricher."""
+
+    @pytest.fixture
+    def mock_translation_service(self) -> MockTranslationService:
+        """Create mock translation service with test data."""
+        return MockTranslationService()
+
+    @pytest.fixture
+    def enricher_with_translation(
+        self, mock_media_service: Mock, mock_translation_service: MockTranslationService
+    ) -> StandardMediaEnricher:
+        """Create enricher with translation service."""
+        return StandardMediaEnricher(
+            media_service=mock_media_service,
+            translation_service=mock_translation_service,
+        )
+
+    def test_translate_for_search_with_service(
+        self, enricher_with_translation: StandardMediaEnricher
+    ) -> None:
+        """Test _translate_for_search method with translation service."""
+        # Act
+        result = enricher_with_translation._translate_for_search("ich gehe in die schule")
+
+        # Assert - should use mock translation
+        assert result == "I go to school"
+
+    def test_translate_for_search_without_service(
+        self, mock_media_service: Mock
+    ) -> None:
+        """Test _translate_for_search method without translation service."""
+        # Arrange
+        enricher = StandardMediaEnricher(
+            media_service=mock_media_service,
+            translation_service=None,  # No translation service
+        )
+
+        # Act
+        result = enricher._translate_for_search("ich gehe in die schule")
+
+        # Assert - should return original German text
+        assert result == "ich gehe in die schule"
+
+    def test_translate_for_search_empty_text(
+        self, enricher_with_translation: StandardMediaEnricher
+    ) -> None:
+        """Test _translate_for_search with empty text."""
+        # Act & Assert
+        assert enricher_with_translation._translate_for_search("") == ""
+        assert enricher_with_translation._translate_for_search("   ") == "   "
+        assert enricher_with_translation._translate_for_search(None) == None
+
+    @patch("langlearn.services.media_enricher.logger")
+    def test_translate_for_search_exception_handling(
+        self, mock_logger: Mock, mock_media_service: Mock
+    ) -> None:
+        """Test _translate_for_search handles translation service exceptions."""
+        # Arrange
+        mock_translation_service = Mock()
+        mock_translation_service.translate_to_english.side_effect = Exception("API Error")
+
+        enricher = StandardMediaEnricher(
+            media_service=mock_media_service,
+            translation_service=mock_translation_service,
+        )
+
+        # Act
+        result = enricher._translate_for_search("ich gehe in die schule")
+
+        # Assert
+        assert result == "ich gehe in die schule"  # Fallback to original
+        mock_logger.warning.assert_called_once()
+
+    def test_verb_image_generation_uses_translation(
+        self, enricher_with_translation: StandardMediaEnricher
+    ) -> None:
+        """Test that verb image generation uses translated text for search."""
+        # Arrange
+        mock_media_service = enricher_with_translation._media_service
+        mock_media_service.generate_image.return_value = "test_image.jpg"
+
+        # Mock image_exists to return False (image doesn't exist)
+        enricher_with_translation.image_exists = Mock(return_value=False)
+
+        record = {
+            "infinitive": "gehen",
+            "english": "to go",
+            "example": "ich gehe in die schule",  # German text
+        }
+
+        # Act
+        result = enricher_with_translation._enrich_verb_record(record)
+
+        # Assert
+        assert "image" in result
+        # Verify that generate_image was called with English translation
+        mock_media_service.generate_image.assert_called_once_with(
+            "I go to school",  # Translated text used for search
+            "to go"  # Fallback
+        )
+
+    def test_preposition_image_generation_uses_translation(
+        self, enricher_with_translation: StandardMediaEnricher
+    ) -> None:
+        """Test that preposition image generation uses translated text for search."""
+        # Arrange
+        mock_media_service = enricher_with_translation._media_service
+        mock_media_service.generate_image.return_value = "test_image.jpg"
+
+        # Mock image_exists to return False (image doesn't exist)
+        enricher_with_translation.image_exists = Mock(return_value=False)
+
+        record = {
+            "preposition": "in",
+            "english": "in",
+            "example1": "ich gehe in die schule",  # German text
+            "case": "Akkusativ/Dativ",
+        }
+
+        # Act
+        result = enricher_with_translation._enrich_preposition_record(record)
+
+        # Assert
+        assert "image" in result
+        # Verify that generate_image was called with English translation
+        mock_media_service.generate_image.assert_called_once_with(
+            "I go to school",  # Translated text used for search
+            "in"  # Fallback
+        )
+
+    def test_phrase_image_generation_uses_translation(
+        self, enricher_with_translation: StandardMediaEnricher
+    ) -> None:
+        """Test that phrase image generation uses translated text for search."""
+        # Arrange
+        mock_media_service = enricher_with_translation._media_service
+        mock_media_service.generate_image.return_value = "test_image.jpg"
+
+        record = {
+            "phrase": "ich gehe in die schule",  # German text
+            "english": "I go to school",
+            "context": "education",
+        }
+
+        # Act
+        result = enricher_with_translation._enrich_phrase_record(record)
+
+        # Assert
+        assert "image" in result
+        # Verify that generate_image was called with English translation
+        mock_media_service.generate_image.assert_called_once_with(
+            "I go to school",  # Translated text used for search
+            "education"  # Fallback from context
+        )

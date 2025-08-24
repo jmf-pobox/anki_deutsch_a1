@@ -3,15 +3,62 @@
 This document provides comprehensive specifications for all German language card types in the system.
 Generated automatically by CardSpecificationGenerator to ensure accuracy and completeness.
 
-This specification describes the accurate active/inactive state of 
-sub-decks and cards. This specification states requirements for each card 
-type and sub-deck; however, those requirements may not be reflected in the 
-current code.  There should be gh issues for each area of difference 
-between the specification and the code.  Differences tend to me whether 
-fields exist or not and whether they are mandatory or not.  Also, there is 
+This specification describes the accurate active/inactive state of
+sub-decks and cards. This specification states requirements for each card
+type and sub-deck; however, those requirements may not be reflected in the
+current code.  There should be gh issues for each area of difference
+between the specification and the code.  Differences tend to me whether
+fields exist or not and whether they are mandatory or not.  Also, there is
 an overall gh issue related to the templating system.
 
 **Total Card Types**: 15
+
+## Image Search Sources by Card Type
+
+This section documents the source text used for Pexels API image searches for each card type. All German text is automatically translated to English before searching to improve image quality and relevance.
+
+### Translation-Enhanced Image Search
+
+**Process**: German text → Claude Translation → English search terms → Pexels API → Images
+
+**Benefits**:
+- Dramatically improved image quality (German searches often return poor results)
+- Better visual context for learning
+- More diverse image options available
+
+### Card Type Image Sources
+
+| Card Type | Image Source | Translation | Example |
+|-----------|-------------|-------------|---------|
+| **Adjectives** | German example sentence | ✅ | `Das Haus ist schön` → `The house is beautiful` |
+| **Adverbs** | German example sentence | ✅ | `Er läuft schnell` → `He runs fast` |
+| **Negations** | German example sentence | ✅ | `Ich komme nicht` → `I am not coming` |
+| **Nouns** | German example sentence (concrete nouns only) | ✅ | `Das Haus ist groß` → `The house is big` |
+| **Phrases** | German phrase text | ✅ | `Guten Tag` → `Good day` |
+| **Prepositions** | German Example1 sentence | ✅ | `Ich gehe in die Schule` → `I go to school` |
+| **Verbs** | German example sentence | ✅ | `Er arbeitet in der Bank` → `He works in the bank` |
+| **Verb_Conjugation** | German example sentence | ✅ | `Ich spreche Deutsch` → `I speak German` |
+| **Verb_Imperative** | German example sentence | ✅ | `Sprich lauter!` → `Speak louder!` |
+
+### Unified Example Sentence Approach
+
+**Example Sentence Translation** (All Card Types):
+- German example sentences translated directly to English
+- Provides rich contextual information for image searches
+- Consistent approach across all vocabulary card types
+- Better visual context than isolated words or AI-generated terms
+
+**Benefits of Example Sentences**:
+- **Contextual relevance**: Images show words in actual usage scenarios
+- **Higher quality**: Sentence context produces more relevant Pexels results
+- **Consistency**: Same approach across all card types
+- **Natural learning**: Visual context matches how words are actually used
+
+### Image Generation Optimization
+
+**Existence Check**: All card types check if image already exists before generating new ones to avoid unnecessary API calls and costs.
+
+**Performance**: Translation only occurs when new images are needed, significantly reducing API usage for existing image libraries.
 
 ## Table of Contents - Organized by Sub-deck
 
@@ -79,9 +126,16 @@ an overall gh issue related to the templating system.
 | `Example` | adjectives.csv | ✅ | Back | Example sentence using the word | `Das Haus ist schön.` |
 | `Comparative` | adjectives.csv | ✅ | Back | Comparative form of adjective | `schöner` |
 | `Superlative` | adjectives.csv | ✅ | Back | Superlative form of adjective | `am schönsten` |
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API | `<img src="house_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using AI-generated search terms | `<img src="house_001.jpg" />` |
 | `WordAudio` | AWS_Polly | ✅ | Front | Generated pronunciation audio from AWS Polly | `[sound:schön_pronunciation.mp3]` |
 | `ExampleAudio` | AWS_Polly | ✅ | Back | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+
+### Image Search Details
+**Source**: German example sentence (direct translation)
+**Process**: German example sentence → Claude translation → English search terms → Pexels search
+**Example**: `Das Haus ist schön` → `The house is beautiful` → Pexels search for beautiful house images
+**Benefits**: Contextual images showing adjectives in actual usage scenarios
+**Fallback**: English translation of adjective if translation fails
 
 ---
 
@@ -115,9 +169,16 @@ an overall gh issue related to the templating system.
 | `English` | adverbs.csv | ✅ | Back | English translation or meaning | `here` |
 | `Type` | adverbs.csv | ✅ | Back | Classification or type of word | `location` |
 | `Example` | adverbs.csv | ✅ | Back | Example sentence using the word | `Ich wohne hier.` |
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API | `<img src="house_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using AI-generated search terms | `<img src="house_001.jpg" />` |
 | `WordAudio` | AWS_Polly | ✅ | Front | Generated pronunciation audio from AWS Polly | `[sound:hier_pronunciation.mp3]` |
 | `ExampleAudio` | AWS_Polly | ✅ | Back | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+
+### Image Search Details
+**Source**: German example sentence (direct translation)
+**Process**: German example sentence → Claude translation → English search terms → Pexels search
+**Example**: `Er läuft schnell` → `He runs fast` → Pexels search for fast running images
+**Benefits**: Action-based images showing adverbs modifying verbs in context
+**Fallback**: English translation of adverb if translation fails
 
 ---
 
@@ -371,9 +432,16 @@ an overall gh issue related to the templating system.
 | `English` | negations.csv | ✅ | Back | English translation or meaning | `not` |
 | `Type` | negations.csv | ✅ | Back | Classification or type of word | `adverb` |
 | `Example` | negations.csv | ✅ | Back | Example sentence using the word | `Ich komme nicht.` |
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API | `<img src="house_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using AI-generated search terms | `<img src="house_001.jpg" />` |
 | `WordAudio` | AWS_Polly | ✅ | Front | Generated pronunciation audio from AWS Polly | `[sound:nicht_pronunciation.mp3]` |
 | `ExampleAudio` | AWS_Polly | ✅ | Back | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+
+### Image Search Details
+**Source**: German example sentence (direct translation)
+**Process**: German example sentence → Claude translation → English search terms → Pexels search
+**Example**: `Ich komme nicht` → `I am not coming` → Pexels search for negation/absence images
+**Benefits**: Contextual images showing negation in actual sentence usage
+**Fallback**: English translation of negation word if translation fails
 
 ---
 
@@ -409,9 +477,17 @@ an overall gh issue related to the templating system.
 | `Plural` | nouns.csv | ✅ | Back | Plural form of the noun | `Häuser` |
 | `Example` | nouns.csv | ✅ | Back | Example sentence using the word | `Das Haus ist schön.` |
 | `Related` | nouns.csv | ✅ | Back | Related words or expressions | `Gebäude, Wohnung` |
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API | `<img src="house_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using AI-generated search terms (concrete nouns only) | `<img src="house_001.jpg" />` |
 | `WordAudio` | AWS_Polly | ✅ | Front | Generated pronunciation audio from AWS Polly | `[sound:haus_pronunciation.mp3]` |
 | `ExampleAudio` | AWS_Polly | ✅ | Back | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+
+### Image Search Details
+**Source**: German example sentence (direct translation, concrete nouns only)
+**Process**: German example sentence → Claude translation → English search terms → Pexels search
+**Example**: `Das Haus ist groß` → `The house is big` → Pexels search for house images
+**Concrete Check**: Abstract nouns (ending in -heit, -keit, -ung, etc.) are filtered out
+**Benefits**: Contextual images showing nouns in descriptive sentences
+**Fallback**: English translation of noun if translation fails, no image for abstract nouns
 
 ---
 
@@ -445,8 +521,15 @@ an overall gh issue related to the templating system.
 | `English` | phrases.csv | ✅ | Back | English translation or meaning | `Good day` |
 | `Context` | phrases.csv | ✅ | Back | Context or situation where phrase is used | `greeting someone` |
 | `Related` | phrases.csv | ❌ | Back | Related words or expressions | `Hallo, Auf Wiedersehen` |
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API | `<img src="house_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using translated phrase text | `<img src="house_001.jpg" />` |
 | `PhraseAudio` | AWS_Polly | ✅ | Front | Generated phrase audio from AWS Polly | `[sound:guten_tag.mp3]` |
+
+### Image Search Details
+**Source**: German phrase text (direct translation)
+**Process**: German phrase → Claude translation → English search terms → Pexels search
+**Example**: `Guten Tag` → `Good day` → Pexels search for greeting/daytime images
+**Optimization**: Checks for existing images first to avoid unnecessary translation calls
+**Fallback**: Context field or English field if translation fails
 
 ---
 
@@ -476,7 +559,7 @@ an overall gh issue related to the templating system.
 
 | Field | Source | Required | Usage | Description | Example |
 |-------|--------|----------|--------|-------------|---------|
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API | `<img src="house_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using translated Example1 sentence | `<img src="house_001.jpg" />` |
 | `Preposition` | prepositions.csv | ✅ | Front | German preposition | `mit` |
 | `WordAudio` | AWS_Polly | ✅ | Front | Generated pronunciation audio from AWS Polly | `[sound:mit_pronunciation.mp3]` |
 | `English` | prepositions.csv | ✅ | Back | English translation or meaning | `with` |
@@ -485,6 +568,13 @@ an overall gh issue related to the templating system.
 | `Example1Audio` | AWS_Polly | ✅ | Back | Generated audio for first example | `[sound:example1.mp3]` |
 | `Example2` | prepositions.csv | ❌ | Back | Second example sentence (optional - not all prepositions have two cases) | `Mit dir ist alles besser.` |
 | `Example2Audio` | AWS_Polly | ❌ | Back | Generated audio for second example (optional) | `[sound:example2.mp3]` |
+
+### Image Search Details
+**Source**: German Example1 sentence (required field)
+**Process**: German example sentence → Claude translation → English search terms → Pexels search
+**Example**: `Ich gehe in die Schule` → `I go to school` → Pexels search for school/education images
+**Rationale**: Example1 is required field per spec, provides rich contextual information for spatial relationships
+**Fallback**: English translation of preposition if translation fails
 
 ---
 
@@ -514,7 +604,7 @@ an overall gh issue related to the templating system.
 
 | Field | Source | Required | Usage | Description | Example |
 |-------|--------|----------|-------|-------------|---------|
-| `Image` | Pexels | ✅ | Front | Generated image from Pexels API representing the verb action | `<img src="work_001.jpg" />` |
+| `Image` | Pexels | ✅ | Front | Generated image from Pexels API using translated example sentence | `<img src="work_001.jpg" />` |
 | `English` | verbs.csv | ✅ | Both | English translation or meaning (hint on front, definition on back) | `to work` |
 | `Verb` | verbs.csv | ✅ | Back | German verb in infinitive form | `arbeiten` |
 | `Classification` | verbs.csv | ✅ | Back | Verb classification using German terms (regelmäßig, unregelmäßig, gemischt) | `regelmäßig` |
@@ -528,6 +618,13 @@ an overall gh issue related to the templating system.
 | `Separable` | verbs.csv | ✅ | Back | Whether the verb is separable (true) or not (false) | `false` |
 | `WordAudio` | AWS_Polly | ✅ | Back | Generated pronunciation audio for infinitive form | `[sound:arbeiten_pronunciation.mp3]` |
 | `ExampleAudio` | AWS_Polly | ✅ | Back | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+
+### Image Search Details
+**Source**: German example sentence
+**Process**: German example sentence → Claude translation → English search terms → Pexels search
+**Example**: `Er arbeitet in einer Bank` → `He works in a bank` → Pexels search for work/office images
+**Rationale**: Example sentences provide action context better than infinitive verbs alone
+**Fallback**: English translation of infinitive if translation fails
 
 ## Verb_Conjugation
 

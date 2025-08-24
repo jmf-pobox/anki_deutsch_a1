@@ -3,6 +3,7 @@
 from typing import Optional
 
 from .anthropic_service import AnthropicService
+from .translation_service import AnthropicTranslationService, TranslationServiceProtocol
 
 
 class ServiceContainer:
@@ -10,6 +11,7 @@ class ServiceContainer:
 
     _instance: Optional["ServiceContainer"] = None
     _anthropic_service: AnthropicService | None = None
+    _translation_service: TranslationServiceProtocol | None = None
 
     def __new__(cls) -> "ServiceContainer":
         """Singleton pattern to ensure one container instance."""
@@ -31,9 +33,27 @@ class ServiceContainer:
                 return None
         return self._anthropic_service
 
+    def get_translation_service(self) -> TranslationServiceProtocol | None:
+        """Get the shared TranslationService instance.
+
+        Returns:
+            TranslationService instance or None if not available
+        """
+        if self._translation_service is None:
+            # Try to create translation service using Anthropic
+            anthropic_service = self.get_anthropic_service()
+            if anthropic_service:
+                try:
+                    self._translation_service = AnthropicTranslationService(anthropic_service)
+                except Exception:
+                    # Translation service not available
+                    return None
+        return self._translation_service
+
     def reset(self) -> None:
         """Reset the container (useful for testing)."""
         self._anthropic_service = None
+        self._translation_service = None
 
 
 # Global instance
@@ -47,6 +67,15 @@ def get_anthropic_service() -> AnthropicService | None:
         AnthropicService instance or None if not available
     """
     return _container.get_anthropic_service()
+
+
+def get_translation_service() -> TranslationServiceProtocol | None:
+    """Factory function to get TranslationService instance.
+
+    Returns:
+        TranslationService instance or None if not available
+    """
+    return _container.get_translation_service()
 
 
 def reset_services() -> None:
