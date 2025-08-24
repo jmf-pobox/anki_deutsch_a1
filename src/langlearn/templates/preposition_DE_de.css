@@ -10,7 +10,7 @@
 .german {
     font-size: 32px;
     font-weight: bold;
-    color: #7c3aed;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -50,10 +50,11 @@ img {
 
 .preposition-prompt {
     background: #f8f9fa;
-    border: 2px solid #7c3aed;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
     margin-bottom: 20px;
+    display: inline-block;
 }
 
 .case-challenge {
@@ -63,7 +64,7 @@ img {
 .challenge-label {
     font-size: 18px;
     font-weight: bold;
-    color: #7c3aed;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -75,10 +76,10 @@ img {
 }
 
 .case-option {
-    background: #ede9fe;
+    background: #e8f4fd;
     padding: 12px;
     border-radius: 8px;
-    border: 2px dashed #7c3aed;
+    border: 2px dashed #2c5aa0;
     font-size: 14px;
     color: #444;
     cursor: pointer;
