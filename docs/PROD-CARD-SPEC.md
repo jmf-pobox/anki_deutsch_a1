@@ -69,9 +69,6 @@ an overall gh issue related to the templating system.
 - `adjective_front.html`
 - `adjective_back.html`
 - `adjective.css`
-- `adjective_DE_de_front.html`
-- `adjective_DE_de_back.html`
-- `adjective_DE_de.css`
 
 ### Field Specifications
 
