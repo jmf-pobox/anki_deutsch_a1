@@ -9,43 +9,32 @@
     <div class="translation">{{English}}</div>
     
     <div class="case-info">
-        <div class="case-label">Required Case:</div>
+        <div class="case-label">Erforderlicher Fall:</div>
         <div class="case-value">{{Case}}</div>
     </div>
 </div>
 
 <div class="examples-section">
-    <div class="examples-header">Usage Examples</div>
-    
-    <div class="example-item">
-        <div class="example-with-audio">
-            <span class="example-text">{{Example1}}</span>
-            {{#Example1Audio}}<span class="inline-audio">🔊 {{Example1Audio}}</span>{{/Example1Audio}}
-        </div>
+    <div class="example-with-audio">
+        <span class="example-item">{{Example1}}</span>
+        {{#Example1Audio}}<span class="inline-audio">🔊 {{Example1Audio}}</span>{{/Example1Audio}}
     </div>
-    
-    <div class="example-item">
-        <div class="example-with-audio">
-            <span class="example-text">{{Example2}}</span>
-            {{#Example2Audio}}<span class="inline-audio">🔊 {{Example2Audio}}</span>{{/Example2Audio}}
-        </div>
+
+    <div class="example-with-audio">
+        <span class="example-item">{{Example2}}</span>
+        {{#Example2Audio}}<span class="inline-audio">🔊 {{Example2Audio}}</span>{{/Example2Audio}}
     </div>
 </div>
 
-<div class="back-hint-container">
-    <button class="hint-button" onclick="showBackHint()">💡 Show More Info</button>
-    <div id="back-hint-content" class="hint-content hidden">
-        <div class="case-explanation">
-            <strong>{{Case}}</strong>: This preposition requires the {{Case}} case.
-            Pay attention to article and adjective endings in the examples above.
-        </div>
-    </div>
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Tipp</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 
 <script>
-function showBackHint() {
-    var hint = document.getElementById('back-hint-content');
-    var button = document.querySelector('.back-hint-container .hint-button');
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
     hint.classList.remove('hidden');
     button.style.display = 'none';
 }

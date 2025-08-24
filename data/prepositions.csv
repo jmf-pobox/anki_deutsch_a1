@@ -1,30 +1,30 @@
 preposition,english,case,example1,example2
-in,in,Accusative/Dative,Ich gehe in die Schule.,Ich bin in der Schule.
-auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch.,Das Buch liegt auf dem Tisch.
-unter,under,Accusative/Dative,Ich stelle die Schuhe unter den Tisch.,Die Schuhe stehen unter dem Tisch.
-über,over/above,Accusative/Dative,Ich hänge das Bild über den Schreibtisch.,Das Bild hängt über dem Schreibtisch.
-vor,in front of,Accusative/Dative,Ich stelle den Stuhl vor das Fenster.,Der Stuhl steht vor dem Fenster.
-hinter,behind,Accusative/Dative,Ich stelle das Regal hinter die Tür.,Das Regal steht hinter der Tür.
-neben,next to,Accusative/Dative,Ich setze mich neben den Mann.,Ich sitze neben dem Mann.
-zwischen,between,Accusative/Dative,Ich setze mich zwischen die Kinder.,Ich sitze zwischen den Kindern.
-an,at/on,Accusative/Dative,Ich hänge das Bild an die Wand.,Das Bild hängt an der Wand.
-mit,with,Dative,Ich fahre mit dem Bus.,Ich spreche mit meiner Freundin.
-zu,to,Dative,Ich gehe zu meiner Freundin.,Er geht zum Arzt.
-aus,from/out of,Dative,Ich komme aus Deutschland.,Die Tasche ist aus Leder.
-bei,at/with,Dative,Ich wohne bei meinen Eltern.,Ich arbeite bei einer Firma.
-von,from/of,Dative,Ich bekomme ein Geschenk von meiner Freundin.,Das Buch ist von Goethe.
-nach,after/to,Dative,Nach dem Essen gehe ich schlafen.,Ich fahre nach Berlin.
-seit,since/for,Dative,Ich lerne seit zwei Jahren Deutsch.,Er wohnt seit Januar in München.
-außer,except/besides,Dative,Alle kommen außer Peter.,Außer dem Buch habe ich nichts gekauft.
-gegenüber,opposite,Dative,Das Restaurant ist gegenüber der Bank.,Er sitzt mir gegenüber.
-für,for,Accusative,Das Geschenk ist für dich.,Ich arbeite für eine deutsche Firma.
-ohne,without,Accusative,Ich gehe ohne meinen Freund ins Kino.,Er trinkt den Kaffee ohne Zucker.
-gegen,against,Accusative,Das Spiel ist Deutschland gegen Frankreich.,Er ist gegen meinen Vorschlag.
-um,around/at (time),Accusative,Wir sitzen um den Tisch.,Der Unterricht beginnt um 9 Uhr.
-durch,through,Accusative,Wir gehen durch den Park.,Ich lerne Deutsch durch Musik.
-bis,until,Accusative,Der Laden ist bis 20 Uhr geöffnet.,Ich arbeite bis nächste Woche.
-entlang,along,Accusative,Wir gehen den Fluss entlang.,Fahren Sie die Straße entlang.
-statt,instead of,Genitive,Statt eines Buches kauft er eine Zeitschrift.,Statt des Filmes sehen wir ein Konzert.
-trotz,despite,Genitive,Trotz des Regens gehe ich spazieren.,Er geht trotz seiner Krankheit zur Arbeit.
-während,during,Genitive,Während des Films darf man nicht sprechen.,Während der Reise habe ich viele Fotos gemacht.
-wegen,because of,Genitive,Wegen des Regens bleibe ich zu Hause.,Ich kann wegen meiner Arbeit nicht kommen.
+in,in,Akkusativ/Dativ,Ich gehe in die Schule.,Ich bin in der Schule.
+auf,on,Akkusativ/Dativ,Ich lege das Buch auf den Tisch.,Das Buch liegt auf dem Tisch.
+unter,under,Akkusativ/Dativ,Ich stelle die Schuhe unter den Tisch.,Die Schuhe stehen unter dem Tisch.
+über,over/above,Akkusativ/Dativ,Ich hänge das Bild über den Schreibtisch.,Das Bild hängt über dem Schreibtisch.
+vor,in front of,Akkusativ/Dativ,Ich stelle den Stuhl vor das Fenster.,Der Stuhl steht vor dem Fenster.
+hinter,behind,Akkusativ/Dativ,Ich stelle das Regal hinter die Tür.,Das Regal steht hinter der Tür.
+neben,next to,Akkusativ/Dativ,Ich setze mich neben den Mann.,Ich sitze neben dem Mann.
+zwischen,between,Akkusativ/Dativ,Ich setze mich zwischen die Kinder.,Ich sitze zwischen den Kindern.
+an,at/on,Akkusativ/Dativ,Ich hänge das Bild an die Wand.,Das Bild hängt an der Wand.
+mit,with,Dativ,Ich fahre mit dem Bus.,Ich spreche mit meiner Freundin.
+zu,to,Dativ,Ich gehe zu meiner Freundin.,Er geht zum Arzt.
+aus,from/out of,Dativ,Ich komme aus Deutschland.,Die Tasche ist aus Leder.
+bei,at/with,Dativ,Ich wohne bei meinen Eltern.,Ich arbeite bei einer Firma.
+von,from/of,Dativ,Ich bekomme ein Geschenk von meiner Freundin.,Das Buch ist von Goethe.
+nach,after/to,Dativ,Nach dem Essen gehe ich schlafen.,Ich fahre nach Berlin.
+seit,since/for,Dativ,Ich lerne seit zwei Jahren Deutsch.,Er wohnt seit Januar in München.
+außer,except/besides,Dativ,Alle kommen außer Peter.,Außer dem Buch habe ich nichts gekauft.
+gegenüber,opposite,Dativ,Das Restaurant ist gegenüber der Bank.,Er sitzt mir gegenüber.
+für,for,Akkusativ,Das Geschenk ist für dich.,Ich arbeite für eine deutsche Firma.
+ohne,without,Akkusativ,Ich gehe ohne meinen Freund ins Kino.,Er trinkt den Kaffee ohne Zucker.
+gegen,against,Akkusativ,Das Spiel ist Deutschland gegen Frankreich.,Er ist gegen meinen Vorschlag.
+um,around/at (time),Akkusativ,Wir sitzen um den Tisch.,Der Unterricht beginnt um 9 Uhr.
+durch,through,Akkusativ,Wir gehen durch den Park.,Ich lerne Deutsch durch Musik.
+bis,until,Akkusativ,Der Laden ist bis 20 Uhr geöffnet.,Ich arbeite bis nächste Woche.
+entlang,along,Akkusativ,Wir gehen den Fluss entlang.,Fahren Sie die Straße entlang.
+statt,instead of,Genitiv,Statt eines Buches kauft er eine Zeitschrift.,Statt des Filmes sehen wir ein Konzert.
+trotz,despite,Genitiv,Trotz des Regens gehe ich spazieren.,Er geht trotz seiner Krankheit zur Arbeit.
+während,during,Genitiv,Während des Films darf man nicht sprechen.,Während der Reise habe ich viele Fotos gemacht.
+wegen,because of,Genitiv,Wegen des Regens bleibe ich zu Hause.,Ich kann wegen meiner Arbeit nicht kommen.
