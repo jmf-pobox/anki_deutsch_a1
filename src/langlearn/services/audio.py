@@ -6,7 +6,7 @@ import logging.handlers
 from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict
 
-import boto3  # type: ignore[import-not-found]  # External dependency boundary
+import boto3  # type: ignore[import-untyped]  # External dependency boundary
 from botocore.exceptions import (  # type: ignore[import-untyped]  # External
     ClientError,
     NoCredentialsError,
