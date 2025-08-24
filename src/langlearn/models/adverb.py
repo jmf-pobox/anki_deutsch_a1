@@ -14,15 +14,15 @@ if TYPE_CHECKING:
 class AdverbType(str, Enum):
     """Types of German adverbs."""
 
-    LOCATION = "location"  # hier, dort, oben, unten
-    TIME = "time"  # heute, morgen, jetzt
-    FREQUENCY = "frequency"  # immer, oft, manchmal
-    MANNER = "manner"  # gern, langsam, schnell
-    INTENSITY = "intensity"  # sehr, zu, besonders
-    ADDITION = "addition"  # auch
-    LIMITATION = "limitation"  # nur
-    ATTITUDE = "attitude"  # leider, natürlich
-    PROBABILITY = "probability"  # vielleicht, wahrscheinlich
+    LOCATION = "Ortsadverb"  # 8 entries
+    TIME = "Zeitadverb"  # 8 entries
+    FREQUENCY = "Häufigkeitsadverb"  # 6 entries
+    MANNER = "Modaladverb"  # 9 entries
+    INTENSITY = "Gradadverb"  # 5 entries
+    ADDITION = "Modaladverb"  # 1 entry - auch
+    LIMITATION = "Modaladverb"  # 1 entry - nur
+    ATTITUDE = "Kommentaradverb"  # 2 entries
+    PROBABILITY = "Modaladverb"  # 2 entries - vielleicht, wahrscheinlich
 
 
 class Adverb(BaseModel):
@@ -72,8 +72,8 @@ class Adverb(BaseModel):
                 print("Time adverb after start - valid")
                 return True
 
-        # Manner and frequency adverbs typically come after the verb
-        if self.type in [AdverbType.MANNER, AdverbType.FREQUENCY] and adverb_pos > 0:
+        # Manner and frequency adverbs typically come after the verb (not at start)
+        if self.type in [AdverbType.MANNER, AdverbType.FREQUENCY] and adverb_pos > 1:
             return True
 
         # Location adverbs typically come at the end

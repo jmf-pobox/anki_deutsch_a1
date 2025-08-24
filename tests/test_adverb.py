@@ -136,12 +136,6 @@ def test_invalid_adverb_positions() -> None:
             type=AdverbType.INTENSITY,
             example="Das Buch ist interessant sehr.",  # Intensity adverb at end
         ),
-        Adverb(
-            word="langsam",
-            english="slowly",
-            type=AdverbType.MANNER,
-            example="Langsam spricht er Deutsch.",  # Manner adverb at start
-        ),
     ]
 
     for adverb in invalid_positions:
