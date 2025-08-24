@@ -44,7 +44,9 @@ class ServiceContainer:
             anthropic_service = self.get_anthropic_service()
             if anthropic_service:
                 try:
-                    self._translation_service = AnthropicTranslationService(anthropic_service)
+                    self._translation_service = AnthropicTranslationService(
+                        anthropic_service
+                    )
                 except Exception:
                     # Translation service not available
                     return None

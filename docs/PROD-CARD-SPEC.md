@@ -219,11 +219,18 @@ This section documents the source text used for Pexels API image searches for ea
 | `ExampleAcc` | articles_unified.csv | ❌ | Example sentence in accusative case | `Ich sehe den Mann.` |
 | `ExampleDat` | articles_unified.csv | ❌ | Example sentence in dative case | `Ich gebe dem Mann das Buch.` |
 | `ExampleGen` | articles_unified.csv | ❌ | Example sentence in genitive case | `Das ist das Haus des Mannes.` |
-| `Image` | Pexels | ❌ | Generated image from Pexels API | `<img src="house_001.jpg" />` |
-| `ArticleAudio` | AWS_Polly | ❌ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
-| `ExampleAudio` | AWS_Polly | ❌ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+| `Image` | Pexels | ✅ | Generated image from Pexels API using translated nominative example | `<img src="house_001.jpg" />` |
+| `ArticleAudio` | AWS_Polly | ✅ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
+| `ExampleAudio` | AWS_Polly | ✅ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
 | `NounOnly` | Generated | ❌ | Extracted noun without article | `Haus` |
 | `NounEnglish` | Generated | ❌ | English translation of extracted noun | `house` |
+
+### Image Search Details
+**Source**: German nominative example sentence (direct translation)
+**Process**: German ExampleNom sentence → Claude translation → English search terms → Pexels search
+**Example**: `Das Haus ist groß` → `The house is big` → Pexels search for house images
+**Benefits**: Contextual images showing articles with nouns in actual usage scenarios
+**Fallback**: English translation of noun if translation fails
 
 ## Artikel_Context_Cloze
 
@@ -251,8 +258,15 @@ This section documents the source text used for Pexels API image searches for ea
 |-------|--------|----------|-------------|---------|
 | `Text` | Generated | ❌ | Cloze deletion text with {{c1::}} tags | `Ich sehe {{c1::den}} Mann` |
 | `Explanation` | Generated | ❌ | Explanation of the grammatical rule | `Akkusativ - direktes Objekt` |
-| `Image` | Pexels | ❌ | Generated image from Pexels API | `<img src="house_001.jpg" />` |
-| `Audio` | AWS_Polly | ❌ | Field for audio | `example_audio` |
+| `Image` | Pexels | ✅ | Generated image from Pexels API using translated cloze text | `<img src="house_001.jpg" />` |
+| `Audio` | AWS_Polly | ✅ | Generated audio for cloze text (without cloze markers) | `[sound:example_audio.mp3]` |
+
+### Image Search Details
+**Source**: German cloze text with markers removed (direct translation)
+**Process**: Cloze text → Remove {{c1::}} markers → Claude translation → English search terms → Pexels search
+**Example**: `{{c1::Der}} Mann arbeitet` → `Der Mann arbeitet` → `The man works` → Pexels search
+**Benefits**: Contextual images showing article usage in sentence context
+**Fallback**: First capitalized noun if translation fails
 
 ## Artikel_Gender
 
@@ -286,9 +300,9 @@ This section documents the source text used for Pexels API image searches for ea
 | `Dative` | articles_unified.csv | ❌ | Dative case article form | `dem` |
 | `Genitive` | articles_unified.csv | ❌ | Genitive case article form | `des` |
 | `ExampleNom` | articles_unified.csv | ❌ | Example sentence in nominative case | `Der Mann arbeitet hier.` |
-| `Image` | Pexels | ❌ | Generated image from Pexels API | `<img src="house_001.jpg" />` |
-| `ArticleAudio` | AWS_Polly | ❌ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
-| `ExampleAudio` | AWS_Polly | ❌ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
+| `Image` | Pexels | ✅ | Generated image from Pexels API using translated nominative example | `<img src="house_001.jpg" />` |
+| `ArticleAudio` | AWS_Polly | ✅ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
+| `ExampleAudio` | AWS_Polly | ✅ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
 | `NounOnly` | Generated | ❌ | Extracted noun without article | `Haus` |
 | `NounEnglish` | Generated | ❌ | English translation of extracted noun | `house` |
 

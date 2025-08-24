@@ -513,7 +513,9 @@ class TestTranslationIntegration:
     ) -> None:
         """Test _translate_for_search method with translation service."""
         # Act
-        result = enricher_with_translation._translate_for_search("ich gehe in die schule")
+        result = enricher_with_translation._translate_for_search(
+            "ich gehe in die schule"
+        )
 
         # Assert - should use mock translation
         assert result == "I go to school"
@@ -550,7 +552,9 @@ class TestTranslationIntegration:
         """Test _translate_for_search handles translation service exceptions."""
         # Arrange
         mock_translation_service = Mock()
-        mock_translation_service.translate_to_english.side_effect = Exception("API Error")
+        mock_translation_service.translate_to_english.side_effect = Exception(
+            "API Error"
+        )
 
         enricher = StandardMediaEnricher(
             media_service=mock_media_service,
@@ -589,7 +593,7 @@ class TestTranslationIntegration:
         # Verify that generate_image was called with English translation
         mock_media_service.generate_image.assert_called_once_with(
             "I go to school",  # Translated text used for search
-            "to go"  # Fallback
+            "to go",  # Fallback
         )
 
     def test_preposition_image_generation_uses_translation(
@@ -618,7 +622,7 @@ class TestTranslationIntegration:
         # Verify that generate_image was called with English translation
         mock_media_service.generate_image.assert_called_once_with(
             "I go to school",  # Translated text used for search
-            "in"  # Fallback
+            "in",  # Fallback
         )
 
     def test_phrase_image_generation_uses_translation(
@@ -643,5 +647,5 @@ class TestTranslationIntegration:
         # Verify that generate_image was called with English translation
         mock_media_service.generate_image.assert_called_once_with(
             "I go to school",  # Translated text used for search
-            "education"  # Fallback from context
+            "education",  # Fallback from context
         )

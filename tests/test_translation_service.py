@@ -1,6 +1,5 @@
 """Tests for translation service functionality."""
 
-import pytest
 from unittest.mock import Mock, patch
 
 from src.langlearn.services.translation_service import (
@@ -25,7 +24,7 @@ class TestAnthropicTranslationService:
         # Assert
         assert result == "I go to school"
         mock_anthropic._generate_response.assert_called_once()
-        
+
         # Check that the prompt contains the German text
         call_args = mock_anthropic._generate_response.call_args
         prompt = call_args[0][0]
@@ -42,7 +41,7 @@ class TestAnthropicTranslationService:
         assert service.translate_to_english("") == ""
         assert service.translate_to_english("   ") == "   "
         assert service.translate_to_english(None) == None
-        
+
         # No API calls should be made
         mock_anthropic._generate_response.assert_not_called()
 
@@ -130,13 +129,13 @@ class TestAnthropicTranslationService:
 
         # Act & Assert
         assert service.get_cache_size() == 0
-        
+
         service.translate_to_english("Text 1")
         assert service.get_cache_size() == 1
-        
+
         service.translate_to_english("Text 2")
         assert service.get_cache_size() == 2
-        
+
         service.clear_cache()
         assert service.get_cache_size() == 0
 
@@ -166,9 +165,13 @@ class TestMockTranslationService:
         service = MockTranslationService()
 
         # Act & Assert
-        assert service.translate_to_english("Ich gehe in die Schule") == "I go to school"
+        assert (
+            service.translate_to_english("Ich gehe in die Schule") == "I go to school"
+        )
         assert service.translate_to_english("Er spielt Fußball") == "he plays football"
-        assert service.translate_to_english("Sie kocht das Essen") == "she cooks the food"
+        assert (
+            service.translate_to_english("Sie kocht das Essen") == "she cooks the food"
+        )
 
     def test_mock_translate_case_insensitive(self) -> None:
         """Test mock translation is case insensitive."""
@@ -176,8 +179,12 @@ class TestMockTranslationService:
         service = MockTranslationService()
 
         # Act & Assert
-        assert service.translate_to_english("ICH GEHE IN DIE SCHULE") == "I go to school"
-        assert service.translate_to_english("ich gehe in die schule") == "I go to school"
+        assert (
+            service.translate_to_english("ICH GEHE IN DIE SCHULE") == "I go to school"
+        )
+        assert (
+            service.translate_to_english("ich gehe in die schule") == "I go to school"
+        )
 
     def test_mock_translate_unknown_returns_original(self) -> None:
         """Test mock translation returns original for unknown phrases."""
@@ -200,7 +207,7 @@ class TestMockTranslationService:
 class TestTranslationServiceIntegration:
     """Integration tests for translation service with MediaEnricher."""
 
-    @patch('src.langlearn.services.translation_service.logger')
+    @patch("src.langlearn.services.translation_service.logger")
     def test_translation_service_logging(self, mock_logger: Mock) -> None:
         """Test that translation service logs appropriately."""
         # Arrange
@@ -219,7 +226,7 @@ class TestTranslationServiceIntegration:
         # Arrange
         mock_anthropic = Mock()
         service = AnthropicTranslationService(mock_anthropic)
-        
+
         # Real examples from our CSV data
         test_cases = [
             ("Ich gehe in die Schule.", "I go to school."),
@@ -232,12 +239,12 @@ class TestTranslationServiceIntegration:
         for german_text, expected_english in test_cases:
             # Arrange
             mock_anthropic._generate_response.return_value = expected_english
-            
+
             # Act
             result = service.translate_to_english(german_text)
-            
+
             # Assert
             assert result == expected_english
-            
+
             # Reset mock for next iteration
             mock_anthropic.reset_mock()

@@ -6,6 +6,7 @@ removing infrastructure concerns from domain models.
 """
 
 import logging
+import re
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
@@ -195,9 +196,7 @@ class StandardMediaEnricher(MediaEnricher):
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(
-                    word, search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -225,20 +224,14 @@ class StandardMediaEnricher(MediaEnricher):
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
         # Generate image based on example sentence
-        if (
-            not record.get("image")
-            and record.get("word")
-            and record.get("example")
-        ):
+        if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
                 # Translate German example sentence to English for better Pexels search results
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(
-                    word, search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -265,20 +258,14 @@ class StandardMediaEnricher(MediaEnricher):
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
         # Generate image based on example sentence
-        if (
-            not record.get("image")
-            and record.get("word")
-            and record.get("example")
-        ):
+        if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
                 # Translate German example sentence to English for better Pexels search results
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(
-                    word, search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -305,20 +292,14 @@ class StandardMediaEnricher(MediaEnricher):
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
         # Generate image based on example sentence
-        if (
-            not record.get("image")
-            and record.get("word")
-            and record.get("example")
-        ):
+        if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
                 # Translate German example sentence to English for better Pexels search results
                 german_example = record["example"]
                 search_terms = self._translate_for_search(german_example)
                 fallback = record.get("english", word)
-                image_path = self._get_or_generate_image(
-                    word, search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -699,7 +680,9 @@ class StandardMediaEnricher(MediaEnricher):
 
         return record
 
-    def _enrich_noun_article_recognition_record(self, record: dict[str, Any]) -> dict[str, Any]:
+    def _enrich_noun_article_recognition_record(
+        self, record: dict[str, Any]
+    ) -> dict[str, Any]:
         """Enrich noun_article_recognition record with audio and image support.
 
         Fields expected in record dict:
@@ -735,7 +718,9 @@ class StandardMediaEnricher(MediaEnricher):
 
         return record
 
-    def _enrich_noun_case_context_record(self, record: dict[str, Any]) -> dict[str, Any]:
+    def _enrich_noun_case_context_record(
+        self, record: dict[str, Any]
+    ) -> dict[str, Any]:
         """Enrich noun_case_context record with audio and image support.
 
         Fields expected in record dict:
@@ -756,11 +741,7 @@ class StandardMediaEnricher(MediaEnricher):
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
         # Generate image based on example sentence
-        if (
-            not record.get("image")
-            and record.get("noun")
-            and record.get("example")
-        ):
+        if not record.get("image") and record.get("noun") and record.get("example"):
             noun = record["noun"]
             if not self.image_exists(noun):
                 # Translate German example to English for better Pexels search
@@ -788,21 +769,24 @@ class StandardMediaEnricher(MediaEnricher):
         # Audio for the cloze text (without cloze markers)
         if not record.get("audio") and record.get("text"):
             # Remove cloze markers for audio generation
-            import re
-            clean_text = re.sub(r'\{\{c\d+::(.*?)\}\}', r'\1', record["text"])
+            clean_text = re.sub(r"\{\{c\d+::(.*?)\}\}", r"\1", record["text"])
             audio_path = self._get_or_generate_audio(clean_text)
             if audio_path:
                 record["audio"] = f"[sound:{Path(audio_path).name}]"
 
         # Generate image based on the clean text (without cloze markers)
         if not record.get("image") and record.get("text"):
-            import re
-            clean_text = re.sub(r'\{\{c\d+::(.*?)\}\}', r'\1', record["text"])
+            clean_text = re.sub(r"\{\{c\d+::(.*?)\}\}", r"\1", record["text"])
 
             # Extract noun from the sentence for image filename
             # Look for common German nouns in the sentence
             words = clean_text.split()
-            noun_candidates = [word for word in words if word[0].isupper() and word not in ["Der", "Die", "Das", "Den", "Dem", "Des"]]
+            noun_candidates = [
+                word
+                for word in words
+                if word[0].isupper()
+                and word not in ["Der", "Die", "Das", "Den", "Dem", "Des"]
+            ]
 
             if noun_candidates:
                 noun = noun_candidates[0]  # Use first capitalized word as noun
@@ -810,7 +794,9 @@ class StandardMediaEnricher(MediaEnricher):
                     # Translate German sentence to English for better Pexels search
                     search_terms = self._translate_for_search(clean_text)
                     fallback = noun
-                    image_path = self._get_or_generate_image(noun, search_terms, fallback)
+                    image_path = self._get_or_generate_image(
+                        noun, search_terms, fallback
+                    )
                     if image_path:
                         record["image"] = f'<img src="{Path(image_path).name}">'
                 else:
@@ -844,7 +830,9 @@ class StandardMediaEnricher(MediaEnricher):
 
         try:
             translated = self._translation_service.translate_to_english(german_text)
-            logger.debug(f"Translated for image search: '{german_text}' → '{translated}'")
+            logger.debug(
+                f"Translated for image search: '{german_text}' → '{translated}'"
+            )
             return translated
         except Exception as e:
             logger.warning(f"Translation failed for '{german_text}': {e}")

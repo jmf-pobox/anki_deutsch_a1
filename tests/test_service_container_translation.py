@@ -1,6 +1,5 @@
 """Tests for translation service integration with service container."""
 
-import pytest
 from unittest.mock import Mock, patch
 
 from src.langlearn.services.service_container import (
@@ -22,13 +21,13 @@ class TestServiceContainerTranslation:
         """Reset services after each test."""
         reset_services()
 
-    @patch('src.langlearn.services.service_container.AnthropicService')
+    @patch("src.langlearn.services.service_container.AnthropicService")
     def test_get_translation_service_success(self, mock_anthropic_class: Mock) -> None:
         """Test successful creation of translation service."""
         # Arrange
         mock_anthropic_instance = Mock()
         mock_anthropic_class.return_value = mock_anthropic_instance
-        
+
         container = ServiceContainer()
 
         # Act
@@ -40,12 +39,14 @@ class TestServiceContainerTranslation:
         # Should reuse the same instance on subsequent calls
         assert container.get_translation_service() is translation_service
 
-    @patch('src.langlearn.services.service_container.AnthropicService')
-    def test_get_translation_service_anthropic_failure(self, mock_anthropic_class: Mock) -> None:
+    @patch("src.langlearn.services.service_container.AnthropicService")
+    def test_get_translation_service_anthropic_failure(
+        self, mock_anthropic_class: Mock
+    ) -> None:
         """Test translation service creation when Anthropic service fails."""
         # Arrange
         mock_anthropic_class.side_effect = Exception("API Key not found")
-        
+
         container = ServiceContainer()
 
         # Act
@@ -54,8 +55,8 @@ class TestServiceContainerTranslation:
         # Assert
         assert translation_service is None
 
-    @patch('src.langlearn.services.service_container.AnthropicTranslationService')
-    @patch('src.langlearn.services.service_container.AnthropicService')
+    @patch("src.langlearn.services.service_container.AnthropicTranslationService")
+    @patch("src.langlearn.services.service_container.AnthropicService")
     def test_get_translation_service_translation_creation_failure(
         self, mock_anthropic_class: Mock, mock_translation_class: Mock
     ) -> None:
@@ -64,7 +65,7 @@ class TestServiceContainerTranslation:
         mock_anthropic_instance = Mock()
         mock_anthropic_class.return_value = mock_anthropic_instance
         mock_translation_class.side_effect = Exception("Translation service error")
-        
+
         container = ServiceContainer()
 
         # Act
@@ -77,16 +78,16 @@ class TestServiceContainerTranslation:
         """Test that reset clears the translation service."""
         # Arrange
         container = ServiceContainer()
-        
+
         # Mock successful creation
-        with patch('src.langlearn.services.service_container.AnthropicService'):
+        with patch("src.langlearn.services.service_container.AnthropicService"):
             first_service = container.get_translation_service()
-            
+
         # Act
         container.reset()
-        
+
         # Mock successful creation again
-        with patch('src.langlearn.services.service_container.AnthropicService'):
+        with patch("src.langlearn.services.service_container.AnthropicService"):
             second_service = container.get_translation_service()
 
         # Assert
@@ -94,8 +95,10 @@ class TestServiceContainerTranslation:
         if first_service and second_service:
             assert first_service is not second_service
 
-    @patch('src.langlearn.services.service_container.AnthropicService')
-    def test_factory_function_get_translation_service(self, mock_anthropic_class: Mock) -> None:
+    @patch("src.langlearn.services.service_container.AnthropicService")
+    def test_factory_function_get_translation_service(
+        self, mock_anthropic_class: Mock
+    ) -> None:
         """Test the factory function for getting translation service."""
         # Arrange
         mock_anthropic_instance = Mock()
@@ -118,7 +121,7 @@ class TestServiceContainerTranslation:
         # Assert
         assert translation_service is None
 
-    @patch('src.langlearn.services.service_container.AnthropicService')
+    @patch("src.langlearn.services.service_container.AnthropicService")
     def test_singleton_behavior(self, mock_anthropic_class: Mock) -> None:
         """Test that service container maintains singleton behavior."""
         # Arrange
@@ -128,7 +131,7 @@ class TestServiceContainerTranslation:
         # Act
         container1 = ServiceContainer()
         container2 = ServiceContainer()
-        
+
         service1 = container1.get_translation_service()
         service2 = container2.get_translation_service()
 
@@ -148,8 +151,8 @@ class TestTranslationServiceIntegrationWithDeckBuilder:
         """Reset services after each test."""
         reset_services()
 
-    @patch('src.langlearn.deck_builder.get_translation_service')
-    @patch('src.langlearn.services.media_enricher.StandardMediaEnricher')
+    @patch("src.langlearn.deck_builder.get_translation_service")
+    @patch("src.langlearn.services.media_enricher.StandardMediaEnricher")
     def test_deck_builder_injects_translation_service(
         self, mock_enricher_class: Mock, mock_get_translation: Mock
     ) -> None:
@@ -157,10 +160,10 @@ class TestTranslationServiceIntegrationWithDeckBuilder:
         # Arrange
         mock_translation_service = Mock()
         mock_get_translation.return_value = mock_translation_service
-        
+
         # This test would require more complex setup to actually test DeckBuilder
         # For now, we verify the service is available
-        
+
         # Act
         translation_service = mock_get_translation()
 
@@ -172,7 +175,7 @@ class TestTranslationServiceIntegrationWithDeckBuilder:
         """Test translation service availability in production-like conditions."""
         # This test checks if the service can be created without mocking
         # It will fail if no API key is available, which is expected in test environment
-        
+
         # Act
         translation_service = get_translation_service()
 
@@ -198,19 +201,21 @@ class TestTranslationServiceErrorHandling:
         """Reset services after each test."""
         reset_services()
 
-    @patch('src.langlearn.services.service_container.logger')
+    @patch("src.langlearn.services.service_container.logger")
     def test_service_creation_logs_appropriately(self, mock_logger: Mock) -> None:
         """Test that service creation logs appropriately."""
         # This test would verify logging behavior
         # For now, we just ensure the service container doesn't crash
-        
+
         # Act
         translation_service = get_translation_service()
 
         # Assert
         # Service creation should not raise exceptions
         # Logging behavior depends on whether API key is available
-        assert translation_service is None or isinstance(translation_service, AnthropicTranslationService)
+        assert translation_service is None or isinstance(
+            translation_service, AnthropicTranslationService
+        )
 
     def test_multiple_service_requests_handle_failures_gracefully(self) -> None:
         """Test that multiple requests for unavailable service handle failures gracefully."""
@@ -221,5 +226,5 @@ class TestTranslationServiceErrorHandling:
 
         # Assert - all should return None (no API key in test environment)
         assert service1 is None
-        assert service2 is None  
+        assert service2 is None
         assert service3 is None

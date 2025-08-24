@@ -153,15 +153,15 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
-            from .services.media_enricher import StandardMediaEnricher
             from .services import get_translation_service
+            from .services.media_enricher import StandardMediaEnricher
 
             # Get translation service for improved image search
             translation_service = get_translation_service()
 
             self._media_enricher = StandardMediaEnricher(
                 media_service=self._media_service,
-                translation_service=translation_service
+                translation_service=translation_service,
             )
         else:
             self._media_enricher = None
