@@ -806,7 +806,7 @@ class StandardMediaEnricher(MediaEnricher):
 
         return record
 
-    def _translate_for_search(self, german_text: str) -> str:
+    def _translate_for_search(self, german_text: str | None) -> str | None:
         """Translate German text to English for better image search results.
 
         Uses the translation service to convert German text to English,

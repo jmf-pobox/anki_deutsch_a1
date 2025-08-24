@@ -1,5 +1,6 @@
 """Simple integration tests for translation functionality without external deps."""
 
+from typing import Any, Optional, cast
 from unittest.mock import Mock
 
 
@@ -10,7 +11,9 @@ class TestTranslationLogic:
         """Test translation logic with mock service."""
 
         # Arrange - simulate the _translate_for_search method logic
-        def mock_translate_for_search(text, translation_service=None):
+        def mock_translate_for_search(
+            text: str | None, translation_service: Any = None
+        ) -> str | None:
             """Mock implementation of _translate_for_search method."""
             if not text or not text.strip():
                 return text
@@ -19,7 +22,7 @@ class TestTranslationLogic:
                 return text  # No service, return original
 
             try:
-                return translation_service.translate_to_english(text)
+                return cast(Optional[str], translation_service.translate_to_english(text))
             except Exception:
                 return text  # Fallback on error
 
@@ -40,7 +43,9 @@ class TestTranslationLogic:
         """Test translation logic without translation service (fallback)."""
 
         # Arrange
-        def mock_translate_for_search(text, translation_service=None):
+        def mock_translate_for_search(
+            text: str | None, translation_service: Any = None
+        ) -> str | None:
             if not text or not text.strip():
                 return text
 
@@ -48,7 +53,7 @@ class TestTranslationLogic:
                 return text  # No service, return original
 
             try:
-                return translation_service.translate_to_english(text)
+                return cast(Optional[str], translation_service.translate_to_english(text))
             except Exception:
                 return text  # Fallback on error
 
@@ -62,7 +67,9 @@ class TestTranslationLogic:
         """Test translation logic when service throws error."""
 
         # Arrange
-        def mock_translate_for_search(text, translation_service=None):
+        def mock_translate_for_search(
+            text: str | None, translation_service: Any = None
+        ) -> str | None:
             if not text or not text.strip():
                 return text
 
@@ -70,7 +77,7 @@ class TestTranslationLogic:
                 return text  # No service, return original
 
             try:
-                return translation_service.translate_to_english(text)
+                return cast(Optional[str], translation_service.translate_to_english(text))
             except Exception:
                 return text  # Fallback on error
 
@@ -87,7 +94,9 @@ class TestTranslationLogic:
         """Test translation logic with empty text."""
 
         # Arrange
-        def mock_translate_for_search(text, translation_service=None):
+        def mock_translate_for_search(
+            text: str | None, translation_service: Any = None
+        ) -> str | None:
             if not text or not text.strip():
                 return text
 
@@ -95,7 +104,7 @@ class TestTranslationLogic:
                 return text
 
             try:
-                return translation_service.translate_to_english(text)
+                return cast(Optional[str], translation_service.translate_to_english(text))
             except Exception:
                 return text
 
@@ -118,8 +127,8 @@ class TestImageGenerationIntegration:
 
         # Arrange - simulate the verb enrichment flow
         def mock_enrich_verb_with_translation(
-            record, translation_service, media_service
-        ):
+            record: dict[str, Any], translation_service: Any, media_service: Any
+        ) -> dict[str, Any]:
             """Mock verb enrichment with translation."""
             if (
                 not record.get("image")
@@ -180,8 +189,8 @@ class TestImageGenerationIntegration:
 
         # Arrange - simulate the preposition enrichment flow
         def mock_enrich_preposition_with_translation(
-            record, translation_service, media_service
-        ):
+            record: dict[str, Any], translation_service: Any, media_service: Any
+        ) -> dict[str, Any]:
             """Mock preposition enrichment with translation."""
             if (
                 not record.get("image")
@@ -245,8 +254,8 @@ class TestImageGenerationIntegration:
 
         # Arrange - simulate the phrase enrichment flow
         def mock_enrich_phrase_with_translation(
-            record, translation_service, media_service
-        ):
+            record: dict[str, Any], translation_service: Any, media_service: Any
+        ) -> dict[str, Any]:
             """Mock phrase enrichment with translation."""
             if not record.get("image") and record.get("phrase"):
                 phrase_text = record.get("phrase", "")
@@ -314,7 +323,7 @@ class TestTranslationServiceMockBehavior:
             "der hund läuft schnell": "the dog runs fast",
         }
 
-        def mock_translate_to_english(german_text):
+        def mock_translate_to_english(german_text: str | None) -> str | None:
             if not german_text:
                 return german_text
             cache_key = german_text.strip().lower()
@@ -343,8 +352,11 @@ class TestExampleSentenceImageGeneration:
 
         # Arrange - simulate adjective enrichment with example sentence
         def mock_enrich_adjective_with_example(
-            record, translation_service, media_service, image_exists_func
-        ):
+            record: dict[str, Any],
+            translation_service: Any,
+            media_service: Any,
+            image_exists_func: Any,
+        ) -> dict[str, Any]:
             """Mock adjective enrichment using example sentence."""
             if not record.get("image") and record.get("word") and record.get("example"):
                 word = record["word"]
@@ -407,8 +419,11 @@ class TestPhraseImageOptimization:
 
         # Arrange - simulate optimized phrase enrichment
         def mock_enrich_phrase_optimized(
-            record, translation_service, media_service, image_exists_func
-        ):
+            record: dict[str, Any],
+            translation_service: Any,
+            media_service: Any,
+            image_exists_func: Any,
+        ) -> dict[str, Any]:
             """Mock phrase enrichment with image existence check."""
             if not record.get("image") and record.get("phrase"):
                 phrase_text = record.get("phrase", "")
@@ -481,8 +496,11 @@ class TestPhraseImageOptimization:
 
         # Arrange - simulate optimized phrase enrichment
         def mock_enrich_phrase_optimized(
-            record, translation_service, media_service, image_exists_func
-        ):
+            record: dict[str, Any],
+            translation_service: Any,
+            media_service: Any,
+            image_exists_func: Any,
+        ) -> dict[str, Any]:
             """Mock phrase enrichment with image existence check."""
             if not record.get("image") and record.get("phrase"):
                 phrase_text = record.get("phrase", "")

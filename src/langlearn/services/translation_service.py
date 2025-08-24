@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class TranslationServiceProtocol(Protocol):
     """Protocol for translation services."""
 
-    def translate_to_english(self, german_text: str) -> str:
+    def translate_to_english(self, german_text: str | None) -> str | None:
         """Translate German text to English for image search.
 
         Args:
@@ -44,7 +44,7 @@ class AnthropicTranslationService:
         self._anthropic_service = anthropic_service
         self._translation_cache: dict[str, str] = {}
 
-    def translate_to_english(self, german_text: str) -> str:
+    def translate_to_english(self, german_text: str | None) -> str | None:
         """Translate German text to English for optimal image search results.
 
         Uses Claude to provide high-quality translation that preserves the visual
@@ -145,7 +145,7 @@ class MockTranslationService:
             "der hund läuft schnell": "the dog runs fast",
         }
 
-    def translate_to_english(self, german_text: str) -> str:
+    def translate_to_english(self, german_text: str | None) -> str | None:
         """Mock translation that returns predefined translations or original text.
 
         Args:

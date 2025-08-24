@@ -577,24 +577,25 @@ class TestTranslationIntegration:
         mock_media_service.generate_image.return_value = "test_image.jpg"
 
         # Mock image_exists to return False (image doesn't exist)
-        enricher_with_translation.image_exists = Mock(return_value=False)
+        with patch.object(
+            enricher_with_translation, "image_exists", return_value=False
+        ):
+            record = {
+                "infinitive": "gehen",
+                "english": "to go",
+                "example": "ich gehe in die schule",  # German text
+            }
 
-        record = {
-            "infinitive": "gehen",
-            "english": "to go",
-            "example": "ich gehe in die schule",  # German text
-        }
+            # Act
+            result = enricher_with_translation._enrich_verb_record(record)
 
-        # Act
-        result = enricher_with_translation._enrich_verb_record(record)
-
-        # Assert
-        assert "image" in result
-        # Verify that generate_image was called with English translation
-        mock_media_service.generate_image.assert_called_once_with(
-            "I go to school",  # Translated text used for search
-            "to go",  # Fallback
-        )
+            # Assert
+            assert "image" in result
+            # Verify that generate_image was called with English translation
+            mock_media_service.generate_image.assert_called_once_with(
+                "I go to school",  # Translated text used for search
+                "to go",  # Fallback
+            )
 
     def test_preposition_image_generation_uses_translation(
         self, enricher_with_translation: StandardMediaEnricher
@@ -605,25 +606,26 @@ class TestTranslationIntegration:
         mock_media_service.generate_image.return_value = "test_image.jpg"
 
         # Mock image_exists to return False (image doesn't exist)
-        enricher_with_translation.image_exists = Mock(return_value=False)
+        with patch.object(
+            enricher_with_translation, "image_exists", return_value=False
+        ):
+            record = {
+                "preposition": "in",
+                "english": "in",
+                "example1": "ich gehe in die schule",  # German text
+                "case": "Akkusativ/Dativ",
+            }
 
-        record = {
-            "preposition": "in",
-            "english": "in",
-            "example1": "ich gehe in die schule",  # German text
-            "case": "Akkusativ/Dativ",
-        }
+            # Act
+            result = enricher_with_translation._enrich_preposition_record(record)
 
-        # Act
-        result = enricher_with_translation._enrich_preposition_record(record)
-
-        # Assert
-        assert "image" in result
-        # Verify that generate_image was called with English translation
-        mock_media_service.generate_image.assert_called_once_with(
-            "I go to school",  # Translated text used for search
-            "in",  # Fallback
-        )
+            # Assert
+            assert "image" in result
+            # Verify that generate_image was called with English translation
+            mock_media_service.generate_image.assert_called_once_with(
+                "I go to school",  # Translated text used for search
+                "in",  # Fallback
+            )
 
     def test_phrase_image_generation_uses_translation(
         self, enricher_with_translation: StandardMediaEnricher
