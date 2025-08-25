@@ -94,7 +94,7 @@ class PexelsService:
         if self.api_key is None:  # Environment variable not set at all
             import keyring
 
-            self.api_key = keyring.get_password("anki_deutsch", "PEXELS_API_KEY")
+            self.api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
 
         # Allow empty API key in test environments (will be mocked)
         from langlearn.utils.environment import is_test_environment
