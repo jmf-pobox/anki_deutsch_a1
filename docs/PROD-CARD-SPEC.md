@@ -13,53 +13,6 @@ an overall gh issue related to the templating system.
 
 **Total Card Types**: 15
 
-## Image Search Sources by Card Type
-
-This section documents the source text used for Pexels API image searches for each card type. All German text is automatically translated to English before searching to improve image quality and relevance.
-
-### Translation-Enhanced Image Search
-
-**Process**: German text → Claude Translation → English search terms → Pexels API → Images
-
-**Benefits**:
-- Dramatically improved image quality (German searches often return poor results)
-- Better visual context for learning
-- More diverse image options available
-
-### Card Type Image Sources
-
-| Card Type | Image Source | Translation | Example |
-|-----------|-------------|-------------|---------|
-| **Adjectives** | German example sentence | ✅ | `Das Haus ist schön` → `The house is beautiful` |
-| **Adverbs** | German example sentence | ✅ | `Er läuft schnell` → `He runs fast` |
-| **Negations** | German example sentence | ✅ | `Ich komme nicht` → `I am not coming` |
-| **Nouns** | German example sentence (concrete nouns only) | ✅ | `Das Haus ist groß` → `The house is big` |
-| **Phrases** | German phrase text | ✅ | `Guten Tag` → `Good day` |
-| **Prepositions** | German Example1 sentence | ✅ | `Ich gehe in die Schule` → `I go to school` |
-| **Verbs** | German example sentence | ✅ | `Er arbeitet in der Bank` → `He works in the bank` |
-| **Verb_Conjugation** | German example sentence | ✅ | `Ich spreche Deutsch` → `I speak German` |
-| **Verb_Imperative** | German example sentence | ✅ | `Sprich lauter!` → `Speak louder!` |
-
-### Unified Example Sentence Approach
-
-**Example Sentence Translation** (All Card Types):
-- German example sentences translated directly to English
-- Provides rich contextual information for image searches
-- Consistent approach across all vocabulary card types
-- Better visual context than isolated words or AI-generated terms
-
-**Benefits of Example Sentences**:
-- **Contextual relevance**: Images show words in actual usage scenarios
-- **Higher quality**: Sentence context produces more relevant Pexels results
-- **Consistency**: Same approach across all card types
-- **Natural learning**: Visual context matches how words are actually used
-
-### Image Generation Optimization
-
-**Existence Check**: All card types check if image already exists before generating new ones to avoid unnecessary API calls and costs.
-
-**Performance**: Translation only occurs when new images are needed, significantly reducing API usage for existing image libraries.
-
 ## Table of Contents - Organized by Sub-deck
 
 ### Adjectives Sub-deck
@@ -69,12 +22,12 @@ This section documents the source text used for Pexels API image searches for ea
 2. [Adverb](#adverb)
 
 ### Articles Sub-deck
-3. [Artikel_Context](#artikel-context)
-4. [Artikel_Context_Cloze](#artikel-context-cloze)
-5. [Artikel_Gender](#artikel-gender)
-6. [Artikel_Gender_Cloze](#artikel-gender-cloze)
-7. [Noun_Article_Recognition](#noun-article-recognition)
-8. [Noun_Case_Context](#noun-case-context)
+3. [Artikel_Context](#artikel-context) (INACTIVE)
+4. [Artikel_Context_Cloze](#artikel-context-cloze) (✅ ACTIVE)
+5. [Artikel_Gender](#artikel-gender) (INACTIVE)
+6. [Artikel_Gender_Cloze](#artikel-gender-cloze) (✅ ACTIVE)
+7. [Noun_Article_Recognition](#noun-article-recognition) (❌ DISABLED)
+8. [Noun_Case_Context](#noun-case-context) (❌ DISABLED)
 
 ### Negations Sub-deck
 9. [Negation](#negation)
@@ -89,9 +42,9 @@ This section documents the source text used for Pexels API image searches for ea
 12. [Preposition](#preposition)
 
 ### Verbs Sub-deck
-13. [Verb](#verb) (DISABLED)
-14. [Verb_Conjugation](#verb-conjugation)
-15. [Verb_Imperative](#verb-imperative)
+13. [Verb](#verb) (❌ DISABLED)
+14. [Verb_Conjugation](#verb-conjugation) (✅ ACTIVE)
+15. [Verb_Imperative](#verb-imperative) (✅ ACTIVE)
 
 ---
 
@@ -184,19 +137,94 @@ This section documents the source text used for Pexels API image searches for ea
 
 # Articles Sub-deck
 
-## Artikel_Context
+## System Status Overview
+
+**⚠️ IMPLEMENTATION STATUS**: The Articles sub-deck currently operates with a **partial implementation** focused on abstract pattern learning while noun-article integration is temporarily disabled.
+
+### Currently Active System
+- **Service**: `ArticlePatternProcessor` only
+- **Cards Generated**: 5 cloze deletion cards per article record
+  - 1 Gender Recognition Cloze ("{{c1::Der}} Mann ist hier")
+  - 4 Case Context Cloze cards (Nominative, Accusative, Dative, Genitive)
+- **Learning Focus**: Abstract article pattern recognition
+- **What Learners See**: Cloze deletion exercises for article patterns in sentences
+
+### Currently Disabled System  
+- **Service**: `ArticleApplicationService` (commented out in deck_builder.py lines 790-803)
+- **Reason**: "TEMPORARY: Disable noun-article cards to focus on testing cloze deletion system"
+- **Missing Cards**: Noun-specific article practice ("das Haus", "der Mann", etc.)
+- **Impact**: Learners cannot practice article-noun associations in context
+
+### Summary Box: What This Means for Learners
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CURRENT STATE: Pattern Practice Only (Insufficient for A1)                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ What Works:                                                                      │
+│ ✅ Learners practice filling in articles in sentences                             │
+│ ✅ Case recognition exercises (nom/acc/dat/gen)                                   │
+│ ✅ Gender pattern recognition in context                                          │
+│                                                                                   │
+│ What's Missing (CRITICAL):                                                       │
+│ ❌ Cannot learn "das Haus", "die Frau", "der Mann"                                │
+│ ❌ No noun-to-article memory building                                             │
+│ ❌ Missing 85% of required article knowledge                                      │
+│                                                                                   │
+│ A1 Requirement Status: ❌ DOES NOT MEET CEFR STANDARDS                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Pedagogical Assessment
+
+### Current System Limitations for A1 Learners
+
+**Critical Gap**: The disabled noun-article integration creates a significant pedagogical deficit for A1 learners:
+
+1. **Abstract vs. Concrete Learning**: A1 learners need concrete noun-article pairings ("das Haus", "die Frau") before abstract pattern recognition. The current cloze-only system reverses the natural acquisition order.
+
+2. **Memorization Requirements**: German article assignment is largely arbitrary and must be memorized with each noun. Without noun-specific practice, learners lack the essential foundation for German grammar.
+
+3. **CEFR A1 Requirements**: The Common European Framework explicitly requires A1 learners to "use basic articles with familiar nouns." The current system does not adequately support this competency.
+
+### Recommendation Priority: HIGH
+**The ArticleApplicationService should be re-enabled as soon as possible**. Article-noun association is fundamental to German language acquisition and cannot be effectively learned through pattern cards alone.
+
+## Data Source and Processing Architecture
+
+**CSV Data Source**: `articles_unified.csv`
+- **Format**: Unified article database with German terminology
+- **Fields**: `artikel_typ`, `geschlecht`, `nominativ`, `akkusativ`, `dativ`, `genitiv`, `beispiel_nom`, `beispiel_akk`, `beispiel_dat`, `beispiel_gen`
+- **Article Types**: `bestimmt` (definite), `unbestimmt` (indefinite), `verneinend` (negative)
+- **Genders**: `maskulin`, `feminin`, `neutral`, `plural`
+
+**Processing Services**:
+1. **ArticlePatternProcessor** (`article_pattern_processor.py`): **[ACTIVE]**
+   - Generates cloze deletion cards for pattern recognition
+   - Currently produces 5 cloze cards per record (1 gender + 4 cases)
+   - Uses GermanExplanationFactory for German-language explanations
+   
+2. **ArticleApplicationService** (`article_application_service.py`): **[DISABLED]**
+   - Would create 5 cards per noun for article association
+   - Would integrate noun data with article patterns
+   - Would provide practical application of article knowledge
+   - **Status**: Commented out pending cloze deletion system testing
+
+## Artikel_Context [INACTIVE - Non-Cloze Version]
 
 **Anki Note Type**: `German Artikel Context with Media`
-**Description**: German article case usage cards (nom/acc/dat/gen)
+**Description**: Case-specific article usage cards generated by ArticlePatternProcessor
 **Learning Objective**: Master German article changes in different grammatical cases
 **Cloze Deletion**: No
-**CSV Data Source**: `articles_unified.csv`
+**CSV Data Source**: `articles_unified.csv` (via UnifiedArticleRecord)
 **Sub-deck**: `Articles` (Main Deck::Articles)
+**Generator Service**: `ArticlePatternProcessor._create_case_context_card()`
+**Status**: **⚠️ INACTIVE** - Non-cloze methods exist but are not called in current implementation
 
 ### Card Content
 
-**Front**: Question with optional hint button
-**Back**: Answer with grammar forms and examples
+**Front**: Sentence with blank for article (e.g., "_____ Mann arbeitet")
+**Back**: Complete sentence with correct article form and case explanation
 
 ### Template Files
 
@@ -206,45 +234,43 @@ This section documents the source text used for Pexels API image searches for ea
 
 ### Field Specifications
 
-| Field | Source | Required | Description | Example |
-|-------|--------|----------|-------------|---------|
-| `FrontText` | Generated | ❌ | Generated text for card front | `What is the German word for 'beautiful'?` |
-| `BackText` | Generated | ❌ | Generated text for card back | `schön` |
-| `Gender` | articles_unified.csv | ❌ | German grammatical gender (masculine, feminine, neuter) | `neutrum` |
-| `Nominative` | articles_unified.csv | ❌ | Nominative case article form | `das` |
-| `Accusative` | articles_unified.csv | ❌ | Accusative case article form | `das` |
-| `Dative` | articles_unified.csv | ❌ | Dative case article form | `dem` |
-| `Genitive` | articles_unified.csv | ❌ | Genitive case article form | `des` |
-| `ExampleNom` | articles_unified.csv | ❌ | Example sentence in nominative case | `Der Mann arbeitet hier.` |
-| `ExampleAcc` | articles_unified.csv | ❌ | Example sentence in accusative case | `Ich sehe den Mann.` |
-| `ExampleDat` | articles_unified.csv | ❌ | Example sentence in dative case | `Ich gebe dem Mann das Buch.` |
-| `ExampleGen` | articles_unified.csv | ❌ | Example sentence in genitive case | `Das ist das Haus des Mannes.` |
-| `Image` | Pexels | ✅ | Generated image from Pexels API using translated nominative example | `<img src="house_001.jpg" />` |
-| `ArticleAudio` | AWS_Polly | ✅ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
-| `ExampleAudio` | AWS_Polly | ✅ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
-| `NounOnly` | Generated | ❌ | Extracted noun without article | `Haus` |
-| `NounEnglish` | Generated | ❌ | English translation of extracted noun | `house` |
+| Field | Source | Required | Processing | Description | Example |
+|-------|--------|----------|------------|-------------|---------|
+| `FrontText` | Generated | ✅ | `complete_sentence.replace(article_form, "_____")` | Sentence with blank | `_____ Mann arbeitet` |
+| `BackText` | Generated | ✅ | Example sentence from CSV | Complete sentence | `Der Mann arbeitet` |
+| `Gender` | UnifiedArticleRecord.geschlecht | ✅ | Direct mapping | German gender | `maskulin` |
+| `Nominative` | UnifiedArticleRecord.nominativ | ✅ | Direct mapping | Nominative form | `der` |
+| `Accusative` | UnifiedArticleRecord.akkusativ | ✅ | Direct mapping | Accusative form | `den` |
+| `Dative` | UnifiedArticleRecord.dativ | ✅ | Direct mapping | Dative form | `dem` |
+| `Genitive` | UnifiedArticleRecord.genitiv | ✅ | Direct mapping | Genitive form | `des` |
+| `ExampleNom` | UnifiedArticleRecord.beispiel_nom | ✅ | Direct mapping | Nominative example | `Der Mann ist hier` |
+| `ExampleAcc` | UnifiedArticleRecord.beispiel_akk | ✅ | Direct mapping | Accusative example | `Ich sehe den Mann` |
+| `ExampleDat` | UnifiedArticleRecord.beispiel_dat | ✅ | Direct mapping | Dative example | `mit dem Mann` |
+| `ExampleGen` | UnifiedArticleRecord.beispiel_gen | ✅ | Direct mapping | Genitive example | `das Auto des Mannes` |
+| `Image` | MediaEnricher | ❌ | Via enriched_data | Pexels image | `<img src="mann_001.jpg" />` |
+| `ArticleAudio` | MediaEnricher | ❌ | Via enriched_data | Article pronunciation | `[sound:der.mp3]` |
+| `ExampleAudio` | MediaEnricher | ❌ | Via enriched_data | Example audio | `[sound:example.mp3]` |
+| `NounOnly` | Generated | ✅ | `_extract_noun_from_sentence()` | Extracted noun | `Mann` |
+| `NounEnglish` | Generated | ✅ | Translation lookup | English translation | `man` |
+| `ArtikelTypBestimmt` | Conditional | ✅ | `"true" if artikel_typ == "bestimmt"` | Template conditional | `true` or empty |
+| `ArtikelTypUnbestimmt` | Conditional | ✅ | `"true" if artikel_typ == "unbestimmt"` | Template conditional | `true` or empty |
+| `ArtikelTypVerneinend` | Conditional | ✅ | `"true" if artikel_typ == "verneinend"` | Template conditional | `true` or empty |
 
-### Image Search Details
-**Source**: German nominative example sentence (direct translation)
-**Process**: German ExampleNom sentence → Claude translation → English search terms → Pexels search
-**Example**: `Das Haus ist groß` → `The house is big` → Pexels search for house images
-**Benefits**: Contextual images showing articles with nouns in actual usage scenarios
-**Fallback**: English translation of noun if translation fails
-
-## Artikel_Context_Cloze
+## Artikel_Context_Cloze [ACTIVE]
 
 **Anki Note Type**: `German Artikel Context Cloze`
-**Description**: Cloze deletion cards for German case usage
-**Learning Objective**: Practice German case usage through cloze deletion
-**Cloze Deletion**: Yes
-**CSV Data Source**: `articles_unified.csv`
+**Description**: Cloze deletion cards for case-specific article learning
+**Learning Objective**: Practice German case usage through active recall
+**Cloze Deletion**: Yes (Anki native cloze support)
+**CSV Data Source**: `articles_unified.csv` (via UnifiedArticleRecord)
 **Sub-deck**: `Articles` (Main Deck::Articles)
+**Generator Service**: `ArticlePatternProcessor._create_case_cloze_card()`
+**Status**: **✅ ACTIVE** - Currently generates 4 cards per record (one for each case: nominative, accusative, dative, genitive)
 
 ### Card Content
 
-**Front**: Cloze deletion question with blanked text
-**Back**: Answer with complete text and explanation
+**Front**: Cloze deletion with blanked article
+**Back**: Complete text with German grammatical explanation
 
 ### Template Files
 
@@ -254,100 +280,106 @@ This section documents the source text used for Pexels API image searches for ea
 
 ### Field Specifications
 
-| Field | Source | Required | Description | Example |
-|-------|--------|----------|-------------|---------|
-| `Text` | Generated | ❌ | Cloze deletion text with {{c1::}} tags | `Ich sehe {{c1::den}} Mann` |
-| `Explanation` | Generated | ❌ | Explanation of the grammatical rule | `Akkusativ - direktes Objekt` |
-| `Image` | Pexels | ✅ | Generated image from Pexels API using translated cloze text | `<img src="house_001.jpg" />` |
-| `Audio` | AWS_Polly | ✅ | Generated audio for cloze text (without cloze markers) | `[sound:example_audio.mp3]` |
+| Field | Source | Required | Processing | Description | Example |
+|-------|--------|----------|------------|-------------|---------|
+| `Text` | Generated | ✅ | Case-insensitive article replacement with `{{c1::}}` | Cloze text | `Ich sehe {{c1::den}} Mann` |
+| `Explanation` | GermanExplanationFactory | ✅ | `create_case_explanation()` | German grammar rule | `den - Maskulin Akkusativ (wen/was?)` |
+| `Image` | MediaEnricher | ❌ | Via enriched_data.get("image_url") | Pexels image | `mann_001.jpg` |
+| `Audio` | MediaEnricher | ❌ | Via enriched_data.get("audio_file") | Example audio | `example.mp3` |
 
-### Image Search Details
-**Source**: German cloze text with markers removed (direct translation)
-**Process**: Cloze text → Remove {{c1::}} markers → Claude translation → English search terms → Pexels search
-**Example**: `{{c1::Der}} Mann arbeitet` → `Der Mann arbeitet` → `The man works` → Pexels search
-**Benefits**: Contextual images showing article usage in sentence context
-**Fallback**: First capitalized noun if translation fails
+### Cloze Generation Process
+1. Extract example sentence for specific case (e.g., `beispiel_akk` for accusative)
+2. Use regex pattern matching to preserve original capitalization
+3. Replace first occurrence of article with `{{c1::article}}`
+4. Generate German explanation based on gender and case
 
-## Artikel_Gender
+## Artikel_Gender [INACTIVE - Non-Cloze Version]
 
 **Anki Note Type**: `German Artikel Gender with Media`
-**Description**: German article gender recognition cards (der/die/das)
-**Learning Objective**: Learn to recognize German noun genders (der/die/das)
+**Description**: Gender recognition cards for learning der/die/das associations
+**Learning Objective**: Learn to recognize German noun genders
 **Cloze Deletion**: No
-**CSV Data Source**: `articles_unified.csv`
+**CSV Data Source**: `articles_unified.csv` (via UnifiedArticleRecord)
 **Sub-deck**: `Articles` (Main Deck::Articles)
+**Generator Service**: `ArticlePatternProcessor._create_gender_recognition_card()` (legacy non-cloze)
+**Status**: **⚠️ INACTIVE** - Non-cloze methods exist but are not called in current implementation
 
 ### Card Content
 
-**Front**: Question with optional hint button
-**Back**: Answer with grammar forms and examples
+**Front**: Blank with noun and hint button (e.g., "_____ Mann")
+**Back**: Article with gender explanation and audio
 
 ### Template Files
 
-- `artikel_gender_DE_de_front.html`
-- `artikel_gender_DE_de_back.html`
+- `artikel_gender_DE_de_front.html` (uses `{{NounOnly}}` in "_____ {{NounOnly}}" format)
+- `artikel_gender_DE_de_back.html` (displays `{{BackText}}` with gender info)
 - `artikel_gender_DE_de.css`
 
 ### Field Specifications
 
-| Field | Source | Required | Description | Example |
-|-------|--------|----------|-------------|---------|
-| `FrontText` | Generated | ❌ | Generated text for card front | `What is the German word for 'beautiful'?` |
-| `BackText` | Generated | ❌ | Generated text for card back | `schön` |
-| `Gender` | articles_unified.csv | ❌ | German grammatical gender (masculine, feminine, neuter) | `neutrum` |
-| `Nominative` | articles_unified.csv | ❌ | Nominative case article form | `das` |
-| `Accusative` | articles_unified.csv | ❌ | Accusative case article form | `das` |
-| `Dative` | articles_unified.csv | ❌ | Dative case article form | `dem` |
-| `Genitive` | articles_unified.csv | ❌ | Genitive case article form | `des` |
-| `ExampleNom` | articles_unified.csv | ❌ | Example sentence in nominative case | `Der Mann arbeitet hier.` |
-| `Image` | Pexels | ✅ | Generated image from Pexels API using translated nominative example | `<img src="house_001.jpg" />` |
-| `ArticleAudio` | AWS_Polly | ✅ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
-| `ExampleAudio` | AWS_Polly | ✅ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
-| `NounOnly` | Generated | ❌ | Extracted noun without article | `Haus` |
-| `NounEnglish` | Generated | ❌ | English translation of extracted noun | `house` |
+| Field | Source | Required | Processing | Description | Example |
+|-------|--------|----------|------------|-------------|---------|
+| `FrontText` | Generated | ✅ | `record.gender.title()` | Gender type | `Masculine` |
+| `BackText` | Generated | ✅ | `record.nominative` | Nominative article | `der` |
+| `Gender` | UnifiedArticleRecord.geschlecht | ✅ | Direct mapping | German gender | `maskulin` |
+| `Nominative` | UnifiedArticleRecord.nominativ | ✅ | Direct mapping | Nominative form | `der` |
+| `Accusative` | UnifiedArticleRecord.akkusativ | ✅ | Direct mapping | Accusative form | `den` |
+| `Dative` | UnifiedArticleRecord.dativ | ✅ | Direct mapping | Dative form | `dem` |
+| `Genitive` | UnifiedArticleRecord.genitiv | ✅ | Direct mapping | Genitive form | `des` |
+| `ExampleNom` | UnifiedArticleRecord.beispiel_nom | ✅ | Direct mapping | Example sentence | `Der Mann ist hier` |
+| `Image` | MediaEnricher | ❌ | Via enriched_data | Pexels image | `<img src="mann_001.jpg" />` |
+| `ArticleAudio` | MediaEnricher | ❌ | Via enriched_data | Article audio | `[sound:der.mp3]` |
+| `ExampleAudio` | MediaEnricher | ❌ | Via enriched_data | Example audio | `[sound:example.mp3]` |
+| `NounOnly` | Generated | ✅ | `_extract_noun_from_sentence()` | Extracted noun | `Mann` |
+| `NounEnglish` | Generated | ✅ | Translation dictionary lookup | English translation | `man` |
+| `ArtikelTypBestimmt` | Conditional | ✅ | Template conditional flag | Article type flag | `true` or empty |
 
-## Artikel_Gender_Cloze
+## Artikel_Gender_Cloze [ACTIVE]
 
 **Anki Note Type**: `German Artikel Gender Cloze`
-**Description**: Cloze deletion cards for German gender recognition
-**Learning Objective**: Practice German gender recognition through cloze deletion
-**Cloze Deletion**: Yes
-**CSV Data Source**: `articles_unified.csv`
-**Sub-deck**: `Unified_articles` (Main Deck::Unified_articles)
+**Description**: Cloze deletion cards for gender recognition practice
+**Learning Objective**: Practice German gender recognition through active recall
+**Cloze Deletion**: Yes (Anki native cloze support)
+**CSV Data Source**: `articles_unified.csv` (via UnifiedArticleRecord)
+**Sub-deck**: `Articles` (Main Deck::Articles)
+**Generator Service**: `ArticlePatternProcessor._create_gender_cloze_card()`
+**Status**: **✅ ACTIVE** - Currently generates 1 card per record for gender recognition
 
 ### Card Content
 
-**Front**: Cloze deletion question with blanked text
-**Back**: Answer with complete text and explanation
+**Front**: Cloze deletion with blanked article in nominative
+**Back**: Complete text with German gender explanation
 
 ### Template Files
 
-- `artikel_gender_cloze_DE_de_front.html`
+- `artikel_gender_cloze_DE_de_front.html` (minimal template using `{{cloze:Text}}`)
 - `artikel_gender_cloze_DE_de_back.html`
 - `artikel_gender_cloze_DE_de.css`
 
 ### Field Specifications
 
-| Field | Source | Required | Description | Example |
-|-------|--------|----------|-------------|---------|
-| `Text` | Generated | ❌ | Cloze deletion text with {{c1::}} tags | `{{c1::Der}} Mann arbeitet hier` |
-| `Explanation` | Generated | ❌ | Explanation of the grammatical rule | `Maskulin - Geschlecht erkennen` |
-| `Image` | Pexels | ❌ | Generated image from Pexels API | `<img src="house_001.jpg" />` |
-| `Audio` | AWS_Polly | ❌ | Field for audio | `example_audio` |
+| Field | Source | Required | Processing | Description | Example |
+|-------|--------|----------|------------|-------------|---------|
+| `Text` | Generated | ✅ | Nominative example with `{{c1::}}` | Cloze text | `{{c1::Der}} Mann ist hier` |
+| `Explanation` | GermanExplanationFactory | ✅ | `create_gender_recognition_explanation()` | Gender explanation | `Maskulin - Geschlecht erkennen` |
+| `Image` | MediaEnricher | ❌ | Via enriched_data.get("image_url") | Pexels image | `mann_001.jpg` |
+| `Audio` | MediaEnricher | ❌ | Via enriched_data.get("audio_file") | Example audio | `example.mp3` |
 
-## Noun_Article_Recognition
+## Noun_Article_Recognition [DISABLED]
 
 **Anki Note Type**: `German Noun_Article_Recognition with Media`
-**Description**: Practice cards for learning noun-article pairs
-**Learning Objective**: Learn which article goes with each German noun
+**Description**: Noun-specific article practice cards
+**Learning Objective**: Learn which article goes with specific German nouns
 **Cloze Deletion**: No
-**CSV Data Source**: `nouns.csv + articles_unified.csv`
+**CSV Data Source**: `nouns.csv` (NounRecord) + article patterns
 **Sub-deck**: `Articles` (Main Deck::Articles)
+**Generator Service**: `ArticleApplicationService._create_article_recognition_card()`
+**Status**: **❌ DISABLED** - ArticleApplicationService is commented out in deck_builder.py
 
 ### Card Content
 
-**Front**: Question with optional hint button
-**Back**: Answer with grammar forms and examples
+**Front**: Just the noun (e.g., "Haus")
+**Back**: Article + noun (e.g., "das Haus") with English translation
 
 ### Template Files
 
@@ -357,35 +389,43 @@ This section documents the source text used for Pexels API image searches for ea
 
 ### Field Specifications
 
-| Field | Source | Required | Description | Example |
-|-------|--------|----------|-------------|---------|
-| `FrontText` | Generated | ❌ | Generated text for card front | `What is the German word for 'beautiful'?` |
-| `BackText` | Generated | ❌ | Generated text for card back | `schön` |
-| `Gender` | articles_unified.csv | ❌ | German grammatical gender (masculine, feminine, neuter) | `neutrum` |
-| `Nominative` | articles_unified.csv | ❌ | Nominative case article form | `das` |
-| `Accusative` | articles_unified.csv | ❌ | Accusative case article form | `das` |
-| `Dative` | articles_unified.csv | ❌ | Dative case article form | `dem` |
-| `Genitive` | articles_unified.csv | ❌ | Genitive case article form | `des` |
-| `ExampleNom` | articles_unified.csv | ❌ | Example sentence in nominative case | `Der Mann arbeitet hier.` |
-| `Image` | Pexels | ❌ | Generated image from Pexels API | `<img src="house_001.jpg" />` |
-| `ArticleAudio` | AWS_Polly | ❌ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
-| `ExampleAudio` | AWS_Polly | ❌ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
-| `NounOnly` | Generated | ❌ | Extracted noun without article | `Haus` |
-| `NounEnglishWithArticle` | Generated | ❌ | English translation including article | `the house` |
+| Field | Source | Required | Processing | Description | Example |
+|-------|--------|----------|------------|-------------|---------|
+| `FrontText` | NounRecord.noun | ✅ | Direct from noun | Just the noun | `Haus` |
+| `BackText` | Generated | ✅ | `f"{noun.article} {noun.noun}"` | Article + noun | `das Haus` |
+| `Gender` | Derived from article | ✅ | Article → gender mapping | German gender | `neutral` |
+| `Nominative` | NounRecord.article | ✅ | Base article form | Nominative article | `das` |
+| `Accusative` | Generated | ✅ | Based on article declension | Accusative form | `das` |
+| `Dative` | Generated | ✅ | Based on article declension | Dative form | `dem` |
+| `Genitive` | Generated | ✅ | Based on article declension | Genitive form | `des` |
+| `ExampleNom` | NounRecord.example | ❌ | From noun CSV | Example sentence | `Das Haus ist groß` |
+| `Image` | MediaEnricher | ❌ | Via enriched_data | Pexels image | `<img src="haus_001.jpg" />` |
+| `ArticleAudio` | MediaEnricher | ❌ | Via enriched_data | Article audio | `[sound:das.mp3]` |
+| `ExampleAudio` | MediaEnricher | ❌ | Via enriched_data | Example audio | `[sound:example.mp3]` |
+| `NounOnly` | NounRecord.noun | ✅ | Direct from noun | Noun without article | `Haus` |
+| `NounEnglishWithArticle` | Generated | ✅ | `f"the {noun.english.lower()}"` | English with article | `the house` |
 
-## Noun_Case_Context
+### Article Declension Patterns
+The service uses `_get_article_forms_for_noun()` to generate all case forms:
+- **der** (masculine): der → den → dem → des
+- **die** (feminine): die → die → der → der  
+- **das** (neuter): das → das → dem → des
+
+## Noun_Case_Context [DISABLED]
 
 **Anki Note Type**: `German Noun_Case_Context with Media`
-**Description**: Practice cards for noun declension in different cases
-**Learning Objective**: Master German noun declension in different cases
+**Description**: Case-specific noun declension practice
+**Learning Objective**: Master German noun declension in all four cases
 **Cloze Deletion**: No
-**CSV Data Source**: `nouns.csv + articles_unified.csv`
+**CSV Data Source**: `nouns.csv` (NounRecord) + generated case examples
 **Sub-deck**: `Articles` (Main Deck::Articles)
+**Generator Service**: `ArticleApplicationService._create_noun_case_card()`
+**Status**: **❌ DISABLED** - ArticleApplicationService is commented out in deck_builder.py
 
 ### Card Content
 
-**Front**: Question with optional hint button
-**Back**: Answer with grammar forms and examples
+**Front**: Context sentence with blank (e.g., "___ Haus ist klein")
+**Back**: Complete sentence with case explanation
 
 ### Template Files
 
@@ -395,24 +435,148 @@ This section documents the source text used for Pexels API image searches for ea
 
 ### Field Specifications
 
-| Field | Source | Required | Description | Example |
-|-------|--------|----------|-------------|---------|
-| `FrontText` | Generated | ❌ | Generated text for card front | `What is the German word for 'beautiful'?` |
-| `BackText` | Generated | ❌ | Generated text for card back | `schön` |
-| `Gender` | articles_unified.csv | ❌ | German grammatical gender (masculine, feminine, neuter) | `neutrum` |
-| `Nominative` | articles_unified.csv | ❌ | Nominative case article form | `das` |
-| `Accusative` | articles_unified.csv | ❌ | Accusative case article form | `das` |
-| `Dative` | articles_unified.csv | ❌ | Dative case article form | `dem` |
-| `Genitive` | articles_unified.csv | ❌ | Genitive case article form | `des` |
-| `ExampleNom` | articles_unified.csv | ❌ | Example sentence in nominative case | `Der Mann arbeitet hier.` |
-| `ExampleAcc` | articles_unified.csv | ❌ | Example sentence in accusative case | `Ich sehe den Mann.` |
-| `ExampleDat` | articles_unified.csv | ❌ | Example sentence in dative case | `Ich gebe dem Mann das Buch.` |
-| `ExampleGen` | articles_unified.csv | ❌ | Example sentence in genitive case | `Das ist das Haus des Mannes.` |
-| `Image` | Pexels | ❌ | Generated image from Pexels API | `<img src="house_001.jpg" />` |
-| `ArticleAudio` | AWS_Polly | ❌ | Generated audio for article pronunciation | `[sound:das_pronunciation.mp3]` |
-| `ExampleAudio` | AWS_Polly | ❌ | Generated example sentence audio from AWS Polly | `[sound:example_sentence.mp3]` |
-| `NounOnly` | Generated | ❌ | Extracted noun without article | `Haus` |
-| `NounEnglish` | Generated | ❌ | English translation of extracted noun | `house` |
+| Field | Source | Required | Processing | Description | Example |
+|-------|--------|----------|------------|-------------|---------|
+| `FrontText` | Generated | ✅ | Sentence with `___` replacing article | Blank sentence | `___ Haus ist hier` |
+| `BackText` | Generated | ✅ | Complete case example | Full sentence | `Das Haus ist hier` |
+| `Gender` | Derived | ✅ | From noun article | German gender | `Neutral` |
+| `Nominative` | NounRecord.article | ✅ | Base article | Nominative form | `das` |
+| `Accusative` | Generated | ✅ | Case declension | Accusative form | `das` |
+| `Dative` | Generated | ✅ | Case declension | Dative form | `dem` |
+| `Genitive` | Generated | ✅ | Case declension | Genitive form | `des` |
+| `ExampleNom` | Generated | ✅ | `f"{article} {noun} ist hier."` | Nominative example | `Das Haus ist hier.` |
+| `ExampleAcc` | Generated | ✅ | `f"Ich sehe {article} {noun}."` | Accusative example | `Ich sehe das Haus.` |
+| `ExampleDat` | Generated | ✅ | `f"Mit {article} {noun} arbeite ich."` | Dative example | `Mit dem Haus arbeite ich.` |
+| `ExampleGen` | Generated | ✅ | `f"Das ist die Farbe {article} {noun}es."` | Genitive example | `Das ist die Farbe des Hauses.` |
+| `Image` | MediaEnricher | ❌ | Via enriched_data | Pexels image | `<img src="haus_001.jpg" />` |
+| `ArticleAudio` | MediaEnricher | ❌ | Via enriched_data | Article audio | `[sound:das.mp3]` |
+| `ExampleAudio` | MediaEnricher | ❌ | Via enriched_data | Example audio | `[sound:example.mp3]` |
+| `NounOnly` | NounRecord.noun | ✅ | Direct from noun | Noun without article | `Haus` |
+| `NounEnglish` | NounRecord.english | ✅ | Direct from noun | English translation | `house` |
+| `case_nominativ` | Conditional | ✅ | `"true" if case == "nominativ"` | Template flag | `true` or empty |
+| `case_akkusativ` | Conditional | ✅ | `"true" if case == "akkusativ"` | Template flag | `true` or empty |
+| `case_dativ` | Conditional | ✅ | `"true" if case == "dativ"` | Template flag | `true` or empty |
+| `case_genitiv` | Conditional | ✅ | `"true" if case == "genitiv"` | Template flag | `true` or empty |
+
+### Case Example Generation
+The `_generate_case_examples()` method creates contextually appropriate sentences:
+- **Nominative**: Subject position - "{article} {noun} ist hier."
+- **Accusative**: Direct object - "Ich sehe {article} {noun}."
+- **Dative**: With preposition - "Mit {article} {noun} arbeite ich."
+- **Genitive**: Possession - "Das ist die Farbe {article} {noun}es."
+
+## Implementation Notes
+
+### Current Active Pipeline (Cloze-Only)
+1. **CSV Loading**: `articles_unified.csv` → `UnifiedArticleRecord` via `RecordMapper`
+2. **Pattern Processing**: Each record generates **5 cloze cards**:
+   - 1 Gender Recognition Cloze card (`_create_gender_cloze_card`)
+   - 4 Case Context Cloze cards (`_create_case_cloze_card` for nom/acc/dat/gen)
+   - **Note**: Non-cloze methods exist but are never called
+3. **Noun Integration**: **DISABLED** - ArticleApplicationService is commented out
+4. **Media Enrichment**: Images and audio added via `MediaEnricher` service
+5. **Card Assembly**: Final formatting via `CardBuilder` service
+
+### Pedagogical Impact of Current Implementation
+
+**Critical Deficiency**: The current system only teaches abstract patterns without concrete noun associations:
+- ❌ Learners see: "{{c1::Der}} Mann ist hier" (pattern practice)
+- ❌ Missing: "Haus" → "das Haus" (noun-article memorization)
+- ❌ Result: A1 learners lack the fundamental noun-article pairings required by CEFR standards
+
+## Pedagogical Recommendations for Article Learning System
+
+### 1. Immediate Priority: Re-enable ArticleApplicationService
+**Timeline**: URGENT - Should be completed before any user testing
+
+**Rationale**: German article assignment is **85% arbitrary memorization** and only 15% pattern-based. The current cloze-only system addresses the 15% while ignoring the critical 85%.
+
+**Required Actions**:
+1. Uncomment ArticleApplicationService integration in deck_builder.py (lines 790-803)
+2. Convert ArticleApplicationService to use cloze deletion format if template issues persist
+3. Ensure noun CSV data includes sufficient A1-level nouns (minimum 100 high-frequency nouns)
+
+### 2. Learning Sequence Optimization
+
+**Current Problem**: Abstract pattern learning before concrete examples violates natural acquisition order.
+
+**Recommended Card Presentation Order**:
+1. **First**: Noun-Article Recognition ("Haus" → "das Haus")
+2. **Second**: Gender Pattern Recognition (neuter nouns often end in -chen, -lein)
+3. **Third**: Case Context Practice (applying known articles in sentences)
+
+**Implementation**: Add a "difficulty" or "order" field to control Anki's initial presentation sequence.
+
+### 3. Cognitive Load Management
+
+**Current Issue**: 5 cards per article pattern + potential noun cards = overwhelming repetition
+
+**Recommended Reduction**:
+- **Keep**: Gender cloze (1 card) + Nominative case cloze (1 card) = 2 cards per pattern
+- **Defer**: Accusative, Dative, Genitive cloze cards to A2 level
+- **Prioritize**: Noun-article cards (when re-enabled) over pattern cards
+
+**Rationale**: A1 learners primarily encounter nominative and accusative cases. Dative and genitive are less frequent and can overwhelm beginners.
+
+### 4. Concrete Learning Materials
+
+**Missing Elements**:
+1. **Visual Associations**: Images should show the noun with its article ("das Haus" with house image)
+2. **Mnemonic Hints**: Gender patterns and rules (e.g., "-ung always feminine")
+3. **High-Frequency First**: Focus on the 100 most common German nouns at A1
+
+### 5. Success Metrics for Article Learning
+
+**Minimum Viable Competency at A1**:
+- Correctly recall articles for 50 high-frequency nouns
+- Recognize gender patterns for 70% of new nouns
+- Apply correct articles in nominative case 80% of the time
+- Apply correct articles in accusative case 60% of the time
+
+**Current System Achievement**: ~30% of target (pattern recognition only, no noun-specific knowledge)
+
+### 6. Technical Implementation Priorities
+
+**Phase 1 (Immediate)**:
+1. Re-enable ArticleApplicationService
+2. Verify noun-article cards generate correctly
+3. Test with 10-20 high-frequency nouns
+
+**Phase 2 (Next Sprint)**:
+1. Convert ArticleApplicationService to cloze format if needed
+2. Add visual article indicators to images
+3. Implement card ordering system
+
+**Phase 3 (Future Enhancement)**:
+1. Add gender pattern hint cards
+2. Create article rules reference cards
+3. Implement spaced repetition optimization for article-noun pairs
+
+### 7. Warning: Current System Pedagogical Risk
+
+**🚨 Without noun-article cards, learners will**:
+1. Guess articles randomly in real communication
+2. Develop incorrect pattern assumptions
+3. Struggle with basic German sentence construction
+4. Fail A1 certification requirements for article usage
+
+**Recommendation**: Do not release to learners until ArticleApplicationService is re-enabled and tested.
+
+### Noun Extraction Algorithm
+The `_extract_noun_from_sentence()` method:
+1. Splits sentence into words
+2. Filters out articles, prepositions, and common words
+3. Returns first capitalized word (likely the noun)
+4. Fallback to "Wort" if extraction fails
+
+### Translation Dictionary
+Basic noun translations are hardcoded for common A1-level nouns:
+- Mann → man, Frau → woman, Kind → child
+- Auto → car, Haus → house, Buch → book
+- Tisch → table, Stuhl → chair
+
+### Field Mapping in CardBuilder
+The `_extract_field_values()` method maps record fields to Anki fields using predefined mappings for each card type, ensuring correct field order for Anki import.
 
 ---
 

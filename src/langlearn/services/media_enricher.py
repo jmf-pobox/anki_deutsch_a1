@@ -136,6 +136,8 @@ class StandardMediaEnricher(MediaEnricher):
             return self._enrich_negation_record(enriched, domain_model)
         elif model_type == "verbconjugationrecord":
             return self._enrich_verb_conjugation_record(enriched, domain_model)
+        elif model_type == "unifiedarticlerecord":
+            return self._enrich_unified_article_record(enriched, domain_model)
         else:
             # Fallback enrichment for record types without legacy
             # domain models (key-based detection)
@@ -604,6 +606,87 @@ class StandardMediaEnricher(MediaEnricher):
                 # Use existing image without any API calls
                 image_filename = self._get_image_filename(verb)
                 record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_unified_article_record(
+        self, record: dict[str, Any], article_record: Any
+    ) -> dict[str, Any]:
+        """Enrich UnifiedArticleRecord with media.
+
+        UnifiedArticleRecord cards need:
+        - Audio for the article forms (der, die, das etc.)
+        - Audio for example sentences
+        - Images based on example context
+
+        Args:
+            record: Record dictionary with article data
+            article_record: UnifiedArticleRecord instance
+
+        Returns:
+            Enriched record with media references
+        """
+        # UnifiedArticleRecord uses German field names: nominativ, beispiel_nom, etc.
+        # Generate article audio (the article form itself)
+        if not record.get("article_audio") and record.get("nominativ"):
+            audio_path = self._get_or_generate_audio(record["nominativ"])
+            if audio_path:
+                record["article_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate example audio from the nominative example
+        if not record.get("example_audio") and record.get("beispiel_nom"):
+            audio_path = self._get_or_generate_audio(record["beispiel_nom"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("beispiel_nom"):
+            # Use the image search strategy from the record
+            search_strategy = article_record.get_image_search_strategy()
+
+            # Extract a noun from the example for the filename
+            example_nom = record.get("beispiel_nom", "")
+            # Look for capitalized nouns in the sentence
+            words = example_nom.split()
+            noun_candidates = [
+                word
+                for word in words
+                if word[0].isupper()
+                and word
+                not in [
+                    "Der",
+                    "Die",
+                    "Das",
+                    "Den",
+                    "Dem",
+                    "Des",
+                    "Ein",
+                    "Eine",
+                    "Kein",
+                    "Keine",
+                ]
+            ]
+
+            if noun_candidates:
+                noun = noun_candidates[0]  # Use first capitalized noun
+
+                if not self.image_exists(noun):
+                    # Translate the search strategy to English for better Pexels results
+                    search_terms = self._translate_for_search(search_strategy)
+                    fallback = noun
+                    # Use fallback if translation failed
+                    final_search_terms = (
+                        search_terms if search_terms is not None else fallback
+                    )
+                    image_path = self._get_or_generate_image(
+                        noun, final_search_terms, fallback
+                    )
+                    if image_path:
+                        record["image"] = f'<img src="{Path(image_path).name}">'
+                else:
+                    # Use existing image
+                    image_filename = self._get_image_filename(noun)
+                    record["image"] = f'<img src="{image_filename}">'
 
         return record
 

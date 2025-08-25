@@ -1268,6 +1268,22 @@ class UnifiedArticleRecord(BaseRecord):
         """Legacy compatibility: beispiel_gen -> example_gen."""
         return self.beispiel_gen
 
+    def get_image_search_strategy(self) -> str:
+        """Get image search strategy for media generation.
+
+        Returns the most representative example for image searches.
+        Uses nominative example as it's typically the clearest form.
+        """
+        return self.beispiel_nom
+
+    def get_combined_audio_text(self) -> str:
+        """Get combined text for audio generation.
+
+        Returns the nominative example as the primary audio content
+        since it represents the most basic article usage.
+        """
+        return self.beispiel_nom
+
 
 # Registry for mapping model types to record types
 RECORD_TYPE_REGISTRY = {
