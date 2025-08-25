@@ -13,6 +13,141 @@ an overall gh issue related to the templating system.
 
 **Total Card Types**: 15
 
+## System Architecture Status
+
+### Overview
+The project is currently undergoing a migration from legacy card generators to a **Clean Pipeline Architecture**. This migration is partially complete, resulting in two parallel systems operating simultaneously:
+
+1. **Clean Pipeline Architecture (New System)**: CSV → Records → MediaEnricher → CardBuilder → AnkiBackend
+2. **Legacy Architecture (Old System)**: CSV → Domain Models → Card Generators → AnkiBackend
+
+### Migration Status by Card Type
+
+| Card Type | Sub-deck | System | Status | Media Support | Known Issues |
+|-----------|----------|--------|--------|---------------|--------------|
+| **Noun** | Nouns | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Adjective** | Adjectives | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Adverb** | Adverbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Negation** | Negations | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Verb** | Verbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | Currently disabled in favor of verb_conjugation |
+| **Verb_Conjugation** | Verbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Verb_Imperative** | Verbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Preposition** | Prepositions | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Phrase** | Phrases | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
+| **Artikel_Context_Cloze** | Articles | ✅ Clean Pipeline | **Active** | ⚠️ Partial | Media fields exist but may not populate |
+| **Artikel_Gender_Cloze** | Articles | ✅ Clean Pipeline | **Active** | ⚠️ Partial | Media fields exist but may not populate |
+| **Artikel_Context** | Articles | 🔄 Hybrid | **Inactive** | ❌ None | Code exists but not called |
+| **Artikel_Gender** | Articles | 🔄 Hybrid | **Inactive** | ❌ None | Code exists but not called |
+| **Noun_Article_Recognition** | Articles | ❌ Disabled | **Disabled** | ❌ None | ArticleApplicationService commented out |
+| **Noun_Case_Context** | Articles | ❌ Disabled | **Disabled** | ❌ None | ArticleApplicationService commented out |
+
+### Architecture Details
+
+#### ✅ **Clean Pipeline (New System)**
+**Implementation**: `deck_builder.py:generate_all_cards()` → `RecordMapper` → `MediaEnricher` → `CardBuilder`
+
+**Components**:
+- **RecordMapper**: Converts CSV rows to Pydantic Record models
+- **MediaEnricher**: Batch processes media generation (images via Pexels, audio via AWS Polly)
+- **CardBuilder**: Assembles final cards with templates and formatting
+- **MediaFileRegistrar**: Registers media files with AnkiBackend
+
+**Supported Record Types** (via `RecordMapper`):
+- noun, adjective, adverb, negation (fully working)
+- verb, verb_conjugation, verb_imperative (fully working)
+- preposition, phrase (fully working)
+- unified_article (partial - cloze cards only)
+
+#### 📅 **Legacy System (Old System)**
+**Implementation**: `deck_builder.py:_generate_all_cards_legacy()` → Domain Models → Card Generators
+
+**Components**:
+- **Domain Models**: Rich models with German validation (Noun, Adjective, Adverb, Negation)
+- **Card Generators**: Individual generators per type (NounCardGenerator, etc.)
+- **CardGeneratorFactory**: Creates configured generators
+
+**Status**: Only used as fallback when no records are loaded via Clean Pipeline
+
+### Critical Issues
+
+#### 1. **Article Media Generation Problem** 🚨
+**Issue**: Article cards (Artikel_Context_Cloze, Artikel_Gender_Cloze) have empty Image/Audio fields
+
+**Root Cause Analysis**:
+- ArticlePatternProcessor creates cards but media enrichment may fail
+- Debug logs show enriched_data is processed but media fields aren't populated
+- MediaEnricher may not have proper handlers for UnifiedArticleRecord types
+
+**Impact**: Article cards display without visual/audio aids, reducing learning effectiveness
+
+#### 2. **Disabled Noun-Article Integration** ⚠️
+**Issue**: ArticleApplicationService is commented out (deck_builder.py lines 790-803)
+
+**Code Comment**: "TEMPORARY: Disable noun-article cards to focus on testing cloze deletion system"
+
+**Impact**: 
+- Learners cannot practice noun-article associations ("das Haus", "der Mann")
+- Only abstract pattern recognition available, not concrete noun learning
+- Does not meet CEFR A1 requirements for article usage
+
+### Migration Roadmap
+
+#### Phase 1: Complete Article System (URGENT)
+1. **Fix Article Media Generation**
+   - Debug why MediaEnricher doesn't populate article card media
+   - Add proper UnifiedArticleRecord support to MediaEnricher
+   - Verify media fields are correctly mapped in CardBuilder
+
+2. **Re-enable ArticleApplicationService**
+   - Uncomment lines 790-803 in deck_builder.py
+   - Test noun-article card generation
+   - Verify integration with existing noun records
+
+#### Phase 2: Remove Legacy Dependencies
+1. **Remove Legacy Domain Models**
+   - Delete legacy Noun, Adjective, Adverb, Negation classes
+   - Remove `_load_legacy_models_from_records()` method
+   - Clean up dual storage pattern in DeckBuilder
+
+2. **Remove Legacy Card Generators**
+   - Delete individual card generator classes
+   - Remove CardGeneratorFactory
+   - Remove `_generate_all_cards_legacy()` method
+
+#### Phase 3: Optimize Clean Pipeline
+1. **Performance Improvements**
+   - Implement parallel media generation
+   - Add progress indicators for large batches
+   - Optimize MediaEnricher caching
+
+2. **Enhanced Validation**
+   - Add record validation before card generation
+   - Implement better error recovery
+   - Add comprehensive logging
+
+### Developer Notes
+
+**When Adding New Card Types**:
+1. Create Record model in `models/records.py`
+2. Add mapping in `RecordMapper.map_csv_row_to_record()`
+3. Add field mapping in `CardBuilder._get_field_names_for_record_type()`
+4. Create templates in `templates/` directory
+5. Add media enrichment logic if needed
+
+**Current Data Flow**:
+```
+CSV Files → RecordMapper → Records → MediaEnricher → Enriched Records → CardBuilder → Cards → AnkiBackend
+                                ↓
+                    (Legacy compatibility layer)
+                                ↓
+                         Domain Models (for backward compatibility only)
+```
+
+**Testing Migration Status**:
+- Check `deck_builder.py` logs for "Clean Pipeline generated" vs "Legacy architecture generated"
+- Verify media files are created in `data/audio/` and `data/images/`
+- Confirm all expected fields are populated in generated .apkg file
+
 ## Table of Contents - Organized by Sub-deck
 
 ### Adjectives Sub-deck
@@ -158,21 +293,21 @@ an overall gh issue related to the templating system.
 ### Summary Box: What This Means for Learners
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ CURRENT STATE: Pattern Practice Only (Insufficient for A1)                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ What Works:                                                                      │
-│ ✅ Learners practice filling in articles in sentences                             │
-│ ✅ Case recognition exercises (nom/acc/dat/gen)                                   │
-│ ✅ Gender pattern recognition in context                                          │
-│                                                                                   │
-│ What's Missing (CRITICAL):                                                       │
-│ ❌ Cannot learn "das Haus", "die Frau", "der Mann"                                │
-│ ❌ No noun-to-article memory building                                             │
-│ ❌ Missing 85% of required article knowledge                                      │
-│                                                                                   │
-│ A1 Requirement Status: ❌ DOES NOT MEET CEFR STANDARDS                           │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────┐
+│ CURRENT STATE: Pattern Practice Only (Insufficient for A1)                 │
+├────────────────────────────────────────────────────────────────────────────┤
+│ What Works:                                                                │
+│ ✅ Learners practice filling in articles in sentences                      │
+│ ✅ Case recognition exercises (nom/acc/dat/gen)                            │
+│ ✅ Gender pattern recognition in context                                   │
+│                                                                            │
+│ What's Missing (CRITICAL):                                                 │
+│ ❌ Cannot learn "das Haus", "die Frau", "der Mann"                         │
+│ ❌ No noun-to-article memory building                                      │
+│ ❌ Missing 85% of required article knowledge                               │
+│                                                                            │
+│ A1 Requirement Status: ❌ DOES NOT MEET CEFR STANDARDS                     │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Pedagogical Assessment

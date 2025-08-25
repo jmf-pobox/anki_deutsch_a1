@@ -77,6 +77,18 @@ class ArticlePatternProcessor:
 
         for i, record in enumerate(records):
             enriched_data = enriched_data_list[i] if enriched_data_list else None
+            logger.debug(
+                f"[ARTICLE PROCESSOR DEBUG] Processing record {i + 1}/{len(records)}"
+            )
+            logger.debug(
+                f"[ARTICLE PROCESSOR DEBUG] Enriched data available: "
+                f"{enriched_data is not None}"
+            )
+            if enriched_data:
+                logger.debug(
+                    f"[ARTICLE PROCESSOR DEBUG] Enriched data keys: "
+                    f"{list(enriched_data.keys())}"
+                )
 
             # Generate 5 cards per record
             record_cards = self._generate_cards_for_record(record, enriched_data)
@@ -393,6 +405,11 @@ class ArticlePatternProcessor:
         Returns:
             Cloze card with German explanation
         """
+        logger.debug("[ARTICLE PROCESSOR DEBUG] Creating gender cloze card")
+        logger.debug(
+            f"[ARTICLE PROCESSOR DEBUG] Enriched data keys: "
+            f"{list(enriched_data.keys()) if enriched_data else 'None'}"
+        )
         # Create cloze text: "{{c1::Der}} Mann ist hier"
         example_sentence = getattr(record, "example_nom", "") or "ist hier"
         article = record.nominative
@@ -418,12 +435,36 @@ class ArticlePatternProcessor:
         )
 
         # Prepare card data for cloze template
+        logger.debug(
+            "[ARTICLE PROCESSOR DEBUG] Looking for media fields in enriched_data:"
+        )
+        if enriched_data:
+            logger.debug(
+                f"  - image_url: {enriched_data.get('image_url', 'NOT FOUND')}"
+            )
+            logger.debug(
+                f"  - audio_file: {enriched_data.get('audio_file', 'NOT FOUND')}"
+            )
+            logger.debug(f"  - image: {enriched_data.get('image', 'NOT FOUND')}")
+            logger.debug(
+                f"  - article_audio: {enriched_data.get('article_audio', 'NOT FOUND')}"
+            )
+            logger.debug(
+                f"  - example_audio: {enriched_data.get('example_audio', 'NOT FOUND')}"
+            )
+
         card_data = {
             "Text": cloze_text,
             "Explanation": explanation,
             "Image": enriched_data.get("image_url") if enriched_data else "",
             "Audio": enriched_data.get("audio_file") if enriched_data else "",
         }
+        logger.debug(
+            f"[ARTICLE PROCESSOR DEBUG] Card data Image field: {card_data['Image']}"
+        )
+        logger.debug(
+            f"[ARTICLE PROCESSOR DEBUG] Card data Audio field: {card_data['Audio']}"
+        )
 
         # Use cloze template
         template = self._card_builder._template_service.get_template(
@@ -489,12 +530,37 @@ class ArticlePatternProcessor:
         )
 
         # Prepare card data for cloze template
+        logger.debug(
+            "[ARTICLE PROCESSOR DEBUG] Looking for media fields in "
+            "enriched_data for case card:"
+        )
+        if enriched_data:
+            logger.debug(
+                f"  - image_url: {enriched_data.get('image_url', 'NOT FOUND')}"
+            )
+            logger.debug(
+                f"  - audio_file: {enriched_data.get('audio_file', 'NOT FOUND')}"
+            )
+            logger.debug(f"  - image: {enriched_data.get('image', 'NOT FOUND')}")
+            logger.debug(
+                f"  - article_audio: {enriched_data.get('article_audio', 'NOT FOUND')}"
+            )
+            logger.debug(
+                f"  - example_audio: {enriched_data.get('example_audio', 'NOT FOUND')}"
+            )
+
         card_data = {
             "Text": cloze_text,
             "Explanation": explanation,
             "Image": enriched_data.get("image_url") if enriched_data else "",
             "Audio": enriched_data.get("audio_file") if enriched_data else "",
         }
+        logger.debug(
+            f"[ARTICLE PROCESSOR DEBUG] Case card Image field: {card_data['Image']}"
+        )
+        logger.debug(
+            f"[ARTICLE PROCESSOR DEBUG] Case card Audio field: {card_data['Audio']}"
+        )
 
         # Use cloze template
         template = self._card_builder._template_service.get_template(

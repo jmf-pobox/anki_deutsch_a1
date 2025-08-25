@@ -125,6 +125,12 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Determine model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()
+        logger.debug(
+            f"[MEDIA ENRICHER DEBUG] Processing record with model type: {model_type}"
+        )
+        logger.debug(
+            f"[MEDIA ENRICHER DEBUG] Record keys: {list(record.keys())[:10]}"
+        )  # First 10 keys to avoid spam
 
         if model_type == "noun":
             return self._enrich_noun_record(enriched, domain_model)
@@ -172,12 +178,16 @@ class StandardMediaEnricher(MediaEnricher):
 
     def _enrich_noun_record(self, record: dict[str, Any], noun: Any) -> dict[str, Any]:
         """Enrich noun record with media."""
+        logger.debug("[NOUN DEBUG] Entering _enrich_noun_record")
+        logger.debug(f"[NOUN DEBUG] Record fields: {list(record.keys())[:10]}")
+
         # Generate word audio (combined article + noun + plural)
         if not record.get("word_audio"):
             combined_text = noun.get_combined_audio_text()
             audio_path = self._get_or_generate_audio(combined_text)
             if audio_path:
                 record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+                logger.debug(f"[NOUN DEBUG] Set word_audio to: {record['word_audio']}")
 
         # Generate example audio
         if not record.get("example_audio") and record.get("example"):
@@ -212,6 +222,13 @@ class StandardMediaEnricher(MediaEnricher):
                 image_filename = self._get_image_filename(word)
                 record["image"] = f'<img src="{image_filename}">'
 
+        logger.debug(
+            f"[NOUN DEBUG] Final enriched record keys: {list(record.keys())[:10]}"
+        )
+        logger.debug("[NOUN DEBUG] Media fields in enriched record:")
+        logger.debug(f"  - word_audio: {record.get('word_audio', 'NOT SET')}")
+        logger.debug(f"  - example_audio: {record.get('example_audio', 'NOT SET')}")
+        logger.debug(f"  - image: {record.get('image', 'NOT SET')}")
         return record
 
     def _enrich_adjective_record(
@@ -626,18 +643,42 @@ class StandardMediaEnricher(MediaEnricher):
         Returns:
             Enriched record with media references
         """
+        logger.debug("[ARTICLE DEBUG] Entering _enrich_unified_article_record")
+        logger.debug(
+            f"[ARTICLE DEBUG] Article record type: {type(article_record).__name__}"
+        )
+        logger.debug(f"[ARTICLE DEBUG] Record fields: {list(record.keys())}")
+
         # UnifiedArticleRecord uses German field names: nominativ, beispiel_nom, etc.
         # Generate article audio (the article form itself)
         if not record.get("article_audio") and record.get("nominativ"):
+            logger.debug(
+                f"[ARTICLE DEBUG] Generating audio for nominativ: "
+                f"'{record['nominativ']}'"
+            )
             audio_path = self._get_or_generate_audio(record["nominativ"])
             if audio_path:
                 record["article_audio"] = f"[sound:{Path(audio_path).name}]"
+                logger.debug(
+                    f"[ARTICLE DEBUG] Set article_audio to: {record['article_audio']}"
+                )
+            else:
+                logger.debug("[ARTICLE DEBUG] No audio path generated for nominativ")
 
         # Generate example audio from the nominative example
         if not record.get("example_audio") and record.get("beispiel_nom"):
+            logger.debug(
+                f"[ARTICLE DEBUG] Generating audio for beispiel_nom: "
+                f"'{record['beispiel_nom']}'"
+            )
             audio_path = self._get_or_generate_audio(record["beispiel_nom"])
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+                logger.debug(
+                    f"[ARTICLE DEBUG] Set example_audio to: {record['example_audio']}"
+                )
+            else:
+                logger.debug("[ARTICLE DEBUG] No audio path generated for beispiel_nom")
 
         # Generate image based on example sentence
         if not record.get("image") and record.get("beispiel_nom"):
@@ -669,25 +710,58 @@ class StandardMediaEnricher(MediaEnricher):
 
             if noun_candidates:
                 noun = noun_candidates[0]  # Use first capitalized noun
+                logger.debug(
+                    f"[ARTICLE DEBUG] Found noun: '{noun}' from candidates: "
+                    f"{noun_candidates}"
+                )
 
                 if not self.image_exists(noun):
                     # Translate the search strategy to English for better Pexels results
+                    logger.debug(
+                        f"[ARTICLE DEBUG] Image doesn't exist, generating for '{noun}'"
+                    )
                     search_terms = self._translate_for_search(search_strategy)
                     fallback = noun
                     # Use fallback if translation failed
                     final_search_terms = (
                         search_terms if search_terms is not None else fallback
                     )
+                    logger.debug(
+                        f"[ARTICLE DEBUG] Search terms: '{final_search_terms}', "
+                        f"fallback: '{fallback}'"
+                    )
                     image_path = self._get_or_generate_image(
                         noun, final_search_terms, fallback
                     )
                     if image_path:
                         record["image"] = f'<img src="{Path(image_path).name}">'
+                        logger.debug(f"[ARTICLE DEBUG] Set image to: {record['image']}")
+                    else:
+                        logger.debug("[ARTICLE DEBUG] No image path generated")
                 else:
                     # Use existing image
+                    logger.debug(f"[ARTICLE DEBUG] Using existing image for '{noun}'")
                     image_filename = self._get_image_filename(noun)
                     record["image"] = f'<img src="{image_filename}">'
+                    logger.debug(f"[ARTICLE DEBUG] Set image to: {record['image']}")
+            else:
+                logger.debug("[ARTICLE DEBUG] No noun candidates found in example")
 
+        logger.debug(
+            f"[ARTICLE DEBUG] Final enriched record keys: {list(record.keys())}"
+        )
+        logger.debug("[ARTICLE DEBUG] Media fields in enriched record:")
+        logger.debug(f"  - article_audio: {record.get('article_audio', 'NOT SET')}")
+        logger.debug(f"  - example_audio: {record.get('example_audio', 'NOT SET')}")
+        logger.debug(f"  - image: {record.get('image', 'NOT SET')}")
+        logger.debug(
+            f"  - image_url: {record.get('image_url', 'NOT SET')} "
+            f"(EXPECTED BY PROCESSOR)"
+        )
+        logger.debug(
+            f"  - audio_file: {record.get('audio_file', 'NOT SET')} "
+            f"(EXPECTED BY PROCESSOR)"
+        )
         return record
 
     def enrich_records(

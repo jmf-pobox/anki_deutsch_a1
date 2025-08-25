@@ -50,7 +50,7 @@ dependencies = [
 test = ["test-unit", "test-integration"]
 test-unit = "pytest {args:tests --ignore=tests/integration}"
 test-integration = "pytest {args:tests/integration}"
-test-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests tests/integration}"
+test-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests}"
 test-unit-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests --ignore=tests/integration}"
 test-integration-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests/integration}"
 lint = "ruff check ."
