@@ -64,11 +64,14 @@ def test_anthropic_service_initialization(mock_keyring: MagicMock) -> None:
             pytest.skip("Skipping credential validation test in integration test run")
 
         # Mock the environment detection to simulate a non-test environment
-        with patch(
-            "langlearn.utils.environment.is_test_environment", return_value=False
-        ), pytest.raises(
-            ValueError,
-            match="Key ANTHROPIC_API_KEY not found in environment or keyring",
+        with (
+            patch(
+                "langlearn.utils.environment.is_test_environment", return_value=False
+            ),
+            pytest.raises(
+                ValueError,
+                match="Key ANTHROPIC_API_KEY not found in environment or keyring",
+            ),
         ):
             AnthropicService()
     finally:
