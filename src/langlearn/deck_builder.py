@@ -1,7 +1,7 @@
-"""High-level orchestrator for German Anki deck generation.
+"""High-level orchestrator for Anki deck generation.
 
-The GermanDeckBuilder provides a comprehensive, easy-to-use interface for creating
-German language learning Anki decks. It orchestrates all services, managers, and
+The DeckBuilder provides a comprehensive, easy-to-use interface for creating
+language learning Anki decks. It orchestrates all services, managers, and
 backends while maintaining clean separation of concerns and following dependency
 injection principles.
 """
@@ -43,9 +43,9 @@ T = TypeVar("T")
 
 
 class DeckBuilder:
-    """High-level orchestrator for German Anki deck generation.
+    """High-level orchestrator for Anki deck generation.
 
-    This class provides the main interface for creating German language learning
+    This class provides the main interface for creating language learning
     Anki decks. It orchestrates all necessary services, manages dependencies,
     and provides a clean API for deck generation workflows.
 
@@ -56,7 +56,7 @@ class DeckBuilder:
     Example:
         ```python
         # Basic usage
-        builder = GermanDeckBuilder("German A1 Vocabulary")
+        builder = DeckBuilder("A1 German Vocabulary")
 
         # Load data and create deck
         builder.load_nouns_from_csv("data/nouns.csv")
@@ -79,7 +79,7 @@ class DeckBuilder:
         pexels_service: PexelsServiceProtocol | None = None,
         media_service: MediaServiceProtocol | None = None,
     ) -> None:
-        """Initialize the German deck builder.
+        """Initialize the deck builder.
 
         Args:
             deck_name: Name of the Anki deck to create
@@ -220,7 +220,7 @@ class DeckBuilder:
     # Data Loading Methods
 
     def load_nouns_from_csv(self, csv_path: str | Path) -> None:
-        """Load German nouns from CSV file.
+        """Load nouns from CSV file.
 
         Args:
             csv_path: Path to the CSV file containing noun data
@@ -234,7 +234,7 @@ class DeckBuilder:
         logger.info(f"Loaded {len(nouns)} nouns")
 
     def load_adjectives_from_csv(self, csv_path: str | Path) -> None:
-        """Load German adjectives from CSV file.
+        """Load adjectives from CSV file.
 
         Args:
             csv_path: Path to the CSV file containing adjective data
@@ -248,7 +248,7 @@ class DeckBuilder:
         logger.info(f"Loaded {len(adjectives)} adjectives")
 
     def load_adverbs_from_csv(self, csv_path: str | Path) -> None:
-        """Load German adverbs from CSV file.
+        """Load adverbs from CSV file.
 
         Args:
             csv_path: Path to the CSV file containing adverb data
@@ -262,7 +262,7 @@ class DeckBuilder:
         logger.info(f"Loaded {len(adverbs)} adverbs")
 
     def load_negations_from_csv(self, csv_path: str | Path) -> None:
-        """Load German negations from CSV file.
+        """Load negations from CSV file.
 
         Args:
             csv_path: Path to the CSV file containing negation data
@@ -292,7 +292,7 @@ class DeckBuilder:
             "negations.csv": "negation",
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
-            # Unified Article system for German case learning
+            # Unified Article system for case learning
             "articles_unified.csv": "unified_article",
             # Re-enabled basic verb cards (Issue #26) - processed first
             "verbs.csv": "verb",
