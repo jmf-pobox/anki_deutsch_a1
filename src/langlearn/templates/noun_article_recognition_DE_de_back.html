@@ -1,0 +1,31 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="word-with-audio">
+    <span class="german">{{BackText}}</span>
+    {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+</div>
+
+<div class="english-translation">{{English}}</div>
+
+<div class="noun-forms">
+    <div class="form-item"><strong>Singular:</strong> {{Article}} {{Noun}}</div>
+    <div class="form-item"><strong>Plural:</strong> die {{Plural}}</div>
+</div>
+
+<div class="example-sentence">{{Example}}</div>
+
+{{#Related}}<div class="related-words"><strong>Verwandte Wörter:</strong> {{Related}}</div>{{/Related}}
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Remember</button>
+    <div id="back-hint-content" class="hint-content hidden">{{Article}} is the definite article for this noun</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

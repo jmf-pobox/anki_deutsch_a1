@@ -1,98 +1,98 @@
-verb,english,present_ich,present_du,present_er,perfect,example
-sein,to be,bin,bist,ist,ist gewesen,Ich bin zu Hause.
-haben,to have,habe,hast,hat,hat gehabt,Ich habe ein Buch.
-gehen,to go,gehe,gehst,geht,ist gegangen,Er geht zur Schule.
-kommen,to come,komme,kommst,kommt,ist gekommen,Sie kommt aus Deutschland.
-machen,to do/make,mache,machst,macht,hat gemacht,Ich mache meine Hausaufgaben.
-wohnen,to live,wohne,wohnst,wohnt,hat gewohnt,Wir wohnen in Berlin.
-arbeiten,to work,arbeite,arbeitest,arbeitet,hat gearbeitet,Er arbeitet in einer Bank.
-spielen,to play,spiele,spielst,spielt,hat gespielt,Die Kinder spielen im Park.
-lernen,to learn,lerne,lernst,lernt,hat gelernt,Ich lerne Deutsch.
-studieren,to study,studiere,studierst,studiert,hat studiert,Sie studiert Medizin.
-essen,to eat,esse,isst,isst,hat gegessen,Wir essen Frühstück.
-trinken,to drink,trinke,trinkst,trinkt,hat getrunken,Er trinkt einen Kaffee.
-schlafen,to sleep,schlafe,schläfst,schläft,hat geschlafen,Das Kind schläft.
-lesen,to read,lese,liest,liest,hat gelesen,Ich lese ein Buch.
-schreiben,to write,schreibe,schreibst,schreibt,hat geschrieben,Er schreibt einen Brief.
-sehen,to see,sehe,siehst,sieht,hat gesehen,Ich sehe den Film.
-hören,to hear/listen,höre,hörst,hört,hat gehört,Sie hört Musik.
-sprechen,to speak,spreche,sprichst,spricht,hat gesprochen,Wir sprechen Deutsch.
-verstehen,to understand,verstehe,verstehst,versteht,hat verstanden,Ich verstehe die Frage.
-fragen,to ask,frage,fragst,fragt,hat gefragt,Er fragt nach dem Weg.
-antworten,to answer,antworte,antwortest,antwortet,hat geantwortet,Sie antwortet auf die Frage.
-kaufen,to buy,kaufe,kaufst,kauft,hat gekauft,Ich kaufe ein Brot.
-verkaufen,to sell,verkaufe,verkaufst,verkauft,hat verkauft,Er verkauft sein Auto.
-bezahlen,to pay,bezahle,bezahlst,bezahlt,hat bezahlt,Ich bezahle die Rechnung.
-kosten,to cost,koste,kostest,kostet,hat gekostet,Das Buch kostet 10 Euro.
-suchen,to search/look for,suche,suchst,sucht,hat gesucht,Sie sucht ihre Schlüssel.
-finden,to find,finde,findest,findet,hat gefunden,Ich finde das interessant.
-beginnen,to begin,beginne,beginnst,beginnt,hat begonnen,Der Kurs beginnt um 9 Uhr.
-öffnen,to open,öffne,öffnest,öffnet,hat geöffnet,Er öffnet die Tür.
-schließen,to close,schließe,schließt,schließt,hat geschlossen,Sie schließt das Fenster.
-geben,to give,gebe,gibst,gibt,hat gegeben,Ich gebe dir das Buch.
-nehmen,to take,nehme,nimmst,nimmt,hat genommen,Er nimmt den Bus zur Arbeit.
-bringen,to bring,bringe,bringst,bringt,hat gebracht,Ich bringe dir einen Kaffee.
-tragen,to carry/wear,trage,trägst,trägt,hat getragen,Sie trägt ein rotes Kleid.
-fahren,to drive/go,fahre,fährst,fährt,ist gefahren,Wir fahren nach Berlin.
-fliegen,to fly,fliege,fliegst,fliegt,ist geflogen,Das Flugzeug fliegt nach London.
-reisen,to travel,reise,reist,reist,ist gereist,Ich reise gerne.
-stehen,to stand,stehe,stehst,steht,hat gestanden,Der Tisch steht in der Küche.
-sitzen,to sit,sitze,sitzt,sitzt,hat gesessen,Er sitzt auf dem Stuhl.
-liegen,to lie,liege,liegst,liegt,hat gelegen,Das Buch liegt auf dem Tisch.
-warten,to wait,warte,wartest,wartet,hat gewartet,Ich warte auf den Bus.
-denken,to think,denke,denkst,denkt,hat gedacht,Was denkst du?
-glauben,to believe,glaube,glaubst,glaubt,hat geglaubt,Ich glaube dir.
-meinen,to mean/think,meine,meinst,meint,hat gemeint,Was meinst du damit?
-wissen,to know,weiß,weißt,weiß,hat gewusst,Ich weiß die Antwort.
-kennen,to know (be familiar with),kenne,kennst,kennt,hat gekannt,Kennst du ihn?
-können,can/to be able to,kann,kannst,kann,hat gekonnt,Ich kann Deutsch sprechen.
-müssen,must/to have to,muss,musst,muss,hat gemusst,Ich muss arbeiten.
-sollen,should/ought to,soll,sollst,soll,hat gesollt,Du sollst nicht rauchen.
-wollen,to want,will,willst,will,hat gewollt,Ich will nach Hause gehen.
-mögen,to like,mag,magst,mag,hat gemocht,Ich mag Schokolade.
-dürfen,may/to be allowed to,darf,darfst,darf,hat gedurft,Darf ich fragen?
-brauchen,to need,brauche,brauchst,braucht,hat gebraucht,Ich brauche Hilfe.
-helfen,to help,helfe,hilfst,hilft,hat geholfen,Ich helfe dir.
-zeigen,to show,zeige,zeigst,zeigt,hat gezeigt,Er zeigt mir den Weg.
-erklären,to explain,erkläre,erklärst,erklärt,hat erklärt,Die Lehrerin erklärt die Grammatik.
-vergessen,to forget,vergesse,vergisst,vergisst,hat vergessen,Ich vergesse oft meine Schlüssel.
-erinnern,to remember,erinnere,erinnerst,erinnert,hat erinnert,Ich erinnere mich an dich.
-anfangen,to begin/start,fange an,fängst an,fängt an,hat angefangen,Wann fängt der Film an?
-aufhören,to stop/cease,höre auf,hörst auf,hört auf,hat aufgehört,Es hört auf zu regnen.
-einladen,to invite,lade ein,lädst ein,lädt ein,hat eingeladen,Ich lade dich zum Essen ein.
-anrufen,to call (on phone),rufe an,rufst an,ruft an,hat angerufen,Ich rufe dich später an.
-besuchen,to visit,besuche,besuchst,besucht,hat besucht,Wir besuchen unsere Freunde.
-treffen,to meet,treffe,triffst,trifft,hat getroffen,Ich treffe meinen Freund.
-bleiben,to stay,bleibe,bleibst,bleibt,ist geblieben,Ich bleibe zu Hause.
-passieren,to happen,passiere,passierst,passiert,ist passiert,Was ist passiert?
-entschuldigen,to excuse/apologize,entschuldige,entschuldigst,entschuldigt,hat entschuldigt,Ich entschuldige mich.
-bitten,to request/ask,bitte,bittest,bittet,hat gebeten,Ich bitte um Hilfe.
-danken,to thank,danke,dankst,dankt,hat gedankt,Ich danke dir.
-gratulieren,to congratulate,gratuliere,gratulierst,gratuliert,hat gratuliert,Ich gratuliere dir zum Geburtstag.
-fehlen,to be missing/absent,fehle,fehlst,fehlt,hat gefehlt,Er fehlt heute in der Schule.
-gehören,to belong to,gehöre,gehörst,gehört,hat gehört,Das Buch gehört mir.
-schmecken,to taste,schmecke,schmeckst,schmeckt,hat geschmeckt,Das Essen schmeckt gut.
-regnen,to rain,regne,regnest,regnet,hat geregnet,Es regnet heute.
-schneien,to snow,schneie,schneist,schneit,hat geschneit,Es schneit im Winter.
-scheinen,to shine,scheine,scheinst,scheint,hat geschienen,Die Sonne scheint.
-empfehlen,to recommend,empfehle,empfiehlst,empfiehlt,hat empfohlen,Ich empfehle dir dieses Buch.
-probieren,to try/taste,probiere,probierst,probiert,hat probiert,Probier mal diesen Kuchen!
-reservieren,to reserve,reserviere,reservierst,reserviert,hat reserviert,Ich reserviere einen Tisch.
-diskutieren,to discuss,diskutiere,diskutierst,diskutiert,hat diskutiert,Wir diskutieren über Politik.
-funktionieren,to function/work,funktioniere,funktionierst,funktioniert,hat funktioniert,Mein Computer funktioniert nicht.
-interessieren,to interest,interessiere,interessierst,interessiert,hat interessiert,Das Thema interessiert mich.
-reparieren,to repair,repariere,reparierst,repariert,hat repariert,Er repariert sein Fahrrad.
-informieren,to inform,informiere,informierst,informiert,hat informiert,Ich informiere dich später.
-verlieren,to lose,verliere,verlierst,verliert,hat verloren,Ich verliere oft meine Schlüssel.
-gewinnen,to win,gewinne,gewinnst,gewinnt,hat gewonnen,Er gewinnt das Spiel.
-schwimmen,to swim,schwimme,schwimmst,schwimmt,ist geschwommen,Die Kinder schwimmen im See.
-laufen,to run/walk,laufe,läufst,läuft,ist gelaufen,Ich laufe jeden Morgen.
-tanzen,to dance,tanze,tanzt,tanzt,hat getanzt,Wir tanzen gern.
-singen,to sing,singe,singst,singt,hat gesungen,Sie singt schön.
-kochen,to cook,koche,kochst,kocht,hat gekocht,Ich koche gerne.
-backen,to bake,backe,backst,backt,hat gebacken,Meine Mutter backt einen Kuchen.
-putzen,to clean,putze,putzt,putzt,hat geputzt,Ich putze meine Wohnung.
-waschen,to wash,wasche,wäschst,wäscht,hat gewaschen,Er wäscht seine Kleidung.
-aufräumen,to tidy up,räume auf,räumst auf,räumt auf,hat aufgeräumt,Ich räume mein Zimmer auf.
-planen,to plan,plane,planst,plant,hat geplant,Wir planen unseren Urlaub.
-bestellen,to order,bestelle,bestellst,bestellt,hat bestellt,Ich bestelle eine Pizza.
+verb,english,classification,present_ich,present_du,present_er,präteritum,auxiliary,perfect,example,separable
+sein,to be,unregelmäßig,bin,bist,ist,war,sein,ist gewesen,Ich bin zu Hause.,false
+haben,to have,unregelmäßig,habe,hast,hat,hatte,haben,hat gehabt,Ich habe ein Buch.,false
+gehen,to go,unregelmäßig,gehe,gehst,geht,ging,sein,ist gegangen,Er geht zur Schule.,false
+kommen,to come,unregelmäßig,komme,kommst,kommt,kam,sein,ist gekommen,Sie kommt aus Deutschland.,false
+machen,to do/make,regelmäßig,mache,machst,macht,machte,haben,hat gemacht,Ich mache meine Hausaufgaben.,false
+wohnen,to live,regelmäßig,wohne,wohnst,wohnt,wohnte,haben,hat gewohnt,Wir wohnen in Berlin.,false
+arbeiten,to work,regelmäßig,arbeite,arbeitest,arbeitet,arbeitete,haben,hat gearbeitet,Er arbeitet in einer Bank.,false
+spielen,to play,regelmäßig,spiele,spielst,spielt,spielte,haben,hat gespielt,Die Kinder spielen im Park.,false
+lernen,to learn,regelmäßig,lerne,lernst,lernt,lernte,haben,hat gelernt,Ich lerne Deutsch.,false
+studieren,to study,regelmäßig,studiere,studierst,studiert,studierte,haben,hat studiert,Sie studiert Medizin.,false
+essen,to eat,unregelmäßig,esse,isst,isst,aß,haben,hat gegessen,Wir essen Frühstück.,false
+trinken,to drink,unregelmäßig,trinke,trinkst,trinkt,trank,haben,hat getrunken,Er trinkt einen Kaffee.,false
+schlafen,to sleep,unregelmäßig,schlafe,schläfst,schläft,schlief,haben,hat geschlafen,Das Kind schläft.,false
+lesen,to read,unregelmäßig,lese,liest,liest,las,haben,hat gelesen,Ich lese ein Buch.,false
+schreiben,to write,unregelmäßig,schreibe,schreibst,schreibt,schrieb,haben,hat geschrieben,Er schreibt einen Brief.,false
+sehen,to see,unregelmäßig,sehe,siehst,sieht,sah,haben,hat gesehen,Ich sehe den Film.,false
+hören,to hear/listen,regelmäßig,höre,hörst,hört,hörte,haben,hat gehört,Sie hört Musik.,false
+sprechen,to speak,unregelmäßig,spreche,sprichst,spricht,sprach,haben,hat gesprochen,Wir sprechen Deutsch.,false
+verstehen,to understand,unregelmäßig,verstehe,verstehst,versteht,verstand,haben,hat verstanden,Ich verstehe die Frage.,false
+fragen,to ask,regelmäßig,frage,fragst,fragt,fragte,haben,hat gefragt,Er fragt nach dem Weg.,false
+antworten,to answer,regelmäßig,antworte,antwortest,antwortet,antwortete,haben,hat geantwortet,Sie antwortet auf die Frage.,false
+kaufen,to buy,regelmäßig,kaufe,kaufst,kauft,kaufte,haben,hat gekauft,Ich kaufe ein Brot.,false
+verkaufen,to sell,regelmäßig,verkaufe,verkaufst,verkauft,verkaufte,haben,hat verkauft,Er verkauft sein Auto.,false
+bezahlen,to pay,regelmäßig,bezahle,bezahlst,bezahlt,bezahlte,haben,hat bezahlt,Ich bezahle die Rechnung.,false
+kosten,to cost,regelmäßig,koste,kostest,kostet,kostete,haben,hat gekostet,Das Buch kostet 10 Euro.,false
+suchen,to search/look for,regelmäßig,suche,suchst,sucht,suchte,haben,hat gesucht,Sie sucht ihre Schlüssel.,false
+finden,to find,unregelmäßig,finde,findest,findet,fand,haben,hat gefunden,Ich finde das interessant.,false
+beginnen,to begin,unregelmäßig,beginne,beginnst,beginnt,begann,haben,hat begonnen,Der Kurs beginnt um 9 Uhr.,false
+öffnen,to open,regelmäßig,öffne,öffnest,öffnet,öffnete,haben,hat geöffnet,Er öffnet die Tür.,false
+schließen,to close,unregelmäßig,schließe,schließt,schließt,schloss,haben,hat geschlossen,Sie schließt das Fenster.,false
+geben,to give,unregelmäßig,gebe,gibst,gibt,gab,haben,hat gegeben,Ich gebe dir das Buch.,false
+nehmen,to take,unregelmäßig,nehme,nimmst,nimmt,nahm,haben,hat genommen,Er nimmt den Bus zur Arbeit.,false
+bringen,to bring,gemischt,bringe,bringst,bringt,brachte,haben,hat gebracht,Ich bringe dir einen Kaffee.,false
+tragen,to carry/wear,unregelmäßig,trage,trägst,trägt,trug,haben,hat getragen,Sie trägt ein rotes Kleid.,false
+fahren,to drive/go,unregelmäßig,fahre,fährst,fährt,fuhr,sein,ist gefahren,Wir fahren nach Berlin.,false
+fliegen,to fly,unregelmäßig,fliege,fliegst,fliegt,flog,sein,ist geflogen,Das Flugzeug fliegt nach London.,false
+reisen,to travel,regelmäßig,reise,reist,reist,reiste,sein,ist gereist,Ich reise gerne.,false
+stehen,to stand,unregelmäßig,stehe,stehst,steht,stand,haben,hat gestanden,Der Tisch steht in der Küche.,false
+sitzen,to sit,unregelmäßig,sitze,sitzt,sitzt,saß,haben,hat gesessen,Er sitzt auf dem Stuhl.,false
+liegen,to lie,unregelmäßig,liege,liegst,liegt,lag,haben,hat gelegen,Das Buch liegt auf dem Tisch.,false
+warten,to wait,regelmäßig,warte,wartest,wartet,wartete,haben,hat gewartet,Ich warte auf den Bus.,false
+denken,to think,gemischt,denke,denkst,denkt,dachte,haben,hat gedacht,Was denkst du?,false
+glauben,to believe,regelmäßig,glaube,glaubst,glaubt,glaubte,haben,hat geglaubt,Ich glaube dir.,false
+meinen,to mean/think,regelmäßig,meine,meinst,meint,meinte,haben,hat gemeint,Was meinst du damit?,false
+wissen,to know,gemischt,weiß,weißt,weiß,wusste,haben,hat gewusst,Ich weiß die Antwort.,false
+kennen,to know (be familiar with),gemischt,kenne,kennst,kennt,kannte,haben,hat gekannt,Kennst du ihn?,false
+können,can/to be able to,unregelmäßig,kann,kannst,kann,konnte,haben,hat gekonnt,Ich kann Deutsch sprechen.,false
+müssen,must/to have to,unregelmäßig,muss,musst,muss,musste,haben,hat gemusst,Ich muss arbeiten.,false
+sollen,should/ought to,unregelmäßig,soll,sollst,soll,sollte,haben,hat gesollt,Du sollst nicht rauchen.,false
+wollen,to want,unregelmäßig,will,willst,will,wollte,haben,hat gewollt,Ich will nach Hause gehen.,false
+mögen,to like,unregelmäßig,mag,magst,mag,mochte,haben,hat gemocht,Ich mag Schokolade.,false
+dürfen,may/to be allowed to,unregelmäßig,darf,darfst,darf,durfte,haben,hat gedurft,Darf ich fragen?,false
+brauchen,to need,regelmäßig,brauche,brauchst,braucht,brauchte,haben,hat gebraucht,Ich brauche Hilfe.,false
+helfen,to help,unregelmäßig,helfe,hilfst,hilft,half,haben,hat geholfen,Ich helfe dir.,false
+zeigen,to show,regelmäßig,zeige,zeigst,zeigt,zeigte,haben,hat gezeigt,Er zeigt mir den Weg.,false
+erklären,to explain,regelmäßig,erkläre,erklärst,erklärt,erklärte,haben,hat erklärt,Die Lehrerin erklärt die Grammatik.,false
+vergessen,to forget,unregelmäßig,vergesse,vergisst,vergisst,vergaß,haben,hat vergessen,Ich vergesse oft meine Schlüssel.,false
+erinnern,to remember,regelmäßig,erinnere,erinnerst,erinnert,erinnerte,haben,hat erinnert,Ich erinnere mich an dich.,false
+anfangen,to begin/start,unregelmäßig,fange an,fängst an,fängt an,fing an,haben,hat angefangen,Wann fängt der Film an?,true
+aufhören,to stop/cease,regelmäßig,höre auf,hörst auf,hört auf,hörte auf,haben,hat aufgehört,Es hört auf zu regnen.,true
+einladen,to invite,unregelmäßig,lade ein,lädst ein,lädt ein,lud ein,haben,hat eingeladen,Ich lade dich zum Essen ein.,true
+anrufen,to call (on phone),unregelmäßig,rufe an,rufst an,ruft an,rief an,haben,hat angerufen,Ich rufe dich später an.,true
+besuchen,to visit,regelmäßig,besuche,besuchst,besucht,besuchte,haben,hat besucht,Wir besuchen unsere Freunde.,false
+treffen,to meet,unregelmäßig,treffe,triffst,trifft,traf,haben,hat getroffen,Ich treffe meinen Freund.,false
+bleiben,to stay,unregelmäßig,bleibe,bleibst,bleibt,blieb,sein,ist geblieben,Ich bleibe zu Hause.,false
+passieren,to happen,regelmäßig,passiere,passierst,passiert,passierte,sein,ist passiert,Was ist passiert?,false
+entschuldigen,to excuse/apologize,regelmäßig,entschuldige,entschuldigst,entschuldigt,entschuldigte,haben,hat entschuldigt,Ich entschuldige mich.,false
+bitten,to request/ask,unregelmäßig,bitte,bittest,bittet,bat,haben,hat gebeten,Ich bitte um Hilfe.,false
+danken,to thank,regelmäßig,danke,dankst,dankt,dankte,haben,hat gedankt,Ich danke dir.,false
+gratulieren,to congratulate,regelmäßig,gratuliere,gratulierst,gratuliert,gratulierte,haben,hat gratuliert,Ich gratuliere dir zum Geburtstag.,false
+fehlen,to be missing/absent,regelmäßig,fehle,fehlst,fehlt,fehlte,haben,hat gefehlt,Er fehlt heute in der Schule.,false
+gehören,to belong to,regelmäßig,gehöre,gehörst,gehört,gehörte,haben,hat gehört,Das Buch gehört mir.,false
+schmecken,to taste,regelmäßig,schmecke,schmeckst,schmeckt,schmeckte,haben,hat geschmeckt,Das Essen schmeckt gut.,false
+regnen,to rain,regelmäßig,regne,regnest,regnet,regnete,haben,hat geregnet,Es regnet heute.,false
+schneien,to snow,regelmäßig,schneie,schneist,schneit,schneite,haben,hat geschneit,Es schneit im Winter.,false
+scheinen,to shine,unregelmäßig,scheine,scheinst,scheint,schien,haben,hat geschienen,Die Sonne scheint.,false
+empfehlen,to recommend,unregelmäßig,empfehle,empfiehlst,empfiehlt,empfahl,haben,hat empfohlen,Ich empfehle dir dieses Buch.,false
+probieren,to try/taste,regelmäßig,probiere,probierst,probiert,probierte,haben,hat probiert,Probier mal diesen Kuchen!,false
+reservieren,to reserve,regelmäßig,reserviere,reservierst,reserviert,reservierte,haben,hat reserviert,Ich reserviere einen Tisch.,false
+diskutieren,to discuss,regelmäßig,diskutiere,diskutierst,diskutiert,diskutierte,haben,hat diskutiert,Wir diskutieren über Politik.,false
+funktionieren,to function/work,regelmäßig,funktioniere,funktionierst,funktioniert,funktionierte,haben,hat funktioniert,Mein Computer funktioniert nicht.,false
+interessieren,to interest,regelmäßig,interessiere,interessierst,interessiert,interessierte,haben,hat interessiert,Das Thema interessiert mich.,false
+reparieren,to repair,regelmäßig,repariere,reparierst,repariert,reparierte,haben,hat repariert,Er repariert sein Fahrrad.,false
+informieren,to inform,regelmäßig,informiere,informierst,informiert,informierte,haben,hat informiert,Ich informiere dich später.,false
+verlieren,to lose,unregelmäßig,verliere,verlierst,verliert,verlor,haben,hat verloren,Ich verliere oft meine Schlüssel.,false
+gewinnen,to win,unregelmäßig,gewinne,gewinnst,gewinnt,gewann,haben,hat gewonnen,Er gewinnt das Spiel.,false
+schwimmen,to swim,unregelmäßig,schwimme,schwimmst,schwimmt,schwamm,sein,ist geschwommen,Die Kinder schwimmen im See.,false
+laufen,to run/walk,unregelmäßig,laufe,läufst,läuft,lief,sein,ist gelaufen,Ich laufe jeden Morgen.,false
+tanzen,to dance,regelmäßig,tanze,tanzt,tanzt,tanzte,haben,hat getanzt,Wir tanzen gern.,false
+singen,to sing,unregelmäßig,singe,singst,singt,sang,haben,hat gesungen,Sie singt schön.,false
+kochen,to cook,regelmäßig,koche,kochst,kocht,kochte,haben,hat gekocht,Ich koche gerne.,false
+backen,to bake,unregelmäßig,backe,backst,backt,backte,haben,hat gebacken,Meine Mutter backt einen Kuchen.,false
+putzen,to clean,regelmäßig,putze,putzt,putzt,putzte,haben,hat geputzt,Ich putze meine Wohnung.,false
+waschen,to wash,unregelmäßig,wasche,wäschst,wäscht,wusch,haben,hat gewaschen,Er wäscht seine Kleidung.,false
+aufräumen,to tidy up,regelmäßig,räume auf,räumst auf,räumt auf,räumte auf,haben,hat aufgeräumt,Ich räume mein Zimmer auf.,true
+planen,to plan,regelmäßig,plane,planst,plant,plante,haben,hat geplant,Wir planen unseren Urlaub.,false
+bestellen,to order,regelmäßig,bestelle,bestellst,bestellt,bestellte,haben,hat bestellt,Ich bestelle eine Pizza.,false

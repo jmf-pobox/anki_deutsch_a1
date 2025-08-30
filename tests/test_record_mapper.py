@@ -206,6 +206,10 @@ class TestRecordMapper:
             "phrase",
             "verb_conjugation",
             "verb_imperative",
+            "article",
+            "indefinite_article",
+            "negative_article",
+            "unified_article",
         }
         assert set(types) == expected_types
 

@@ -9,7 +9,15 @@ from pathlib import Path
 from typing import Any
 
 from langlearn.backends.base import CardTemplate, NoteType
-from langlearn.models.records import BaseRecord
+from langlearn.models.records import (
+    ArticleRecord,
+    BaseRecord,
+    IndefiniteArticleRecord,
+    NegativeArticleRecord,
+    NounRecord,
+    UnifiedArticleRecord,
+    VerbConjugationRecord,
+)
 from langlearn.services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
@@ -36,10 +44,18 @@ class CardBuilder:
         self._project_root = project_root or Path.cwd()
 
         if template_service is None:
-            template_dir = self._project_root / "templates"
+            template_dir = self._project_root / "src" / "langlearn" / "templates"
             template_service = TemplateService(template_dir)
 
         self._template_service = template_service
+
+        # Initialize article application service for noun-article cards
+        from langlearn.services.article_application_service import (
+            ArticleApplicationService,
+        )
+
+        self._article_application_service = ArticleApplicationService(self)
+
         logger.debug(
             "CardBuilder initialized with project root: %s", self._project_root
         )
@@ -186,11 +202,15 @@ class CardBuilder:
             "verb": [
                 "Verb",
                 "English",
+                "Classification",
                 "PresentIch",
                 "PresentDu",
                 "PresentEr",
+                "Präteritum",
+                "Auxiliary",
                 "Perfect",
                 "Example",
+                "Separable",
                 "Image",
                 "WordAudio",
                 "ExampleAudio",
@@ -233,21 +253,104 @@ class CardBuilder:
                 "ExampleAudio",
             ],
             "verb_imperative": [
-                "Infinitive",
+                "Image",
                 "English",
-                "Classification",
-                "Separable",
-                "DuForm",
-                "IhrForm",
-                "SieForm",
+                "Infinitive",
+                "Du",
+                "Ihr",
+                "Sie",
+                "Wir",
                 "ExampleDu",
                 "ExampleIhr",
                 "ExampleSie",
+                "WordAudio",
+            ],
+            "artikel_gender_cloze": [
+                "Text",
+                "Explanation",
+                "Image",
+                "Audio",
+            ],
+            "artikel_context_cloze": [
+                "Text",
+                "Explanation",
+                "Image",
+                "Audio",
+            ],
+            "artikel_gender": [
+                "FrontText",
+                "BackText",
+                "Gender",
+                "Nominative",
+                "Accusative",
+                "Dative",
+                "Genitive",
+                "ExampleNom",
+                "Image",
+                "ArticleAudio",
+                "ExampleAudio",
+                "ArtikelTypBestimmt",
+                "ArtikelTypUnbestimmt",
+                "ArtikelTypVerneinend",
+                "NounOnly",
+                "NounEnglish",
+            ],
+            "artikel_context": [
+                "FrontText",
+                "BackText",
+                "Gender",
+                "Case",
+                "CaseRule",
+                "ArticleForm",
+                "CaseUsage",
+                "Nominative",
+                "Accusative",
+                "Dative",
+                "Genitive",
+                "CaseNominative",
+                "CaseAccusative",
+                "CaseDative",
+                "CaseGenitive",
+                "Image",
+                "ExampleAudio",
+                "ArtikelTypBestimmt",
+                "ArtikelTypUnbestimmt",
+                "ArtikelTypVerneinend",
+                "NounOnly",
+                "NounEnglish",
+            ],
+            "noun_article_recognition": [
+                "FrontText",
+                "BackText",
+                "Noun",
+                "Article",
+                "English",
+                "Plural",
+                "Example",
+                "Related",
                 "Image",
                 "WordAudio",
-                "DuAudio",
-                "IhrAudio",
-                "SieAudio",
+                "NounOnly",
+                "NounEnglishWithArticle",
+            ],
+            "noun_case_context": [
+                "FrontText",
+                "BackText",
+                "Noun",
+                "Article",
+                "Case",
+                "CaseRule",
+                "ArticleForm",
+                "CaseUsage",
+                "English",
+                "Plural",
+                "CaseNominativ",
+                "CaseAkkusativ",
+                "CaseDativ",
+                "CaseGenitiv",
+                "Image",
+                "WordAudio",
+                "ExampleAudio",
             ],
         }
 
@@ -323,10 +426,14 @@ class CardBuilder:
             },
             "verb": {
                 "Verb": "verb",
+                "Classification": "classification",
                 "PresentIch": "present_ich",
                 "PresentDu": "present_du",
                 "PresentEr": "present_er",
+                "Präteritum": "präteritum",
+                "Auxiliary": "auxiliary",
                 "Perfect": "perfect",
+                "Separable": "separable",
             },
             "phrase": {
                 "Phrase": "phrase",
@@ -344,7 +451,8 @@ class CardBuilder:
             },
             "verb_conjugation": {
                 "Infinitive": "infinitive",
-                "English": "meaning",
+                "English": "english",
+                "Meaning": "english",
                 "Classification": "classification",
                 "Separable": "separable",
                 "Auxiliary": "auxiliary",
@@ -358,18 +466,81 @@ class CardBuilder:
             },
             "verb_imperative": {
                 "Infinitive": "infinitive",
-                "English": "meaning",
+                "English": "english",
+                "Meaning": "english",
                 "Classification": "classification",
                 "Separable": "separable",
-                "DuForm": "du_form",
-                "IhrForm": "ihr_form",
-                "SieForm": "sie_form",
+                "Du": "du",
+                "Ihr": "ihr",
+                "Sie": "sie",
+                "Wir": "wir",
                 "ExampleDu": "example_du",
                 "ExampleIhr": "example_ihr",
                 "ExampleSie": "example_sie",
-                "DuAudio": "du_audio",
-                "IhrAudio": "ihr_audio",
-                "SieAudio": "sie_audio",
+            },
+            # Article cloze deletion cards
+            "artikel_gender_cloze": {
+                "Text": "Text",
+                "Explanation": "Explanation",
+                "Image": "Image",
+                "Audio": "Audio",
+            },
+            "artikel_context_cloze": {
+                "Text": "Text",
+                "Explanation": "Explanation",
+                "Image": "Image",
+                "Audio": "Audio",
+            },
+            # Article pattern cards - gender recognition and case context
+            "artikel_gender": {
+                "FrontText": "front_text",
+                "BackText": "back_text",
+                "Gender": "gender",
+                "Nominative": "nominative",
+                "Accusative": "accusative",
+                "Dative": "dative",
+                "Genitive": "genitive",
+                "ExampleNom": "example_nom",
+                "ArticleAudio": "article_audio",
+                "NounOnly": "NounOnly",
+                "NounEnglish": "NounEnglish",
+            },
+            "artikel_context": {
+                "FrontText": "front_text",
+                "BackText": "back_text",
+                "Gender": "gender",
+                "Case": "case",
+                "CaseRule": "case_rule",
+                "ArticleForm": "article_form",
+                "CaseUsage": "case_usage",
+                "Nominative": "nominative",
+                "Accusative": "accusative",
+                "Dative": "dative",
+                "Genitive": "genitive",
+                # Conditional case highlighting fields
+                "CaseNominative": "case_nominative",
+                "CaseAccusative": "case_accusative",
+                "CaseDative": "case_dative",
+                "CaseGenitive": "case_genitive",
+                "NounOnly": "NounOnly",
+                "NounEnglish": "NounEnglish",
+            },
+            "noun_article_recognition": {
+                "FrontText": "front_text",
+                "BackText": "back_text",
+                "English": "english_meaning",
+            },
+            "noun_case_context": {
+                "FrontText": "front_text",
+                "BackText": "back_text",
+                "Case": "case",
+                "CaseRule": "case_rule",
+                "ArticleForm": "article_form",
+                "CaseUsage": "case_usage",
+                "CaseNominativ": "case_nominativ",
+                "CaseAkkusativ": "case_akkusativ",
+                "CaseDativ": "case_dativ",
+                "CaseGenitiv": "case_genitiv",
             },
         }
 
@@ -470,7 +641,9 @@ class CardBuilder:
         required_fields = self._get_required_fields_for_record_type(record_type)
 
         for field in required_fields:
-            if not record_data.get(field):
+            # Check for field existence and non-empty values
+            # Note: Use 'in' for existence to handle boolean False values correctly
+            if field not in record_data or record_data[field] in (None, ""):
                 logger.warning(
                     "Missing required field '%s' for %s record", field, record_type
                 )
@@ -481,27 +654,116 @@ class CardBuilder:
     def _get_required_fields_for_record_type(self, record_type: str) -> list[str]:
         """Get required fields for card building for a record type.
 
+        CardBuilder runs AFTER MediaEnricher in the Clean Pipeline Architecture:
+        CSV → RecordMapper → Records → MediaEnricher → CardBuilder → AnkiBackend
+
+        Therefore, all fields marked as Required ✅ in PROD-CARD-SPEC.md must be
+        present, including media fields generated by MediaEnricher.
+
         Args:
             record_type: Type of record
 
         Returns:
-            List of required field names
+            List of required field names (including media fields)
         """
         required_fields = {
-            "noun": ["noun", "article", "english"],
-            "adjective": ["word", "english"],
-            "adverb": ["word", "english", "type"],
-            "negation": ["word", "english", "type"],
-            "verb": ["verb", "english", "present_ich", "present_du", "present_er"],
-            "phrase": ["phrase", "english", "context"],
-            "preposition": ["preposition", "english", "case", "example1", "example2"],
-            "verb_conjugation": ["infinitive", "meaning", "tense", "ich", "du", "er"],
-            "verb_imperative": [
+            # All fields marked as Required ✅ in PROD-CARD-SPEC.md
+            # MediaEnricher runs BEFORE CardBuilder, so media fields must be present
+            "noun": [
+                "noun",
+                "article",
+                "english",
+                "plural",
+                "example",
+                "related",
+                "image",
+                "word_audio",
+                "example_audio",
+            ],
+            "adjective": [
+                "word",
+                "english",
+                "example",
+                "comparative",
+                "superlative",
+                "image",
+                "word_audio",
+                "example_audio",
+            ],
+            "adverb": [
+                "word",
+                "english",
+                "type",
+                "example",
+                "image",
+                "word_audio",
+                "example_audio",
+            ],
+            "negation": [
+                "word",
+                "english",
+                "type",
+                "example",
+                "image",
+                "word_audio",
+                "example_audio",
+            ],
+            "verb": [
+                "verb",
+                "english",
+                "classification",
+                "present_ich",
+                "present_du",
+                "present_er",
+                "präteritum",
+                "auxiliary",
+                "perfect",
+                "example",
+                "separable",
+                "image",
+                "word_audio",
+                "example_audio",
+            ],
+            "phrase": ["phrase", "english", "context", "image", "phrase_audio"],
+            "preposition": [
+                "preposition",
+                "english",
+                "case",
+                "example1",
+                "example1_audio",
+                "image",
+                "word_audio",
+            ],
+            "verb_conjugation": [
                 "infinitive",
-                "meaning",
-                "du_form",
-                "ihr_form",
-                "sie_form",
+                "english",
+                "tense",
+                "ich",
+                "du",
+                "er",
+                "wir",
+                "ihr",
+                "sie",
+                "classification",
+                "separable",
+                "auxiliary",
+                "example",
+                "image",
+                "word_audio",
+                "example_audio",
+            ],
+            "verb_imperative": [
+                "english",
+                "infinitive",
+                "du",
+                "ihr",
+                "sie",
+                "wir",
+                "example_du",
+                "example_ihr",
+                "example_sie",
+                "image",
+                "word_audio",
             ],
         }
 
@@ -532,3 +794,93 @@ class CardBuilder:
         }
 
         return class_to_type.get(class_name, class_name.lower())
+
+    def build_verb_conjugation_cards(
+        self,
+        records: list[VerbConjugationRecord],
+        enriched_data_list: list[dict[str, Any]] | None = None,
+    ) -> list[tuple[list[str], NoteType]]:
+        """Build multiple tense-specific cards from verb conjugation records.
+
+        This method implements the verb card generation modernization,
+        creating 3-4 cards per verb instead of 1 card per verb.
+
+        Args:
+            records: List of VerbConjugationRecord instances
+            enriched_data_list: Optional enriched data for each record
+
+        Returns:
+            List of (field_values, note_type) tuples for multiple cards per verb
+        """
+        logger.info("Building verb conjugation cards from %d records", len(records))
+
+        # Import here to avoid circular dependency
+        from langlearn.services.verb_conjugation_processor import (
+            VerbConjugationProcessor,
+        )
+
+        # Create processor and delegate to it
+        processor = VerbConjugationProcessor(self)
+        return processor.process_verb_records(records, enriched_data_list)
+
+    def build_article_pattern_cards(
+        self,
+        records: list[
+            ArticleRecord
+            | IndefiniteArticleRecord
+            | NegativeArticleRecord
+            | UnifiedArticleRecord
+        ],
+        enriched_data_list: list[dict[str, Any]] | None = None,
+    ) -> list[tuple[list[str], NoteType]]:
+        """Build multiple case-specific cards from article pattern records.
+
+        This method implements the article card generation system from PM-ARTICLES.md,
+        creating 5 cards per article record instead of 1 card per record:
+        - 1 Gender Recognition card
+        - 4 Case Context cards (Nominative, Accusative, Dative, Genitive)
+
+        Args:
+            records: List of article record instances (ArticleRecord,
+                     IndefiniteArticleRecord, or NegativeArticleRecord)
+            enriched_data_list: Optional enriched data for each record
+
+        Returns:
+            List of (field_values, note_type) tuples for multiple cards per record
+        """
+        logger.info("Building article pattern cards from %d records", len(records))
+
+        # Import here to avoid circular dependency
+        from langlearn.services.article_pattern_processor import (
+            ArticlePatternProcessor,
+        )
+
+        # Create processor and delegate to it
+        processor = ArticlePatternProcessor(self)
+        return processor.process_article_records(records, enriched_data_list)
+
+    def build_noun_article_cards(
+        self,
+        noun_records: list[NounRecord],
+        enriched_data_list: list[dict[str, Any]] | None = None,
+    ) -> list[tuple[list[str], NoteType]]:
+        """Generate noun-article practice cards from noun records.
+
+        Creates cards that help students learn which article (der/die/das) goes
+        with each noun, addressing the core use case of German article learning.
+
+        Args:
+            noun_records: List of NounRecord instances with article information
+            enriched_data_list: Optional enriched data for each record
+
+        Returns:
+            List of (field_values, note_type) tuples for noun-article practice cards
+        """
+        logger.info(
+            "Building noun-article cards from %d noun records", len(noun_records)
+        )
+
+        # Use the pre-initialized article application service
+        return self._article_application_service.generate_noun_article_cards(
+            noun_records, enriched_data_list
+        )

@@ -2,6 +2,7 @@
 
 import hashlib
 import logging
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import NamedTuple
@@ -154,8 +155,10 @@ class MediaService:
         try:
             # Generate descriptive filename using German word
             # Always use German word for filename to match CSV expectations
+            # Normalize to NFC form to ensure consistent Unicode encoding
+            normalized_word = unicodedata.normalize("NFC", word)
             safe_filename = "".join(
-                c for c in word if c.isalnum() or c in (" ", "-", "_")
+                c for c in normalized_word if c.isalnum() or c in (" ", "-", "_")
             ).rstrip()
             safe_filename = safe_filename.replace(" ", "_").lower()
             image_path = self._images_dir / f"{safe_filename}.jpg"

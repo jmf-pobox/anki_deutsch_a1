@@ -1,0 +1,44 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">Verb - Imperativ</div>
+
+<div class="verb-forms">
+    <div class="word-with-audio">
+        <span class="german">{{Infinitive}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    
+    <div class="imperative-grid">
+        <div class="imperative-header">Befehlsform</div>
+        <div class="imperative-row">
+            <span class="pronoun">du</span>
+            <span class="imperative-form">{{Du}}!</span>
+        </div>
+        <div class="imperative-row">
+            <span class="pronoun">ihr</span>
+            <span class="imperative-form">{{Ihr}}!</span>
+        </div>
+        <div class="imperative-row">
+            <span class="pronoun">Sie</span>
+            <span class="imperative-form">{{Sie}}!</span>
+        </div>
+        <div class="imperative-row">
+            <span class="pronoun">wir</span>
+            <span class="imperative-form">{{Wir}}!</span>
+        </div>
+    </div>
+</div>
+
+<div class="back-hint-container">
+    <button class="hint-button" onclick="showBackHint()">💡 Hinweis</button>
+    <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showBackHint() {
+    var hint = document.getElementById('back-hint-content');
+    var button = document.querySelector('.back-hint-container .hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

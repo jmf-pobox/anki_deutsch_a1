@@ -45,9 +45,9 @@ class RecordMapper:
             "Mapping %d fields to %s record: %s",
             len(fields),
             record_type,
-            fields[:3]
-            if len(fields) > 3
-            else fields,  # Log first few fields for debugging
+            (
+                fields[:3] if len(fields) > 3 else fields
+            ),  # Log first few fields for debugging
         )
 
         try:
@@ -71,7 +71,8 @@ class RecordMapper:
         """Map CSV row dictionary to Record instance.
 
         Args:
-            record_type: Type of record (noun, adjective, adverb, negation)
+            record_type: Type of record (noun, adjective, adverb, negation,
+                        article, indefinite_article, negative_article)
             csv_row: Dictionary from csv.DictReader
 
         Returns:
@@ -113,7 +114,7 @@ class RecordMapper:
             elif record_type == "verb_conjugation":
                 fields = [
                     csv_row.get("infinitive", ""),
-                    csv_row.get("meaning", ""),
+                    csv_row.get("english", ""),
                     csv_row.get("classification", ""),
                     csv_row.get("separable", ""),
                     csv_row.get("auxiliary", ""),
@@ -129,7 +130,7 @@ class RecordMapper:
             elif record_type == "verb_imperative":
                 fields = [
                     csv_row.get("infinitive", ""),
-                    csv_row.get("meaning", ""),
+                    csv_row.get("english", ""),
                     csv_row.get("classification", ""),
                     csv_row.get("separable", ""),
                     csv_row.get("du_form", ""),
@@ -143,11 +144,15 @@ class RecordMapper:
                 fields = [
                     csv_row.get("verb", ""),
                     csv_row.get("english", ""),
+                    csv_row.get("classification", ""),
                     csv_row.get("present_ich", ""),
                     csv_row.get("present_du", ""),
                     csv_row.get("present_er", ""),
+                    csv_row.get("präteritum", ""),
+                    csv_row.get("auxiliary", ""),
                     csv_row.get("perfect", ""),
                     csv_row.get("example", ""),
+                    csv_row.get("separable", ""),
                 ]
             elif record_type == "preposition":
                 fields = [
@@ -163,6 +168,31 @@ class RecordMapper:
                     csv_row.get("english", ""),
                     csv_row.get("context", ""),
                     csv_row.get("related", ""),
+                ]
+            elif record_type in ["article", "indefinite_article", "negative_article"]:
+                fields = [
+                    csv_row.get("gender", ""),
+                    csv_row.get("nominative", ""),
+                    csv_row.get("accusative", ""),
+                    csv_row.get("dative", ""),
+                    csv_row.get("genitive", ""),
+                    csv_row.get("example_nom", ""),
+                    csv_row.get("example_acc", ""),
+                    csv_row.get("example_dat", ""),
+                    csv_row.get("example_gen", ""),
+                ]
+            elif record_type == "unified_article":
+                fields = [
+                    csv_row.get("artikel_typ", ""),
+                    csv_row.get("geschlecht", ""),
+                    csv_row.get("nominativ", ""),
+                    csv_row.get("akkusativ", ""),
+                    csv_row.get("dativ", ""),
+                    csv_row.get("genitiv", ""),
+                    csv_row.get("beispiel_nom", ""),
+                    csv_row.get("beispiel_akk", ""),
+                    csv_row.get("beispiel_dat", ""),
+                    csv_row.get("beispiel_gen", ""),
                 ]
             else:
                 raise ValueError(f"Unsupported record type: {record_type}")
@@ -189,6 +219,10 @@ class RecordMapper:
             "phrase",
             "verb_conjugation",
             "verb_imperative",
+            "article",
+            "indefinite_article",
+            "negative_article",
+            "unified_article",
         ]
 
     def is_supported_record_type(self, record_type: str) -> bool:
@@ -247,7 +281,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_field_names()  # type: ignore[no-any-return, attr-defined]
+        return record_class.get_field_names()
 
     def get_expected_field_count_for_record_type(self, record_type: str) -> int:
         """Get expected field count for a record type.
@@ -268,7 +302,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_expected_field_count()  # type: ignore[no-any-return, attr-defined]
+        return record_class.get_expected_field_count()
 
     def detect_csv_record_type(self, csv_path: str | Path) -> str:
         """Detect the record type from CSV file headers.
@@ -360,13 +394,57 @@ class RecordMapper:
                 logger.debug("Detected phrase CSV format")
                 return "phrase"
 
+            # Detect unified article format (with German terminology)
+            unified_article_indicators = {
+                "artikel_typ",
+                "geschlecht",
+                "nominativ",
+                "akkusativ",
+                "dativ",
+                "genitiv",
+                "beispiel_nom",
+                "beispiel_akk",
+                "beispiel_dat",
+                "beispiel_gen",
+            }
+            if unified_article_indicators.issubset(headers):
+                logger.debug("Detected unified article CSV format (German terminology)")
+                return "unified_article"
+
+            # Detect article pattern formats - legacy declension grid structure
+            article_pattern_indicators = {
+                "gender",
+                "nominative",
+                "accusative",
+                "dative",
+                "genitive",
+                "example_nom",
+                "example_acc",
+                "example_dat",
+                "example_gen",
+            }
+            if article_pattern_indicators.issubset(headers):
+                # Check filename to distinguish article types
+                filename_lower = str(csv_path).lower()
+                if "indefinite" in filename_lower:
+                    logger.debug("Detected indefinite article pattern CSV format")
+                    return "indefinite_article"
+                elif "negative" in filename_lower:
+                    logger.debug("Detected negative article pattern CSV format")
+                    return "negative_article"
+                else:
+                    logger.debug("Detected definite article pattern CSV format")
+                    return "article"
+
             # If no patterns match, raise error
             raise ValueError(
                 f"Cannot detect record type for CSV with headers: {headers}. "
                 f"Supported formats: verb conjugation (with tense/ich/du/er/wir/ihr/sie), "  # noqa: E501
                 f"verb imperative (with du_form/ihr_form/sie_form), "
                 f"noun (with noun/article), adjective (with word/comparative), "
-                f"adverb/negation (with word/type)"
+                f"adverb/negation (with word/type), "
+                f"article patterns (with gender/nominative/accusative/dative/"
+                f"genitive/examples)"
             )
 
         except Exception as e:

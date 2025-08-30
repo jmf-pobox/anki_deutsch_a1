@@ -10,8 +10,11 @@ from langlearn.models.records import (
     RECORD_TYPE_REGISTRY,
     AdjectiveRecord,
     AdverbRecord,
+    ArticleRecord,
     BaseRecord,
+    IndefiniteArticleRecord,
     NegationRecord,
+    NegativeArticleRecord,
     NounRecord,
     PhraseRecord,
     PrepositionRecord,
@@ -333,6 +336,10 @@ class TestRecordTypeRegistry:
             "preposition",
             "verb_conjugation",
             "verb_imperative",
+            "article",
+            "indefinite_article",
+            "negative_article",
+            "unified_article",
         }
         assert set(RECORD_TYPE_REGISTRY.keys()) == expected_types
 
@@ -345,6 +352,14 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["preposition"] == PrepositionRecord
         assert RECORD_TYPE_REGISTRY["verb_conjugation"] == VerbConjugationRecord
         assert RECORD_TYPE_REGISTRY["verb_imperative"] == VerbImperativeRecord
+        assert RECORD_TYPE_REGISTRY["article"] == ArticleRecord
+        assert RECORD_TYPE_REGISTRY["indefinite_article"] == IndefiniteArticleRecord
+        assert RECORD_TYPE_REGISTRY["negative_article"] == NegativeArticleRecord
+
+        # Import at the function level to avoid circular imports
+        from langlearn.models.records import UnifiedArticleRecord
+
+        assert RECORD_TYPE_REGISTRY["unified_article"] == UnifiedArticleRecord
 
     def test_create_record_noun(self) -> None:
         """Test creating noun record via factory function."""
@@ -378,22 +393,30 @@ class TestRecordTypeRegistry:
         fields = [
             "arbeiten",
             "to work",
+            "regelmäßig",
             "arbeite",
             "arbeitest",
             "arbeitet",
+            "arbeitete",
+            "haben",
             "hat gearbeitet",
-            "Ich arbeite bei Siemens.",
+            "Er arbeitet in einer Bank.",
+            "false",
         ]
         record = create_record("verb", fields)
 
         assert isinstance(record, VerbRecord)
         assert record.verb == "arbeiten"
         assert record.english == "to work"
+        assert record.classification == "regelmäßig"
         assert record.present_ich == "arbeite"
         assert record.present_du == "arbeitest"
         assert record.present_er == "arbeitet"
+        assert record.präteritum == "arbeitete"
+        assert record.auxiliary == "haben"
         assert record.perfect == "hat gearbeitet"
-        assert record.example == "Ich arbeite bei Siemens."
+        assert record.example == "Er arbeitet in einer Bank."
+        assert record.separable is False
 
     def test_create_record_preposition(self) -> None:
         """Test creating preposition record via factory function."""

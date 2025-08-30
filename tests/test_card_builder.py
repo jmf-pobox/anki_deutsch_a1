@@ -80,8 +80,8 @@ class TestCardBuilder:
         # Test with default initialization
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
-            template_dir = temp_path / "templates"
-            template_dir.mkdir()
+            template_dir = temp_path / "src" / "langlearn" / "templates"
+            template_dir.mkdir(parents=True)
 
             # Create a minimal template file
             (template_dir / "noun_front.html").write_text("{{Noun}}")
@@ -325,17 +325,30 @@ class TestCardBuilder:
     def test_validate_record_for_card_building_valid(
         self, card_builder: CardBuilder
     ) -> None:
-        """Test validation with valid records."""
-        # Valid noun
+        """Test validation with valid records including media fields.
+
+        CardBuilder runs after MediaEnricher, so records must have media fields.
+        """
+        # Valid noun with all required fields including media
         noun_record = create_record(
             "noun", ["Katze", "die", "cat", "Katzen", "Example", "Tier"]
         )
+        # Add media fields that MediaEnricher would have added
+        noun_record.image = "<img src='cat.jpg'>"
+        noun_record.word_audio = "[sound:katze.mp3]"
+        noun_record.example_audio = "[sound:example.mp3]"
+
         assert card_builder.validate_record_for_card_building(noun_record) is True
 
-        # Valid adjective
+        # Valid adjective with all required fields including media
         adj_record = create_record(
             "adjective", ["schön", "beautiful", "Example", "schöner", "am schönsten"]
         )
+        # Add media fields that MediaEnricher would have added
+        adj_record.image = "<img src='beautiful.jpg'>"
+        adj_record.word_audio = "[sound:schoen.mp3]"
+        adj_record.example_audio = "[sound:example.mp3]"
+
         assert card_builder.validate_record_for_card_building(adj_record) is True
 
     def test_validate_record_for_card_building_invalid(
@@ -530,37 +543,41 @@ class TestCardBuilderIntegration:
         record = create_record(
             "verb_imperative",
             [
-                "arbeiten",
-                "to work",
-                "regelmäßig",
-                "false",
-                "arbeite",
-                "arbeitet",
-                "arbeiten Sie",
-                "Arbeite schneller!",
-                "Arbeitet zusammen!",
-                "Arbeiten Sie bitte hier!",
+                "arbeiten",  # infinitive
+                "to work",  # english
+                "arbeite",  # du
+                "arbeitet",  # ihr
+                "arbeiten Sie",  # sie
+                "arbeiten wir",  # wir
+                "Arbeite schneller!",  # example_du
+                "Arbeitet zusammen!",  # example_ihr
+                "Arbeiten Sie bitte hier!",  # example_sie
+                "",  # word_audio
+                "",  # image
             ],
         )
 
         field_values, note_type = card_builder.build_card_from_record(record)
 
-        # Verify field count and values
-        assert len(field_values) == 15  # All verb imperative fields
-        assert field_values[0] == "arbeiten"  # Infinitive
+        # Verify field count matches new PROD-CARD-SPEC.md structure
+        assert len(field_values) == 11  # All verb imperative fields per specification
+        assert field_values[0] == ""  # Image
         assert field_values[1] == "to work"  # English
-        assert field_values[2] == "regelmäßig"  # Classification
-        assert field_values[3] == ""  # Separable (False -> "")
-        assert field_values[4] == "arbeite"  # DuForm
-        assert field_values[5] == "arbeitet"  # IhrForm
-        assert field_values[6] == "arbeiten Sie"  # SieForm
+        assert field_values[2] == "arbeiten"  # Infinitive
+        assert field_values[3] == "arbeite"  # Du
+        assert field_values[4] == "arbeitet"  # Ihr
+        assert field_values[5] == "arbeiten Sie"  # Sie
+        assert field_values[6] == "arbeiten wir"  # Wir
         assert field_values[7] == "Arbeite schneller!"  # ExampleDu
         assert field_values[8] == "Arbeitet zusammen!"  # ExampleIhr
         assert field_values[9] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[10] == ""  # WordAudio
 
         # Verify note type
         assert note_type.name == "German Verb Imperative with Media"
-        assert len(note_type.fields) == 15
+        assert (
+            len(note_type.fields) == 11
+        )  # Updated for new field count per PROD-CARD-SPEC.md
 
     def test_verb_record_separable_formatting(self, card_builder: CardBuilder) -> None:
         """Test that separable verb field is formatted correctly."""
@@ -615,33 +632,28 @@ class TestCardBuilderIntegration:
         record = create_record(
             "verb_imperative",
             [
-                "arbeiten",
-                "to work",
-                "regelmäßig",
-                "false",
-                "arbeite",
-                "arbeitet",
-                "arbeiten Sie",
-                "Arbeite!",
-                "Arbeitet!",
-                "Arbeiten Sie!",
+                "arbeiten",  # infinitive
+                "to work",  # english
+                "arbeite",  # du
+                "arbeitet",  # ihr
+                "arbeiten Sie",  # sie
+                "arbeiten wir",  # wir
+                "Arbeite!",  # example_du
+                "Arbeitet!",  # example_ihr
+                "Arbeiten Sie!",  # example_sie
+                "",  # word_audio
+                "",  # image
             ],
         )
 
         enriched_data = {
             "word_audio": "arbeiten.mp3",
-            "du_audio": "arbeite.mp3",
-            "ihr_audio": "arbeitet.mp3",
-            "sie_audio": "arbeiten_sie.mp3",
         }
 
         field_values, _ = card_builder.build_card_from_record(record, enriched_data)
 
-        # Check audio field formatting
-        assert field_values[11] == "[sound:arbeiten.mp3]"  # WordAudio
-        assert field_values[12] == "[sound:arbeite.mp3]"  # DuAudio
-        assert field_values[13] == "[sound:arbeitet.mp3]"  # IhrAudio
-        assert field_values[14] == "[sound:arbeiten_sie.mp3]"  # SieAudio
+        # Check audio field formatting (updated indices for PROD-CARD-SPEC.md structure)
+        assert field_values[10] == "[sound:arbeiten.mp3]"  # WordAudio (last field)
 
     def test_get_supported_record_types_includes_verbs(
         self, card_builder: CardBuilder
@@ -680,6 +692,10 @@ class TestCardBuilderIntegration:
                 "Ich arbeite.",
             ],
         )
+        # Add media fields that MediaEnricher would have added
+        valid_record.image = "<img src='work.jpg'>"
+        valid_record.word_audio = "[sound:arbeiten.mp3]"
+        valid_record.example_audio = "[sound:example.mp3]"
 
         assert card_builder.validate_record_for_card_building(valid_record) is True
 
@@ -708,16 +724,17 @@ class TestCardBuilderIntegration:
         valid_record = create_record(
             "verb_imperative",
             [
-                "arbeiten",
-                "to work",
-                "regelmäßig",
-                "false",
-                "arbeite",
-                "arbeitet",
-                "arbeiten Sie",
-                "Arbeite!",
-                "Arbeitet!",
-                "Arbeiten Sie!",
+                "arbeiten",  # infinitive
+                "to work",  # english
+                "arbeite",  # du
+                "arbeitet",  # ihr
+                "arbeiten Sie",  # sie
+                "arbeiten wir",  # wir
+                "Arbeite!",  # example_du
+                "Arbeitet!",  # example_ihr
+                "Arbeiten Sie!",  # example_sie
+                "[sound:arbeiten.mp3]",  # word_audio (must be present)
+                "<img src='working.jpg'>",  # image (must be properly formatted)
             ],
         )
 

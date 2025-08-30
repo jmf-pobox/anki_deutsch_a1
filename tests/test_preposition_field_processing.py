@@ -12,7 +12,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="in",
             english="in",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich gehe in die Schule.",
             example2="Ich bin in der Schule.",
             audio1="",
@@ -33,7 +33,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="auf",
             english="on",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich lege das Buch auf den Tisch.",
             example2="Das Buch liegt auf dem Tisch.",
             audio1="",
@@ -44,7 +44,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "auf",
             "on",
-            "Accusative/Dative",
+            "Akkusativ/Dativ",
             "Ich lege das Buch auf den Tisch.",
             "Das Buch liegt auf dem Tisch.",
             "",  # Audio1
@@ -58,7 +58,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="mit",
             english="with",
-            case="Dative",
+            case="Dativ",
             example1="Ich gehe mit dir.",
             example2="",
             audio1="",
@@ -67,7 +67,7 @@ class TestPrepositionFieldProcessing:
         )
 
         # Only 4 fields instead of required 7
-        fields = ["mit", "with", "Dative", "Ich gehe mit dir."]
+        fields = ["mit", "with", "Dativ", "Ich gehe mit dir."]
 
         assert preposition.validate_field_structure(fields) is False
 
@@ -79,7 +79,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="unter",
             english="under",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich stelle die Schuhe unter den Tisch.",
             example2="Die Schuhe stehen unter dem Tisch.",
             audio1="",
@@ -90,7 +90,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "unter",
             "under",
-            "Accusative/Dative",
+            "Akkusativ/Dativ",
             "Ich stelle die Schuhe unter den Tisch.",
             "Die Schuhe stehen unter dem Tisch.",
             "",  # Audio1 - empty, should be filled
@@ -115,7 +115,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="vor",
             english="in front of",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich stelle den Stuhl vor das Fenster.",
             example2="Der Stuhl steht vor dem Fenster.",
             audio1="",
@@ -126,7 +126,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "vor",
             "in front of",
-            "Accusative/Dative",
+            "Akkusativ/Dativ",
             "Ich stelle den Stuhl vor das Fenster.",
             "Der Stuhl steht vor dem Fenster.",
             "[sound:existing_audio1.mp3]",  # Audio1 - already has audio
@@ -150,7 +150,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="über",
             english="over/above",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="",  # Empty example1
             example2="",  # Empty example2
             audio1="",
@@ -161,7 +161,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "über",
             "over/above",
-            "Accusative/Dative",
+            "Akkusativ/Dativ",
             "",  # Empty example1
             "",  # Empty example2
             "",  # Audio1
@@ -184,7 +184,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="hinter",
             english="behind",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich stelle das Regal hinter die Tür.",
             example2="Das Regal steht hinter der Tür.",
             audio1="",
@@ -196,7 +196,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "hinter",
             "behind",
-            "Accusative/Dative",
+            "Akkusativ/Dativ",
             "Ich stelle das Regal hinter die Tür.",
         ]
 
@@ -216,7 +216,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="neben",
             english="next to",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich setze mich neben den Mann.",
             example2="Ich sitze neben dem Mann.",
             audio1="",
@@ -227,7 +227,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "neben",
             "next to",
-            "Accusative/Dative",
+            "Akkusativ/Dativ",
             "Ich setze mich neben den Mann.",
             "Ich sitze neben dem Mann.",
             "",  # Audio1
@@ -248,7 +248,7 @@ class TestPrepositionFieldProcessing:
         accusative_prep = Preposition(
             preposition="durch",
             english="through",
-            case="Accusative",
+            case="Akkusativ",
             example1="Ich gehe durch den Park.",
             example2="",
             audio1="",
@@ -261,7 +261,7 @@ class TestPrepositionFieldProcessing:
         dative_prep = Preposition(
             preposition="mit",
             english="with",
-            case="Dative",
+            case="Dativ",
             example1="Ich gehe mit dir.",
             example2="",
             audio1="",
@@ -276,7 +276,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="in",
             english="in",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich gehe in die Schule.",
             example2="Ich bin in der Schule.",
             audio1="",
@@ -293,7 +293,7 @@ class TestPrepositionFieldProcessing:
         two_way_prep = Preposition(
             preposition="auf",
             english="on",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich lege das Buch auf den Tisch.",
             example2="Das Buch liegt auf dem Tisch.",
             audio1="",
@@ -306,7 +306,7 @@ class TestPrepositionFieldProcessing:
         one_way_prep = Preposition(
             preposition="mit",
             english="with",
-            case="Dative",
+            case="Dativ",
             example1="Ich gehe mit dir.",
             example2="",
             audio1="",
@@ -324,7 +324,7 @@ class TestPrepositionFieldProcessing:
         preposition = Preposition(
             preposition="zwischen",
             english="between",
-            case="Accusative/Dative",
+            case="Akkusativ/Dativ",
             example1="Ich setze mich zwischen die Kinder.",
             example2="Ich sitze zwischen den Kindern.",
             audio1="",
@@ -336,7 +336,7 @@ class TestPrepositionFieldProcessing:
         fields = [
             "zwischen",  # Preposition
             "between",  # English
-            "Accusative/Dative",  # Case
+            "Akkusativ/Dativ",  # Case
             "Ich setze mich zwischen die Kinder.",  # Example1
             "Ich sitze zwischen den Kindern.",  # Example2
             "",  # Audio1 (empty, to be filled)
@@ -350,7 +350,7 @@ class TestPrepositionFieldProcessing:
         # Verify all original fields preserved
         assert result[0] == "zwischen"
         assert result[1] == "between"
-        assert result[2] == "Accusative/Dative"
+        assert result[2] == "Akkusativ/Dativ"
         assert result[3] == "Ich setze mich zwischen die Kinder."
         assert result[4] == "Ich sitze zwischen den Kindern."
 

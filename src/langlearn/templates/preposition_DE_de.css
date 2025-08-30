@@ -10,7 +10,7 @@
 .german {
     font-size: 32px;
     font-weight: bold;
-    color: #7c3aed;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -18,12 +18,14 @@
     font-size: 16px;
     color: #666;
     font-style: italic;
-    margin: 20px 0;
+    margin: 20px auto;
     padding: 8px 16px;
     background: #f8f9fa;
     border-radius: 20px;
     border: 1px solid #ddd;
-    display: inline-block;
+    display: block;
+    text-align: center;
+    width: fit-content;
 }
 
 /* Image styling */
@@ -50,10 +52,11 @@ img {
 
 .preposition-prompt {
     background: #f8f9fa;
-    border: 2px solid #7c3aed;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
     margin-bottom: 20px;
+    display: inline-block;
 }
 
 .case-challenge {
@@ -63,7 +66,7 @@ img {
 .challenge-label {
     font-size: 18px;
     font-weight: bold;
-    color: #7c3aed;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -75,10 +78,10 @@ img {
 }
 
 .case-option {
-    background: #ede9fe;
+    background: #e8f4fd;
     padding: 12px;
     border-radius: 8px;
-    border: 2px dashed #7c3aed;
+    border: 2px dashed #2c5aa0;
     font-size: 14px;
     color: #444;
     cursor: pointer;
@@ -86,18 +89,17 @@ img {
 }
 
 .case-option:hover {
-    background: #ddd6fe;
+    background: #e8f0fe;
 }
 
 /* Back side preposition info */
 .preposition-info {
-    text-align: center;
-    margin-bottom: 25px;
-    background: #ffffff;
-    border: 2px solid #7c3aed;
+    background: #f8f9fa;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
 .translation {
@@ -108,11 +110,12 @@ img {
 }
 
 .case-info {
-    margin-top: 20px;
-    background: #ede9fe;
-    border-radius: 8px;
+    background: #f8f9fa;
+    border: 2px solid #2c5aa0;
+    border-radius: 10px;
     padding: 15px;
-    border: 1px solid #a855f7;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
 .case-label {
@@ -125,40 +128,33 @@ img {
 .case-value {
     font-size: 24px;
     font-weight: bold;
-    color: #7c3aed;
+    color: #2c5aa0;
     text-transform: uppercase;
 }
 
 /* Examples section */
 .examples-section {
-    margin-top: 25px;
-    text-align: left;
-    max-width: 600px;
+    margin-top: 20px;
+    max-width: 500px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.examples-header {
-    font-size: 18px;
-    font-weight: bold;
-    color: #7c3aed;
-    margin-bottom: 15px;
-    text-align: center;
-    border-bottom: 2px solid #7c3aed;
-    padding-bottom: 10px;
-}
+
 
 .example-item {
     margin: 15px 0;
-    background: #f3f4f6;
-    border-radius: 8px;
-    padding: 15px;
-    border-left: 4px solid #7c3aed;
+    padding: 10px;
+    background: #f0f4f8;
+    border-left: 3px solid #2c5aa0;
+    border-radius: 5px;
 }
 
 .example-with-audio {
+    margin: 15px 0;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 
@@ -184,8 +180,8 @@ img {
 }
 
 .inline-audio:hover {
-    background: #ede9fe;
-    border-color: #7c3aed;
+    background: #e8f0fe;
+    border-color: #2c5aa0;
 }
 
 /* Hint styling */
@@ -198,7 +194,7 @@ img {
 }
 
 .hint-button {
-    background: #8b5cf6;
+    background: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -209,18 +205,18 @@ img {
 }
 
 .hint-button:hover {
-    background: #7c3aed;
+    background: #45a049;
 }
 
 .hint-content {
     font-size: 18px;
-    color: #7c3aed;
+    color: #2c5aa0;
     font-weight: bold;
     margin-top: 15px;
     padding: 15px;
-    background: #ede9fe;
+    background: #e8f4fd;
     border-radius: 10px;
-    border: 2px solid #7c3aed;
+    border: 2px solid #2c5aa0;
 }
 
 .case-explanation {
@@ -287,32 +283,32 @@ img {
     
     .preposition-prompt {
         background: #4a5568;
-        border-color: #a855f7;
+        border-color: #63b3ed;
     }
-    
+
     .preposition-info {
         background: #4a5568;
-        border-color: #a855f7;
+        border-color: #63b3ed;
     }
-    
+
     .case-info {
-        background: #553c9a;
-        border-color: #a855f7;
+        background: #2b6cb0;
+        border-color: #63b3ed;
     }
-    
+
     .case-option {
-        background: #553c9a;
-        border-color: #a855f7;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #e2e8f0;
     }
-    
+
     .case-option:hover {
-        background: #6d28d9;
+        background: #2c5aa0;
     }
     
     .example-item {
         background: #4a5568;
-        border-color: #a855f7;
+        border-color: #63b3ed;
     }
     
     .example-text {
@@ -324,8 +320,8 @@ img {
     }
     
     .hint-content {
-        background: #553c9a;
-        border-color: #a855f7;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #e2e8f0;
     }
 }

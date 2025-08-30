@@ -1,0 +1,25 @@
+<!-- German Article Gender Cloze Card - Back -->
+<div class="card">
+    <!-- Cloze text with answer -->
+    <div class="cloze-answer">
+        {{cloze:Text}}
+    </div>
+    
+    <!-- German explanation -->
+    {{#Explanation}}
+    <div class="explanation">
+        <strong>Erklärung:</strong> {{Explanation}}
+    </div>
+    {{/Explanation}}
+    
+    <!-- Media (image/audio) -->
+    <div class="media">
+        {{#Image}}
+            <img src="{{Image}}" alt="Visual aid">
+        {{/Image}}
+        
+        {{#Audio}}
+            {{Audio}}
+        {{/Audio}}
+    </div>
+</div>

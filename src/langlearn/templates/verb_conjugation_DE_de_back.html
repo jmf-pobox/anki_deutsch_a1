@@ -6,9 +6,14 @@
         {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
     </div>
     
+    {{#Classification}}
+    <div class="verb-classification">
+        <strong>Klassifikation:</strong> <span class="classification-{{Classification}}">{{Classification}}</span>
+        {{#Separable}}<span class="separable-indicator">• Trennbar: {{Separable}}</span>{{/Separable}}
+    </div>
+    {{/Classification}}
+
     <div class="verb-info">
-        <div class="info-item"><strong>Classification:</strong> {{Classification}}</div>
-        {{#Separable}}<div class="info-item"><strong>Separable:</strong> Yes</div>{{/Separable}}
         <div class="info-item"><strong>Auxiliary:</strong> {{Auxiliary}}</div>
     </div>
     

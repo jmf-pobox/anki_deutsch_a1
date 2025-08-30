@@ -1,0 +1,582 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+# Anki German Language Deck Generator
+
+This project generates customized German language Anki decks for A1-level learners, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
+
+## CRITICAL DEBUGGING PRINCIPLES (READ FIRST - PREVENTS WASTED TIME)
+
+**🚨 LESSON FROM $566 WASTED**: Fixing peripheral issues while ignoring explicit error messages is PROHIBITED.
+
+### Johnson's Law (ABSOLUTE TRUTH)
+**"Any property of software that has not been verified, does not exist."**
+- This applies to: functionality, bug fixes, code quality, design compliance, EVERYTHING
+- You CANNOT verify end-to-end functionality - only the user can
+- NEVER claim something works without user confirmation
+
+### Root Cause First Protocol (MANDATORY)
+When encountering errors, follow this EXACT sequence:
+
+1. **READ THE ERROR MESSAGE** - It tells you EXACTLY what to fix
+   - Example: "Field 'DuForm' not found" → Fix the field name in templates
+   - Example: "KeyError: 'english'" → Add the missing key
+   - Example: "Template syntax error" → Fix the template syntax
+
+2. **FIX ONLY THE ROOT CAUSE** - Do NOT fix peripheral issues first
+   - ❌ WRONG: Fix unit tests, validation, formatting while error persists
+   - ✅ RIGHT: Fix the exact issue the error message indicates
+
+3. **VERIFY WITH MINIMAL TESTING** - Test ONLY the broken functionality
+   - Add targeted logging/debugging at the error point
+   - Run the specific failing operation
+   - Confirm error is resolved
+
+4. **KEEP DEBUGGING TOOLS** - NEVER remove logging until user confirms success
+   - Debugging code stays until user says "it works"
+   - Better to have extra logging than to be blind
+
+5. **REQUEST USER VERIFICATION** - You cannot determine if it works
+   - "Please test [specific functionality] and confirm"
+   - "Check if [specific error] still occurs"
+   - Wait for explicit confirmation before proceeding
+
+### Prohibited Behaviors That Waste Time
+- ❌ Claiming "I've fixed it" without user confirmation
+- ❌ Removing debugging tools before user verifies the fix
+- ❌ Fixing code quality issues while core functionality is broken
+- ❌ Making assumptions about what "should" work
+- ❌ Declaring victory based on unit tests passing
+
+## REQUIRED READING
+
+**🚨 MANDATORY: You MUST read, understand, and follow these files before any development work:**
+
+1. **docs/ENG-PYTHON-STANDARDS.md** - General Python coding standards and development practices
+2. **docs/ENG-DESIGN-INDEX.md** - Navigation guide for all design documentation
+3. **docs/ENG-DEVELOPMENT-STANDARDS.md** - Project-specific development standards and architectural principles
+
+These documents contain critical information about:
+- Code quality requirements and mandatory workflows
+- Architectural principles and design patterns to follow
+- Component responsibilities and system organization
+- Technical debt and current quality metrics
+- Anti-patterns to avoid and best practices to implement
+
+**⚠️  Failure to follow these documents will result in code that does not meet project standards.**
+
+## MICRO-COMMIT DEVELOPMENT (MANDATORY)
+
+**🚨 CRITICAL: Large batch changes are PROHIBITED - use micro-commits to prevent massive time waste**
+
+**📈 SUCCESS RATE IMPROVEMENT**: This workflow moves us from 5-0% PR success rate to 90%+ by preventing large batch failures.
+
+### Atomic Change Principle:
+- **ONE change** = ONE commit (extract function, fix bug, add test)
+- **ONE concern** = ONE branch (refactoring, feature, fix)  
+- **ONE layer** = ONE PR (services, models, tests - not mixed)
+
+### Commit Size Limits (STRICTLY ENFORCED):
+- ✅ **Micro**: 1-2 files, <50 lines (PREFERRED - fastest feedback)
+- ⚠️ **Small**: 3-5 files, <100 lines (ACCEPTABLE - use sparingly)
+- ❌ **Large**: >5 files, >200 lines (PROHIBITED - causes time waste)
+
+### Progressive Quality Gates (FAST FEEDBACK):
+
+#### Tier 1: Instant Feedback (<5 seconds) - While coding every 2-3 minutes:
+```bash
+hatch run type-quick    # Type check current file only
+hatch run format-check  # Format check (no write)
+```
+
+#### Tier 2: Fast Validation (<30 seconds) - Before each micro-commit:
+```bash
+hatch run type          # Full type checking
+hatch run test-unit     # Core unit tests only  
+```
+
+#### Tier 3: Comprehensive (<5 minutes) - Before push every 30-45 minutes:
+```bash
+hatch run format        # Apply formatting
+hatch run test-cov      # Full test suite with coverage
+```
+
+## DEVELOPMENT WORKFLOW (MANDATORY)
+
+**🚨 CRITICAL: These workflows MUST be followed - NO EXCEPTIONS!**
+
+### For Bug Fixes:
+1. **Diagnose**: READ THE ERROR MESSAGE FIRST - it tells you exactly what to fix
+2. **Plan**: Identify ONE specific change (5-10 minute scope max)  
+3. **Implement**: Make the MINIMAL change that fixes the ROOT CAUSE
+4. **Quality Gates**: Run all 5 commands below before commit
+5. **Commit**: Create atomic commit with clear message on feature branch
+6. **User Verification**: Request user confirmation before claiming success
+
+### For Feature Development:
+1. **Plan**: Update appropriate CSV files in `data/` for new vocabulary
+2. **Validate**: Ensure Pydantic validation passes
+3. **Enrich**: Use enrichment scripts to add audio/images
+4. **Generate**: Create cards using card generators
+5. **Quality Gates**: Run all 5 commands below before commit
+6. **Build**: Use AnkiDeckGenerator to create final .apkg file
+
+### Commit Standards:
+- **Format**: `type(scope): description [impact]`
+- **Examples**: 
+  - `fix(pexels): handle empty API key [prevents KeyError]`
+  - `feat(cards): add verb conjugation templates [+3 card types]`
+  - `refactor(utils): extract rate_limit_reached() [no behavior change]`
+- **Push frequency**: Every 3-5 commits OR every 30 minutes
+
+### Required Quality Gates (MANDATORY):
+
+```bash
+# Run after EVERY code change - NO SHORTCUTS:
+hatch run type                    # 1. ZERO MyPy errors (ABSOLUTE REQUIREMENT)
+hatch run ruff check --fix       # 2. ZERO Ruff violations (ABSOLUTE REQUIREMENT) 
+hatch run format                  # 3. Perfect formatting (ABSOLUTE REQUIREMENT)
+hatch run test                    # 4. ALL tests pass (ABSOLUTE REQUIREMENT)
+hatch run test-cov                # 5. Coverage maintained (ABSOLUTE REQUIREMENT)
+```
+
+### Branch Workflow (MANDATORY):
+- **ALL development** must use feature branches - NO direct commits to main
+- **Branch naming**: `feature/`, `fix/`, `refactor/`, `docs/`, `test/`
+- **Micro-commits**: 1-2 files, <50 lines preferred, <100 lines max
+- **Push frequency**: Every 3-5 commits OR every 30 minutes
+- **Create draft PR early** for continuous CI feedback
+
+**🚨 ABSOLUTE REQUIREMENTS - NO EXCEPTIONS:**
+- **Error Messages First**: When fixing bugs, address the EXACT error shown
+- **MyPy --strict**: ZERO errors allowed in any file
+- **Ruff linting**: ZERO violations allowed  
+- **Test suite**: ALL tests must pass
+- **Coverage**: Must not decrease from current levels
+- **User Verification**: Bug fixes require user confirmation before claiming success
+- **Branch-based development**: Create branch → develop → test → PR → review → merge
+
+**🚫 A CODE CHANGE IS NOT COMPLETE UNTIL ALL 5 QUALITY GATES PASS!**
+
+## GITHUB ISSUE MANAGEMENT (MANDATORY)
+
+**🚨 CRITICAL: GitHub issues are NOT documentation - they are brief pointers to misalignment**
+
+### Purpose of GitHub Issues
+GitHub issues serve as **state management markers** that identify where code diverges from authoritative specifications. They are NOT:
+- ❌ Replacement for design documentation
+- ❌ Duplicate of specification details
+- ❌ Comprehensive implementation guides
+- ❌ Alternative source of truth
+
+### Issue Creation Principles (MANDATORY)
+
+1. **Brief Summary Only**: Issues should contain:
+   - **Problem**: One sentence describing the misalignment
+   - **Location**: Which component/file is affected
+   - **Reference**: Link to authoritative spec (e.g., PROD-CARD-SPEC.md)
+   - **Impact**: What functionality is blocked or broken
+
+2. **Defer to Authoritative Docs**: 
+   - ✅ "Card generation missing required fields - see PROD-CARD-SPEC.md section 3.2"
+   - ❌ "Card generation needs DuForm, SieForm, IhrForm fields with specific formatting..."
+
+3. **Avoid Specification Duplication**:
+   - Issues should NOT repeat detailed requirements from specs
+   - This prevents conflicting directions when specs are updated
+   - Single source of truth principle must be maintained
+
+4. **State Management Focus**:
+   - Issues track WHAT needs fixing, not HOW to fix it
+   - Implementation details belong in documentation
+   - Issues are checkpoints, not instruction manuals
+
+### Issue Template (REQUIRED FORMAT)
+```markdown
+## Misalignment Detected
+**Component**: [specific file/service]
+**Specification**: [link to authoritative doc#section]
+**Current Behavior**: [one sentence]
+**Expected Behavior**: [one sentence referencing spec]
+**Blocked Work**: [what can't proceed until fixed]
+
+⚠️ See specification document for implementation requirements.
+```
+
+### Integration with Workflow
+
+**When to Create Issues**:
+- During code review when detecting spec violations
+- When user reports functionality not matching requirements
+- Before starting work that depends on unimplemented specs
+- As markers for technical debt that blocks progress
+
+**When NOT to Create Issues**:
+- For bugs with clear error messages (fix immediately)
+- For minor formatting or style violations (fix in current commit)
+- To document how something should work (use design docs)
+- As a todo list for features (use TodoWrite tool)
+
+### Anti-Patterns to Avoid
+- ❌ Creating issues that duplicate specification content
+- ❌ Using issues as alternative documentation
+- ❌ Writing implementation details in issue descriptions
+- ❌ Creating issues for work you can complete immediately
+- ❌ Closing issues without verifying alignment with specs
+
+### Issue Lifecycle
+1. **Create**: Brief pointer to misalignment
+2. **Reference**: Link to authoritative specification
+3. **Fix**: Implement according to specification (not issue description)
+4. **Verify**: Confirm alignment with specification
+5. **Close**: Only after verification against authoritative docs
+
+**🚨 REMEMBER**: Issues expire, specifications endure. Always implement from specs, not from issue descriptions.
+
+## CRITICAL COMMUNICATION PROTOCOL (MANDATORY)
+
+**🚨 NEVER CLAIM "FIXED" WITHOUT USER VALIDATION**
+
+**Johnson's Law Reminder**: You CANNOT verify if something works. Only the user can.
+
+After experiencing $566 in wasted costs from false success claims, the following communication protocol is MANDATORY:
+
+### ❌ PROHIBITED Communication Patterns:
+```
+"I've fixed the blank card issue"
+"The duplicates are eliminated"  
+"This should work now"
+"The issue has been resolved"
+"Everything is working perfectly"
+"The problem is completely solved"
+"All issues have been addressed"
+Any claim of success without user confirmation
+```
+
+### ✅ REQUIRED Communication Protocol:
+```
+"I've implemented changes targeting the EXACT error you reported:
+
+**Root Cause Addressed**:
+- Error Message: [exact error from user/logs]
+- Fix Applied: [specific change to address that exact error]
+- File Modified: [specific file:line that had the error]
+
+**Changes Made**:
+- Modified: [specific files and line numbers]
+- Logic: [brief explanation focusing on the root cause fix]
+
+**Internal Validation**:
+- ✅ Error-specific test: [tested the exact failing scenario]
+- ✅ MyPy: All type checks pass
+- ✅ Tests: All 772 tests pass  
+- ⚠️  Debugging logs: KEPT IN PLACE for your verification
+
+**Critical Limitation**: 
+I cannot verify if this actually fixes your issue. Per Johnson's Law,
+only you can confirm if the functionality works.
+
+**Required User Testing**:
+Please test the SPECIFIC issue that was failing:
+1. [Exact operation that was broken]
+2. [Expected vs actual behavior]
+3. Report if the error message still appears
+
+**Debugging Output**:
+The code includes logging that will show:
+- [What the logging will display]
+- [Where to find the output]
+
+**If Issues Persist**:
+Please provide:
+- The NEW error message (if different)
+- Screenshot showing the issue
+- Any debugging output from the logs
+```
+
+### 🔄 Iterative Problem Solving:
+1. **Report findings** → "Based on your screenshot, I can see..."
+2. **Implement targeted fix** → "This specific change should address..."
+3. **Request focused testing** → "Please test these 3 specific cards..."
+4. **Repeat until confirmed** → Never claim success without user confirmation
+
+**🚫 ABSOLUTE PROHIBITION**: Never claim any fix works in the Anki application without user confirmation.**
+
+## Development Commands
+
+### Hatch Environment Management
+```bash
+# Create environment
+hatch env create
+
+# Run tests
+hatch run test               # All tests (unit + integration)
+hatch run test-unit         # Unit tests only (no live API calls)
+hatch run test-integration  # Integration tests (requires API keys)
+
+# Code Quality
+hatch run lint              # Ruff linting
+hatch run format            # Ruff formatting  
+hatch run type              # MyPy type checking
+hatch run check             # All checks (lint + type + test)
+hatch run check-unit        # All checks with unit tests only
+
+# Application Scripts
+hatch run app               # Run main deck creation
+hatch run run-sample        # Run example deck creation
+hatch run run-adjectives    # Run adjectives-only deck creation
+```
+
+### Testing Strategy
+The project uses separate test categories with comprehensive coverage measurement:
+- **Unit tests**: Mock external dependencies, run with `hatch run test-unit`
+- **Integration tests**: Require live API keys, marked with `@pytest.mark.live`, run with `hatch run test-integration`
+- **Coverage testing**: Use `hatch run test-cov` for complete measurement (target: >85%)
+- API keys are managed via the system keyring using the `api_keyring.py` utility
+
+
+Additional verification commands:
+```bash
+hatch run test-unit      # All tests must pass
+hatch run test-unit-cov  # Run tests with coverage report
+hatch run format         # Auto-fix formatting
+hatch run lint           # Check linting rules
+hatch run type           # Verify type safety
+```
+
+## Project Architecture
+
+**📋 For detailed architecture information, see the comprehensive design documentation in `docs/`:**
+- **`docs/ENG-COMPONENT-INVENTORY.md`** - Complete component inventory and responsibilities
+- **`docs/ENG-QUALITY-METRICS.md`** - Current quality metrics and technical debt analysis
+- **`docs/ENG-DEVELOPMENT-STANDARDS.md`** - Architectural principles and development standards
+
+### Core Components - Clean Pipeline Architecture
+
+The project uses **Clean Pipeline Architecture** for data processing with clear separation of concerns:
+
+**Clean Pipeline Flow**: CSV → Records → Domain Models → MediaEnricher → Enriched Records → CardBuilder
+
+1. **Models** (`src/langlearn/models/`): 
+   - **Records System**: Lightweight Pydantic records (NounRecord, AdjectiveRecord, etc.) for data transport
+   - **Domain Models**: Rich models with German-specific validation (legacy compatibility for verb, preposition, phrase)
+   - **Factory**: Record creation and model factory patterns
+
+2. **Services** (`src/langlearn/services/`): 
+   - **CardBuilder**: Final assembly service (Records → Formatted Cards)
+   - **MediaEnricher**: Audio/image generation with existence checking  
+   - **RecordMapper**: CSV → Records conversion
+   - **External APIs**: AWS Polly, Pexels, Anthropic integration
+
+3. **Backends** (`src/langlearn/backends/`): 
+   - **DeckBackend**: Abstract interface for deck generation
+   - **AnkiBackend**: Implementation using official Anki library to create .apkg files
+
+4. **Utils** (`src/langlearn/utils/`): API key management, audio/image utilities
+
+5. **Main Application** (`deck_builder.py`): High-level orchestrator with MVP architecture support
+
+### Data Architecture
+- **CSV Files** (`data/`): Source data for all parts of speech
+- **Audio** (`data/audio/`): AWS Polly-generated pronunciation files
+- **Images** (`data/images/`): Pexels-sourced images with automatic backup
+- **Backups** (`data/backups/`): Automatic CSV backups during enrichment
+
+### Key Design Patterns - Clean Architecture Implementation
+
+- **Clean Pipeline Architecture**: Clear data flow with single responsibility at each step
+  - **Records**: Lightweight data transfer objects (DTOs) for pure data transport
+  - **MediaEnricher**: Infrastructure service with existence checking and caching
+  - **CardBuilder**: Pure transformation service (Records → Formatted Cards)
+  - **Separation of Concerns**: German grammar logic separate from infrastructure
+
+- **Unified Architecture**: Records-based system with CardBuilder service
+  - **Record Types**: All word types use Pydantic BaseRecord models for validation
+  - **CardBuilder**: Single service handles card generation for all word types
+  - **MediaEnricher**: Handles audio/image generation with existence checking
+
+- **Performance Optimizations**: 
+  - **Hash-based Caching**: Avoids duplicate API calls for media generation
+  - **Existence Checking**: MediaEnricher checks for existing files before generation
+  - **Optimized Field Processing**: Clean Pipeline reduces processing overhead
+
+- **German Language Specialization**: 
+  - **Pydantic Validation**: German-specific rules (article validation, case patterns)
+  - **Template System**: HTML/CSS templates for different card types  
+  - **Rich Domain Models**: Context-aware German grammar handling
+
+## API Key Management
+
+The project uses the system keyring for secure credential storage:
+
+```bash
+# Add API keys
+python src/langlearn/utils/api_keyring.py add ANTHROPIC_API_KEY your_key_here
+python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_key_here
+
+# View stored keys
+python src/langlearn/utils/api_keyring.py view ANTHROPIC_API_KEY
+
+# Remove keys
+python src/langlearn/utils/api_keyring.py remove ANTHROPIC_API_KEY
+
+# Sync keys to environment (for scripts)
+python src/langlearn/utils/sync_api_key.py
+```
+
+AWS credentials are managed via standard environment variables:
+```bash
+export AWS_ACCESS_KEY_ID=your_access_key
+export AWS_SECRET_ACCESS_KEY=your_secret_key  
+export AWS_DEFAULT_REGION=your_region
+```
+
+## German Language Specifics
+
+This project addresses unique aspects of German language learning:
+
+### Noun Challenges
+- **Gender memorization**: Cards test article recall separately from noun meaning
+- **Case declensions**: All four cases (Nominativ, Akkusativ, Dativ, Genitiv) are included
+- **Plural forms**: Irregular plurals are validated against German patterns
+
+### Verb Complexities  
+- **Separable verbs**: Special handling for verbs like "aufstehen" (ich stehe auf)
+- **Irregular conjugations**: Models validate against known irregular patterns
+- **Perfect tense**: Automatic auxiliary verb selection (haben vs sein)
+
+### Other Features
+- **Case-dependent prepositions**: Models track which case each preposition requires
+- **Adjective declensions**: Support for all declension patterns
+- **Audio pronunciation**: All words include AWS Polly audio with German voice
+
+
+## Current Status
+
+### Quality Metrics
+- **Tests**: 813 passing (792 unit + 21 integration)
+- **Coverage**: 24.79% overall
+- **Type Safety**: 0 MyPy errors in strict mode (133 source files)
+- **Linting**: 0 Ruff violations
+- **Architecture**: Clean Pipeline with SRP implementation
+
+### Supported Word Types
+- **Fully Supported**: noun, adjective, adverb, negation, verb (via Records + CardBuilder)
+- **Legacy Support**: preposition, phrase (via fallback system)
+- **Total Coverage**: All 7 German A1 word types functional
+
+## Project Structure
+
+See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete project structure details.
+
+Key directories:
+- `src/langlearn/` - Main application code
+- `data/` - CSV vocabulary files and generated media
+- `tests/` - Unit and integration tests  
+- `docs/` - Comprehensive documentation
+
+## Quality Maintenance
+
+### Absolute Requirements (NO EXCEPTIONS)
+
+1. **MyPy Compliance**: 0 errors required in strict mode
+2. **Ruff Linting**: 0 violations required
+3. **Test Suite**: All 813 tests must pass
+4. **Coverage**: Must not decrease from 24.79%
+5. **Branch Workflow**: All changes via feature branches
+
+See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete quality gate requirements and workflow.
+
+## SUCCESS RATE TRACKING
+
+**📈 GOAL**: Move from 5-0% PR success rate to 90%+ through micro-commits
+
+### Time Waste Prevention Checklist:
+- [ ] Commit affects only 1-2 files
+- [ ] Change is <50 lines (preferred) or <100 lines (max)
+- [ ] Single architectural layer modified
+- [ ] Tier 2 validation passes before commit
+- [ ] Clear, specific commit message
+- [ ] Push frequency: every 3-5 commits
+
+### Red Flags That Indicate Batch Accumulation (STOP IMMEDIATELY):
+- 🚩 More than 5 files in staging area
+- 🚩 More than 200 lines of changes
+- 🚩 Multiple unrelated fixes in progress  
+- 🚩 Cross-layer modifications (utils + services + tests)
+- 🚩 "Let me just fix one more thing" mentality
+
+**⚠️ QUALITY GATE ENFORCEMENT**: The micro-commit workflow + progressive quality gates are NOT optional - they prevent the massive time waste we just experienced.
+
+**🚨 LESSON LEARNED**: We achieved 502→0 MyPy errors through discipline. We must apply the same discipline to commit size to prevent 5% success rates!
+- always run the formatter immediately before committing
+- Always follow Python PEP 8 standards on imports. Imports are always put at the top of the fileV, just after any module comments and docstrings, and before module globals and constants.
+Imports should be grouped in the following order:
+
+Standard library imports.
+Related third party imports.
+Local application/library specific imports.
+You should put a blank line between each group of imports.
+
+Absolute imports are recommended
+- do not exceed 88 characters per line to meet the ruff check guidelines.
+
+
+
+## Environment Troubleshooting (Hatch + PyCharm)
+
+Why you might see: bad interpreter: ...python3.13: no such file or directory
+- Root cause: A stale project-local .venv (or its hatch shim) pointing to a removed Python 3.13 interpreter. Even if Hatch uses its own managed env elsewhere, shells or IDEs may still pick up .venv/bin/hatch and print the noisy prefix before running the real command.
+
+Recommended setup
+- Prefer Hatch-managed environments: Let `hatch env create` manage the venv outside the repo (default). You do not need a project-local .venv for Hatch.
+- If a `.venv` directory exists in the project and causes noise, either remove it or rename it (e.g., `.venv.bck`).
+- Always run hatch from PATH (e.g., `hatch run type`), not from `.venv/bin/hatch`.
+
+One-time cleanup (if you see the bad interpreter prefix)
+1) Move/Remove the local venv: `rm -rf .venv` (or rename to `.venv.bck`)
+2) Create/verify Hatch env: `hatch env create`
+3) Validate: `hatch run type && hatch run test-unit`
+
+PyCharm configuration
+- Preferences > Project > Python Interpreter: select the interpreter provided by Hatch (or a fresh local one you trust), not the old `.venv` that referenced Python 3.13.
+- Run/Debug Configurations: set the Working directory to the project root and ensure the selected interpreter matches the above.
+
+Team practice to avoid friction
+- Do not commit or rely on a project-local `.venv` for Hatch-driven workflows.
+- Avoid re-running `hatch` commands repeatedly; use the micro-commit workflow:
+  - Tier 1 (fast, on current file) when coding
+  - Tier 2 (type + unit tests) before each micro-commit
+  - Tier 3 (format + full tests + coverage) before PR
+
+With this setup, the noisy interpreter message disappears, and Hatch commands behave consistently across CLI and PyCharm.
+
+- do not exaggerate or declare enthusiastically results that have not been verified by the user
+- unless you have tested something and can prove it works or you have asked me to confirm it works, do not declare arrogantly that issues are resolved.  It is sloppy work that is not acceptable.
+- always read the design documentation in docs/*.md and always updated the design documentation in docs/*.md when making changes. This way you do not have search the codebase blindly over and over again.
+- always run the code quality tools after each 2-4 edits
+- do not say things are solved unless you have proven it or I have confirmed it.
+- always run the app before stating you have complete work.  Look for obvious errors and address them before declaring the job is done.
+## FINAL REMINDERS - CORE PRINCIPLES
+
+### Johnson's Law (NEVER FORGET)
+**"Any property of software that has not been verified, does not exist."**
+- You CANNOT verify end-to-end functionality - only the user can
+- Do NOT claim bugs are fixed until the user confirms
+- Do NOT remove debugging code until the user confirms the fix works
+- Do NOT declare victory based on unit tests alone
+
+### Error Messages Are Sacred
+When you see an error like "Field 'DuForm' not found":
+1. That IS the problem - fix THAT field name
+2. Do NOT fix unit tests first
+3. Do NOT refactor code first  
+4. Do NOT clean up formatting first
+5. Fix the EXACT issue the error describes, THEN handle other concerns
+
+### Communication Discipline
+- State what you changed and why
+- Explain what needs user verification
+- Never claim success without user confirmation
+- Keep responses focused on solving the actual problem

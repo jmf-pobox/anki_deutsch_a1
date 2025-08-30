@@ -1,0 +1,5 @@
+---
+description: Do not exceed 88 characters per line, break lines into two lines if they are two long
+globs: *.py
+alwaysApply: false
+---

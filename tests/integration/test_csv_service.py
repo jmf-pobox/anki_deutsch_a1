@@ -65,9 +65,9 @@ def test_read_prepositions(tmp_path: Path) -> None:
     # Create a temporary CSV file
     csv_content = (
         "preposition,english,case,example1,example2\n"
-        "in,in,Accusative/Dative,Ich gehe in die Schule. (ACC),"
+        "in,in,Akkusativ/Dativ,Ich gehe in die Schule. (ACC),"
         "Ich bin in der Schule. (DAT)\n"
-        "auf,on,Accusative/Dative,Ich lege das Buch auf den Tisch. (ACC),"
+        "auf,on,Akkusativ/Dativ,Ich lege das Buch auf den Tisch. (ACC),"
         '"Das Buch liegt auf dem Tisch. (DAT)"'
     )
 
@@ -83,7 +83,7 @@ def test_read_prepositions(tmp_path: Path) -> None:
     assert isinstance(prepositions[0], Preposition)
     assert prepositions[0].preposition == "in"
     assert prepositions[0].english == "in"
-    assert prepositions[0].case == "Accusative/Dative"
+    assert prepositions[0].case == "Akkusativ/Dativ"
     assert prepositions[0].example1 == "Ich gehe in die Schule. (ACC)"
     assert prepositions[0].example2 == "Ich bin in der Schule. (DAT)"
 

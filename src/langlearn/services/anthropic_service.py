@@ -61,10 +61,11 @@ class AnthropicService:
         if api_key is None:
             api_key = keyring.get_password("ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
 
-        # Allow empty API key in test environments (will be mocked)
+        # Allow empty API key in unit test environments (will be mocked)
         from langlearn.utils.environment import is_test_environment
 
-        if not api_key and not is_test_environment(api_key):
+        unit_test_env = is_test_environment(api_key)
+        if not api_key and not unit_test_env:
             raise ValueError(
                 "Key ANTHROPIC_API_KEY not found in environment or keyring"
             )
@@ -72,11 +73,11 @@ class AnthropicService:
         self.api_key = api_key
         self.model = "claude-3-7-sonnet-20250219"  # Updated to current model
 
-        # Only create real client if we have a valid API key
-        if self.api_key and not is_test_environment(self.api_key):
+        # Only create real client if we have a valid API key and not in unit tests
+        if self.api_key and not unit_test_env:
             self.client = Anthropic(api_key=self.api_key)
         else:
-            # In test environments or with empty keys, client will be mocked
+            # In unit tests or with empty keys, client will be mocked (None)
             self.client = None
 
         logger.debug(f"Initialized AnthropicService with model: {self.model}")
@@ -139,6 +140,36 @@ class AnthropicService:
         except Exception as e:
             logger.error("Error extracting key data: %s", str(e))
             return str(model)
+
+    def generate_translation(
+        self,
+        prompt: str,
+        max_tokens: int = 100,
+        temperature: float = 0.1,
+    ) -> str:
+        """Generate a translation using the Anthropic API.
+
+        Args:
+            prompt: The translation prompt to send to the API
+            max_tokens: Maximum tokens for the response
+            temperature: Temperature setting for response consistency
+
+        Returns:
+            The generated translation text
+
+        Raises:
+            Exception: If the API call fails
+        """
+        try:
+            response = self._generate_response(
+                prompt,
+                max_tokens=max_tokens,
+                temperature=temperature,
+            )
+            return response.strip()
+        except Exception as e:
+            logger.error(f"Error generating translation: {e}")
+            raise
 
     def generate_pexels_query(self, model: Any) -> str:
         """Generate a Pexels query prioritizing sentence context for relevant images."""

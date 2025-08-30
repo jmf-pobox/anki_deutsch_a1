@@ -3,24 +3,20 @@
 <div class="part-of-speech">Verb - Imperativ</div>
 
 <div class="imperative-prompt">
-    <div class="infinitive-with-audio">
-        <span class="german">{{Infinitive}}</span>
-        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
-    </div>
-    
     <div class="imperative-challenge">
-        <div class="imperative-label">Give commands using this verb:</div>
+        <div class="imperative-label">Gib Befehle mit diesem Verb:</div>
         <div class="command-prompts">
-            <div class="command-item">To a friend (du): ___</div>
-            <div class="command-item">To friends (ihr): ___</div>
-            <div class="command-item">Formal (Sie): ___</div>
+            <div class="command-item">du: ___</div>
+            <div class="command-item">wir: ___</div>
+            <div class="command-item">ihr: ___</div>
+            <div class="command-item">Sie: ___</div>
         </div>
     </div>
 </div>
 
 <div class="hint-container">
-    <button class="hint-button" onclick="showHint()">💡 Hint</button>
-    <div id="hint-content" class="hint-content hidden">{{Meaning}}</div>
+    <button class="hint-button" onclick="showHint()">💡 Tipp</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 
 <script>

@@ -47,27 +47,35 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-test = ["test-unit", "test-integration"]
-test-unit = "pytest {args:tests --ignore=tests/integration}"
-test-integration = "pytest {args:tests/integration}"
-test-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests tests/integration}"
-test-unit-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests --ignore=tests/integration}"
-test-integration-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests/integration}"
-lint = "ruff check ."
-format = "ruff format ."
-type = "mypy src/langlearn tests"
-check = ["lint", "type", "test"]
-check-unit = ["lint", "type", "test-unit"]
-check-integration = ["lint", "type", "test-integration"]
-check-cov = ["lint", "type", "test-cov"]
-# Application scripts
-app = "PYTHONPATH=src python src/langlearn/main.py"
-run-sample = "python examples/deck_builder_demo.py"
-run-all = "PYTHONPATH=src python src/langlearn/main.py"
+ test = ["test-unit", "test-integration"]
+ test-unit = "pytest {args:tests --ignore=tests/integration}"
+ test-integration = "pytest {args:tests/integration}"
+ test-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests}"
+ test-unit-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests --ignore=tests/integration}"
+ test-integration-cov = "pytest --cov=src/langlearn --cov-report=term-missing --cov-report=html {args:tests/integration}"
+ doctest = "pytest -q --doctest-modules {args:src/langlearn}"
+ doctest-all = "pytest -q --doctest-modules {args}"
+ doctest-pipeline = "pytest -q --doctest-modules src/langlearn/pipeline/pipeline.py"
+ lint = "ruff check ."
+ format = "ruff format ."
+ type = "mypy src/langlearn tests"
+ check = ["lint", "type", "test"]
+ check-unit = ["lint", "type", "test-unit"]
+ check-integration = ["lint", "type", "test-integration"]
+ check-cov = ["lint", "type", "test-cov"]
+ # Application scripts
+ app = "PYTHONPATH=src python src/langlearn/main.py"
+ app-cov = "PYTHONPATH=src coverage run --source=src/langlearn src/langlearn/main.py && coverage report --show-missing && coverage html"
+ run-sample = "python examples/deck_builder_demo.py"
+ run-all = "PYTHONPATH=src python src/langlearn/main.py"
+ # Validation scripts - Critical verification layer
+ validate-anki = "python scripts/validate_anki.py"
+ simulate-cards = "python scripts/simulate_cards.py"
 
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+extend-exclude = ["data/*.csv"]
 
 [tool.ruff.lint]
 select = [

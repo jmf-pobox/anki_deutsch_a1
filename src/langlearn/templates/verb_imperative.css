@@ -50,7 +50,7 @@ img {
 
 .imperative-prompt {
     background: #f8f9fa;
-    border: 2px solid #d35400;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
@@ -63,7 +63,7 @@ img {
 .imperative-label {
     font-size: 18px;
     font-weight: bold;
-    color: #d35400;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -74,20 +74,16 @@ img {
 }
 
 .command-item {
-    background: #fdf2e9;
+    background: #e8f4fd;
     padding: 12px;
     border-radius: 8px;
-    border: 2px dashed #d35400;
+    border: 2px dashed #2c5aa0;
     font-size: 16px;
     color: #444;
 }
 
 /* Back side imperative table */
-.verb-imperative {
-    text-align: left;
-    max-width: 600px;
-    margin: 0 auto;
-}
+
 
 .verb-info {
     background: #f0f4f8;
@@ -103,21 +99,21 @@ img {
 }
 
 .imperative-table {
-    background: #ffffff;
-    border: 2px solid #d35400;
+    background: #f8f9fa;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
-    padding: 20px;
-    margin: 20px 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
 .imperative-header {
     font-size: 20px;
     font-weight: bold;
-    color: #d35400;
+    color: #2c5aa0;
     margin-bottom: 15px;
     text-align: center;
-    border-bottom: 2px solid #d35400;
+    border-bottom: 2px solid #2c5aa0;
     padding-bottom: 10px;
 }
 
@@ -131,9 +127,9 @@ img {
     grid-template-columns: 100px 1fr auto;
     align-items: center;
     padding: 8px 12px;
-    background: #fdf2e9;
+    background: #f8f9fa;
     border-radius: 6px;
-    border-left: 4px solid #d35400;
+    border-left: 4px solid #2c5aa0;
     gap: 15px;
 }
 
@@ -147,7 +143,7 @@ img {
 .imperative-form {
     font-size: 18px;
     font-weight: bold;
-    color: #d35400;
+    color: #2c5aa0;
 }
 
 .examples-section {
@@ -155,12 +151,15 @@ img {
     background: #f0f4f8;
     border-radius: 8px;
     padding: 15px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .examples-header {
     font-size: 16px;
     font-weight: bold;
-    color: #d35400;
+    color: #2c5aa0;
     margin-bottom: 10px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
@@ -171,9 +170,9 @@ img {
     font-size: 14px;
     color: #555;
     padding: 5px 0;
-    border-left: 3px solid #d35400;
+    border-left: 3px solid #2c5aa0;
     padding-left: 10px;
-    background: #fdf2e9;
+    background: #f0f4f8;
     border-radius: 4px;
 }
 
@@ -193,7 +192,7 @@ img {
     font-style: italic;
     padding: 10px;
     background: #f0f4f8;
-    border-left: 3px solid #d35400;
+    border-left: 3px solid #2c5aa0;
     border-radius: 5px;
 }
 
@@ -211,8 +210,8 @@ img {
 }
 
 .inline-audio:hover {
-    background: #fdf2e9;
-    border-color: #d35400;
+    background: #e8f0fe;
+    border-color: #2c5aa0;
 }
 
 /* Hint styling */
@@ -225,7 +224,7 @@ img {
 }
 
 .hint-button {
-    background: #e67e22;
+    background: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -236,22 +235,58 @@ img {
 }
 
 .hint-button:hover {
-    background: #d35400;
+    background: #45a049;
 }
 
 .hint-content {
     font-size: 18px;
-    color: #d35400;
+    color: #2c5aa0;
     font-weight: bold;
     margin-top: 15px;
     padding: 15px;
-    background: #fdf2e9;
+    background: #e8f4fd;
     border-radius: 10px;
-    border: 2px solid #d35400;
+    border: 2px solid #2c5aa0;
 }
 
 .hidden {
     display: none;
+}
+
+/* Verb Classification */
+.verb-classification {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.classification-regelmäßig {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.classification-unregelmäßig {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.classification-gemischt {
+    color: #f57c00;
+    font-weight: bold;
+}
+
+.separable-indicator {
+    margin-left: 10px;
+    padding: 4px 8px;
+    background: #fff3e0;
+    color: #ef6c00;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    border: 1px solid #ffb74d;
 }
 
 /* Responsive design for mobile */
@@ -303,42 +338,65 @@ img {
     
     .imperative-prompt {
         background: #4a5568;
-        border-color: #ed8936;
+        border-color: #63b3ed;
     }
-    
+
     .imperative-table {
         background: #4a5568;
-        border-color: #ed8936;
+        border-color: #63b3ed;
     }
-    
+
     .imperative-row {
         background: #2d3748;
     }
-    
+
     .command-item {
-        background: #744210;
-        border-color: #ed8936;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #e2e8f0;
     }
-    
+
     .verb-info, .examples-section {
         background: #4a5568;
     }
-    
+
     .example-item {
-        background: #744210;
-        border-color: #ed8936;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #cbd5e0;
     }
-    
+
     .hint-content {
-        background: #744210;
-        border-color: #ed8936;
+        background: #2b6cb0;
+        border-color: #63b3ed;
         color: #e2e8f0;
     }
     
     .example-sentence {
         background: #4a5568;
         color: #cbd5e0;
+    }
+
+    .verb-classification {
+        background: #2d3748;
+        border-color: #4299e1;
+    }
+
+    .classification-regelmäßig {
+        color: #68d391;
+    }
+
+    .classification-unregelmäßig {
+        color: #fc8181;
+    }
+
+    .classification-gemischt {
+        color: #fbb70a;
+    }
+
+    .separable-indicator {
+        background: #2d3748;
+        color: #fbb6ce;
+        border-color: #ed8936;
     }
 }

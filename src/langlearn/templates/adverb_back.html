@@ -1,4 +1,7 @@
-{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+{{#Image}}
+<div class="image-container">{{Image}}<br>
+	 <div class="part-of-speech">{{Type}}</div>
+</div>{{/Image}}
 
 <div class="adverb-forms">
     <div class="word-with-audio">
@@ -13,7 +16,7 @@
 </div>
 
 <div class="back-hint-container">
-    <button class="hint-button" onclick="showBackHint()">💡 Hint</button>
+    <button class="hint-button" onclick="showBackHint()">💡 Tipp</button>
     <div id="back-hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 

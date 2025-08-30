@@ -6,9 +6,12 @@ removing infrastructure concerns from domain models.
 """
 
 import logging
+import re
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
+
+from .translation_service import TranslationServiceProtocol
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +96,7 @@ class StandardMediaEnricher(MediaEnricher):
     def __init__(
         self,
         media_service: Any,  # MediaService - avoiding import for now
+        translation_service: TranslationServiceProtocol | None = None,
         audio_base_path: Path = Path("data/audio"),
         image_base_path: Path = Path("data/images"),
     ) -> None:
@@ -100,10 +104,12 @@ class StandardMediaEnricher(MediaEnricher):
 
         Args:
             media_service: Existing MediaService instance
+            translation_service: Translation service for German-to-English conversion
             audio_base_path: Base directory for audio files
             image_base_path: Base directory for image files
         """
         self._media_service = media_service
+        self._translation_service = translation_service
         self._audio_base_path = audio_base_path
         self._image_base_path = image_base_path
 
@@ -119,6 +125,12 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Determine model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()
+        logger.debug(
+            f"[MEDIA ENRICHER DEBUG] Processing record with model type: {model_type}"
+        )
+        logger.debug(
+            f"[MEDIA ENRICHER DEBUG] Record keys: {list(record.keys())[:10]}"
+        )  # First 10 keys to avoid spam
 
         if model_type == "noun":
             return self._enrich_noun_record(enriched, domain_model)
@@ -128,6 +140,10 @@ class StandardMediaEnricher(MediaEnricher):
             return self._enrich_adverb_record(enriched, domain_model)
         elif model_type == "negation":
             return self._enrich_negation_record(enriched, domain_model)
+        elif model_type == "verbconjugationrecord":
+            return self._enrich_verb_conjugation_record(enriched, domain_model)
+        elif model_type == "unifiedarticlerecord":
+            return self._enrich_unified_article_record(enriched, domain_model)
         else:
             # Fallback enrichment for record types without legacy
             # domain models (key-based detection)
@@ -138,6 +154,23 @@ class StandardMediaEnricher(MediaEnricher):
                     return self._enrich_phrase_record(enriched)
                 if "verb" in enriched:
                     return self._enrich_verb_record(enriched)
+                if "infinitive" in enriched:
+                    # Handle VerbConjugationRecord that falls through
+                    return self._enrich_verb_conjugation_record_fallback(enriched)
+                # Article card types
+                if "front_text" in enriched and "gender" in enriched:
+                    if "case" in enriched:
+                        return self._enrich_artikel_context_record(enriched)
+                    else:
+                        return self._enrich_artikel_gender_record(enriched)
+                if "card_type" in enriched:
+                    if enriched["card_type"] == "noun_article_recognition":
+                        return self._enrich_noun_article_recognition_record(enriched)
+                    elif enriched["card_type"] == "noun_case_context":
+                        return self._enrich_noun_case_context_record(enriched)
+                # Article cloze card types
+                if "text" in enriched and "explanation" in enriched:
+                    return self._enrich_artikel_cloze_record(enriched)
             except Exception as e:
                 logger.warning(f"Fallback enrichment failed for {model_type}: {e}")
             logger.warning(f"Unknown model type: {model_type}")
@@ -145,12 +178,16 @@ class StandardMediaEnricher(MediaEnricher):
 
     def _enrich_noun_record(self, record: dict[str, Any], noun: Any) -> dict[str, Any]:
         """Enrich noun record with media."""
+        logger.debug("[NOUN DEBUG] Entering _enrich_noun_record")
+        logger.debug(f"[NOUN DEBUG] Record fields: {list(record.keys())[:10]}")
+
         # Generate word audio (combined article + noun + plural)
         if not record.get("word_audio"):
             combined_text = noun.get_combined_audio_text()
             audio_path = self._get_or_generate_audio(combined_text)
             if audio_path:
                 record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+                logger.debug(f"[NOUN DEBUG] Set word_audio to: {record['word_audio']}")
 
         # Generate example audio
         if not record.get("example_audio") and record.get("example"):
@@ -158,18 +195,25 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Generate image (only for concrete nouns)
-        if not record.get("image") and noun.is_concrete():
-            # Check if image already exists before generating search terms
+        # Generate image based on example sentence (only for concrete nouns)
+        if (
+            not record.get("image")
+            and noun.is_concrete()
+            and record.get("noun")
+            and record.get("example")
+        ):
             word = record["noun"]
             if not self.image_exists(word):
-                # Generate search terms (API calls) only if image missing
-                search_strategy = noun.get_image_search_strategy()
-                search_terms = (
-                    search_strategy()
-                )  # Anthropic API call happens here, only when needed
+                # Translate German example to English for better Pexels search
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", word)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
                 image_path = self._get_or_generate_image(
-                    word, search_terms, record["english"]
+                    word, final_search_terms, fallback
                 )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
@@ -178,6 +222,13 @@ class StandardMediaEnricher(MediaEnricher):
                 image_filename = self._get_image_filename(word)
                 record["image"] = f'<img src="{image_filename}">'
 
+        logger.debug(
+            f"[NOUN DEBUG] Final enriched record keys: {list(record.keys())[:10]}"
+        )
+        logger.debug("[NOUN DEBUG] Media fields in enriched record:")
+        logger.debug(f"  - word_audio: {record.get('word_audio', 'NOT SET')}")
+        logger.debug(f"  - example_audio: {record.get('example_audio', 'NOT SET')}")
+        logger.debug(f"  - image: {record.get('image', 'NOT SET')}")
         return record
 
     def _enrich_adjective_record(
@@ -197,18 +248,20 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Generate image
-        if not record.get("image"):
-            # Check if image already exists before generating search terms
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Generate search terms (API calls) only if image missing
-                search_strategy = adjective.get_image_search_strategy()
-                search_terms = (
-                    search_strategy()
-                )  # Anthropic API call happens here, only when needed
+                # Translate German example to English for better Pexels search
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", word)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
                 image_path = self._get_or_generate_image(
-                    word, search_terms, record["english"]
+                    word, final_search_terms, fallback
                 )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
@@ -235,18 +288,20 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Generate image
-        if not record.get("image"):
-            # Check if image already exists before generating search terms
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Generate search terms (API calls) only if image missing
-                search_strategy = adverb.get_image_search_strategy()
-                search_terms = (
-                    search_strategy()
-                )  # Anthropic API call happens here, only when needed
+                # Translate German example to English for better Pexels search
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", word)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
                 image_path = self._get_or_generate_image(
-                    word, search_terms, record["english"]
+                    word, final_search_terms, fallback
                 )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
@@ -273,18 +328,20 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Generate image
-        if not record.get("image"):
-            # Check if image already exists before generating search terms
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Generate search terms (API calls) only if image missing
-                search_strategy = negation.get_image_search_strategy()
-                search_terms = (
-                    search_strategy()
-                )  # Anthropic API call happens here, only when needed
+                # Translate German example to English for better Pexels search
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", word)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
                 image_path = self._get_or_generate_image(
-                    word, search_terms, record["english"]
+                    word, final_search_terms, fallback
                 )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
@@ -295,13 +352,121 @@ class StandardMediaEnricher(MediaEnricher):
 
         return record
 
+    def _enrich_verb_conjugation_record(
+        self, record: dict[str, Any], verb_record: Any
+    ) -> dict[str, Any]:
+        """Enrich verb conjugation record with media.
+
+        Args:
+            record: Record dictionary with verb conjugation data
+            verb_record: VerbConjugationRecord instance with media fields
+
+        Returns:
+            Enriched record with media references
+        """
+        # Generate word audio (combined infinitive + conjugated forms with pronouns)
+        if not record.get("word_audio") and record.get("infinitive"):
+            combined_audio_text = self._get_verb_combined_audio_text(record)
+            audio_path = self._get_or_generate_audio(combined_audio_text)
+            if audio_path:
+                record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate example audio
+        if not record.get("example_audio") and record.get("example"):
+            audio_path = self._get_or_generate_audio(record["example"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example sentence (representing the action)
+        if (
+            not record.get("image")
+            and record.get("infinitive")
+            and record.get("example")
+        ):
+            infinitive = record["infinitive"]
+            if not self.image_exists(infinitive):
+                # Translate German example to English for better Pexels search results
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", infinitive)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    infinitive, final_search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(infinitive)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_verb_conjugation_record_fallback(
+        self, record: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Fallback enrichment for VerbConjugationRecord when domain model is None."""
+        # This is essentially the same logic but without domain model dependency
+        return self._enrich_verb_conjugation_record(record, None)
+
+    def _get_verb_combined_audio_text(self, record: dict[str, Any]) -> str:
+        """Generate combined audio text for verb conjugations.
+
+        Creates audio text that includes the infinitive plus all conjugated forms
+        with their pronouns, similar to how adjectives work.
+
+        For present/perfect/preterite: "infinitive, ich form, du form, er form,
+        wir form, ihr form, sie form"
+        For imperative: "infinitive, du form, ihr form, Sie form, wir form"
+
+        Args:
+            record: VerbConjugationRecord data dictionary
+
+        Returns:
+            Combined audio text string
+        """
+        infinitive = record.get("infinitive", "")
+        tense = record.get("tense", "")
+
+        parts = [infinitive]
+
+        if tense == "imperative":
+            # For imperatives: du form, ihr form, Sie form, wir form
+            if record.get("du"):
+                parts.append(f"du {record['du']}")
+            if record.get("ihr"):
+                parts.append(f"ihr {record['ihr']}")
+            if record.get("sie"):
+                parts.append(f"Sie {record['sie']}")
+            if record.get("wir"):
+                parts.append(f"wir {record['wir']}")
+        else:
+            # For conjugations (present/perfect/preterite): all 6 persons
+            if record.get("ich"):
+                parts.append(f"ich {record['ich']}")
+            if record.get("du"):
+                parts.append(f"du {record['du']}")
+            if record.get("er"):
+                parts.append(f"er {record['er']}")
+            if record.get("wir"):
+                parts.append(f"wir {record['wir']}")
+            if record.get("ihr"):
+                parts.append(f"ihr {record['ihr']}")
+            if record.get("sie"):
+                parts.append(f"sie {record['sie']}")
+
+        return ", ".join(parts)
+
     def _enrich_preposition_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Enrich preposition record with basic audio support.
+        """Enrich preposition record with audio and image support.
 
         Fields expected in record dict:
         - preposition, english, case, example1, example2
         Populates:
-        - word_audio, example1_audio, example2_audio
+        - word_audio, example1_audio, example2_audio, image
         """
         # Word audio
         if not record.get("word_audio") and record.get("preposition"):
@@ -315,11 +480,35 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example1_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Example 2 audio
+        # Example 2 audio (optional)
         if not record.get("example2_audio") and record.get("example2"):
             audio_path = self._get_or_generate_audio(record["example2"])
             if audio_path:
                 record["example2_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example1 sentence (required field)
+        if (
+            not record.get("image")
+            and record.get("preposition")
+            and record.get("example1")
+        ):
+            preposition = record["preposition"]
+            if not self.image_exists(preposition):
+                # Translate German example1 to English for better Pexels search results
+                german_example = record["example1"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", preposition)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self.generate_image(final_search_terms, fallback)
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(preposition)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -339,15 +528,22 @@ class StandardMediaEnricher(MediaEnricher):
         # Phrase image (front-side visual cue). Use phrase for filename and search.
         if not record.get("image") and record.get("phrase"):
             phrase_text = record.get("phrase", "")
-            # Prefer context as an assisting hint if present; else english
-            fallback_terms = record.get("context") or record.get("english") or ""
-            image_path = self._get_or_generate_image(
-                word=phrase_text,
-                search_terms=phrase_text,
-                fallback=fallback_terms,
-            )
-            if image_path:
-                record["image"] = f'<img src="{Path(image_path).name}">'
+            if not self.image_exists(phrase_text):
+                # Translate German phrase to English for better Pexels search results
+                search_terms = self._translate_for_search(phrase_text)
+                # Prefer context as an assisting hint if present; else english
+                fallback_terms = record.get("context") or record.get("english") or ""
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback_terms
+                )
+                image_path = self.generate_image(final_search_terms, fallback_terms)
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(phrase_text)
+                record["image"] = f'<img src="{image_filename}">'
 
         return record
 
@@ -367,11 +563,15 @@ class StandardMediaEnricher(MediaEnricher):
                 verb_model = Verb(
                     verb=record["verb"],
                     english=record.get("english", ""),
+                    classification=record.get("classification", ""),
                     present_ich=record.get("present_ich", ""),
                     present_du=record.get("present_du", ""),
                     present_er=record.get("present_er", ""),
+                    präteritum=record.get("präteritum", ""),
+                    auxiliary=record.get("auxiliary", ""),
                     perfect=record.get("perfect", ""),
                     example=record.get("example", ""),
+                    separable=record.get("separable", False),
                 )
                 # Use combined audio with all conjugated forms and pronouns
                 combined_text = verb_model.get_combined_audio_text()
@@ -384,10 +584,15 @@ class StandardMediaEnricher(MediaEnricher):
                 verb_fields = [
                     "verb",
                     "english",
+                    "classification",
                     "present_ich",
                     "present_du",
                     "present_er",
+                    "präteritum",
+                    "auxiliary",
                     "perfect",
+                    "example",
+                    "separable",
                 ]
                 verb_data = {k: v for k, v in record.items() if k in verb_fields}
                 logger.warning(
@@ -399,13 +604,19 @@ class StandardMediaEnricher(MediaEnricher):
                     record["word_audio"] = f"[sound:{Path(audio_path).name}]"
 
         # Generate image based on example sentence (like nouns do)
-        if not record.get("image") and record.get("verb") and record.get("example"):
-            verb = record["verb"]
+        if (
+            not record.get("image")
+            and (record.get("verb") or record.get("infinitive"))
+            and record.get("example")
+        ):
+            verb = record.get("verb") or record.get("infinitive", "")
             if not self.image_exists(verb):
-                # Use example sentence as search terms for verb image generation
-                search_terms = record["example"]
+                # Translate example sentence to English for better Pexels search
+                search_terms = (
+                    self._translate_for_search(record["example"]) or record["example"]
+                )
                 fallback = record.get("english", verb)
-                image_path = self._get_or_generate_image(verb, search_terms, fallback)
+                image_path = self.generate_image(search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -413,6 +624,144 @@ class StandardMediaEnricher(MediaEnricher):
                 image_filename = self._get_image_filename(verb)
                 record["image"] = f'<img src="{image_filename}">'
 
+        return record
+
+    def _enrich_unified_article_record(
+        self, record: dict[str, Any], article_record: Any
+    ) -> dict[str, Any]:
+        """Enrich UnifiedArticleRecord with media.
+
+        UnifiedArticleRecord cards need:
+        - Audio for the article forms (der, die, das etc.)
+        - Audio for example sentences
+        - Images based on example context
+
+        Args:
+            record: Record dictionary with article data
+            article_record: UnifiedArticleRecord instance
+
+        Returns:
+            Enriched record with media references
+        """
+        logger.debug("[ARTICLE DEBUG] Entering _enrich_unified_article_record")
+        logger.debug(
+            f"[ARTICLE DEBUG] Article record type: {type(article_record).__name__}"
+        )
+        logger.debug(f"[ARTICLE DEBUG] Record fields: {list(record.keys())}")
+
+        # UnifiedArticleRecord uses German field names: nominativ, beispiel_nom, etc.
+        # Generate article audio (the article form itself)
+        if not record.get("article_audio") and record.get("nominativ"):
+            logger.debug(
+                f"[ARTICLE DEBUG] Generating audio for nominativ: "
+                f"'{record['nominativ']}'"
+            )
+            audio_path = self._get_or_generate_audio(record["nominativ"])
+            if audio_path:
+                record["article_audio"] = f"[sound:{Path(audio_path).name}]"
+                logger.debug(
+                    f"[ARTICLE DEBUG] Set article_audio to: {record['article_audio']}"
+                )
+            else:
+                logger.debug("[ARTICLE DEBUG] No audio path generated for nominativ")
+
+        # Generate example audio from the nominative example
+        if not record.get("example_audio") and record.get("beispiel_nom"):
+            logger.debug(
+                f"[ARTICLE DEBUG] Generating audio for beispiel_nom: "
+                f"'{record['beispiel_nom']}'"
+            )
+            audio_path = self._get_or_generate_audio(record["beispiel_nom"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+                logger.debug(
+                    f"[ARTICLE DEBUG] Set example_audio to: {record['example_audio']}"
+                )
+            else:
+                logger.debug("[ARTICLE DEBUG] No audio path generated for beispiel_nom")
+
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("beispiel_nom"):
+            # Use the image search strategy from the record
+            search_strategy = article_record.get_image_search_strategy()
+
+            # Extract a noun from the example for the filename
+            example_nom = record.get("beispiel_nom", "")
+            # Look for capitalized nouns in the sentence
+            words = example_nom.split()
+            noun_candidates = [
+                word
+                for word in words
+                if word[0].isupper()
+                and word
+                not in [
+                    "Der",
+                    "Die",
+                    "Das",
+                    "Den",
+                    "Dem",
+                    "Des",
+                    "Ein",
+                    "Eine",
+                    "Kein",
+                    "Keine",
+                ]
+            ]
+
+            if noun_candidates:
+                noun = noun_candidates[0]  # Use first capitalized noun
+                logger.debug(
+                    f"[ARTICLE DEBUG] Found noun: '{noun}' from candidates: "
+                    f"{noun_candidates}"
+                )
+
+                if not self.image_exists(noun):
+                    # Translate the search strategy to English for better Pexels results
+                    logger.debug(
+                        f"[ARTICLE DEBUG] Image doesn't exist, generating for '{noun}'"
+                    )
+                    search_terms = self._translate_for_search(search_strategy)
+                    fallback = noun
+                    # Use fallback if translation failed
+                    final_search_terms = (
+                        search_terms if search_terms is not None else fallback
+                    )
+                    logger.debug(
+                        f"[ARTICLE DEBUG] Search terms: '{final_search_terms}', "
+                        f"fallback: '{fallback}'"
+                    )
+                    image_path = self._get_or_generate_image(
+                        noun, final_search_terms, fallback
+                    )
+                    if image_path:
+                        record["image"] = f'<img src="{Path(image_path).name}">'
+                        logger.debug(f"[ARTICLE DEBUG] Set image to: {record['image']}")
+                    else:
+                        logger.debug("[ARTICLE DEBUG] No image path generated")
+                else:
+                    # Use existing image
+                    logger.debug(f"[ARTICLE DEBUG] Using existing image for '{noun}'")
+                    image_filename = self._get_image_filename(noun)
+                    record["image"] = f'<img src="{image_filename}">'
+                    logger.debug(f"[ARTICLE DEBUG] Set image to: {record['image']}")
+            else:
+                logger.debug("[ARTICLE DEBUG] No noun candidates found in example")
+
+        logger.debug(
+            f"[ARTICLE DEBUG] Final enriched record keys: {list(record.keys())}"
+        )
+        logger.debug("[ARTICLE DEBUG] Media fields in enriched record:")
+        logger.debug(f"  - article_audio: {record.get('article_audio', 'NOT SET')}")
+        logger.debug(f"  - example_audio: {record.get('example_audio', 'NOT SET')}")
+        logger.debug(f"  - image: {record.get('image', 'NOT SET')}")
+        logger.debug(
+            f"  - image_url: {record.get('image_url', 'NOT SET')} "
+            f"(EXPECTED BY PROCESSOR)"
+        )
+        logger.debug(
+            f"  - audio_file: {record.get('audio_file', 'NOT SET')} "
+            f"(EXPECTED BY PROCESSOR)"
+        )
         return record
 
     def enrich_records(
@@ -439,6 +788,277 @@ class StandardMediaEnricher(MediaEnricher):
                 enriched_records.append({})
 
         return enriched_records
+
+    def _enrich_artikel_context_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Enrich artikel_context record with audio and image support.
+
+        Fields expected in record dict:
+        - nominative, example_nom, noun_only, noun_english
+        Populates:
+        - article_audio, example_audio, image
+        """
+        # Article audio (das, der, die pronunciation)
+        if not record.get("article_audio") and record.get("nominative"):
+            audio_path = self._get_or_generate_audio(record["nominative"])
+            if audio_path:
+                record["article_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Example audio (use nominative example as primary)
+        if not record.get("example_audio") and record.get("example_nom"):
+            audio_path = self._get_or_generate_audio(record["example_nom"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on nominative example sentence
+        if (
+            not record.get("image")
+            and record.get("noun_only")
+            and record.get("example_nom")
+        ):
+            noun = record["noun_only"]
+            if not self.image_exists(noun):
+                # Translate German example to English for better Pexels search
+                german_example = record["example_nom"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("noun_english", noun)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image
+                image_filename = self._get_image_filename(noun)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_artikel_gender_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Enrich artikel_gender record with audio and image support.
+
+        Fields expected in record dict:
+        - nominative, example_nom, noun_only, noun_english
+        Populates:
+        - article_audio, example_audio, image
+        """
+        # Article audio (das, der, die pronunciation)
+        if not record.get("article_audio") and record.get("nominative"):
+            audio_path = self._get_or_generate_audio(record["nominative"])
+            if audio_path:
+                record["article_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Example audio (use nominative example as primary)
+        if not record.get("example_audio") and record.get("example_nom"):
+            audio_path = self._get_or_generate_audio(record["example_nom"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on nominative example sentence
+        if (
+            not record.get("image")
+            and record.get("noun_only")
+            and record.get("example_nom")
+        ):
+            noun = record["noun_only"]
+            if not self.image_exists(noun):
+                # Translate German example to English for better Pexels search
+                german_example = record["example_nom"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("noun_english", noun)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image
+                image_filename = self._get_image_filename(noun)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_noun_article_recognition_record(
+        self, record: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Enrich noun_article_recognition record with audio and image support.
+
+        Fields expected in record dict:
+        - noun_only, example, english_meaning
+        Populates:
+        - word_audio, image
+        """
+        # Word audio (noun pronunciation)
+        if not record.get("word_audio") and record.get("noun_only"):
+            audio_path = self._get_or_generate_audio(record["noun_only"])
+            if audio_path:
+                record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example sentence
+        if (
+            not record.get("image")
+            and record.get("noun_only")
+            and record.get("example")
+        ):
+            noun = record["noun_only"]
+            if not self.image_exists(noun):
+                # Translate German example to English for better Pexels search
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english_meaning", noun)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image
+                image_filename = self._get_image_filename(noun)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_noun_case_context_record(
+        self, record: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Enrich noun_case_context record with audio and image support.
+
+        Fields expected in record dict:
+        - noun, example, english
+        Populates:
+        - word_audio, example_audio, image
+        """
+        # Word audio (noun pronunciation)
+        if not record.get("word_audio") and record.get("noun"):
+            audio_path = self._get_or_generate_audio(record["noun"])
+            if audio_path:
+                record["word_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Example audio
+        if not record.get("example_audio") and record.get("example"):
+            audio_path = self._get_or_generate_audio(record["example"])
+            if audio_path:
+                record["example_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("noun") and record.get("example"):
+            noun = record["noun"]
+            if not self.image_exists(noun):
+                # Translate German example to English for better Pexels search
+                german_example = record["example"]
+                search_terms = self._translate_for_search(german_example)
+                fallback = record.get("english", noun)
+                # Use fallback if translation failed
+                final_search_terms = (
+                    search_terms if search_terms is not None else fallback
+                )
+                image_path = self._get_or_generate_image(
+                    noun, final_search_terms, fallback
+                )
+                if image_path:
+                    record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image
+                image_filename = self._get_image_filename(noun)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_artikel_cloze_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Enrich artikel cloze record with audio and image support.
+
+        Fields expected in record dict:
+        - text, explanation
+        Populates:
+        - audio, image
+        """
+        # Audio for the cloze text (without cloze markers)
+        if not record.get("audio") and record.get("text"):
+            # Remove cloze markers for audio generation
+            clean_text = re.sub(r"\{\{c\d+::(.*?)\}\}", r"\1", record["text"])
+            audio_path = self._get_or_generate_audio(clean_text)
+            if audio_path:
+                record["audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image based on the clean text (without cloze markers)
+        if not record.get("image") and record.get("text"):
+            clean_text = re.sub(r"\{\{c\d+::(.*?)\}\}", r"\1", record["text"])
+
+            # Extract noun from the sentence for image filename
+            # Look for common German nouns in the sentence
+            words = clean_text.split()
+            noun_candidates = [
+                word
+                for word in words
+                if word[0].isupper()
+                and word not in ["Der", "Die", "Das", "Den", "Dem", "Des"]
+            ]
+
+            if noun_candidates:
+                noun = noun_candidates[0]  # Use first capitalized word as noun
+                if not self.image_exists(noun):
+                    # Translate German sentence to English for better Pexels search
+                    search_terms = self._translate_for_search(clean_text)
+                    fallback = noun
+                    # Use fallback if translation failed
+                    final_search_terms = (
+                        search_terms if search_terms is not None else fallback
+                    )
+                    image_path = self._get_or_generate_image(
+                        noun, final_search_terms, fallback
+                    )
+                    if image_path:
+                        record["image"] = f'<img src="{Path(image_path).name}">'
+                else:
+                    # Use existing image
+                    image_filename = self._get_image_filename(noun)
+                    record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _translate_for_search(self, german_text: str | None) -> str | None:
+        """Translate German text to English for better image search results.
+
+        Uses the translation service to convert German text to English,
+        which significantly improves Pexels API search results since
+        Pexels is primarily English-focused.
+
+        Args:
+            german_text: German text to translate (sentence, phrase, or word)
+
+        Returns:
+            English translation if translation service available and successful,
+            otherwise returns original German text as fallback
+        """
+        if not german_text or not german_text.strip():
+            return german_text
+
+        # If no translation service available, return original text
+        if not self._translation_service:
+            logger.debug("No translation service available, using original German text")
+            return german_text
+
+        try:
+            translated = self._translation_service.translate_to_english(german_text)
+            logger.debug(
+                f"Translated for image search: '{german_text}' → '{translated}'"
+            )
+            return translated
+        except Exception as e:
+            logger.warning(f"Translation failed for '{german_text}': {e}")
+            # Fallback to original German text
+            return german_text
 
     def _get_or_generate_audio(self, text: str) -> str | None:
         """Get existing audio or generate if not exists.
@@ -470,8 +1090,8 @@ class StandardMediaEnricher(MediaEnricher):
             image_filename = self._get_image_filename(word)
             return str(self._image_base_path / image_filename)
 
-        # Generate new image
-        return self.generate_image(search_terms, fallback)
+        # Generate new image - pass word for filename generation
+        return self.generate_image_with_word(word, search_terms, fallback)
 
     def audio_exists(self, text: str) -> bool:
         """Check if audio file exists for given text (current or legacy name)."""
@@ -490,7 +1110,7 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_audio(self, text: str) -> str | None:
         """Generate audio file for text."""
         try:
-            return self._media_service.generate_audio(text)  # type: ignore[no-any-return]
+            return self._media_service.generate_audio(text)  # type: ignore
         except Exception as e:
             logger.warning(f"Audio generation failed for '{text[:50]}...': {e}")
             return None
@@ -498,9 +1118,37 @@ class StandardMediaEnricher(MediaEnricher):
     def generate_image(self, search_terms: str, fallback: str) -> str | None:
         """Generate image file for search terms."""
         try:
+            # Prefer simple positional signature for test mocks
             return self._media_service.generate_image(search_terms, fallback)  # type: ignore[no-any-return]
+        except TypeError:
+            # Fall back to full keyword signature expected by MediaService
+            try:
+                return self._media_service.generate_image(  # type: ignore[no-any-return]
+                    word=fallback, search_query=search_terms, example_sentence=fallback
+                )
+            except Exception as e:  # pragma: no cover
+                logger.warning(f"Image generation failed for '{search_terms}': {e}")
+                return None
         except Exception as e:
             logger.warning(f"Image generation failed for '{search_terms}': {e}")
+            return None
+
+    def generate_image_with_word(
+        self, word: str, search_terms: str, fallback: str
+    ) -> str | None:
+        """Generate image file with proper word for filename."""
+        try:
+            # Fix: Pass word for filename, search_terms as search_query,
+            # fallback as example_sentence
+            result = self._media_service.generate_image(
+                word=word, search_query=search_terms, example_sentence=fallback
+            )
+            return result  # type: ignore[no-any-return]
+        except Exception as e:
+            logger.warning(
+                f"Image generation failed for '{word}' with search "
+                f"'{search_terms}': {e}"
+            )
             return None
 
     def _get_audio_filename(self, text: str) -> str:
@@ -546,10 +1194,15 @@ class StandardMediaEnricher(MediaEnricher):
 
     def _get_image_filename(self, word: str) -> str:
         """Get standardized image filename for word."""
-        # Clean word for filename (match existing logic)
+        import unicodedata
+
+        # Clean word for filename (match MediaService logic exactly)
+        # Normalize to NFC form to ensure consistent Unicode encoding
+        normalized_word = unicodedata.normalize("NFC", word)
         safe_word = (
-            "".join(c for c in word.lower() if c.isalnum() or c in (" ", "-", "_"))
+            "".join(c for c in normalized_word if c.isalnum() or c in (" ", "-", "_"))
             .rstrip()
             .replace(" ", "_")
+            .lower()
         )
         return f"{safe_word}.jpg"

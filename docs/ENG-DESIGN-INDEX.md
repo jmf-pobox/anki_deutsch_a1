@@ -1,155 +1,130 @@
-# Design Documentation Index
+# Documentation Index
 
-This directory contains design documentation for **Language Learn** - Multi-Language Flashcard Generation System. The application generates language-specific vocabulary decks with Clean Pipeline Architecture. Currently supports **German A1** as the first implementation, designed for expansion to **Russian**, **Korean**, and other languages.
+Comprehensive documentation for the **Anki German Language Deck Generator** - a production-ready flashcard generation system using Clean Pipeline Architecture.
 
-**Status**: Phase 1 Complete ✅  
-**Test Coverage**: 73%+ with **686 tests** (665 unit + 21 integration)  
-**Architecture**: Multi-Language Clean Pipeline + German A1 Implementation
-
----
-
-## 🚀 **Quick Start Guide**
-
-### **New Developer Setup**
-1. **Start here**: [ENG-QUALITY-METRICS.md](./ENG-QUALITY-METRICS.md) - Current implementation status
-2. **Development standards**: [ENG-DEVELOPMENT-STANDARDS.md](./ENG-DEVELOPMENT-STANDARDS.md) - Coding standards and workflow
-3. **Component reference**: [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md) - System components overview
-
-### **Need Something Specific?**
-- 🎯 **Implementation status?** → [ENG-QUALITY-METRICS.md](./ENG-QUALITY-METRICS.md)
-- 🔧 **Development workflow?** → [ENG-DEVELOPMENT-STANDARDS.md](./ENG-DEVELOPMENT-STANDARDS.md)  
-- 🔍 **Component overview?** → [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
-- 📊 **Quality metrics?** → Run `hatch run test-cov` for coverage report
-- 🏗️ **System design?** → [ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)
+**Current Status**:  
+- **Quality**: 813 tests passing (792 unit + 21 integration)  
+- **Coverage**: 24.79% overall  
+- **Type Safety**: 0 MyPy errors in strict mode  
+- **Architecture**: Clean Pipeline with single responsibility design
 
 ---
 
-## 📋 **Document Descriptions**
+## Quick Start for Developers
 
-### **[ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)** - System Components
-**Target Audience**: All Engineers  
-**Purpose**: Overview of system components and their responsibilities  
-**When to Use**: 
-- Understanding application architecture
-- Finding the right component for a task
-- Onboarding to the codebase
-- Component integration reference
+### Essential Reading Order
+1. **[ENG-DEVELOPMENT-GUIDE.md](./ENG-DEVELOPMENT-GUIDE.md)** - Complete development standards and workflow
+2. **[ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)** - How CSV becomes Anki cards (the pipeline)
+3. **[ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)** - High-level system architecture
 
+### Finding Information
+- **How to develop?** → [ENG-DEVELOPMENT-GUIDE.md](./ENG-DEVELOPMENT-GUIDE.md)
+- **How does it work?** → [ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)  
+- **What are the components?** → [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
+- **Current metrics?** → Run `hatch run test-cov` for live data
+- **Data formats?** → [PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)
+
+---
+
+## Core Documentation
+
+### [ENG-DEVELOPMENT-GUIDE.md](./ENG-DEVELOPMENT-GUIDE.md)
+**Purpose**: Single source of truth for all development activities  
+**Audience**: All engineers  
 **Content**:
-- Application data flow (CSV → Models → Services → Anki cards)
-- Component responsibilities
-- Multi-language processing pipeline
-- Media integration details
+- Development workflow and quality gates
+- Coding standards and best practices
+- Testing requirements and patterns
+- Common tasks and troubleshooting
+- Tool configuration and usage
 
 ---
 
-### **[ENG-QUALITY-METRICS.md](./ENG-QUALITY-METRICS.md)** - Current Status  
-**Target Audience**: Technical Leadership, Senior Engineers  
-**Purpose**: Implementation status and quality metrics  
-**When to Use**:
-- Understanding current application state
-- Reviewing code quality metrics
-- Planning future enhancements
-- Technical assessment reference
-
+### [ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)
+**Purpose**: Explain the complete CSV → Anki card pipeline  
+**Audience**: Engineers implementing features  
 **Content**:
-- Multi-language foundation status (German A1 complete, architecture ready for expansion)
-- Quality metrics: **686 tests**, 73%+ coverage, 0 MyPy errors, 0 linting violations
-- German implementation with complete grammar support (verb conjugations, cases, genders)
-- Multi-language roadmap and expansion planning
+- Step-by-step data transformation pipeline
+- Single Responsibility Principle implementation
+- Adding new card types guide
+- Component interactions and data flow
 
 ---
 
-### **[ENG-DEVELOPMENT-STANDARDS.md](./ENG-DEVELOPMENT-STANDARDS.md)** - Development Standards
-**Target Audience**: All Engineers (Daily Reference)  
-**Purpose**: Clean Pipeline Architecture development practices and standards  
-**When to Use**:
-- Implementing Clean Pipeline components
-- Following separation of concerns principles
-- Writing tests for Clean Architecture
-- Maintaining backward compatibility
-
+### [ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)
+**Purpose**: High-level system architecture overview  
+**Audience**: Architects, Senior Engineers  
 **Content**:
-- Clean Pipeline Architecture principles and patterns
-- Service layer design standards
-- Testing strategies for Clean Architecture
-- Legacy integration guidelines
+- System layers and responsibilities
+- Architectural patterns and decisions
+- Quality attributes and technology stack
+- Future architecture and extension points
 
 ---
 
-### **[ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)** - Architecture Overview
-**Target Audience**: Architects, Senior Engineers  
-**Purpose**: Clean Pipeline Architecture design and implementation details  
-**When to Use**:
-- Understanding overall architecture flow
-- Learning Clean Architecture implementation
-- Designing new components
-- Architecture review and evaluation
-
+### [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
+**Purpose**: Detailed inventory of all system components  
+**Audience**: All engineers  
 **Content**:
-- Multi-language Clean Pipeline architecture
-- Language-agnostic core with pluggable language modules
-- German A1 implementation as architectural validation
-- Framework for Russian, Korean, and other language expansion
+- Component responsibilities (SRP analysis)
+- Package structure and organization
+- Design patterns implemented
+- Architecture quality assessment
 
 ---
 
-## 🎯 **Multi-Language Foundation - PHASE 1 SUCCESS**
+## Data Specifications
 
-### **German A1 Implementation Complete**:
-- ✅ **Multi-Language Architecture**: Language-agnostic Clean Pipeline foundation
-- ✅ **German Grammar Complete**: All word types with language-specific intelligence
-- ✅ **Production Quality**: 686 tests, comprehensive security validation
-- ✅ **Expansion Ready**: Framework validated and ready for additional languages
+### [PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)
+**Purpose**: CSV format specifications for vocabulary data  
+**Content**: Column definitions, validation rules, encoding standards
 
-### **Multi-Language Architecture Status**:
-- ✅ **Language-Agnostic Core**: Clean Pipeline supports pluggable language modules
-- ✅ **German Implementation**: Complete (all 7 word types with intelligent processing)
-- ✅ **Expansion Framework**: Proven architecture ready for Russian, Korean, others
-- ✅ **Quality Validated**: Enterprise-grade standards maintained across language implementations
+### [DATA-DICTIONARY.md](./DATA-DICTIONARY.md)
+**Purpose**: Authoritative field definitions for all card types  
+**Content**: Field names, types, validation rules, examples
 
----
-
-## 📊 **Final Quality Metrics - Outstanding Achievement**
-
-| **Metric** | **Final Achievement** | **Status** |
-|------------|----------------------|------------|
-| **Total Tests** | **686 tests** (+100 improvement) | ✅ All Passing |
-| **MyPy Type Safety** | 0 errors across 116 files | ✅ Perfect |
-| **Coverage** | 73%+ with comprehensive testing | ✅ Maintained |
-| **CardBuilder Coverage** | 97.83% | ✅ Outstanding |
-| **Security Validation** | Comprehensive sanitization | ✅ Hardened |
-| **Architecture Quality** | Multi-Language Clean Pipeline + German A1 | ✅ Enterprise Excellence |
+### [PROD-CARD-SPEC.md](./PROD-CARD-SPEC.md)
+**Purpose**: Anki card type specifications  
+**Content**: Card templates, field mappings, styling guidelines
 
 ---
 
-## 🔧 **Document Update Status**
+## Legacy Documentation
 
-All documentation has been updated to reflect the completed Clean Pipeline Architecture:
+**Note**: The following documents are maintained for reference but may contain outdated information. Always defer to the core documentation above for current standards.
 
-| **Document** | **Status** | **Last Updated** |
-|--------------|------------|------------------|
-| **ENG-DESIGN-INDEX.md** | ✅ Current | Clean Pipeline Migration |
-| **ENG-QUALITY-METRICS.md** | ✅ Updated | Current metrics and status |
-| **ENG-DEVELOPMENT-STANDARDS.md** | ✅ Updated | Clean Architecture practices |
-| **ENG-COMPONENT-INVENTORY.md** | ✅ Updated | Component responsibilities |
+- **ENG-QUALITY-METRICS.md** - Historical quality metrics (use `hatch run test-cov` for current data)
+- **ENG-DEVELOPMENT-STANDARDS.md** - Superseded by ENG-DEVELOPMENT-GUIDE.md
+- **ENG-BRANCH-WORKFLOW.md** - Integrated into ENG-DEVELOPMENT-GUIDE.md
+- **ENG-TYPE-SAFETY.md** - Type safety standards (reference only)
+- **ENG-PYTHON-STANDARDS.md** - General Python standards (reference only)
 
----
+## How to Generate Current Metrics
 
-## 💡 **Contributing to Clean Pipeline Architecture**
+```bash
+# Test coverage
+hatch run test-cov
+# View HTML report: open htmlcov/index.html
 
-### **Development Standards**:
-- ✅ **Single Responsibility**: Each service has one clear purpose
-- ✅ **Separation of Concerns**: German logic separate from infrastructure
-- ✅ **Test Coverage**: Comprehensive tests for all components
-- ✅ **Robust Processing**: Reliable handling across all word types
+# Type checking status
+hatch run type
 
-### **Quality Gates (All Achieved)**:
-- ✅ All tests must pass (**686 tests** achieved)
-- ✅ Coverage maintained (73%+ with comprehensive testing)  
-- ✅ MyPy strict compliance (0 errors across 116 files)
-- ✅ Clean Architecture principles implemented with verb integration
+# Linting status
+hatch run ruff check
 
----
+# Test count
+hatch run test --co -q | grep "test" | wc -l
+```
 
-*Last Updated: Multi-Language Foundation Phase 1 Complete | Status: German A1 Delivered | Quality: Enterprise Excellence | Next: Multi-Deck & Multi-Language Expansion*
+## Quality Standards
+
+### Mandatory Quality Gates
+- **MyPy**: 0 errors required (strict mode)
+- **Ruff**: 0 violations required
+- **Tests**: All must pass
+- **Coverage**: Must not decrease from current level
+
+### Target Metrics
+- **New code coverage**: 80% minimum
+- **Critical path coverage**: 95% minimum
+- **Overall coverage**: Maintain or improve current 24.79%

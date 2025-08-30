@@ -68,13 +68,27 @@ def test_regular_verb_from_csv() -> None:
     csv_data = {
         "verb": "spielen",
         "english": "to play",
+        "classification": "regelmäßig",
         "present_ich": "spiele",
         "present_du": "spielst",
         "present_er": "spielt",
+        "präteritum": "spielte",
+        "auxiliary": "haben",
         "perfect": "hat gespielt",
         "example": "Die Kinder spielen im Park.",
     }
 
-    verb = RegularVerb(**csv_data)
+    verb = RegularVerb(
+        verb=csv_data["verb"],
+        english=csv_data["english"],
+        classification=csv_data["classification"],
+        present_ich=csv_data["present_ich"],
+        present_du=csv_data["present_du"],
+        present_er=csv_data["present_er"],
+        präteritum=csv_data["präteritum"],
+        auxiliary=csv_data["auxiliary"],
+        perfect=csv_data["perfect"],
+        example=csv_data["example"],
+    )
     assert verb.verb == "spielen"
     assert verb.validate_regular_conjugation() is True

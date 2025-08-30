@@ -1,0 +1,605 @@
+infinitive,english,classification,separable,auxiliary,tense,ich,du,er,wir,ihr,sie,example
+abfahren,to depart,unregelmäßig,true,sein,present,fahre ab,fährst ab,fährt ab,fahren ab,fahrt ab,fahren ab,Der Bus fährt ab.
+abfahren,to depart,unregelmäßig,true,sein,preterite,fuhr ab,fuhrst ab,fuhr ab,fuhren ab,fuhrt ab,fuhren ab,Der Zug fuhr ab.
+abfahren,to depart,unregelmäßig,true,sein,perfect,bin abgefahren,bist abgefahren,ist abgefahren,sind abgefahren,seid abgefahren,sind abgefahren,Er ist abgefahren.
+abfahren,to depart,unregelmäßig,true,sein,imperative,,fahr ab,,fahren wir ab,fahrt ab,fahren Sie ab,Fahr ab!
+abholen,to pick up,regelmäßig,true,haben,present,hole ab,holst ab,holt ab,holen ab,holt ab,holen ab,Ich hole dich ab.
+abholen,to pick up,regelmäßig,true,haben,preterite,holte ab,holtest ab,holte ab,holten ab,holtet ab,holten ab,Er holte mich ab.
+abholen,to pick up,regelmäßig,true,haben,perfect,habe abgeholt,hast abgeholt,hat abgeholt,haben abgeholt,habt abgeholt,haben abgeholt,Sie hat uns abgeholt.
+abholen,to pick up,regelmäßig,true,haben,imperative,,hol ab,,holen wir ab,holt ab,holen Sie ab,Hol ab!
+anfangen,to begin,unregelmäßig,true,haben,present,fange an,fängst an,fängt an,fangen an,fangt an,fangen an,Wann fängt es an?
+anfangen,to begin,unregelmäßig,true,haben,preterite,fing an,fingst an,fing an,fingen an,fingt an,fingen an,Der Film fing an.
+anfangen,to begin,unregelmäßig,true,haben,perfect,habe angefangen,hast angefangen,hat angefangen,haben angefangen,habt angefangen,haben angefangen,Es hat angefangen.
+anfangen,to begin,unregelmäßig,true,haben,imperative,,fang an,,fangen wir an,fangt an,fangen Sie an,Fang an!
+ankommen,to arrive,unregelmäßig,true,sein,present,komme an,kommst an,kommt an,kommen an,kommt an,kommen an,Der Zug kommt an.
+ankommen,to arrive,unregelmäßig,true,sein,preterite,kam an,kamst an,kam an,kamen an,kamt an,kamen an,Er kam pünktlich an.
+ankommen,to arrive,unregelmäßig,true,sein,perfect,bin angekommen,bist angekommen,ist angekommen,sind angekommen,seid angekommen,sind angekommen,Sie ist angekommen.
+ankommen,to arrive,unregelmäßig,true,sein,imperative,,komme an,,kommen wir an,kommt an,kommen Sie an,Komme an!
+anrufen,to call (phone),unregelmäßig,true,haben,present,rufe an,rufst an,ruft an,rufen an,ruft an,rufen an,Ich rufe dich an.
+anrufen,to call (phone),unregelmäßig,true,haben,preterite,rief an,riefst an,rief an,riefen an,rieft an,riefen an,Er rief mich an.
+anrufen,to call (phone),unregelmäßig,true,haben,perfect,habe angerufen,hast angerufen,hat angerufen,haben angerufen,habt angerufen,haben angerufen,Sie hat angerufen.
+anrufen,to call (phone),unregelmäßig,true,haben,imperative,,ruf an,,rufen wir an,ruft an,rufen Sie an,Ruf mich an!
+antworten,to answer,regelmäßig,false,haben,present,antworte,antwortest,antwortet,antworten,antwortet,antworten,Ich antworte sofort.
+antworten,to answer,regelmäßig,false,haben,preterite,antwortete,antwortetest,antwortete,antworteten,antwortetet,antworteten,Er antwortete richtig.
+antworten,to answer,regelmäßig,false,haben,perfect,habe geantwortet,hast geantwortet,hat geantwortet,haben geantwortet,habt geantwortet,haben geantwortet,Sie hat schnell geantwortet.
+antworten,to answer,regelmäßig,false,haben,imperative,,antworte,,antworten wir,antwortet,antworten Sie,Antworte!
+arbeiten,to work,regelmäßig,false,haben,present,arbeite,arbeitest,arbeitet,arbeiten,arbeitet,arbeiten,Sie arbeitet im Büro.
+arbeiten,to work,regelmäßig,false,haben,preterite,arbeitete,arbeitetest,arbeitete,arbeiteten,arbeitetet,arbeiteten,Ich arbeitete viel.
+arbeiten,to work,regelmäßig,false,haben,perfect,habe gearbeitet,hast gearbeitet,hat gearbeitet,haben gearbeitet,habt gearbeitet,haben gearbeitet,Er hat hart gearbeitet.
+arbeiten,to work,regelmäßig,false,haben,imperative,,arbeite,,arbeiten wir,arbeitet,arbeiten Sie,Arbeite fleißig!
+aufhören,to stop,regelmäßig,true,haben,present,höre auf,hörst auf,hört auf,hören auf,hört auf,hören auf,Es hört auf zu regnen.
+aufhören,to stop,regelmäßig,true,haben,preterite,hörte auf,hörtest auf,hörte auf,hörten auf,hörtet auf,hörten auf,Er hörte auf zu rauchen.
+aufhören,to stop,regelmäßig,true,haben,perfect,habe aufgehört,hast aufgehört,hat aufgehört,haben aufgehört,habt aufgehört,haben aufgehört,Sie hat aufgehört.
+aufhören,to stop,regelmäßig,true,haben,imperative,,hör auf,,hören wir auf,hört auf,hören Sie auf,Hör auf!
+aufräumen,to tidy up,regelmäßig,true,haben,present,räume auf,räumst auf,räumt auf,räumen auf,räumt auf,räumen auf,Ich räume mein Zimmer auf.
+aufräumen,to tidy up,regelmäßig,true,haben,preterite,räumte auf,räumtest auf,räumte auf,räumten auf,räumtet auf,räumten auf,Er räumte die Küche auf.
+aufräumen,to tidy up,regelmäßig,true,haben,perfect,habe aufgeräumt,hast aufgeräumt,hat aufgeräumt,haben aufgeräumt,habt aufgeräumt,haben aufgeräumt,Sie hat aufgeräumt.
+aufräumen,to tidy up,regelmäßig,true,haben,imperative,,räum auf,,räumen wir auf,räumt auf,räumen Sie auf,Räum auf!
+aufstehen,to get up,unregelmäßig,true,sein,present,stehe auf,stehst auf,steht auf,stehen auf,steht auf,stehen auf,Ich stehe früh auf.
+aufstehen,to get up,unregelmäßig,true,sein,preterite,stand auf,standest auf,stand auf,standen auf,standet auf,standen auf,Er stand spät auf.
+aufstehen,to get up,unregelmäßig,true,sein,perfect,bin aufgestanden,bist aufgestanden,ist aufgestanden,sind aufgestanden,seid aufgestanden,sind aufgestanden,Sie ist aufgestanden.
+aufstehen,to get up,unregelmäßig,true,sein,imperative,,steh auf,,stehen wir auf,steht auf,stehen Sie auf,Steh auf!
+aufwachen,to wake up,regelmäßig,true,sein,present,wache auf,wachst auf,wacht auf,wachen auf,wacht auf,wachen auf,Ich wache früh auf.
+aufwachen,to wake up,regelmäßig,true,sein,preterite,wachte auf,wachtest auf,wachte auf,wachten auf,wachtet auf,wachten auf,Er wachte plötzlich auf.
+aufwachen,to wake up,regelmäßig,true,sein,perfect,bin aufgewacht,bist aufgewacht,ist aufgewacht,sind aufgewacht,seid aufgewacht,sind aufgewacht,Sie ist aufgewacht.
+aufwachen,to wake up,regelmäßig,true,sein,imperative,,wach auf,,wachen wir auf,wacht auf,wachen Sie auf,Wach auf!
+ausgeben,to spend,unregelmäßig,true,haben,present,gebe aus,gibst aus,gibt aus,geben aus,gebt aus,geben aus,Ich gebe Geld aus.
+ausgeben,to spend,unregelmäßig,true,haben,preterite,gab aus,gabst aus,gab aus,gaben aus,gabt aus,gaben aus,Er gab viel aus.
+ausgeben,to spend,unregelmäßig,true,haben,perfect,habe ausgegeben,hast ausgegeben,hat ausgegeben,haben ausgegeben,habt ausgegeben,haben ausgegeben,Sie hat alles ausgegeben.
+ausgeben,to spend,unregelmäßig,true,haben,imperative,,gib aus,,geben wir aus,gebt aus,geben Sie aus,Gib aus!
+ausgehen,to go out,unregelmäßig,true,sein,present,gehe aus,gehst aus,geht aus,gehen aus,geht aus,gehen aus,Wir gehen heute aus.
+ausgehen,to go out,unregelmäßig,true,sein,preterite,ging aus,gingst aus,ging aus,gingen aus,gingt aus,gingen aus,Er ging oft aus.
+ausgehen,to go out,unregelmäßig,true,sein,perfect,bin ausgegangen,bist ausgegangen,ist ausgegangen,sind ausgegangen,seid ausgegangen,sind ausgegangen,Sie ist ausgegangen.
+ausgehen,to go out,unregelmäßig,true,sein,imperative,,geh aus,,gehen wir aus,geht aus,gehen Sie aus,Geh aus!
+aussteigen,to get out/off,unregelmäßig,true,sein,present,steige aus,steigst aus,steigt aus,steigen aus,steigt aus,steigen aus,Ich steige hier aus.
+aussteigen,to get out/off,unregelmäßig,true,sein,preterite,stieg aus,stiegst aus,stieg aus,stiegen aus,stiegt aus,stiegen aus,Er stieg am Bahnhof aus.
+aussteigen,to get out/off,unregelmäßig,true,sein,perfect,bin ausgestiegen,bist ausgestiegen,ist ausgestiegen,sind ausgestiegen,seid ausgestiegen,sind ausgestiegen,Sie ist ausgestiegen.
+aussteigen,to get out/off,unregelmäßig,true,sein,imperative,,steig aus,,steigen wir aus,steigt aus,steigen Sie aus,Steig aus!
+backen,to bake,unregelmäßig,false,haben,present,backe,bäckst,bäckt,backen,backt,backen,Ich backe einen Kuchen.
+backen,to bake,unregelmäßig,false,haben,preterite,backte,backtest,backte,backten,backtet,backten,Sie backte Brot.
+backen,to bake,unregelmäßig,false,haben,perfect,habe gebacken,hast gebacken,hat gebacken,haben gebacken,habt gebacken,haben gebacken,Er hat Plätzchen gebacken.
+backen,to bake,unregelmäßig,false,haben,imperative,,back,,backen wir,backt,backen Sie,Back!
+beginnen,to begin,unregelmäßig,false,haben,present,beginne,beginnst,beginnt,beginnen,beginnt,beginnen,Der Film beginnt jetzt.
+beginnen,to begin,unregelmäßig,false,haben,preterite,begann,begannst,begann,begannen,begannt,begannen,Die Schule begann um acht.
+beginnen,to begin,unregelmäßig,false,haben,perfect,habe begonnen,hast begonnen,hat begonnen,haben begonnen,habt begonnen,haben begonnen,Der Kurs hat begonnen.
+beginnen,to begin,unregelmäßig,false,haben,imperative,,beginne,,beginnen wir,beginnt,beginnen Sie,Beginne!
+bekommen,to receive,unregelmäßig,false,haben,present,bekomme,bekommst,bekommt,bekommen,bekommt,bekommen,Ich bekomme ein Geschenk.
+bekommen,to receive,unregelmäßig,false,haben,preterite,bekam,bekamst,bekam,bekamen,bekamt,bekamen,Er bekam eine Nachricht.
+bekommen,to receive,unregelmäßig,false,haben,perfect,habe bekommen,hast bekommen,hat bekommen,haben bekommen,habt bekommen,haben bekommen,Sie hat es bekommen.
+bekommen,to receive,unregelmäßig,false,haben,imperative,,bekomme,,bekommen wir,bekommt,bekommen Sie,Bekomme!
+benutzen,to use,regelmäßig,false,haben,present,benutze,benutzt,benutzt,benutzen,benutzt,benutzen,Ich benutze den Computer.
+benutzen,to use,regelmäßig,false,haben,preterite,benutzte,benutztest,benutzte,benutzten,benutztet,benutzten,Er benutzte das Telefon.
+benutzen,to use,regelmäßig,false,haben,perfect,habe benutzt,hast benutzt,hat benutzt,haben benutzt,habt benutzt,haben benutzt,Sie hat es benutzt.
+benutzen,to use,regelmäßig,false,haben,imperative,,benutz,,benutzen wir,benutzt,benutzen Sie,Benutz!
+bestellen,to order,regelmäßig,false,haben,present,bestelle,bestellst,bestellt,bestellen,bestellt,bestellen,Ich bestelle Pizza.
+bestellen,to order,regelmäßig,false,haben,preterite,bestellte,bestelltest,bestellte,bestellten,bestelltet,bestellten,Er bestellte online.
+bestellen,to order,regelmäßig,false,haben,perfect,habe bestellt,hast bestellt,hat bestellt,haben bestellt,habt bestellt,haben bestellt,Sie hat das Essen bestellt.
+bestellen,to order,regelmäßig,false,haben,imperative,,bestell,,bestellen wir,bestellt,bestellen Sie,Bestell!
+besuchen,to visit,regelmäßig,false,haben,present,besuche,besuchst,besucht,besuchen,besucht,besuchen,Ich besuche meine Oma.
+besuchen,to visit,regelmäßig,false,haben,preterite,besuchte,besuchtest,besuchte,besuchten,besuchtet,besuchten,Er besuchte das Museum.
+besuchen,to visit,regelmäßig,false,haben,perfect,habe besucht,hast besucht,hat besucht,haben besucht,habt besucht,haben besucht,Sie hat uns besucht.
+besuchen,to visit,regelmäßig,false,haben,imperative,,besuch,,besuchen wir,besucht,besuchen Sie,Besuch!
+bezahlen,to pay,regelmäßig,false,haben,present,bezahle,bezahlst,bezahlt,bezahlen,bezahlt,bezahlen,Ich bezahle die Rechnung.
+bezahlen,to pay,regelmäßig,false,haben,preterite,bezahlte,bezahltest,bezahlte,bezahlten,bezahltet,bezahlten,Er bezahlte bar.
+bezahlen,to pay,regelmäßig,false,haben,perfect,habe bezahlt,hast bezahlt,hat bezahlt,haben bezahlt,habt bezahlt,haben bezahlt,Sie hat alles bezahlt.
+bezahlen,to pay,regelmäßig,false,haben,imperative,,bezahl,,bezahlen wir,bezahlt,bezahlen Sie,Bezahl!
+bitten,to ask/request,unregelmäßig,false,haben,present,bitte,bittest,bittet,bitten,bittet,bitten,Ich bitte um Hilfe.
+bitten,to ask/request,unregelmäßig,false,haben,preterite,bat,batst,bat,baten,batet,baten,Er bat um Verzeihung.
+bitten,to ask/request,unregelmäßig,false,haben,perfect,habe gebeten,hast gebeten,hat gebeten,haben gebeten,habt gebeten,haben gebeten,Sie hat darum gebeten.
+bitten,to ask/request,unregelmäßig,false,haben,imperative,,bitte,,bitten wir,bittet,bitten Sie,Bitte!
+bleiben,to stay,unregelmäßig,false,sein,present,bleibe,bleibst,bleibt,bleiben,bleibt,bleiben,Ich bleibe zu Hause.
+bleiben,to stay,unregelmäßig,false,sein,preterite,blieb,bliebst,blieb,blieben,bliebt,blieben,Er blieb lange.
+bleiben,to stay,unregelmäßig,false,sein,perfect,bin geblieben,bist geblieben,ist geblieben,sind geblieben,seid geblieben,sind geblieben,Sie ist zu Hause geblieben.
+bleiben,to stay,unregelmäßig,false,sein,imperative,,bleib,,bleiben wir,bleibt,bleiben Sie,Bleib!
+brauchen,to need,regelmäßig,false,haben,present,brauche,brauchst,braucht,brauchen,braucht,brauchen,Ich brauche Hilfe.
+brauchen,to need,regelmäßig,false,haben,preterite,brauchte,brauchtest,brauchte,brauchten,brauchtet,brauchten,Er brauchte Zeit.
+brauchen,to need,regelmäßig,false,haben,perfect,habe gebraucht,hast gebraucht,hat gebraucht,haben gebraucht,habt gebraucht,haben gebraucht,Sie hat es gebraucht.
+brauchen,to need,regelmäßig,false,haben,imperative,,brauch,,brauchen wir,braucht,brauchen Sie,Brauch!
+bringen,to bring,gemischt,false,haben,present,bringe,bringst,bringt,bringen,bringt,bringen,Ich bringe dir Kaffee.
+bringen,to bring,gemischt,false,haben,preterite,brachte,brachtest,brachte,brachten,brachtet,brachten,Er brachte Blumen.
+bringen,to bring,gemischt,false,haben,perfect,habe gebracht,hast gebracht,hat gebracht,haben gebracht,habt gebracht,haben gebracht,Sie hat das Essen gebracht.
+bringen,to bring,gemischt,false,haben,imperative,,bring,,bringen wir,bringt,bringen Sie,Bring das mit!
+buchen,to book,regelmäßig,false,haben,present,buche,buchst,bucht,buchen,bucht,buchen,Ich buche den Flug.
+buchen,to book,regelmäßig,false,haben,preterite,buchte,buchtest,buchte,buchten,buchtet,buchten,Er buchte das Hotel.
+buchen,to book,regelmäßig,false,haben,perfect,habe gebucht,hast gebucht,hat gebucht,haben gebucht,habt gebucht,haben gebucht,Sie hat gebucht.
+buchen,to book,regelmäßig,false,haben,imperative,,buch,,buchen wir,bucht,buchen Sie,Buch!
+danken,to thank,regelmäßig,false,haben,present,danke,dankst,dankt,danken,dankt,danken,Ich danke dir.
+danken,to thank,regelmäßig,false,haben,preterite,dankte,danktest,dankte,dankten,danktet,dankten,Er dankte mir.
+danken,to thank,regelmäßig,false,haben,perfect,habe gedankt,hast gedankt,hat gedankt,haben gedankt,habt gedankt,haben gedankt,Sie hat gedankt.
+danken,to thank,regelmäßig,false,haben,imperative,,dank,,danken wir,dankt,danken Sie,Dank!
+dauern,to last/take time,regelmäßig,false,haben,present,dauere,dauerst,dauert,dauern,dauert,dauern,Das dauert lange.
+dauern,to last/take time,regelmäßig,false,haben,preterite,dauerte,dauertest,dauerte,dauerten,dauertet,dauerten,Es dauerte zwei Stunden.
+dauern,to last/take time,regelmäßig,false,haben,perfect,habe gedauert,hast gedauert,hat gedauert,haben gedauert,habt gedauert,haben gedauert,Es hat gedauert.
+denken,to think,gemischt,false,haben,present,denke,denkst,denkt,denken,denkt,denken,Was denkst du?
+denken,to think,gemischt,false,haben,preterite,dachte,dachtest,dachte,dachten,dachtet,dachten,Ich dachte an dich.
+denken,to think,gemischt,false,haben,perfect,habe gedacht,hast gedacht,hat gedacht,haben gedacht,habt gedacht,haben gedacht,Er hat daran gedacht.
+denken,to think,gemischt,false,haben,imperative,,denk,,denken wir,denkt,denken Sie,Denk!
+dürfen,may/be allowed,modal,false,haben,present,darf,darfst,darf,dürfen,dürft,dürfen,Darf ich fragen?
+dürfen,may/be allowed,modal,false,haben,preterite,durfte,durftest,durfte,durften,durftet,durften,Ich durfte nicht gehen.
+dürfen,may/be allowed,modal,false,haben,perfect,habe gedurft,hast gedurft,hat gedurft,haben gedurft,habt gedurft,haben gedurft,Er hat es gedurft.
+einkaufen,to shop,regelmäßig,true,haben,present,kaufe ein,kaufst ein,kauft ein,kaufen ein,kauft ein,kaufen ein,Ich kaufe Lebensmittel ein.
+einkaufen,to shop,regelmäßig,true,haben,preterite,kaufte ein,kauftest ein,kaufte ein,kauften ein,kauftet ein,kauften ein,Er kaufte im Supermarkt ein.
+einkaufen,to shop,regelmäßig,true,haben,perfect,habe eingekauft,hast eingekauft,hat eingekauft,haben eingekauft,habt eingekauft,haben eingekauft,Sie hat eingekauft.
+einkaufen,to shop,regelmäßig,true,haben,imperative,,kauf ein,,kaufen wir ein,kauft ein,kaufen Sie ein,Kauf ein!
+einladen,to invite,unregelmäßig,true,haben,present,lade ein,lädst ein,lädt ein,laden ein,ladet ein,laden ein,Ich lade dich ein.
+einladen,to invite,unregelmäßig,true,haben,preterite,lud ein,ludest ein,lud ein,luden ein,ludet ein,luden ein,Er lud mich ein.
+einladen,to invite,unregelmäßig,true,haben,perfect,habe eingeladen,hast eingeladen,hat eingeladen,haben eingeladen,habt eingeladen,haben eingeladen,Sie hat alle eingeladen.
+einladen,to invite,unregelmäßig,true,haben,imperative,,lade ein,,laden wir ein,ladet ein,laden Sie ein,Lade ein!
+einschlafen,to fall asleep,unregelmäßig,true,sein,present,schlafe ein,schläfst ein,schläft ein,schlafen ein,schlaft ein,schlafen ein,Das Baby schläft ein.
+einschlafen,to fall asleep,unregelmäßig,true,sein,preterite,schlief ein,schliefst ein,schlief ein,schliefen ein,schlieft ein,schliefen ein,Ich schlief schnell ein.
+einschlafen,to fall asleep,unregelmäßig,true,sein,perfect,bin eingeschlafen,bist eingeschlafen,ist eingeschlafen,sind eingeschlafen,seid eingeschlafen,sind eingeschlafen,Er ist eingeschlafen.
+einschlafen,to fall asleep,unregelmäßig,true,sein,imperative,,schlaf ein,,schlafen wir ein,schlaft ein,schlafen Sie ein,Schlaf ein!
+einsteigen,to get in/board,unregelmäßig,true,sein,present,steige ein,steigst ein,steigt ein,steigen ein,steigt ein,steigen ein,Bitte einsteigen!
+einsteigen,to get in/board,unregelmäßig,true,sein,preterite,stieg ein,stiegst ein,stieg ein,stiegen ein,stiegt ein,stiegen ein,Er stieg ins Auto ein.
+einsteigen,to get in/board,unregelmäßig,true,sein,perfect,bin eingestiegen,bist eingestiegen,ist eingestiegen,sind eingestiegen,seid eingestiegen,sind eingestiegen,Sie ist eingestiegen.
+einsteigen,to get in/board,unregelmäßig,true,sein,imperative,,steig ein,,steigen wir ein,steigt ein,steigen Sie ein,Steig ein!
+enden,to end,regelmäßig,false,haben,present,ende,endest,endet,enden,endet,enden,Der Film endet gut.
+enden,to end,regelmäßig,false,haben,preterite,endete,endetest,endete,endeten,endetet,endeten,Die Party endete spät.
+enden,to end,regelmäßig,false,haben,perfect,habe geendet,hast geendet,hat geendet,haben geendet,habt geendet,haben geendet,Die Vorlesung hat geendet.
+enden,to end,regelmäßig,false,haben,imperative,,ende,,enden wir,endet,enden Sie,Ende!
+entschuldigen,to excuse,regelmäßig,false,haben,present,entschuldige,entschuldigst,entschuldigt,entschuldigen,entschuldigt,entschuldigen,Ich entschuldige mich.
+entschuldigen,to excuse,regelmäßig,false,haben,preterite,entschuldigte,entschuldigtest,entschuldigte,entschuldigten,entschuldigtet,entschuldigten,Er entschuldigte sich.
+entschuldigen,to excuse,regelmäßig,false,haben,perfect,habe entschuldigt,hast entschuldigt,hat entschuldigt,haben entschuldigt,habt entschuldigt,haben entschuldigt,Sie hat sich entschuldigt.
+entschuldigen,to excuse,regelmäßig,false,haben,imperative,,entschuldig,,entschuldigen wir,entschuldigt,entschuldigen Sie,Entschuldig!
+erinnern,to remember,regelmäßig,false,haben,present,erinnere,erinnerst,erinnert,erinnern,erinnert,erinnern,Ich erinnere mich.
+erinnern,to remember,regelmäßig,false,haben,preterite,erinnerte,erinnertest,erinnerte,erinnerten,erinnertetet,erinnerten,Er erinnerte sich daran.
+erinnern,to remember,regelmäßig,false,haben,perfect,habe erinnert,hast erinnert,hat erinnert,haben erinnert,habt erinnert,haben erinnert,Sie hat sich erinnert.
+erinnern,to remember,regelmäßig,false,haben,imperative,,erinnere,,erinnern wir,erinnert,erinnern Sie,Erinnere!
+erklären,to explain,regelmäßig,false,haben,present,erkläre,erklärst,erklärt,erklären,erklärt,erklären,Der Lehrer erklärt die Regel.
+erklären,to explain,regelmäßig,false,haben,preterite,erklärte,erklärtest,erklärte,erklärten,erklärtet,erklärten,Sie erklärte es gut.
+erklären,to explain,regelmäßig,false,haben,perfect,habe erklärt,hast erklärt,hat erklärt,haben erklärt,habt erklärt,haben erklärt,Er hat es mir erklärt.
+erklären,to explain,regelmäßig,false,haben,imperative,,erklär,,erklären wir,erklärt,erklären Sie,Erklär!
+erzählen,to tell/narrate,regelmäßig,false,haben,present,erzähle,erzählst,erzählt,erzählen,erzählt,erzählen,Er erzählt eine Geschichte.
+erzählen,to tell/narrate,regelmäßig,false,haben,preterite,erzählte,erzähltest,erzählte,erzählten,erzähltet,erzählten,Sie erzählte von der Reise.
+erzählen,to tell/narrate,regelmäßig,false,haben,perfect,habe erzählt,hast erzählt,hat erzählt,haben erzählt,habt erzählt,haben erzählt,Er hat alles erzählt.
+erzählen,to tell/narrate,regelmäßig,false,haben,imperative,,erzähl,,erzählen wir,erzählt,erzählen Sie,Erzähl!
+essen,to eat,unregelmäßig,false,haben,present,esse,isst,isst,essen,esst,essen,Wir essen zu Mittag.
+essen,to eat,unregelmäßig,false,haben,preterite,aß,aßest,aß,aßen,aßt,aßen,Ich aß einen Apfel.
+essen,to eat,unregelmäßig,false,haben,perfect,habe gegessen,hast gegessen,hat gegessen,haben gegessen,habt gegessen,haben gegessen,Sie hat Pizza gegessen.
+essen,to eat,unregelmäßig,false,haben,imperative,,iss,,essen wir,esst,essen Sie,Iss dein Gemüse!
+fahren,to drive/go,unregelmäßig,false,sein,present,fahre,fährst,fährt,fahren,fahrt,fahren,Wir fahren nach Berlin.
+fahren,to drive/go,unregelmäßig,false,sein,preterite,fuhr,fuhrst,fuhr,fuhren,fuhrt,fuhren,Ich fuhr mit dem Auto.
+fahren,to drive/go,unregelmäßig,false,sein,perfect,bin gefahren,bist gefahren,ist gefahren,sind gefahren,seid gefahren,sind gefahren,Er ist nach München gefahren.
+fahren,to drive/go,unregelmäßig,false,sein,imperative,,fahr,,fahren wir,fahrt,fahren Sie,Fahr vorsichtig!
+fehlen,to be missing,regelmäßig,false,haben,present,fehle,fehlst,fehlt,fehlen,fehlt,fehlen,Du fehlst mir.
+fehlen,to be missing,regelmäßig,false,haben,preterite,fehlte,fehltest,fehlte,fehlten,fehltet,fehlten,Er fehlte in der Schule.
+fehlen,to be missing,regelmäßig,false,haben,perfect,habe gefehlt,hast gefehlt,hat gefehlt,haben gefehlt,habt gefehlt,haben gefehlt,Sie hat gefehlt.
+fehlen,to be missing,regelmäßig,false,haben,imperative,,fehl,,fehlen wir,fehlt,fehlen Sie,Fehl!
+fernsehen,to watch TV,unregelmäßig,true,haben,present,sehe fern,siehst fern,sieht fern,sehen fern,seht fern,sehen fern,Ich sehe gern fern.
+fernsehen,to watch TV,unregelmäßig,true,haben,preterite,sah fern,sahst fern,sah fern,sahen fern,saht fern,sahen fern,Er sah den ganzen Tag fern.
+fernsehen,to watch TV,unregelmäßig,true,haben,perfect,habe ferngesehen,hast ferngesehen,hat ferngesehen,haben ferngesehen,habt ferngesehen,haben ferngesehen,Sie hat ferngesehen.
+fernsehen,to watch TV,unregelmäßig,true,haben,imperative,,sieh fern,,sehen wir fern,seht fern,sehen Sie fern,Sieh fern!
+finden,to find,unregelmäßig,false,haben,present,finde,findest,findet,finden,findet,finden,Ich finde das gut.
+finden,to find,unregelmäßig,false,haben,preterite,fand,fandest,fand,fanden,fandet,fanden,Er fand den Weg.
+finden,to find,unregelmäßig,false,haben,perfect,habe gefunden,hast gefunden,hat gefunden,haben gefunden,habt gefunden,haben gefunden,Sie hat die Lösung gefunden.
+finden,to find,unregelmäßig,false,haben,imperative,,finde,,finden wir,findet,finden Sie,Finde!
+fliegen,to fly,unregelmäßig,false,sein,present,fliege,fliegst,fliegt,fliegen,fliegt,fliegen,Das Flugzeug fliegt hoch.
+fliegen,to fly,unregelmäßig,false,sein,preterite,flog,flogst,flog,flogen,flogt,flogen,Ich flog nach London.
+fliegen,to fly,unregelmäßig,false,sein,perfect,bin geflogen,bist geflogen,ist geflogen,sind geflogen,seid geflogen,sind geflogen,Er ist nach Amerika geflogen.
+fliegen,to fly,unregelmäßig,false,sein,imperative,,flieg,,fliegen wir,fliegt,fliegen Sie,Flieg!
+fragen,to ask,regelmäßig,false,haben,present,frage,fragst,fragt,fragen,fragt,fragen,Ich frage den Lehrer.
+fragen,to ask,regelmäßig,false,haben,preterite,fragte,fragtest,fragte,fragten,fragtet,fragten,Er fragte nach dem Weg.
+fragen,to ask,regelmäßig,false,haben,perfect,habe gefragt,hast gefragt,hat gefragt,haben gefragt,habt gefragt,haben gefragt,Sie hat mich gefragt.
+fragen,to ask,regelmäßig,false,haben,imperative,,frag,,fragen wir,fragt,fragen Sie,Frag!
+freuen,to be glad,regelmäßig,false,haben,present,freue,freust,freut,freuen,freut,freuen,Ich freue mich.
+freuen,to please/be glad,regelmäßig,false,haben,present,freue,freust,freut,freuen,freut,freuen,Ich freue mich.
+freuen,to be glad,regelmäßig,false,haben,preterite,freute,freutest,freute,freuten,freutet,freuten,Er freute sich sehr.
+freuen,to please/be glad,regelmäßig,false,haben,preterite,freute,freutest,freute,freuten,freutet,freuten,Er freute sich sehr.
+freuen,to be glad,regelmäßig,false,haben,perfect,habe gefreut,hast gefreut,hat gefreut,haben gefreut,habt gefreut,haben gefreut,Sie hat sich gefreut.
+freuen,to please/be glad,regelmäßig,false,haben,perfect,habe gefreut,hast gefreut,hat gefreut,haben gefreut,habt gefreut,haben gefreut,Sie hat sich gefreut.
+freuen,to be glad,regelmäßig,false,haben,imperative,,freu,,freuen wir,freut,freuen Sie,Freu!
+funktionieren,to function,regelmäßig,false,haben,present,funktioniere,funktionierst,funktioniert,funktionieren,funktioniert,funktionieren,Es funktioniert nicht.
+funktionieren,to function,regelmäßig,false,haben,preterite,funktionierte,funktioniertest,funktionierte,funktionierten,funktioniertet,funktionierten,Es funktionierte gut.
+funktionieren,to function,regelmäßig,false,haben,perfect,habe funktioniert,hast funktioniert,hat funktioniert,haben funktioniert,habt funktioniert,haben funktioniert,Es hat funktioniert.
+funktionieren,to function,regelmäßig,false,haben,imperative,,funktionier,,funktionieren wir,funktioniert,funktionieren Sie,Funktionier!
+geben,to give,unregelmäßig,false,haben,present,gebe,gibst,gibt,geben,gebt,geben,Ich gebe dir das Buch.
+geben,to give,unregelmäßig,false,haben,preterite,gab,gabst,gab,gaben,gabt,gaben,Er gab mir Geld.
+geben,to give,unregelmäßig,false,haben,perfect,habe gegeben,hast gegeben,hat gegeben,haben gegeben,habt gegeben,haben gegeben,Sie hat mir Hilfe gegeben.
+geben,to give,unregelmäßig,false,haben,imperative,,gib,,geben wir,gebt,geben Sie,Gib mir das Buch!
+gefallen,to please/like,unregelmäßig,false,haben,present,gefalle,gefällst,gefällt,gefallen,gefallt,gefallen,Das gefällt mir.
+gefallen,to please/like,unregelmäßig,false,haben,preterite,gefiel,gefielst,gefiel,gefielen,gefielt,gefielen,Es gefiel mir gut.
+gefallen,to please/like,unregelmäßig,false,haben,perfect,habe gefallen,hast gefallen,hat gefallen,haben gefallen,habt gefallen,haben gefallen,Das hat mir gefallen.
+gehen,to go,unregelmäßig,false,sein,present,gehe,gehst,geht,gehen,geht,gehen,Er geht zur Schule.
+gehen,to go,unregelmäßig,false,sein,preterite,ging,gingst,ging,gingen,gingt,gingen,Ich ging nach Hause.
+gehen,to go,unregelmäßig,false,sein,perfect,bin gegangen,bist gegangen,ist gegangen,sind gegangen,seid gegangen,sind gegangen,Er ist zur Arbeit gegangen.
+gehen,to go,unregelmäßig,false,sein,imperative,,geh,,gehen wir,geht,gehen Sie,Geh nach Hause!
+gehören,to belong,regelmäßig,false,haben,present,gehöre,gehörst,gehört,gehören,gehört,gehören,Das gehört mir.
+gehören,to belong,regelmäßig,false,haben,preterite,gehörte,gehörtest,gehörte,gehörten,gehörtet,gehörten,Es gehörte ihm.
+gehören,to belong,regelmäßig,false,haben,perfect,habe gehört,hast gehört,hat gehört,haben gehört,habt gehört,haben gehört,Das hat mir gehört.
+gewinnen,to win,unregelmäßig,false,haben,present,gewinne,gewinnst,gewinnt,gewinnen,gewinnt,gewinnen,Wer gewinnt?
+gewinnen,to win,unregelmäßig,false,haben,preterite,gewann,gewannst,gewann,gewannen,gewannt,gewannen,Er gewann den Preis.
+gewinnen,to win,unregelmäßig,false,haben,perfect,habe gewonnen,hast gewonnen,hat gewonnen,haben gewonnen,habt gewonnen,haben gewonnen,Sie hat gewonnen.
+gewinnen,to win,unregelmäßig,false,haben,imperative,,gewinne,,gewinnen wir,gewinnt,gewinnen Sie,Gewinne!
+glauben,to believe,regelmäßig,false,haben,present,glaube,glaubst,glaubt,glauben,glaubt,glauben,Ich glaube dir.
+glauben,to believe,regelmäßig,false,haben,preterite,glaubte,glaubtest,glaubte,glaubten,glaubtet,glaubten,Er glaubte es nicht.
+glauben,to believe,regelmäßig,false,haben,perfect,habe geglaubt,hast geglaubt,hat geglaubt,haben geglaubt,habt geglaubt,haben geglaubt,Sie hat ihm geglaubt.
+glauben,to believe,regelmäßig,false,haben,imperative,,glaub,,glauben wir,glaubt,glauben Sie,Glaub!
+gratulieren,to congratulate,regelmäßig,false,haben,present,gratuliere,gratulierst,gratuliert,gratulieren,gratuliert,gratulieren,Ich gratuliere dir!
+gratulieren,to congratulate,regelmäßig,false,haben,preterite,gratulierte,gratuliertest,gratulierte,gratulierten,gratuliertet,gratulierten,Er gratulierte mir.
+gratulieren,to congratulate,regelmäßig,false,haben,perfect,habe gratuliert,hast gratuliert,hat gratuliert,haben gratuliert,habt gratuliert,haben gratuliert,Sie hat gratuliert.
+gratulieren,to congratulate,regelmäßig,false,haben,imperative,,gratulier,,gratulieren wir,gratuliert,gratulieren Sie,Gratulier!
+haben,to have,unregelmäßig,false,haben,present,habe,hast,hat,haben,habt,haben,Ich habe ein Buch.
+haben,to have,unregelmäßig,false,haben,preterite,hatte,hattest,hatte,hatten,hattet,hatten,Ich hatte Hunger.
+haben,to have,unregelmäßig,false,haben,perfect,habe gehabt,hast gehabt,hat gehabt,haben gehabt,habt gehabt,haben gehabt,Er hat Glück gehabt.
+haben,to have,unregelmäßig,false,haben,imperative,,hab,,haben wir,habt,haben Sie,Hab keine Angst!
+halten,to hold/stop,unregelmäßig,false,haben,present,halte,hältst,hält,halten,haltet,halten,Der Bus hält hier.
+halten,to hold/stop,unregelmäßig,false,haben,preterite,hielt,hieltest,hielt,hielten,hieltet,hielten,Ich hielt das Baby.
+halten,to hold/stop,unregelmäßig,false,haben,perfect,habe gehalten,hast gehalten,hat gehalten,haben gehalten,habt gehalten,haben gehalten,Er hat sein Versprechen gehalten.
+halten,to hold/stop,unregelmäßig,false,haben,imperative,,halt,,halten wir,haltet,halten Sie,Halt!
+hassen,to hate,regelmäßig,false,haben,present,hasse,hasst,hasst,hassen,hasst,hassen,Ich hasse Montage.
+hassen,to hate,regelmäßig,false,haben,preterite,hasste,hasstest,hasste,hassten,hasstet,hassten,Er hasste Lügen.
+hassen,to hate,regelmäßig,false,haben,perfect,habe gehasst,hast gehasst,hat gehasst,haben gehasst,habt gehasst,haben gehasst,Sie hat es gehasst.
+hassen,to hate,regelmäßig,false,haben,imperative,,hass,,hassen wir,hasst,hassen Sie,Hass!
+helfen,to help,unregelmäßig,false,haben,present,helfe,hilfst,hilft,helfen,helft,helfen,Ich helfe dir gerne.
+helfen,to help,unregelmäßig,false,haben,preterite,half,halfst,half,halfen,halft,halfen,Er half mir sehr.
+helfen,to help,unregelmäßig,false,haben,perfect,habe geholfen,hast geholfen,hat geholfen,haben geholfen,habt geholfen,haben geholfen,Sie hat uns geholfen.
+helfen,to help,unregelmäßig,false,haben,imperative,,hilf,,helfen wir,helft,helfen Sie,Hilf mir bitte!
+hoffen,to hope,regelmäßig,false,haben,present,hoffe,hoffst,hofft,hoffen,hofft,hoffen,Ich hoffe auf gutes Wetter.
+hoffen,to hope,regelmäßig,false,haben,preterite,hoffte,hofftest,hoffte,hofften,hofftet,hofften,Er hoffte auf Erfolg.
+hoffen,to hope,regelmäßig,false,haben,perfect,habe gehofft,hast gehofft,hat gehofft,haben gehofft,habt gehofft,haben gehofft,Sie hat darauf gehofft.
+hoffen,to hope,regelmäßig,false,haben,imperative,,hoff,,hoffen wir,hofft,hoffen Sie,Hoff!
+holen,to fetch/get,regelmäßig,false,haben,present,hole,holst,holt,holen,holt,holen,Ich hole Brot.
+holen,to fetch/get,regelmäßig,false,haben,preterite,holte,holtest,holte,holten,holtet,holten,Er holte die Zeitung.
+holen,to fetch/get,regelmäßig,false,haben,perfect,habe geholt,hast geholt,hat geholt,haben geholt,habt geholt,haben geholt,Sie hat Hilfe geholt.
+holen,to fetch/get,regelmäßig,false,haben,imperative,,hol,,holen wir,holt,holen Sie,Hol!
+hören,to hear/listen,regelmäßig,false,haben,present,höre,hörst,hört,hören,hört,hören,Ich höre Musik.
+hören,to hear/listen,regelmäßig,false,haben,preterite,hörte,hörtest,hörte,hörten,hörtet,hörten,Er hörte Radio.
+hören,to hear/listen,regelmäßig,false,haben,perfect,habe gehört,hast gehört,hat gehört,haben gehört,habt gehört,haben gehört,Sie hat das Lied gehört.
+hören,to hear/listen,regelmäßig,false,haben,imperative,,hör,,hören wir,hört,hören Sie,Hör zu!
+interessieren,to interest,regelmäßig,false,haben,present,interessiere,interessierst,interessiert,interessieren,interessiert,interessieren,Das interessiert mich.
+interessieren,to interest,regelmäßig,false,haben,preterite,interessierte,interessiertest,interessierte,interessierten,interessiertet,interessierten,Es interessierte ihn nicht.
+interessieren,to interest,regelmäßig,false,haben,perfect,habe interessiert,hast interessiert,hat interessiert,haben interessiert,habt interessiert,haben interessiert,Es hat mich interessiert.
+interessieren,to interest,regelmäßig,false,haben,imperative,,interessier,,interessieren wir,interessiert,interessieren Sie,Interessier!
+kaufen,to buy,regelmäßig,false,haben,present,kaufe,kaufst,kauft,kaufen,kauft,kaufen,Ich kaufe Brot.
+kaufen,to buy,regelmäßig,false,haben,preterite,kaufte,kauftest,kaufte,kauften,kauftet,kauften,Sie kaufte ein Kleid.
+kaufen,to buy,regelmäßig,false,haben,perfect,habe gekauft,hast gekauft,hat gekauft,haben gekauft,habt gekauft,haben gekauft,Er hat ein Auto gekauft.
+kaufen,to buy,regelmäßig,false,haben,imperative,,kauf,,kaufen wir,kauft,kaufen Sie,Kauf Brot!
+kennen,to know (be familiar),gemischt,false,haben,present,kenne,kennst,kennt,kennen,kennt,kennen,Kennst du Berlin?
+kennen,to know (be familiar),gemischt,false,haben,preterite,kannte,kanntest,kannte,kannten,kanntet,kannten,Ich kannte ihn gut.
+kennen,to know (be familiar),gemischt,false,haben,perfect,habe gekannt,hast gekannt,hat gekannt,haben gekannt,habt gekannt,haben gekannt,Sie hat ihn gekannt.
+kennen,to know (be familiar),gemischt,false,haben,imperative,,kenne,,kennen wir,kennt,kennen Sie,Kenne!!)
+kennenlernen,to get to know,regelmäßig,true,haben,present,lerne kennen,lernst kennen,lernt kennen,lernen kennen,lernt kennen,lernen kennen,Ich lerne neue Leute kennen.
+kennenlernen,to get to know,regelmäßig,true,haben,preterite,lernte kennen,lerntest kennen,lernte kennen,lernten kennen,lerntet kennen,lernten kennen,Er lernte sie kennen.
+kennenlernen,to get to know,regelmäßig,true,haben,perfect,habe kennengelernt,hast kennengelernt,hat kennengelernt,haben kennengelernt,habt kennengelernt,haben kennengelernt,Sie hat ihn kennengelernt.
+kennenlernen,to get to know,regelmäßig,true,haben,imperative,,kennenlerne,,kennenlernen wir,kennenlernt,kennenlernen Sie,Kennenlerne!
+klappen,to work out,regelmäßig,false,haben,present,klappe,klappst,klappt,klappen,klappt,klappen,Das klappt gut.
+klappen,to work out,regelmäßig,false,haben,preterite,klappte,klapptest,klappte,klappten,klapptet,klappten,Es klappte prima.
+klappen,to work out,regelmäßig,false,haben,perfect,habe geklappt,hast geklappt,hat geklappt,haben geklappt,habt geklappt,haben geklappt,Es hat geklappt.
+klappen,to work out,regelmäßig,false,haben,imperative,,klapp,,klappen wir,klappt,klappen Sie,Klapp!
+kochen,to cook,regelmäßig,false,haben,present,koche,kochst,kocht,kochen,kocht,kochen,Ich koche gerne.
+kochen,to cook,regelmäßig,false,haben,preterite,kochte,kochtest,kochte,kochten,kochtet,kochten,Er kochte Suppe.
+kochen,to cook,regelmäßig,false,haben,perfect,habe gekocht,hast gekocht,hat gekocht,haben gekocht,habt gekocht,haben gekocht,Sie hat gut gekocht.
+kochen,to cook,regelmäßig,false,haben,imperative,,koch,,kochen wir,kocht,kochen Sie,Koch!
+kommen,to come,unregelmäßig,false,sein,present,komme,kommst,kommt,kommen,kommt,kommen,Sie kommt aus Deutschland.
+kommen,to come,unregelmäßig,false,sein,preterite,kam,kamst,kam,kamen,kamt,kamen,Ich kam spät an.
+kommen,to come,unregelmäßig,false,sein,perfect,bin gekommen,bist gekommen,ist gekommen,sind gekommen,seid gekommen,sind gekommen,Sie ist pünktlich gekommen.
+kommen,to come,unregelmäßig,false,sein,imperative,,komme,,kommen wir,kommt,kommen Sie,Komm her!
+kosten,to cost,regelmäßig,false,haben,present,koste,kostest,kostet,kosten,kostet,kosten,Das kostet zehn Euro.
+kosten,to cost,regelmäßig,false,haben,preterite,kostete,kostetest,kostete,kosteten,kostetet,kosteten,Es kostete viel.
+kosten,to cost,regelmäßig,false,haben,perfect,habe gekostet,hast gekostet,hat gekostet,haben gekostet,habt gekostet,haben gekostet,Das hat viel gekostet.
+kriegen,to get (informal),regelmäßig,false,haben,present,kriege,kriegst,kriegt,kriegen,kriegt,kriegen,Ich kriege Hunger.
+kriegen,to get (informal),regelmäßig,false,haben,preterite,kriegte,kriegtest,kriegte,kriegten,kriegtet,kriegten,Er kriegte Ärger.
+kriegen,to get (informal),regelmäßig,false,haben,perfect,habe gekriegt,hast gekriegt,hat gekriegt,haben gekriegt,habt gekriegt,haben gekriegt,Sie hat es gekriegt.
+kriegen,to get (informal),regelmäßig,false,haben,imperative,,krieg,,kriegen wir,kriegt,kriegen Sie,Krieg!!)
+können,can/to be able,modal,false,haben,present,kann,kannst,kann,können,könnt,können,Ich kann schwimmen.
+können,can/to be able,modal,false,haben,preterite,konnte,konntest,konnte,konnten,konntet,konnten,Ich konnte nicht kommen.
+können,can/to be able,modal,false,haben,perfect,habe gekonnt,hast gekonnt,hat gekonnt,haben gekonnt,habt gekonnt,haben gekonnt,Er hat es gekonnt.
+lachen,to laugh,regelmäßig,false,haben,present,lache,lachst,lacht,lachen,lacht,lachen,Wir lachen viel.
+lachen,to laugh,regelmäßig,false,haben,preterite,lachte,lachtest,lachte,lachten,lachtet,lachten,Er lachte laut.
+lachen,to laugh,regelmäßig,false,haben,perfect,habe gelacht,hast gelacht,hat gelacht,haben gelacht,habt gelacht,haben gelacht,Sie hat gelacht.
+lachen,to laugh,regelmäßig,false,haben,imperative,,lach,,lachen wir,lacht,lachen Sie,Lach!
+langweilen,to bore,regelmäßig,false,haben,present,langweile,langweilst,langweilt,langweilen,langweilt,langweilen,Das langweilt mich.
+langweilen,to bore,regelmäßig,false,haben,preterite,langweilte,langweiltest,langweilte,langweilten,langweiltet,langweilten,Der Film langweilte uns.
+langweilen,to bore,regelmäßig,false,haben,perfect,habe gelangweilt,hast gelangweilt,hat gelangweilt,haben gelangweilt,habt gelangweilt,haben gelangweilt,Es hat gelangweilt.
+langweilen,to bore,regelmäßig,false,haben,imperative,,langweil,,langweilen wir,langweilt,langweilen Sie,Langweil!
+laufen,to run/walk,unregelmäßig,false,sein,present,laufe,läufst,läuft,laufen,lauft,laufen,Er läuft schnell.
+laufen,to run/walk,unregelmäßig,false,sein,preterite,lief,liefst,lief,liefen,lieft,liefen,Ich lief im Park.
+laufen,to run/walk,unregelmäßig,false,sein,perfect,bin gelaufen,bist gelaufen,ist gelaufen,sind gelaufen,seid gelaufen,sind gelaufen,Sie ist Marathon gelaufen.
+laufen,to run/walk,unregelmäßig,false,sein,imperative,,lauf,,laufen wir,lauft,laufen Sie,Lauf schnell!
+legen,to lay/put,regelmäßig,false,haben,present,lege,legst,legt,legen,legt,legen,Ich lege das Buch hin.
+legen,to lay/put,regelmäßig,false,haben,preterite,legte,legtest,legte,legten,legtet,legten,Er legte es auf den Tisch.
+legen,to lay/put,regelmäßig,false,haben,perfect,habe gelegt,hast gelegt,hat gelegt,haben gelegt,habt gelegt,haben gelegt,Sie hat es dorthin gelegt.
+legen,to lay/put,regelmäßig,false,haben,imperative,,leg,,legen wir,legt,legen Sie,Leg!
+lernen,to learn,regelmäßig,false,haben,present,lerne,lernst,lernt,lernen,lernt,lernen,Ich lerne Deutsch.
+lernen,to learn,regelmäßig,false,haben,preterite,lernte,lerntest,lernte,lernten,lerntet,lernten,Er lernte schnell.
+lernen,to learn,regelmäßig,false,haben,perfect,habe gelernt,hast gelernt,hat gelernt,haben gelernt,habt gelernt,haben gelernt,Sie hat viel gelernt.
+lernen,to learn,regelmäßig,false,haben,imperative,,lerne,,lernen wir,lernt,lernen Sie,Lern die Vokabeln!
+lesen,to read,unregelmäßig,false,haben,present,lese,liest,liest,lesen,lest,lesen,Ich lese ein Buch.
+lesen,to read,unregelmäßig,false,haben,preterite,las,last,las,lasen,last,lasen,Er las die Zeitung.
+lesen,to read,unregelmäßig,false,haben,perfect,habe gelesen,hast gelesen,hat gelesen,haben gelesen,habt gelesen,haben gelesen,Sie hat den Brief gelesen.
+lesen,to read,unregelmäßig,false,haben,imperative,,lies,,lesen wir,lest,lesen Sie,Lies das Buch!
+lieben,to love,regelmäßig,false,haben,present,liebe,liebst,liebt,lieben,liebt,lieben,Ich liebe dich.
+lieben,to love,regelmäßig,false,haben,preterite,liebte,liebtest,liebte,liebten,liebtet,liebten,Er liebte sie sehr.
+lieben,to love,regelmäßig,false,haben,perfect,habe geliebt,hast geliebt,hat geliebt,haben geliebt,habt geliebt,haben geliebt,Sie hat ihn geliebt.
+lieben,to love,regelmäßig,false,haben,imperative,,lieb,,lieben wir,liebt,lieben Sie,Lieb!
+liegen,to lie,unregelmäßig,false,haben,present,liege,liegst,liegt,liegen,liegt,liegen,Das Buch liegt auf dem Tisch.
+liegen,to lie,unregelmäßig,false,haben,preterite,lag,lagst,lag,lagen,lagt,lagen,Die Zeitung lag dort.
+liegen,to lie,unregelmäßig,false,haben,perfect,habe gelegen,hast gelegen,hat gelegen,haben gelegen,habt gelegen,haben gelegen,Es hat im Schrank gelegen.
+liegen,to lie,unregelmäßig,false,haben,imperative,,lieg,,liegen wir,liegt,liegen Sie,Lieg!
+machen,to do/make,regelmäßig,false,haben,present,mache,machst,macht,machen,macht,machen,Was machst du?
+machen,to do/make,regelmäßig,false,haben,preterite,machte,machtest,machte,machten,machtet,machten,Ich machte Hausaufgaben.
+machen,to do/make,regelmäßig,false,haben,perfect,habe gemacht,hast gemacht,hat gemacht,haben gemacht,habt gemacht,haben gemacht,Er hat Frühstück gemacht.
+machen,to do/make,regelmäßig,false,haben,imperative,,mach,,machen wir,macht,machen Sie,Mach die Tür zu!
+meinen,to mean/think,regelmäßig,false,haben,present,meine,meinst,meint,meinen,meint,meinen,Was meinst du?
+meinen,to mean/think,regelmäßig,false,haben,preterite,meinte,meintest,meinte,meinten,meintet,meinten,Er meinte es ernst.
+meinen,to mean/think,regelmäßig,false,haben,perfect,habe gemeint,hast gemeint,hat gemeint,haben gemeint,habt gemeint,haben gemeint,Sie hat es gut gemeint.
+meinen,to mean/think,regelmäßig,false,haben,imperative,,meine,,meinen wir,meint,meinen Sie,Meine!
+mitbringen,to bring along,gemischt,true,haben,present,bringe mit,bringst mit,bringt mit,bringen mit,bringt mit,bringen mit,Ich bringe Kuchen mit.
+mitbringen,to bring along,gemischt,true,haben,preterite,brachte mit,brachtest mit,brachte mit,brachten mit,brachtet mit,brachten mit,Er brachte Wein mit.
+mitbringen,to bring along,gemischt,true,haben,perfect,habe mitgebracht,hast mitgebracht,hat mitgebracht,haben mitgebracht,habt mitgebracht,haben mitgebracht,Sie hat etwas mitgebracht.
+mitbringen,to bring along,gemischt,true,haben,imperative,,bring mit,,bringen wir mit,bringt mit,bringen Sie mit,Bring mit!
+mitkommen,to come along,unregelmäßig,true,sein,present,komme mit,kommst mit,kommt mit,kommen mit,kommt mit,kommen mit,Kommst du mit?
+mitkommen,to come along,unregelmäßig,true,sein,preterite,kam mit,kamst mit,kam mit,kamen mit,kamt mit,kamen mit,Er kam mit uns mit.
+mitkommen,to come along,unregelmäßig,true,sein,perfect,bin mitgekommen,bist mitgekommen,ist mitgekommen,sind mitgekommen,seid mitgekommen,sind mitgekommen,Sie ist mitgekommen.
+mitkommen,to come along,unregelmäßig,true,sein,imperative,,komme mit,,kommen wir mit,kommt mit,kommen Sie mit,Komm mit!
+mitnehmen,to take along,unregelmäßig,true,haben,present,nehme mit,nimmst mit,nimmt mit,nehmen mit,nehmt mit,nehmen mit,Nimm einen Schirm mit!
+mitnehmen,to take along,unregelmäßig,true,haben,preterite,nahm mit,nahmst mit,nahm mit,nahmen mit,nahmt mit,nahmen mit,Er nahm sie mit.
+mitnehmen,to take along,unregelmäßig,true,haben,perfect,habe mitgenommen,hast mitgenommen,hat mitgenommen,haben mitgenommen,habt mitgenommen,haben mitgenommen,Sie hat es mitgenommen.
+mitnehmen,to take along,unregelmäßig,true,haben,imperative,,nimm mit,,nehmen wir mit,nehmt mit,nehmen Sie mit,Nimm mit!
+möchten,would like,modal,false,haben,present,möchte,möchtest,möchte,möchten,möchtet,möchten,Ich möchte einen Kaffee.
+mögen,to like,modal,false,haben,present,mag,magst,mag,mögen,mögt,mögen,Ich mag Pizza.
+mögen,to like,modal,false,haben,present,mag,magst,mag,mögen,mögt,mögen,Ich mag Pizza.
+mögen,to like,modal,false,haben,preterite,mochte,mochtest,mochte,mochten,mochtet,mochten,Ich mochte keine Milch.
+mögen,to like,modal,false,haben,preterite,mochte,mochtest,mochte,mochten,mochtet,mochten,Er mochte Schokolade.
+mögen,to like,modal,false,haben,perfect,habe gemocht,hast gemocht,hat gemocht,haben gemocht,habt gemocht,haben gemocht,Sie hat es gemocht.
+mögen,to like,modal,false,haben,perfect,habe gemocht,hast gemocht,hat gemocht,haben gemocht,habt gemocht,haben gemocht,Sie hat es gemocht.
+müssen,must/have to,modal,false,haben,present,muss,musst,muss,müssen,müsst,müssen,Ich muss arbeiten.
+müssen,must/have to,modal,false,haben,preterite,musste,musstest,musste,mussten,musstet,mussten,Ich musste früh aufstehen.
+müssen,must/have to,modal,false,haben,perfect,habe gemusst,hast gemusst,hat gemusst,haben gemusst,habt gemusst,haben gemusst,Sie hat arbeiten müssen.
+nehmen,to take,unregelmäßig,false,haben,present,nehme,nimmst,nimmt,nehmen,nehmt,nehmen,Ich nehme den Bus.
+nehmen,to take,unregelmäßig,false,haben,preterite,nahm,nahmst,nahm,nahmen,nahmt,nahmen,Er nahm das Geld.
+nehmen,to take,unregelmäßig,false,haben,perfect,habe genommen,hast genommen,hat genommen,haben genommen,habt genommen,haben genommen,Sie hat es genommen.
+nehmen,to take,unregelmäßig,false,haben,imperative,,nimm,,nehmen wir,nehmt,nehmen Sie,Nimm das!
+organisieren,to organize,regelmäßig,false,haben,present,organisiere,organisierst,organisiert,organisieren,organisiert,organisieren,Ich organisiere die Party.
+organisieren,to organize,regelmäßig,false,haben,preterite,organisierte,organisiertest,organisierte,organisierten,organisiertet,organisierten,Er organisierte das Fest.
+organisieren,to organize,regelmäßig,false,haben,perfect,habe organisiert,hast organisiert,hat organisiert,haben organisiert,habt organisiert,haben organisiert,Sie hat es organisiert.
+organisieren,to organize,regelmäßig,false,haben,imperative,,organisier,,organisieren wir,organisiert,organisieren Sie,Organisier!
+passen,to fit,regelmäßig,false,haben,present,passe,passt,passt,passen,passt,passen,Das passt gut.
+passen,to fit,regelmäßig,false,haben,preterite,passte,passtest,passte,passten,passtet,passten,Die Schuhe passten nicht.
+passen,to fit,regelmäßig,false,haben,perfect,habe gepasst,hast gepasst,hat gepasst,haben gepasst,habt gepasst,haben gepasst,Es hat gepasst.
+passen,to fit,regelmäßig,false,haben,imperative,,pass,,passen wir,passt,passen Sie,Pass!
+passieren,to happen,regelmäßig,false,sein,present,passiere,passierst,passiert,passieren,passiert,passieren,Was passiert hier?
+passieren,to happen,regelmäßig,false,sein,preterite,passierte,passiertest,passierte,passierten,passiertet,passierten,Es passierte gestern.
+passieren,to happen,regelmäßig,false,sein,perfect,bin passiert,bist passiert,ist passiert,sind passiert,seid passiert,sind passiert,Was ist passiert?
+passieren,to happen,regelmäßig,false,sein,imperative,,passier,,passieren wir,passiert,passieren Sie,Passier!
+planen,to plan,regelmäßig,false,haben,present,plane,planst,plant,planen,plant,planen,Wir planen den Urlaub.
+planen,to plan,regelmäßig,false,haben,preterite,plante,plantest,plante,planten,plantet,planten,Er plante die Reise.
+planen,to plan,regelmäßig,false,haben,perfect,habe geplant,hast geplant,hat geplant,haben geplant,habt geplant,haben geplant,Sie hat alles geplant.
+planen,to plan,regelmäßig,false,haben,imperative,,plane,,planen wir,plant,planen Sie,Plane!
+probieren,to try,regelmäßig,false,haben,present,probiere,probierst,probiert,probieren,probiert,probieren,Probier mal!
+probieren,to try,regelmäßig,false,haben,preterite,probierte,probiertest,probierte,probierten,probiertet,probierten,Ich probierte es aus.
+probieren,to try,regelmäßig,false,haben,perfect,habe probiert,hast probiert,hat probiert,haben probiert,habt probiert,haben probiert,Er hat es probiert.
+probieren,to try,regelmäßig,false,haben,imperative,,probier,,probieren wir,probiert,probieren Sie,Probier!
+putzen,to clean,regelmäßig,false,haben,present,putze,putzt,putzt,putzen,putzt,putzen,Ich putze die Wohnung.
+putzen,to clean,regelmäßig,false,haben,preterite,putzte,putztest,putzte,putzten,putztet,putzten,Er putzte das Bad.
+putzen,to clean,regelmäßig,false,haben,perfect,habe geputzt,hast geputzt,hat geputzt,haben geputzt,habt geputzt,haben geputzt,Sie hat geputzt.
+putzen,to clean,regelmäßig,false,haben,imperative,,putz,,putzen wir,putzt,putzen Sie,Putz!
+regnen,to rain,regelmäßig,false,haben,present,,,,,,regnet,Es regnet.
+regnen,to rain,regelmäßig,false,haben,preterite,,,,,,regnete,Es regnete gestern.
+regnen,to rain,regelmäßig,false,haben,perfect,habe geregnet,hast geregnet,hat geregnet,haben geregnet,habt geregnet,haben geregnet,Es hat geregnet.
+regnen,to rain,regelmäßig,false,haben,imperative,,regne,,regnen wir,regnt,regnen Sie,Regne!
+reisen,to travel,regelmäßig,false,sein,present,reise,reist,reist,reisen,reist,reisen,Ich reise gerne.
+reisen,to travel,regelmäßig,false,sein,preterite,reiste,reistest,reiste,reisten,reistet,reisten,Er reiste nach Italien.
+reisen,to travel,regelmäßig,false,sein,perfect,bin gereist,bist gereist,ist gereist,sind gereist,seid gereist,sind gereist,Sie ist viel gereist.
+reisen,to travel,regelmäßig,false,sein,imperative,,reis,,reisen wir,reist,reisen Sie,Reis!
+reparieren,to repair,regelmäßig,false,haben,present,repariere,reparierst,repariert,reparieren,repariert,reparieren,Er repariert das Fahrrad.
+reparieren,to repair,regelmäßig,false,haben,preterite,reparierte,repariertest,reparierte,reparierten,repariertet,reparierten,Ich reparierte den Computer.
+reparieren,to repair,regelmäßig,false,haben,perfect,habe repariert,hast repariert,hat repariert,haben repariert,habt repariert,haben repariert,Sie hat es repariert.
+reparieren,to repair,regelmäßig,false,haben,imperative,,reparier,,reparieren wir,repariert,reparieren Sie,Reparier!
+reservieren,to reserve,regelmäßig,false,haben,present,reserviere,reservierst,reserviert,reservieren,reserviert,reservieren,Ich reserviere einen Tisch.
+reservieren,to reserve,regelmäßig,false,haben,preterite,reservierte,reserviertest,reservierte,reservierten,reserviertet,reservierten,Er reservierte zwei Plätze.
+reservieren,to reserve,regelmäßig,false,haben,perfect,habe reserviert,hast reserviert,hat reserviert,haben reserviert,habt reserviert,haben reserviert,Sie hat reserviert.
+reservieren,to reserve,regelmäßig,false,haben,imperative,,reservier,,reservieren wir,reserviert,reservieren Sie,Reservier!
+sagen,to say,regelmäßig,false,haben,present,sage,sagst,sagt,sagen,sagt,sagen,Was sagst du?
+sagen,to say,regelmäßig,false,haben,preterite,sagte,sagtest,sagte,sagten,sagtet,sagten,Ich sagte nichts.
+sagen,to say,regelmäßig,false,haben,perfect,habe gesagt,hast gesagt,hat gesagt,haben gesagt,habt gesagt,haben gesagt,Er hat die Wahrheit gesagt.
+sagen,to say,regelmäßig,false,haben,imperative,,sag,,sagen wir,sagt,sagen Sie,Sag!
+schaffen,to manage/create,regelmäßig,false,haben,present,schaffe,schaffst,schafft,schaffen,schafft,schaffen,Du schaffst das!
+schaffen,to manage/create,regelmäßig,false,haben,preterite,schaffte,schafftest,schaffte,schafften,schafftet,schafften,Ich schaffte es rechtzeitig.
+schaffen,to manage/create,regelmäßig,false,haben,perfect,habe geschafft,hast geschafft,hat geschafft,haben geschafft,habt geschafft,haben geschafft,Er hat es geschafft.
+schaffen,to manage/create,regelmäßig,false,haben,imperative,,schaff,,schaffen wir,schafft,schaffen Sie,Schaff!
+schauen,to look,regelmäßig,false,haben,present,schaue,schaust,schaut,schauen,schaut,schauen,Schau mal hier!
+schauen,to look,regelmäßig,false,haben,preterite,schaute,schautest,schaute,schauten,schautet,schauten,Ich schaute aus dem Fenster.
+schauen,to look,regelmäßig,false,haben,perfect,habe geschaut,hast geschaut,hat geschaut,haben geschaut,habt geschaut,haben geschaut,Er hat genau geschaut.
+schauen,to look,regelmäßig,false,haben,imperative,,schau,,schauen wir,schaut,schauen Sie,Schau!
+scheinen,to shine/seem,unregelmäßig,false,haben,present,scheine,scheinst,scheint,scheinen,scheint,scheinen,Die Sonne scheint.
+scheinen,to shine/seem,unregelmäßig,false,haben,preterite,schien,schienst,schien,schienen,schient,schienen,Die Sonne schien.
+scheinen,to shine/seem,unregelmäßig,false,haben,perfect,habe geschienen,hast geschienen,hat geschienen,haben geschienen,habt geschienen,haben geschienen,Die Sonne hat geschienen.
+scheinen,to shine/seem,unregelmäßig,false,haben,imperative,,scheine,,scheinen wir,scheint,scheinen Sie,Scheine!
+schenken,to give (gift),regelmäßig,false,haben,present,schenke,schenkst,schenkt,schenken,schenkt,schenken,Ich schenke dir ein Buch.
+schenken,to give (gift),regelmäßig,false,haben,preterite,schenkte,schenktest,schenkte,schenkten,schenktet,schenkten,Er schenkte ihr Blumen.
+schenken,to give (gift),regelmäßig,false,haben,perfect,habe geschenkt,hast geschenkt,hat geschenkt,haben geschenkt,habt geschenkt,haben geschenkt,Sie hat es geschenkt.
+schenken,to give (gift),regelmäßig,false,haben,imperative,,schenk,,schenken wir,schenkt,schenken Sie,Schenk!!)
+schlafen,to sleep,unregelmäßig,false,haben,present,schlafe,schläfst,schläft,schlafen,schlaft,schlafen,Das Baby schläft.
+schlafen,to sleep,unregelmäßig,false,haben,preterite,schlief,schliefst,schlief,schliefen,schlieft,schliefen,Ich schlief gut.
+schlafen,to sleep,unregelmäßig,false,haben,perfect,habe geschlafen,hast geschlafen,hat geschlafen,haben geschlafen,habt geschlafen,haben geschlafen,Er hat lange geschlafen.
+schlafen,to sleep,unregelmäßig,false,haben,imperative,,schlaf,,schlafen wir,schlaft,schlafen Sie,Schlaf gut!
+schließen,to close,unregelmäßig,false,haben,present,schließe,schließt,schließt,schließen,schließt,schließen,Ich schließe die Tür.
+schließen,to close,unregelmäßig,false,haben,preterite,schloss,schlossest,schloss,schlossen,schlosst,schlossen,Er schloss das Geschäft.
+schließen,to close,unregelmäßig,false,haben,perfect,habe geschlossen,hast geschlossen,hat geschlossen,haben geschlossen,habt geschlossen,haben geschlossen,Sie hat das Fenster geschlossen.
+schließen,to close,unregelmäßig,false,haben,imperative,,schließ,,schließen wir,schließt,schließen Sie,Schließ die Tür!
+schmecken,to taste,regelmäßig,false,haben,present,schmecke,schmeckst,schmeckt,schmecken,schmeckt,schmecken,Das schmeckt gut!
+schmecken,to taste,regelmäßig,false,haben,preterite,schmeckte,schmecktest,schmeckte,schmeckten,schmecktet,schmeckten,Es schmeckte lecker.
+schmecken,to taste,regelmäßig,false,haben,perfect,habe geschmeckt,hast geschmeckt,hat geschmeckt,haben geschmeckt,habt geschmeckt,haben geschmeckt,Das Essen hat geschmeckt.
+schneien,to snow,regelmäßig,false,haben,present,,,,,,schneit,Es schneit.
+schneien,to snow,regelmäßig,false,haben,preterite,,,,,,schneite,Es schneite im Winter.
+schneien,to snow,regelmäßig,false,haben,perfect,habe geschneit,hast geschneit,hat geschneit,haben geschneit,habt geschneit,haben geschneit,Es hat geschneit.
+schneien,to snow,regelmäßig,false,haben,imperative,,schnei,,schneien wir,schneit,schneien Sie,Schnei!
+schreiben,to write,unregelmäßig,false,haben,present,schreibe,schreibst,schreibt,schreiben,schreibt,schreiben,Ich schreibe einen Brief.
+schreiben,to write,unregelmäßig,false,haben,preterite,schrieb,schriebst,schrieb,schrieben,schriebt,schrieben,Er schrieb eine E-Mail.
+schreiben,to write,unregelmäßig,false,haben,perfect,habe geschrieben,hast geschrieben,hat geschrieben,haben geschrieben,habt geschrieben,haben geschrieben,Sie hat mir geschrieben.
+schreiben,to write,unregelmäßig,false,haben,imperative,,schreib,,schreiben wir,schreibt,schreiben Sie,Schreib mir eine E-Mail!
+schwimmen,to swim,unregelmäßig,false,sein,present,schwimme,schwimmst,schwimmt,schwimmen,schwimmt,schwimmen,Ich schwimme gerne.
+schwimmen,to swim,unregelmäßig,false,sein,preterite,schwamm,schwammst,schwamm,schwammen,schwammt,schwammen,Er schwamm im See.
+schwimmen,to swim,unregelmäßig,false,sein,perfect,bin geschwommen,bist geschwommen,ist geschwommen,sind geschwommen,seid geschwommen,sind geschwommen,Sie ist geschwommen.
+schwimmen,to swim,unregelmäßig,false,sein,imperative,,schwimme,,schwimmen wir,schwimmt,schwimmen Sie,Schwimme!
+sehen,to see,unregelmäßig,false,haben,present,sehe,siehst,sieht,sehen,seht,sehen,Ich sehe den Film.
+sehen,to see,unregelmäßig,false,haben,preterite,sah,sahst,sah,sahen,saht,sahen,Er sah das Auto.
+sehen,to see,unregelmäßig,false,haben,perfect,habe gesehen,hast gesehen,hat gesehen,haben gesehen,habt gesehen,haben gesehen,Sie hat ihn gesehen.
+sehen,to see,unregelmäßig,false,haben,imperative,,sieh,,sehen wir,seht,sehen Sie,Sieh mal!
+sein,to be,unregelmäßig,false,sein,present,bin,bist,ist,sind,seid,sind,Ich bin zu Hause.
+sein,to be,unregelmäßig,false,sein,preterite,war,warst,war,waren,wart,waren,Ich war gestern müde.
+sein,to be,unregelmäßig,false,sein,perfect,bin gewesen,bist gewesen,ist gewesen,sind gewesen,seid gewesen,sind gewesen,Er ist zu Hause gewesen.
+sein,to be,unregelmäßig,false,sein,imperative,,sei,,seien wir,seid,seien Sie,Sei ruhig!
+setzen,to set/put,regelmäßig,false,haben,present,setze,setzt,setzt,setzen,setzt,setzen,Ich setze mich hin.
+setzen,to set/put,regelmäßig,false,haben,preterite,setzte,setztest,setzte,setzten,setztet,setzten,Er setzte sich.
+setzen,to set/put,regelmäßig,false,haben,perfect,habe gesetzt,hast gesetzt,hat gesetzt,haben gesetzt,habt gesetzt,haben gesetzt,Sie hat sich gesetzt.
+setzen,to set/put,regelmäßig,false,haben,imperative,,setz,,setzen wir,setzt,setzen Sie,Setz!
+singen,to sing,unregelmäßig,false,haben,present,singe,singst,singt,singen,singt,singen,Sie singt schön.
+singen,to sing,unregelmäßig,false,haben,preterite,sang,sangst,sang,sangen,sangt,sangen,Er sang ein Lied.
+singen,to sing,unregelmäßig,false,haben,perfect,habe gesungen,hast gesungen,hat gesungen,haben gesungen,habt gesungen,haben gesungen,Sie hat gesungen.
+singen,to sing,unregelmäßig,false,haben,imperative,,sing,,singen wir,singt,singen Sie,Sing!
+sitzen,to sit,unregelmäßig,false,haben,present,sitze,sitzt,sitzt,sitzen,sitzt,sitzen,Ich sitze auf dem Stuhl.
+sitzen,to sit,unregelmäßig,false,haben,preterite,saß,saßest,saß,saßen,saßt,saßen,Er saß im Garten.
+sitzen,to sit,unregelmäßig,false,haben,perfect,habe gesessen,hast gesessen,hat gesessen,haben gesessen,habt gesessen,haben gesessen,Sie hat dort gesessen.
+sitzen,to sit,unregelmäßig,false,haben,imperative,,sitz,,sitzen wir,sitzt,sitzen Sie,Sitz!
+sollen,should/ought to,modal,false,haben,present,soll,sollst,soll,sollen,sollt,sollen,Du sollst pünktlich sein.
+sollen,should/ought to,modal,false,haben,preterite,sollte,solltest,sollte,sollten,solltet,sollten,Ich sollte lernen.
+sollen,should/ought to,modal,false,haben,perfect,habe gesollt,hast gesollt,hat gesollt,haben gesollt,habt gesollt,haben gesollt,Sie hat kommen sollen.
+sparen,to save (money),regelmäßig,false,haben,present,spare,sparst,spart,sparen,spart,sparen,Ich spare für den Urlaub.
+sparen,to save (money),regelmäßig,false,haben,preterite,sparte,spartest,sparte,sparten,spartet,sparten,Er sparte jeden Monat.
+sparen,to save (money),regelmäßig,false,haben,perfect,habe gespart,hast gespart,hat gespart,haben gespart,habt gespart,haben gespart,Sie hat viel gespart.
+sparen,to save (money),regelmäßig,false,haben,imperative,,spar,,sparen wir,spart,sparen Sie,Spar!!)
+spielen,to play,regelmäßig,false,haben,present,spiele,spielst,spielt,spielen,spielt,spielen,Kinder spielen gern.
+spielen,to play,regelmäßig,false,haben,preterite,spielte,spieltest,spielte,spielten,spieltet,spielten,Ich spielte Fußball.
+spielen,to play,regelmäßig,false,haben,perfect,habe gespielt,hast gespielt,hat gespielt,haben gespielt,habt gespielt,haben gespielt,Er hat Klavier gespielt.
+spielen,to play,regelmäßig,false,haben,imperative,,spiel,,spielen wir,spielt,spielen Sie,Spiel mit uns!
+sprechen,to speak,unregelmäßig,false,haben,present,spreche,sprichst,spricht,sprechen,sprecht,sprechen,Wir sprechen Deutsch.
+sprechen,to speak,unregelmäßig,false,haben,preterite,sprach,sprachst,sprach,sprachen,spracht,sprachen,Ich sprach mit ihm.
+sprechen,to speak,unregelmäßig,false,haben,perfect,habe gesprochen,hast gesprochen,hat gesprochen,haben gesprochen,habt gesprochen,haben gesprochen,Sie hat gut gesprochen.
+sprechen,to speak,unregelmäßig,false,haben,imperative,,sprich,,sprechen wir,sprecht,sprechen Sie,Sprich deutlich!
+spülen,to rinse/do dishes,regelmäßig,false,haben,present,spüle,spülst,spült,spülen,spült,spülen,Ich spüle das Geschirr.
+spülen,to rinse/do dishes,regelmäßig,false,haben,preterite,spülte,spültest,spülte,spülten,spültet,spülten,Er spülte die Teller.
+spülen,to rinse/do dishes,regelmäßig,false,haben,perfect,habe gespült,hast gespült,hat gespült,haben gespült,habt gespült,haben gespült,Sie hat gespült.
+spülen,to rinse/do dishes,regelmäßig,false,haben,imperative,,spül,,spülen wir,spült,spülen Sie,Spül!
+stehen,to stand,unregelmäßig,false,haben,present,stehe,stehst,steht,stehen,steht,stehen,Ich stehe an der Tür.
+stehen,to stand,unregelmäßig,false,haben,preterite,stand,standest,stand,standen,standet,standen,Er stand im Regen.
+stehen,to stand,unregelmäßig,false,haben,perfect,habe gestanden,hast gestanden,hat gestanden,haben gestanden,habt gestanden,haben gestanden,Sie hat lange gestanden.
+stehen,to stand,unregelmäßig,false,haben,imperative,,steh,,stehen wir,steht,stehen Sie,Steh!
+stellen,to put/place,regelmäßig,false,haben,present,stelle,stellst,stellt,stellen,stellt,stellen,Ich stelle die Vase auf den Tisch.
+stellen,to put/place,regelmäßig,false,haben,preterite,stellte,stelltest,stellte,stellten,stelltet,stellten,Er stellte die Frage.
+stellen,to put/place,regelmäßig,false,haben,perfect,habe gestellt,hast gestellt,hat gestellt,haben gestellt,habt gestellt,haben gestellt,Sie hat die Blumen hingestellt.
+stellen,to put/place,regelmäßig,false,haben,imperative,,stell,,stellen wir,stellt,stellen Sie,Stell!
+stimmen,to be correct,regelmäßig,false,haben,present,stimme,stimmst,stimmt,stimmen,stimmt,stimmen,Das stimmt!
+stimmen,to be correct,regelmäßig,false,haben,preterite,stimmte,stimmtest,stimmte,stimmten,stimmtet,stimmten,Es stimmte nicht.
+stimmen,to be correct,regelmäßig,false,haben,perfect,habe gestimmt,hast gestimmt,hat gestimmt,haben gestimmt,habt gestimmt,haben gestimmt,Es hat gestimmt.
+stimmen,to be correct,regelmäßig,false,haben,imperative,,stimme,,stimmen wir,stimmt,stimmen Sie,Stimme!
+studieren,to study,regelmäßig,false,haben,present,studiere,studierst,studiert,studieren,studiert,studieren,Er studiert Medizin.
+studieren,to study,regelmäßig,false,haben,preterite,studierte,studiertest,studierte,studierten,studiertet,studierten,Ich studierte in Berlin.
+studieren,to study,regelmäßig,false,haben,perfect,habe studiert,hast studiert,hat studiert,haben studiert,habt studiert,haben studiert,Sie hat Jura studiert.
+studieren,to study,regelmäßig,false,haben,imperative,,studier,,studieren wir,studiert,studieren Sie,Studier!
+suchen,to search/look for,regelmäßig,false,haben,present,suche,suchst,sucht,suchen,sucht,suchen,Ich suche meine Brille.
+suchen,to search/look for,regelmäßig,false,haben,preterite,suchte,suchtest,suchte,suchten,suchtet,suchten,Er suchte seinen Schlüssel.
+suchen,to search/look for,regelmäßig,false,haben,perfect,habe gesucht,hast gesucht,hat gesucht,haben gesucht,habt gesucht,haben gesucht,Sie hat überall gesucht.
+suchen,to search/look for,regelmäßig,false,haben,imperative,,such,,suchen wir,sucht,suchen Sie,Such!
+tanzen,to dance,regelmäßig,false,haben,present,tanze,tanzt,tanzt,tanzen,tanzt,tanzen,Wir tanzen gerne.
+tanzen,to dance,regelmäßig,false,haben,preterite,tanzte,tanztest,tanzte,tanzten,tanztet,tanzten,Sie tanzte schön.
+tanzen,to dance,regelmäßig,false,haben,perfect,habe getanzt,hast getanzt,hat getanzt,haben getanzt,habt getanzt,haben getanzt,Er hat getanzt.
+tanzen,to dance,regelmäßig,false,haben,imperative,,tanz,,tanzen wir,tanzt,tanzen Sie,Tanz!
+tragen,to carry/wear,unregelmäßig,false,haben,present,trage,trägst,trägt,tragen,tragt,tragen,Sie trägt ein Kleid.
+tragen,to carry/wear,unregelmäßig,false,haben,preterite,trug,trugst,trug,trugen,trugt,trugen,Ich trug die Tasche.
+tragen,to carry/wear,unregelmäßig,false,haben,perfect,habe getragen,hast getragen,hat getragen,haben getragen,habt getragen,haben getragen,Er hat die Koffer getragen.
+tragen,to carry/wear,unregelmäßig,false,haben,imperative,,trag,,tragen wir,tragt,tragen Sie,Trag!
+treffen,to meet,unregelmäßig,false,haben,present,treffe,triffst,trifft,treffen,trefft,treffen,Ich treffe meinen Freund.
+treffen,to meet,unregelmäßig,false,haben,preterite,traf,trafst,traf,trafen,traft,trafen,Er traf sie zufällig.
+treffen,to meet,unregelmäßig,false,haben,perfect,habe getroffen,hast getroffen,hat getroffen,haben getroffen,habt getroffen,haben getroffen,Sie hat ihn getroffen.
+treffen,to meet,unregelmäßig,false,haben,imperative,,triff,,treffen wir,trefft,treffen Sie,Triff!
+trinken,to drink,unregelmäßig,false,haben,present,trinke,trinkst,trinkt,trinken,trinkt,trinken,Ich trinke Wasser.
+trinken,to drink,unregelmäßig,false,haben,preterite,trank,trankst,trank,tranken,trankt,tranken,Er trank Kaffee.
+trinken,to drink,unregelmäßig,false,haben,perfect,habe getrunken,hast getrunken,hat getrunken,haben getrunken,habt getrunken,haben getrunken,Sie hat Tee getrunken.
+trinken,to drink,unregelmäßig,false,haben,imperative,,trink,,trinken wir,trinkt,trinken Sie,Trink mehr Wasser!
+umsteigen,to change (trains),unregelmäßig,true,sein,present,steige um,steigst um,steigt um,steigen um,steigt um,steigen um,Ich steige in Frankfurt um.
+umsteigen,to change (trains),unregelmäßig,true,sein,preterite,stieg um,stiegst um,stieg um,stiegen um,stiegt um,stiegen um,Er stieg zweimal um.
+umsteigen,to change (trains),unregelmäßig,true,sein,perfect,bin umgestiegen,bist umgestiegen,ist umgestiegen,sind umgestiegen,seid umgestiegen,sind umgestiegen,Sie ist umgestiegen.
+umsteigen,to change (trains),unregelmäßig,true,sein,imperative,,umsteig,,umsteigen wir,umsteigt,umsteigen Sie,Umsteig!!)
+verdienen,to earn,regelmäßig,false,haben,present,verdiene,verdienst,verdient,verdienen,verdient,verdienen,Ich verdiene gut.
+verdienen,to earn,regelmäßig,false,haben,preterite,verdiente,verdientest,verdiente,verdienten,verdientet,verdienten,Er verdiente viel Geld.
+verdienen,to earn,regelmäßig,false,haben,perfect,habe verdient,hast verdient,hat verdient,haben verdient,habt verdient,haben verdient,Sie hat es verdient.
+verdienen,to earn,regelmäßig,false,haben,imperative,,verdiene,,verdienen wir,verdient,verdienen Sie,Verdiene!
+vergessen,to forget,unregelmäßig,false,haben,present,vergesse,vergisst,vergisst,vergessen,vergesst,vergessen,Ich vergesse oft Namen.
+vergessen,to forget,unregelmäßig,false,haben,preterite,vergaß,vergaßest,vergaß,vergaßen,vergaßt,vergaßen,Er vergaß den Termin.
+vergessen,to forget,unregelmäßig,false,haben,perfect,habe vergessen,hast vergessen,hat vergessen,haben vergessen,habt vergessen,haben vergessen,Sie hat es vergessen.
+vergessen,to forget,unregelmäßig,false,haben,imperative,,vergiss,,vergessen wir,vergesst,vergessen Sie,Vergiss!
+verkaufen,to sell,regelmäßig,false,haben,present,verkaufe,verkaufst,verkauft,verkaufen,verkauft,verkaufen,Er verkauft sein Auto.
+verkaufen,to sell,regelmäßig,false,haben,preterite,verkaufte,verkauftest,verkaufte,verkauften,verkauftet,verkauften,Ich verkaufte mein Fahrrad.
+verkaufen,to sell,regelmäßig,false,haben,perfect,habe verkauft,hast verkauft,hat verkauft,haben verkauft,habt verkauft,haben verkauft,Sie hat das Haus verkauft.
+verkaufen,to sell,regelmäßig,false,haben,imperative,,verkauf,,verkaufen wir,verkauft,verkaufen Sie,Verkauf!
+verlieren,to lose,unregelmäßig,false,haben,present,verliere,verlierst,verliert,verlieren,verliert,verlieren,Ich verliere oft meine Schlüssel.
+verlieren,to lose,unregelmäßig,false,haben,preterite,verlor,verlorst,verlor,verloren,verlort,verloren,Er verlor das Spiel.
+verlieren,to lose,unregelmäßig,false,haben,perfect,habe verloren,hast verloren,hat verloren,haben verloren,habt verloren,haben verloren,Sie hat verloren.
+verlieren,to lose,unregelmäßig,false,haben,imperative,,verlier,,verlieren wir,verliert,verlieren Sie,Verlier!
+verstehen,to understand,unregelmäßig,false,haben,present,verstehe,verstehst,versteht,verstehen,versteht,verstehen,Ich verstehe das nicht.
+verstehen,to understand,unregelmäßig,false,haben,preterite,verstand,verstandest,verstand,verstanden,verstandet,verstanden,Er verstand die Frage.
+verstehen,to understand,unregelmäßig,false,haben,perfect,habe verstanden,hast verstanden,hat verstanden,haben verstanden,habt verstanden,haben verstanden,Sie hat alles verstanden.
+verstehen,to understand,unregelmäßig,false,haben,imperative,,versteh,,verstehen wir,versteht,verstehen Sie,Versteh!
+versuchen,to try/attempt,regelmäßig,false,haben,present,versuche,versuchst,versucht,versuchen,versucht,versuchen,Ich versuche es.
+versuchen,to try/attempt,regelmäßig,false,haben,preterite,versuchte,versuchtest,versuchte,versuchten,versuchtet,versuchten,Er versuchte sein Bestes.
+versuchen,to try/attempt,regelmäßig,false,haben,perfect,habe versucht,hast versucht,hat versucht,haben versucht,habt versucht,haben versucht,Sie hat es versucht.
+versuchen,to try/attempt,regelmäßig,false,haben,imperative,,versuch,,versuchen wir,versucht,versuchen Sie,Versuch!
+vorbereiten,to prepare,regelmäßig,true,haben,present,bereite vor,bereitest vor,bereitet vor,bereiten vor,bereitet vor,bereiten vor,Ich bereite das Essen vor.
+vorbereiten,to prepare,regelmäßig,true,haben,preterite,bereitete vor,bereitetest vor,bereitete vor,bereiteten vor,bereitetet vor,bereiteten vor,Er bereitete alles vor.
+vorbereiten,to prepare,regelmäßig,true,haben,perfect,habe vorbereitet,hast vorbereitet,hat vorbereitet,haben vorbereitet,habt vorbereitet,haben vorbereitet,Sie hat sich vorbereitet.
+vorbereiten,to prepare,regelmäßig,true,haben,imperative,,bereite vor,,bereiten wir vor,bereitet vor,bereiten Sie vor,Bereite vor!
+wandern,to hike,regelmäßig,false,sein,present,wandere,wanderst,wandert,wandern,wandert,wandern,Wir wandern in den Bergen.
+wandern,to hike,regelmäßig,false,sein,preterite,wanderte,wandertest,wanderte,wanderten,wandertet,wanderten,Ich wanderte allein.
+wandern,to hike,regelmäßig,false,sein,perfect,bin gewandert,bist gewandert,ist gewandert,sind gewandert,seid gewandert,sind gewandert,Er ist gewandert.
+wandern,to hike,regelmäßig,false,sein,imperative,,wandere,,wandern wir,wandert,wandern Sie,Wandere!
+warten,to wait,regelmäßig,false,haben,present,warte,wartest,wartet,warten,wartet,warten,Ich warte auf dich.
+warten,to wait,regelmäßig,false,haben,preterite,wartete,wartetest,wartete,warteten,wartetet,warteten,Er wartete lange.
+warten,to wait,regelmäßig,false,haben,perfect,habe gewartet,hast gewartet,hat gewartet,haben gewartet,habt gewartet,haben gewartet,Sie hat eine Stunde gewartet.
+warten,to wait,regelmäßig,false,haben,imperative,,warte,,warten wir,wartet,warten Sie,Warte hier!
+waschen,to wash,unregelmäßig,false,haben,present,wasche,wäschst,wäscht,waschen,wascht,waschen,Ich wasche meine Hände.
+waschen,to wash,unregelmäßig,false,haben,preterite,wusch,wuschest,wusch,wuschen,wuscht,wuschen,Er wusch das Auto.
+waschen,to wash,unregelmäßig,false,haben,perfect,habe gewaschen,hast gewaschen,hat gewaschen,haben gewaschen,habt gewaschen,haben gewaschen,Sie hat die Wäsche gewaschen.
+waschen,to wash,unregelmäßig,false,haben,imperative,,wasch,,waschen wir,wascht,waschen Sie,Wasch!
+weggehen,to go away,unregelmäßig,true,sein,present,gehe weg,gehst weg,geht weg,gehen weg,geht weg,gehen weg,Geh weg!
+weggehen,to go away,unregelmäßig,true,sein,preterite,ging weg,gingst weg,ging weg,gingen weg,gingt weg,gingen weg,Er ging einfach weg.
+weggehen,to go away,unregelmäßig,true,sein,perfect,bin weggegangen,bist weggegangen,ist weggegangen,sind weggegangen,seid weggegangen,sind weggegangen,Sie ist weggegangen.
+weggehen,to go away,unregelmäßig,true,sein,imperative,,geh weg,,gehen wir weg,geht weg,gehen Sie weg,Geh weg!
+weinen,to cry,regelmäßig,false,haben,present,weine,weinst,weint,weinen,weint,weinen,Das Baby weint.
+weinen,to cry,regelmäßig,false,haben,preterite,weinte,weintest,weinte,weinten,weintet,weinten,Sie weinte vor Freude.
+weinen,to cry,regelmäßig,false,haben,perfect,habe geweint,hast geweint,hat geweint,haben geweint,habt geweint,haben geweint,Er hat geweint.
+weinen,to cry,regelmäßig,false,haben,imperative,,weine,,weinen wir,weint,weinen Sie,Weine!
+weitermachen,to continue,regelmäßig,true,haben,present,mache weiter,machst weiter,macht weiter,machen weiter,macht weiter,machen weiter,Ich mache weiter.
+weitermachen,to continue,regelmäßig,true,haben,preterite,machte weiter,machtest weiter,machte weiter,machten weiter,machtet weiter,machten weiter,Er machte einfach weiter.
+weitermachen,to continue,regelmäßig,true,haben,perfect,habe weitergemacht,hast weitergemacht,hat weitergemacht,haben weitergemacht,habt weitergemacht,haben weitergemacht,Sie hat weitergemacht.
+weitermachen,to continue,regelmäßig,true,haben,imperative,,mach weiter,,machen wir weiter,macht weiter,machen Sie weiter,Mach weiter!
+werden,to become,unregelmäßig,false,sein,present,werde,wirst,wird,werden,werdet,werden,Ich werde Lehrer.
+werden,to become,unregelmäßig,false,sein,preterite,wurde,wurdest,wurde,wurden,wurdet,wurden,Es wurde kalt.
+werden,to become,unregelmäßig,false,sein,perfect,bin geworden,bist geworden,ist geworden,sind geworden,seid geworden,sind geworden,Sie ist Ärztin geworden.
+werden,to become,unregelmäßig,false,sein,imperative,,werde,,werden wir,werdet,werden Sie,Werde!
+wissen,to know (facts),unregelmäßig,false,haben,present,weiß,weißt,weiß,wissen,wisst,wissen,Ich weiß es nicht.
+wissen,to know (facts),unregelmäßig,false,haben,preterite,wusste,wusstest,wusste,wussten,wusstet,wussten,Er wusste die Antwort.
+wissen,to know (facts),unregelmäßig,false,haben,perfect,habe gewusst,hast gewusst,hat gewusst,haben gewusst,habt gewusst,haben gewusst,Sie hat es gewusst.
+wissen,to know (facts),unregelmäßig,false,haben,imperative,,wisse,,wissen wir,wisst,wissen Sie,Wisse!!)
+wohnen,to live,regelmäßig,false,haben,present,wohne,wohnst,wohnt,wohnen,wohnt,wohnen,Wir wohnen in Berlin.
+wohnen,to live,regelmäßig,false,haben,preterite,wohnte,wohntest,wohnte,wohnten,wohntet,wohnten,Ich wohnte in München.
+wohnen,to live,regelmäßig,false,haben,perfect,habe gewohnt,hast gewohnt,hat gewohnt,haben gewohnt,habt gewohnt,haben gewohnt,Sie hat lange hier gewohnt.
+wohnen,to live,regelmäßig,false,haben,imperative,,wohne,,wohnen wir,wohnt,wohnen Sie,Wohne!
+wollen,to want,modal,false,haben,present,will,willst,will,wollen,wollt,wollen,Ich will nach Hause.
+wollen,to want,modal,false,haben,preterite,wollte,wolltest,wollte,wollten,wolltet,wollten,Ich wollte schlafen.
+wollen,to want,modal,false,haben,perfect,habe gewollt,hast gewollt,hat gewollt,haben gewollt,habt gewollt,haben gewollt,Er hat es gewollt.
+wünschen,to wish,regelmäßig,false,haben,present,wünsche,wünschst,wünscht,wünschen,wünscht,wünschen,Ich wünsche dir alles Gute.
+wünschen,to wish,regelmäßig,false,haben,preterite,wünschte,wünschtest,wünschte,wünschten,wünschtet,wünschten,Er wünschte sich ein Auto.
+wünschen,to wish,regelmäßig,false,haben,perfect,habe gewünscht,hast gewünscht,hat gewünscht,haben gewünscht,habt gewünscht,haben gewünscht,Sie hat es sich gewünscht.
+wünschen,to wish,regelmäßig,false,haben,imperative,,wünsch,,wünschen wir,wünscht,wünschen Sie,Wünsch!
+zeigen,to show,regelmäßig,false,haben,present,zeige,zeigst,zeigt,zeigen,zeigt,zeigen,Ich zeige dir den Weg.
+zeigen,to show,regelmäßig,false,haben,preterite,zeigte,zeigtest,zeigte,zeigten,zeigtet,zeigten,Sie zeigte mir das Foto.
+zeigen,to show,regelmäßig,false,haben,perfect,habe gezeigt,hast gezeigt,hat gezeigt,haben gezeigt,habt gezeigt,haben gezeigt,Er hat es mir gezeigt.
+zeigen,to show,regelmäßig,false,haben,imperative,,zeig,,zeigen wir,zeigt,zeigen Sie,Zeig!
+zurückgeben,to give back,unregelmäßig,true,haben,present,gebe zurück,gibst zurück,gibt zurück,geben zurück,gebt zurück,geben zurück,Ich gebe es zurück.
+zurückgeben,to give back,unregelmäßig,true,haben,preterite,gab zurück,gabst zurück,gab zurück,gaben zurück,gabt zurück,gaben zurück,Er gab das Buch zurück.
+zurückgeben,to give back,unregelmäßig,true,haben,perfect,habe zurückgegeben,hast zurückgegeben,hat zurückgegeben,haben zurückgegeben,habt zurückgegeben,haben zurückgegeben,Sie hat es zurückgegeben.
+zurückgeben,to give back,unregelmäßig,true,haben,imperative,,gib zurück,,geben wir zurück,gebt zurück,geben Sie zurück,Gib zurück!
+zurückkommen,to come back,unregelmäßig,true,sein,present,komme zurück,kommst zurück,kommt zurück,kommen zurück,kommt zurück,kommen zurück,Wann kommst du zurück?
+zurückkommen,to come back,unregelmäßig,true,sein,preterite,kam zurück,kamst zurück,kam zurück,kamen zurück,kamt zurück,kamen zurück,Er kam spät zurück.
+zurückkommen,to come back,unregelmäßig,true,sein,perfect,bin zurückgekommen,bist zurückgekommen,ist zurückgekommen,sind zurückgekommen,seid zurückgekommen,sind zurückgekommen,Sie ist zurückgekommen.
+zurückkommen,to come back,unregelmäßig,true,sein,imperative,,komme zurück,,kommen wir zurück,kommt zurück,kommen Sie zurück,Komm zurück!
+ärgern,to annoy,regelmäßig,false,haben,present,ärgere,ärgerst,ärgert,ärgern,ärgert,ärgern,Das ärgert mich.
+ärgern,to annoy,regelmäßig,false,haben,preterite,ärgerte,ärgertest,ärgerte,ärgerten,ärgertet,ärgerten,Er ärgerte sich.
+ärgern,to annoy,regelmäßig,false,haben,perfect,habe geärgert,hast geärgert,hat geärgert,haben geärgert,habt geärgert,haben geärgert,Sie hat sich geärgert.
+ärgern,to annoy,regelmäßig,false,haben,imperative,,ärgere,,ärgern wir,ärgert,ärgern Sie,Ärgere!
+öffnen,to open,regelmäßig,false,haben,present,öffne,öffnest,öffnet,öffnen,öffnet,öffnen,Ich öffne die Tür.
+öffnen,to open,regelmäßig,false,haben,preterite,öffnete,öffnetest,öffnete,öffneten,öffnetet,öffneten,Er öffnete das Fenster.
+öffnen,to open,regelmäßig,false,haben,perfect,habe geöffnet,hast geöffnet,hat geöffnet,haben geöffnet,habt geöffnet,haben geöffnet,Sie hat die Flasche geöffnet.
+öffnen,to open,regelmäßig,false,haben,imperative,,öffne,,öffnen wir,öffnt,öffnen Sie,Öffne das Fenster!

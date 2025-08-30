@@ -20,15 +20,25 @@ class Verb(BaseModel, FieldProcessor):
 
     Implements FieldProcessor interface to handle its own field processing
     for media generation, following Domain-Driven Design principles.
+    Enhanced to match VerbRecord structure with all tenses.
     """
 
     verb: str = Field(..., description="The German verb in infinitive form")
     english: str = Field(..., description="English translation")
+    classification: str = Field(
+        default="",
+        description="Verb classification (regelmäßig, unregelmäßig, gemischt)",
+    )
     present_ich: str = Field(..., description="First person singular present tense")
     present_du: str = Field(..., description="Second person singular present tense")
     present_er: str = Field(..., description="Third person singular present tense")
+    präteritum: str = Field(
+        default="", description="Präteritum 3rd person singular form"
+    )
+    auxiliary: str = Field(default="", description="Auxiliary verb (haben or sein)")
     perfect: str = Field(..., description="Perfect tense form")
     example: str = Field(..., description="Example sentence using the verb")
+    separable: bool = Field(default=False, description="Whether the verb is separable")
 
     # Media fields (not from CSV but added during processing)
     word_audio: str = Field(
@@ -116,19 +126,35 @@ class Verb(BaseModel, FieldProcessor):
         ]
 
     def get_combined_audio_text(self) -> str:
-        """Get combined text for verb conjugation audio.
+        """Get combined text for verb conjugation audio with German tense labels.
 
         Returns:
-            Combined text showing verb conjugations including perfect tense:
-            "gehen, ich gehe, du gehst, er geht, hat gegangen"
+            Combined text with German labels, conjugations, and SSML pause tags:
+            "arbeiten, Präsens ich arbeite, du arbeitest, Perfekt hat gearbeitet"
         """
         parts = [self.verb]
-        if self.present_ich:
-            parts.append(f"ich {self.present_ich}")
-        if self.present_du:
-            parts.append(f"du {self.present_du}")
-        if self.present_er:
-            parts.append(f"er {self.present_er}")
+
+        # Präsens (Present tense) with German label
+        if self.present_ich or self.present_du or self.present_er:
+            parts.append("<break strength='strong'/>Präsens")
+            if self.present_ich:
+                parts.append(f"ich {self.present_ich}")
+            if self.present_du:
+                parts.append(f"du {self.present_du}")
+            if self.present_er:
+                parts.append(f"er sie es {self.present_er}")
+
+        # Präteritum with German label
+        if self.präteritum:
+            parts.extend(
+                ["<break strength='strong'/>Präteritum", f"er sie es {self.präteritum}"]
+            )
+
+        # Perfekt with German label
         if self.perfect:
-            parts.append(self.perfect)
+            # The perfect form typically already includes the auxiliary verb
+            parts.extend(
+                ["<break strength='strong'/>Perfekt", f"er sie es {self.perfect}"]
+            )
+
         return ", ".join(parts)

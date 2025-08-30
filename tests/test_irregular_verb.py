@@ -86,15 +86,30 @@ def test_irregular_verb_from_csv() -> None:
     csv_data = {
         "verb": "kommen",
         "english": "to come",
+        "classification": "unregelmäßig",
         "present_ich": "komme",
         "present_du": "kommst",
         "present_er": "kommt",
+        "präteritum": "kam",
+        "auxiliary": "sein",
         "perfect": "ist gekommen",
         "example": "Woher kommst du?",
         "notes": "Irregular perfect with 'ist'",
     }
 
-    verb = IrregularVerb(**csv_data)
+    verb = IrregularVerb(
+        verb=csv_data["verb"],
+        english=csv_data["english"],
+        classification=csv_data["classification"],
+        present_ich=csv_data["present_ich"],
+        present_du=csv_data["present_du"],
+        present_er=csv_data["present_er"],
+        präteritum=csv_data["präteritum"],
+        auxiliary=csv_data["auxiliary"],
+        perfect=csv_data["perfect"],
+        example=csv_data["example"],
+        notes=csv_data["notes"],
+    )
     assert verb.verb == "kommen"
     assert verb.notes == "Irregular perfect with 'ist'"
     assert verb.validate_irregular_conjugation() is True

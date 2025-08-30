@@ -3,7 +3,7 @@
 ## Executive Summary
 
 **Status**: Production-ready template system with German A1 implementation  
-**Last Updated**: 2025-08-21  
+**Last Updated**: 2025-08-24 (Updated with verb template alignment standards)
 **Architecture**: HTML/CSS template system with responsive and accessible design  
 **Integration**: Clean Pipeline Architecture with CardBuilder service
 
@@ -17,7 +17,8 @@
 6. [Media Integration](#media-integration)
 7. [Language-Specific Features](#language-specific-features)
 8. [Design Patterns](#design-patterns)
-9. [Future Enhancements](#future-enhancements)
+9. [Verb Template Standards](#verb-template-standards)
+10. [Future Enhancements](#future-enhancements)
 
 ## Requirements
 
@@ -88,14 +89,15 @@
 /* Primary Colors */
 --primary-blue: #2c5aa0;      /* German language association */
 --success-green: #4CAF50;     /* Hints and positive actions */
---background-light: #f8f9fa;  /* Card background */
+--background-light: #f8f9fa;  /* Card background & content boxes */
 --text-primary: #333;          /* Main text */
 --text-secondary: #666;        /* Supporting text */
 
 /* Semantic Colors */
 --hint-bg: #e8f4fd;           /* Light blue for hints */
 --example-bg: #f0f4f8;        /* Subtle background for examples */
---border-accent: #2c5aa0;     /* Accent borders */
+--related-bg: #f0f4f8;        /* Background for related words/expressions */
+--border-accent: #2c5aa0;     /* Accent borders for content boxes */
 ```
 
 #### 4. Typography
@@ -548,6 +550,152 @@ noun_JA_jp_front.html   # Japanese noun
 
 ## Design Patterns
 
+### Card Layout Consistency Rules
+
+#### Element Order Standards
+All card templates follow a consistent element ordering pattern for predictable user experience:
+
+**Front Card (Question Side) Order:**
+1. **Image** (if present)
+2. **Part of Speech** indicator
+3. **Context information** (for phrases only)
+4. **Hint button** (always at bottom)
+
+**Back Card (Answer Side) Order:**
+1. **Image** (if present)
+2. **Main content box** (focused blue bounding box with key information)
+3. **Supporting content** (examples, context, related words)
+4. **Hint button** (always at bottom)
+
+#### Bounding Box Design Standards
+```css
+/* Focused content boxes - consistent across all card types */
+.noun-forms, .phrase-info, .conjugation-table, .adjective-forms {
+    background: #f8f9fa;           /* Light gray background */
+    border: 2px solid #2c5aa0;    /* German blue border */
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: inline-block;         /* Fit content, not full width */
+}
+```
+
+#### Language Consistency Standards
+All interface elements use German terminology for immersive learning:
+
+```html
+<!-- Consistent German labels -->
+<strong>Verwandte Wörter:</strong>      <!-- Related Words (for nouns) -->
+<strong>Verwandte Ausdrücke:</strong>   <!-- Related Expressions (for phrases) -->
+<button>💡 Tipp</button>                <!-- Hint button (not "Hint") -->
+<div class="context-label">Kontext</div> <!-- Context label -->
+```
+
+#### Related Content Formatting
+All "Related" sections use single-line format for consistency:
+
+```html
+<!-- Correct format (single line with bold label) -->
+<div class="related-words">
+    <strong>Verwandte Wörter:</strong> {{Related}}
+</div>
+
+<!-- Avoid: Two-line format -->
+<div class="related-label">Verwandte Wörter</div>
+<div class="related-value">{{Related}}</div>
+```
+
+### Verb Template Alignment Standards
+
+#### Classification Block Consistency
+All verb templates must include the same semantic classification representation:
+
+```html
+{{#Classification}}
+<div class="verb-classification">
+    <strong>Klassifikation:</strong> <span class="classification-{{Classification}}">{{Classification}}</span>
+    {{#Separable}}<span class="separable-indicator">• Trennbar: {{Separable}}</span>{{/Separable}}
+</div>
+{{/Classification}}
+```
+
+#### Semantic Color System for Verb Classifications
+```css
+/* Light Mode Classification Colors */
+.classification-regelmäßig {
+    color: #2e7d32;    /* Green - Regular/Normal */
+    font-weight: bold;
+}
+
+.classification-unregelmäßig {
+    color: #d32f2f;    /* Red - Attention Needed */
+    font-weight: bold;
+}
+
+.classification-gemischt {
+    color: #f57c00;    /* Orange - Caution */
+    font-weight: bold;
+}
+
+.separable-indicator {
+    margin-left: 10px;
+    padding: 4px 8px;
+    background: #fff3e0;
+    color: #ef6c00;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    border: 1px solid #ffb74d;
+}
+
+/* Dark Mode Classification Colors */
+@media (prefers-color-scheme: dark) {
+    .classification-regelmäßig { color: #68d391; }
+    .classification-unregelmäßig { color: #fc8181; }
+    .classification-gemischt { color: #fbb70a; }
+    .separable-indicator {
+        background: #2d3748;
+        color: #fbb6ce;
+        border-color: #ed8936;
+    }
+}
+```
+
+#### Horizontal Layout Standards
+All verb templates use consistent centering approach:
+
+```css
+/* Avoid constraining containers that push content left */
+/* Remove: max-width: 600px; margin: 0 auto; */
+
+/* Use natural centering with inline-block */
+.conjugation-table, .imperative-table, .verb-forms {
+    display: inline-block;  /* Centers content naturally */
+    background: #f8f9fa;
+    border: 2px solid #2c5aa0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Constrain width only for specific sections like examples */
+.examples-section {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+```
+
+#### Verb Template Element Order
+All verb templates follow this consistent structure:
+
+1. **Image** (if present)
+2. **Infinitive with audio**
+3. **Classification block** (with semantic colors)
+4. **Main content** (conjugation table/imperative forms)
+5. **Examples section** (if present)
+6. **Hint button** (always at bottom)
+
 ### Progressive Disclosure Pattern
 
 ```javascript
@@ -555,10 +703,10 @@ noun_JA_jp_front.html   # Japanese noun
 function showHint() {
     // 1. Hide button after click (one-time reveal)
     button.style.display = 'none';
-    
+
     // 2. Show hint content with animation
     hint.classList.remove('hidden');
-    
+
     // 3. Track hint usage for spaced repetition algorithm
     // (Future enhancement)
 }
@@ -612,6 +760,78 @@ function showHint() {
     }
 }
 ```
+
+## Verb Template Standards
+
+### Overview
+
+All verb templates in the system follow unified design standards to ensure consistency across conjugation, imperative, and basic verb cards. These standards were established to create a cohesive learning experience and maintainable codebase.
+
+### Classification System Requirements
+
+#### Mandatory Classification Block
+Every verb template must include the semantic classification block:
+
+```html
+{{#Classification}}
+<div class="verb-classification">
+    <strong>Klassifikation:</strong> <span class="classification-{{Classification}}">{{Classification}}</span>
+    {{#Separable}}<span class="separable-indicator">• Trennbar: {{Separable}}</span>{{/Separable}}
+</div>
+{{/Classification}}
+```
+
+#### Semantic Color Standards
+- **Regular verbs** (`regelmäßig`): Green (`#2e7d32`) - indicates normal/expected behavior
+- **Irregular verbs** (`unregelmäßig`): Red (`#d32f2f`) - requires attention/memorization
+- **Mixed verbs** (`gemischt`): Orange (`#f57c00`) - caution/special cases
+- **Separable indicator**: Orange badge (`#ef6c00`) - highlights separable prefix behavior
+
+### Layout Consistency Requirements
+
+#### Element Order
+All verb templates follow this mandatory structure:
+1. Image (if present)
+2. Infinitive with audio
+3. Classification block (semantic colors)
+4. Main content (conjugation/imperative table)
+5. Examples section (if present, width-constrained)
+6. Hint button (always at bottom)
+
+#### Horizontal Alignment
+- **Use natural centering**: `display: inline-block` for main content boxes
+- **Avoid constraining containers**: No `max-width: 600px; margin: 0 auto` on main content
+- **Constrain only specific sections**: Examples sections use `max-width: 500px` with auto margins
+- **Consistent box styling**: All content boxes use `#f8f9fa` background with `#2c5aa0` borders
+
+### Color Scheme Compliance
+
+#### Standard Colors
+All verb templates must use the unified color palette:
+- **Primary blue**: `#2c5aa0` (borders, text, headers)
+- **Hint green**: `#4CAF50` (hint buttons)
+- **Content background**: `#f8f9fa` (main content boxes)
+- **Hint background**: `#e8f4fd` (hint content areas)
+
+#### Dark Mode Support
+Classification colors adapt for dark mode:
+- Regular: `#68d391` (light green)
+- Irregular: `#fc8181` (light red)
+- Mixed: `#fbb70a` (light orange)
+- Separable: `#fbb6ce` (pink badge)
+
+### Implementation Checklist
+
+When creating or updating verb templates:
+
+- [ ] Classification block present with semantic CSS classes
+- [ ] German labels ("Klassifikation:", "Trennbar:")
+- [ ] Proper element ordering (infinitive → classification → content → hint)
+- [ ] Natural centering with inline-block (no constraining containers)
+- [ ] Standard color scheme compliance
+- [ ] Examples section width-constrained if present
+- [ ] Dark mode color variants included
+- [ ] Hint button positioned at bottom
 
 ## Future Enhancements
 
@@ -686,6 +906,12 @@ files:
 3. **Validate Accessibility**: Use screen readers to test
 4. **Optimize Performance**: Minimize CSS and JavaScript
 5. **Document Fields**: Clear documentation of required fields
+6. **Follow Layout Rules**: Maintain consistent element ordering across all card types
+7. **Use German Interface**: All labels and buttons should use German terminology
+8. **Consistent Styling**: Use standard bounding box design for main content areas
+9. **Verb Template Alignment**: All verb templates must use identical classification blocks with semantic colors
+10. **Horizontal Centering**: Use natural centering with inline-block, avoid constraining containers
+11. **Semantic Color Coding**: Use green/red/orange for verb classifications (regular/irregular/mixed)
 
 ### CSS Guidelines
 
@@ -725,4 +951,4 @@ def test_noun_field_mapping():
 
 The Language Learn template system provides a robust, extensible foundation for multi-language flashcard generation. With its focus on clean architecture, responsive design, and language-specific features, it delivers an optimal learning experience while maintaining code quality and extensibility for future enhancements.
 
-The current German A1 implementation serves as a reference for adding new languages, demonstrating best practices in template design, media integration, and user experience optimization. The system's modular architecture ensures that new languages and card types can be added without disrupting existing functionality.
+The current German A1 implementation serves as a reference for adding new languages, demonstrating best practices in template design, media integration, and user experience optimization. The unified verb template standards ensure consistent classification representation, semantic color coding, and horizontal layout alignment across all verb card types. The system's modular architecture ensures that new languages and card types can be added without disrupting existing functionality while maintaining design consistency.

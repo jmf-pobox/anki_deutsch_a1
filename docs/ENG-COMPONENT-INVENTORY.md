@@ -124,7 +124,7 @@ The langlearn codebase follows clean architecture with clear separation of conce
 - **Grammar Extensibility**: Add new word types with minimal code
 - **Clean Architecture**: Proper separation between Models (domain), Views (templates), and Presenters (card generators)
 
-See `docs/MVP_REINTEGRATION_PLAN.md` for detailed implementation plan.
+(Historical note) MVP reintegration plan has been archived; see ENG-ARCHITECTURE.md and ENG-DEVELOPMENT-STANDARDS.md for current guidance.
 
 ---
 

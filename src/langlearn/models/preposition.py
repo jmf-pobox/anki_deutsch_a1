@@ -125,6 +125,14 @@ class Preposition(BaseModel, FieldProcessor):
         Returns:
             Formatted description of case usage
         """
+        # Normalize common German labels to English keywords for consistency with tests
+        normalized = (
+            self.case.replace("Akkusativ", "accusative")
+            .replace("Dativ", "dative")
+            .replace("Genitiv", "genitive")
+        )
+        case_key = normalized.lower()
+
         case_descriptions = {
             "accusative": "takes accusative case (direct object)",
             "dative": "takes dative case (indirect object)",
@@ -132,8 +140,8 @@ class Preposition(BaseModel, FieldProcessor):
             "accusative/dative": "takes accusative (motion) or dative (location)",
         }
 
-        case_lower = self.case.lower()
-        return case_descriptions.get(case_lower, f"takes {self.case} case")
+        # Fall back to original case string if not in our mapping
+        return case_descriptions.get(case_key, f"takes {self.case} case")
 
     def is_two_way_preposition(self) -> bool:
         """Check if this preposition can take both accusative and dative cases.
@@ -141,8 +149,11 @@ class Preposition(BaseModel, FieldProcessor):
         Returns:
             True if preposition takes both accusative and dative
         """
+        case_lower = (
+            self.case.replace("Akkusativ", "accusative")
+            .replace("Dativ", "dative")
+            .lower()
+        )
         return (
-            "/" in self.case.lower()
-            and "accusative" in self.case.lower()
-            and "dative" in self.case.lower()
+            "/" in case_lower and "accusative" in case_lower and "dative" in case_lower
         )

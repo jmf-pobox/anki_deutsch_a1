@@ -8,9 +8,9 @@
 }
 
 .german {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: bold;
-    color: #0ea5e9;
+    color: #2c5aa0;
     margin-bottom: 15px;
 }
 
@@ -41,8 +41,8 @@ img {
 
 /* Front-side prompt and hint */
 .phrase-prompt {
-    background: #eef6ff;
-    border: 2px solid #0ea5e9;
+    background: #e8f4fd;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
     padding: 16px;
     margin-bottom: 16px;
@@ -59,41 +59,49 @@ img {
 }
 
 .hint-button {
-    background: #0ea5e9;
+    background: #4CAF50;
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.hint-button:hover {
+    background: #45a049;
 }
 
 .hint-content {
-    margin-top: 10px;
-    padding: 10px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    font-size: 18px;
+    color: #2c5aa0;
+    font-weight: bold;
+    margin-top: 15px;
+    padding: 15px;
+    background: #e8f4fd;
+    border-radius: 10px;
+    border: 2px solid #2c5aa0;
 }
 
 .hidden { display: none; }
 
-/* Back-side info */
+/* Phrase info box - match noun styling exactly */
 .phrase-info {
-    text-align: center;
-    margin-top: 10px;
-    background: #ffffff;
-    border: 2px solid #0ea5e9;
+    background: #f8f9fa;
+    border: 2px solid #2c5aa0;
     border-radius: 10px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 15px;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
-.phrase-with-audio {
+.word-with-audio {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
 .translation {
@@ -103,16 +111,34 @@ img {
     margin: 12px 0;
 }
 
-.context-block, .related-block {
+.context-block {
     text-align: left;
     margin: 10px auto;
     max-width: 420px;
 }
 
-.context-label, .related-label {
+.context-label {
     font-weight: bold;
-    color: #0ea5e9;
+    color: #2c5aa0;
     margin-bottom: 6px;
+}
+
+.context-value {
+    color: #666;
+    font-size: 16px;
+}
+
+.related-words {
+    font-size: 16px;
+    color: #666;
+    margin: 15px 0;
+    padding: 10px;
+    background: #f0f4f8;
+    border-radius: 5px;
+    text-align: left;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .inline-audio {

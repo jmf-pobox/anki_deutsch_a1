@@ -2,9 +2,16 @@
 
 <div class="part-of-speech">Redewendung</div>
 
+{{#Context}}
+<div class="context-block">
+    <div class="context-label">Kontext</div>
+    <div class="context-value">{{Context}}</div>
+</div>
+{{/Context}}
+
 <div class="hint-container">
-    <button class="hint-button" onclick="showHint()">💡 Hinweis</button>
-    <div id="hint-content" class="hint-content hidden">{{Context}}</div>
+    <button class="hint-button" onclick="showHint()">💡 Tipp</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
 </div>
 
 <script>

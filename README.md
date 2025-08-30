@@ -1,4 +1,4 @@
-# 🎓 Language Learn - Smart Flashcard Generator
+# 🎓 Language Learn - Anki Flashcard Generator
 
 **Multi-language flashcard generation system with language-specific grammar intelligence.**
 
