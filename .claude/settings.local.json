@@ -4,7 +4,8 @@
       "Bash(hatch run lint:*)",
       "Bash(hatch run:*)",
       "Bash(git remote:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
