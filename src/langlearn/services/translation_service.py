@@ -73,7 +73,7 @@ class AnthropicTranslationService:
             prompt = self._create_translation_prompt(german_text)
 
             # Get translation from Anthropic
-            translation = self._anthropic_service._generate_response(
+            translation = self._anthropic_service.generate_translation(
                 prompt,
                 max_tokens=100,
                 temperature=0.1,  # Low temperature for consistent translations

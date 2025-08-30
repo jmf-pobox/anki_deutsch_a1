@@ -15,7 +15,7 @@ class TestAnthropicTranslationService:
         """Test successful translation from German to English."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = "I go to school"
+        mock_anthropic.generate_translation.return_value = "I go to school"
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act
@@ -23,10 +23,10 @@ class TestAnthropicTranslationService:
 
         # Assert
         assert result == "I go to school"
-        mock_anthropic._generate_response.assert_called_once()
+        mock_anthropic.generate_translation.assert_called_once()
 
         # Check that the prompt contains the German text
-        call_args = mock_anthropic._generate_response.call_args
+        call_args = mock_anthropic.generate_translation.call_args
         prompt = call_args[0][0]
         assert "Ich gehe in die Schule" in prompt
         assert "Translate this German text to English" in prompt
@@ -43,13 +43,13 @@ class TestAnthropicTranslationService:
         assert service.translate_to_english(None) is None
 
         # No API calls should be made
-        mock_anthropic._generate_response.assert_not_called()
+        mock_anthropic.generate_translation.assert_not_called()
 
     def test_translate_caches_results(self) -> None:
         """Test that translation results are cached."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = "I go to school"
+        mock_anthropic.generate_translation.return_value = "I go to school"
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act - translate same text twice
@@ -60,13 +60,13 @@ class TestAnthropicTranslationService:
         assert result1 == "I go to school"
         assert result2 == "I go to school"
         # API should only be called once due to caching
-        mock_anthropic._generate_response.assert_called_once()
+        mock_anthropic.generate_translation.assert_called_once()
 
     def test_translate_case_insensitive_cache(self) -> None:
         """Test that cache is case-insensitive."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = "I go to school"
+        mock_anthropic.generate_translation.return_value = "I go to school"
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act - translate with different cases
@@ -77,13 +77,13 @@ class TestAnthropicTranslationService:
         assert result1 == "I go to school"
         assert result2 == "I go to school"
         # API should only be called once due to case-insensitive caching
-        mock_anthropic._generate_response.assert_called_once()
+        mock_anthropic.generate_translation.assert_called_once()
 
     def test_translate_api_failure_returns_original(self) -> None:
         """Test that API failure returns original German text."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.side_effect = Exception("API Error")
+        mock_anthropic.generate_translation.side_effect = Exception("API Error")
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act
@@ -96,7 +96,7 @@ class TestAnthropicTranslationService:
         """Test that empty API response returns original text."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = ""
+        mock_anthropic.generate_translation.return_value = ""
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act
@@ -109,7 +109,7 @@ class TestAnthropicTranslationService:
         """Test cache clearing functionality."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = "I go to school"
+        mock_anthropic.generate_translation.return_value = "I go to school"
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act - translate, clear cache, translate again
@@ -118,13 +118,13 @@ class TestAnthropicTranslationService:
         service.translate_to_english("Ich gehe in die Schule")
 
         # Assert - API should be called twice (cache was cleared)
-        assert mock_anthropic._generate_response.call_count == 2
+        assert mock_anthropic.generate_translation.call_count == 2
 
     def test_get_cache_size(self) -> None:
         """Test cache size tracking."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = "Translation"
+        mock_anthropic.generate_translation.return_value = "Translation"
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act & Assert
@@ -212,7 +212,7 @@ class TestTranslationServiceIntegration:
         """Test that translation service logs appropriately."""
         # Arrange
         mock_anthropic = Mock()
-        mock_anthropic._generate_response.return_value = "I go to school"
+        mock_anthropic.generate_translation.return_value = "I go to school"
         service = AnthropicTranslationService(mock_anthropic)
 
         # Act
@@ -238,7 +238,7 @@ class TestTranslationServiceIntegration:
 
         for german_text, expected_english in test_cases:
             # Arrange
-            mock_anthropic._generate_response.return_value = expected_english
+            mock_anthropic.generate_translation.return_value = expected_english
 
             # Act
             result = service.translate_to_english(german_text)

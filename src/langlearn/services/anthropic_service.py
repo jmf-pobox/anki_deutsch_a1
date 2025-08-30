@@ -141,6 +141,36 @@ class AnthropicService:
             logger.error("Error extracting key data: %s", str(e))
             return str(model)
 
+    def generate_translation(
+        self,
+        prompt: str,
+        max_tokens: int = 100,
+        temperature: float = 0.1,
+    ) -> str:
+        """Generate a translation using the Anthropic API.
+
+        Args:
+            prompt: The translation prompt to send to the API
+            max_tokens: Maximum tokens for the response
+            temperature: Temperature setting for response consistency
+
+        Returns:
+            The generated translation text
+
+        Raises:
+            Exception: If the API call fails
+        """
+        try:
+            response = self._generate_response(
+                prompt,
+                max_tokens=max_tokens,
+                temperature=temperature,
+            )
+            return response.strip()
+        except Exception as e:
+            logger.error(f"Error generating translation: {e}")
+            raise
+
     def generate_pexels_query(self, model: Any) -> str:
         """Generate a Pexels query prioritizing sentence context for relevant images."""
         prompt = f"""You are a helpful assistant that generates search queries
