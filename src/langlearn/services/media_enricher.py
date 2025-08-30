@@ -123,10 +123,17 @@ class StandardMediaEnricher(MediaEnricher):
         """Enrich record with media based on domain model type and business rules."""
         enriched = record.copy()
 
-        # Determine model type for type-specific enrichment
+        # Handle Clean Pipeline mode (domain_model is None)
+        if domain_model is None:
+            logger.debug(
+                "[MEDIA ENRICHER DEBUG] Clean Pipeline mode - using key-based detection"
+            )
+            return self._enrich_record_key_based(enriched)
+
+        # Legacy mode: Use domain model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()
         logger.debug(
-            f"[MEDIA ENRICHER DEBUG] Processing record with model type: {model_type}"
+            f"[MEDIA ENRICHER DEBUG] Legacy mode - processing record with model type: {model_type}"
         )
         logger.debug(
             f"[MEDIA ENRICHER DEBUG] Record keys: {list(record.keys())[:10]}"
@@ -145,35 +152,153 @@ class StandardMediaEnricher(MediaEnricher):
         elif model_type == "unifiedarticlerecord":
             return self._enrich_unified_article_record(enriched, domain_model)
         else:
-            # Fallback enrichment for record types without legacy
-            # domain models (key-based detection)
-            try:
-                if "preposition" in enriched:
-                    return self._enrich_preposition_record(enriched)
-                if "phrase" in enriched:
-                    return self._enrich_phrase_record(enriched)
-                if "verb" in enriched:
-                    return self._enrich_verb_record(enriched)
-                if "infinitive" in enriched:
-                    # Handle VerbConjugationRecord that falls through
-                    return self._enrich_verb_conjugation_record_fallback(enriched)
-                # Article card types
-                if "front_text" in enriched and "gender" in enriched:
-                    if "case" in enriched:
-                        return self._enrich_artikel_context_record(enriched)
-                    else:
-                        return self._enrich_artikel_gender_record(enriched)
-                if "card_type" in enriched:
-                    if enriched["card_type"] == "noun_article_recognition":
-                        return self._enrich_noun_article_recognition_record(enriched)
-                    elif enriched["card_type"] == "noun_case_context":
-                        return self._enrich_noun_case_context_record(enriched)
-                # Article cloze card types
-                if "text" in enriched and "explanation" in enriched:
-                    return self._enrich_artikel_cloze_record(enriched)
-            except Exception as e:
-                logger.warning(f"Fallback enrichment failed for {model_type}: {e}")
-            logger.warning(f"Unknown model type: {model_type}")
+            # Fallback to key-based detection for unknown legacy models
+            logger.debug(
+                f"[MEDIA ENRICHER DEBUG] Unknown legacy model type {model_type}, falling back to key-based detection"
+            )
+            return self._enrich_record_key_based(enriched)
+
+    def _enrich_record_key_based(self, enriched: dict[str, Any]) -> dict[str, Any]:
+        """Enrich record using key-based detection (Clean Pipeline mode)."""
+        try:
+            # Try to detect record type by key patterns and enrich accordingly
+            if "noun" in enriched and "article" in enriched:
+                # NounRecord - determine if we need legacy domain model conversion
+                try:
+                    from langlearn.models.noun import Noun
+
+                    noun = Noun(
+                        noun=enriched.get("noun", ""),
+                        article=enriched.get("article", ""),
+                        english=enriched.get("english", ""),
+                        plural=enriched.get("plural", ""),
+                        example=enriched.get("example", ""),
+                        related=enriched.get("related", ""),
+                    )
+                    return self._enrich_noun_record(enriched, noun)
+                except Exception as e:
+                    # Fallback for noun records without legacy model
+                    logger.debug(
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Noun model: {e}"
+                    )
+                    return enriched
+            elif "word" in enriched and "comparative" in enriched:
+                # AdjectiveRecord - determine if we need legacy domain model conversion
+                try:
+                    from langlearn.models.adjective import Adjective
+
+                    adjective = Adjective(
+                        word=enriched.get("word", ""),
+                        english=enriched.get("english", ""),
+                        example=enriched.get("example", ""),
+                        comparative=enriched.get("comparative", ""),
+                        superlative=enriched.get("superlative", ""),
+                    )
+                    return self._enrich_adjective_record(enriched, adjective)
+                except Exception as e:
+                    # Fallback for adjective records without legacy model
+                    logger.debug(
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Adjective model: {e}"
+                    )
+                    return enriched
+            elif (
+                "word" in enriched
+                and "type" in enriched
+                and enriched.get("type")
+                in ["time", "place", "manner", "intensity", "location"]
+            ):
+                # AdverbRecord - determine if we need legacy domain model conversion
+                try:
+                    from langlearn.models.adverb import Adverb, AdverbType
+
+                    adverb_type_map = {
+                        "time": AdverbType.TIME,
+                        "place": AdverbType.LOCATION,
+                        "location": AdverbType.LOCATION,
+                        "manner": AdverbType.MANNER,
+                        "intensity": AdverbType.INTENSITY,
+                    }
+                    adverb = Adverb(
+                        word=enriched.get("word", ""),
+                        english=enriched.get("english", ""),
+                        type=adverb_type_map.get(
+                            enriched.get("type", ""), AdverbType.MANNER
+                        ),
+                        example=enriched.get("example", ""),
+                    )
+                    return self._enrich_adverb_record(enriched, adverb)
+                except Exception as e:
+                    # Fallback for adverb records without legacy model
+                    logger.debug(
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Adverb model: {e}"
+                    )
+                    return enriched
+            elif "word" in enriched and enriched.get("type") in [
+                "general",
+                "article",
+                "temporal",
+                "spatial",
+            ]:
+                # NegationRecord - determine if we need legacy domain model conversion
+                try:
+                    from langlearn.models.negation import Negation, NegationType
+
+                    negation_type_map = {
+                        "general": NegationType.GENERAL,
+                        "article": NegationType.ARTICLE,
+                        "temporal": NegationType.TEMPORAL,
+                        "spatial": NegationType.SPATIAL,
+                    }
+                    negation = Negation(
+                        word=enriched.get("word", ""),
+                        english=enriched.get("english", ""),
+                        type=negation_type_map.get(
+                            enriched.get("type", ""), NegationType.GENERAL
+                        ),
+                        example=enriched.get("example", ""),
+                    )
+                    return self._enrich_negation_record(enriched, negation)
+                except Exception as e:
+                    # Fallback for negation records without legacy model
+                    logger.debug(
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Negation model: {e}"
+                    )
+                    return enriched
+            elif "preposition" in enriched:
+                return self._enrich_preposition_record(enriched)
+            elif "phrase" in enriched:
+                return self._enrich_phrase_record(enriched)
+            elif "verb" in enriched:
+                return self._enrich_verb_record(enriched)
+            elif "infinitive" in enriched:
+                # Handle VerbConjugationRecord that falls through
+                return self._enrich_verb_conjugation_record_fallback(enriched)
+            # Article card types
+            elif "front_text" in enriched and "gender" in enriched:
+                if "case" in enriched:
+                    return self._enrich_artikel_context_record(enriched)
+                else:
+                    return self._enrich_artikel_gender_record(enriched)
+            elif "card_type" in enriched:
+                if enriched["card_type"] == "noun_article_recognition":
+                    return self._enrich_noun_article_recognition_record(enriched)
+                elif enriched["card_type"] == "noun_case_context":
+                    return self._enrich_noun_case_context_record(enriched)
+                else:
+                    logger.debug(
+                        f"[MEDIA ENRICHER DEBUG] Unknown card_type: {enriched.get('card_type')}"
+                    )
+                    return enriched
+            # Article cloze card types
+            elif "text" in enriched and "explanation" in enriched:
+                return self._enrich_artikel_cloze_record(enriched)
+            else:
+                logger.debug(
+                    f"[MEDIA ENRICHER DEBUG] No enrichment pattern matched for record keys: {list(enriched.keys())[:10]}"
+                )
+                return enriched
+        except Exception as e:
+            logger.warning(f"Key-based enrichment failed: {e}")
             return enriched
 
     def _enrich_noun_record(self, record: dict[str, Any], noun: Any) -> dict[str, Any]:
