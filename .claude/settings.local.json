@@ -3,7 +3,8 @@
     "allow": [
       "Bash(hatch run lint:*)",
       "Bash(hatch run:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

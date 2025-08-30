@@ -12,13 +12,10 @@ from typing import Any, TypeVar
 
 from .backends.anki_backend import AnkiBackend
 from .backends.base import DeckBackend
-from .cards.factory import CardGeneratorFactory
+# CardGeneratorFactory import removed - using Clean Pipeline CardBuilder
 from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
-from .models.adjective import Adjective
-from .models.adverb import Adverb
-from .models.negation import Negation
-from .models.noun import Noun
+# Legacy domain model imports removed - using Clean Pipeline Records
 from .models.records import BaseRecord
 from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
 from .services.article_application_service import ArticleApplicationService
@@ -174,21 +171,9 @@ class DeckBuilder:
         else:
             self._media_enricher = None
 
-        # Initialize card generator factory (legacy compatibility)
-        self._card_factory = CardGeneratorFactory(
-            backend=self._backend,
-            template_service=self._template_service,
-            media_manager=self._media_manager,
-        )
+# Card generator factory removed - using CardBuilder service in Clean Pipeline
 
-        # Track loaded data - DUAL STORAGE for compatibility
-        # Legacy domain models (for backward compatibility)
-        self._loaded_nouns: list[Noun] = []
-        self._loaded_adjectives: list[Adjective] = []
-        self._loaded_adverbs: list[Adverb] = []
-        self._loaded_negations: list[Negation] = []
-
-        # Clean Pipeline records (new architecture)
+        # Clean Pipeline records (unified architecture)
         self._loaded_records: list[BaseRecord] = []
 
         logger.info(f"Initialized GermanDeckBuilder with {backend_type} backend")
@@ -217,63 +202,7 @@ class DeckBuilder:
         else:
             raise ValueError(f"Unknown backend type: {backend_type}")
 
-    # Data Loading Methods
-
-    def load_nouns_from_csv(self, csv_path: str | Path) -> None:
-        """Load nouns from CSV file.
-
-        Args:
-            csv_path: Path to the CSV file containing noun data
-        """
-        csv_path = Path(csv_path)
-        logger.info(f"Loading nouns from {csv_path}")
-
-        nouns = self._csv_service.read_csv(csv_path, Noun)
-        self._loaded_nouns.extend(nouns)
-
-        logger.info(f"Loaded {len(nouns)} nouns")
-
-    def load_adjectives_from_csv(self, csv_path: str | Path) -> None:
-        """Load adjectives from CSV file.
-
-        Args:
-            csv_path: Path to the CSV file containing adjective data
-        """
-        csv_path = Path(csv_path)
-        logger.info(f"Loading adjectives from {csv_path}")
-
-        adjectives = self._csv_service.read_csv(csv_path, Adjective)
-        self._loaded_adjectives.extend(adjectives)
-
-        logger.info(f"Loaded {len(adjectives)} adjectives")
-
-    def load_adverbs_from_csv(self, csv_path: str | Path) -> None:
-        """Load adverbs from CSV file.
-
-        Args:
-            csv_path: Path to the CSV file containing adverb data
-        """
-        csv_path = Path(csv_path)
-        logger.info(f"Loading adverbs from {csv_path}")
-
-        adverbs = self._csv_service.read_csv(csv_path, Adverb)
-        self._loaded_adverbs.extend(adverbs)
-
-        logger.info(f"Loaded {len(adverbs)} adverbs")
-
-    def load_negations_from_csv(self, csv_path: str | Path) -> None:
-        """Load negations from CSV file.
-
-        Args:
-            csv_path: Path to the CSV file containing negation data
-        """
-        csv_path = Path(csv_path)
-        logger.info(f"Loading negations from {csv_path}")
-
-        negations = self._csv_service.read_csv(csv_path, Negation)
-        self._loaded_negations.extend(negations)
-
-        logger.info(f"Loaded {len(negations)} negations")
+    # Data Loading Methods (Clean Pipeline only)
 
     def load_data_from_directory(self, data_dir: str | Path) -> None:
         """Load all available data files from a directory using Clean Pipeline.
@@ -312,183 +241,14 @@ class DeckBuilder:
                 self._loaded_records.extend(records)
                 logger.info(f"Loaded {len(records)} {record_type} records")
 
-                # Legacy compatibility: load into old domain models too
-                self._load_legacy_models_from_records(records, record_type)
+# Legacy compatibility removed - using Clean Pipeline only
             else:
                 logger.debug(f"Data file not found: {file_path}")
 
         total_records = len(self._loaded_records)
         logger.info(f"Total records loaded via Clean Pipeline: {total_records}")
 
-    def _load_legacy_models_from_records(
-        self, records: list[BaseRecord], record_type: str
-    ) -> None:
-        """Load legacy domain models from records for backward compatibility.
-
-        Args:
-            records: Records to convert to legacy models
-            record_type: Type of record being converted
-        """
-        from .models.records import (
-            AdjectiveRecord,
-            AdverbRecord,
-            NegationRecord,
-            NounRecord,
-        )
-
-        # Convert records back to legacy domain models for compatibility
-        for record in records:
-            if record_type == "noun" and isinstance(record, NounRecord):
-                noun = Noun(
-                    noun=record.noun,
-                    article=record.article,
-                    english=record.english,
-                    plural=record.plural,
-                    example=record.example,
-                    related=record.related,
-                )
-                self._loaded_nouns.append(noun)
-            elif record_type == "adjective" and isinstance(record, AdjectiveRecord):
-                adjective = Adjective(
-                    word=record.word,
-                    english=record.english,
-                    example=record.example,
-                    comparative=record.comparative,
-                    superlative=record.superlative,
-                )
-                self._loaded_adjectives.append(adjective)
-            elif record_type == "adverb" and isinstance(record, AdverbRecord):
-                from .models.adverb import AdverbType
-
-                # Map legacy lowercase type strings to enum values if needed
-                raw_type = (record.type or "").strip()
-                try:
-                    adverb_type = AdverbType(raw_type) if raw_type else AdverbType.TIME
-                except ValueError:
-                    mapping = {
-                        "location": AdverbType.LOCATION,
-                        "time": AdverbType.TIME,
-                        "frequency": AdverbType.FREQUENCY,
-                        "manner": AdverbType.MANNER,
-                        "intensity": AdverbType.INTENSITY,
-                        "addition": AdverbType.ADDITION,
-                        "limitation": AdverbType.LIMITATION,
-                        "attitude": AdverbType.ATTITUDE,
-                        "probability": AdverbType.PROBABILITY,
-                    }
-                    adverb_type = mapping.get(raw_type.lower(), AdverbType.TIME)
-                adverb = Adverb(
-                    word=record.word,
-                    english=record.english,
-                    type=adverb_type,
-                    example=record.example,
-                )
-                self._loaded_adverbs.append(adverb)
-            elif record_type == "negation" and isinstance(record, NegationRecord):
-                from .models.negation import NegationType
-
-                negation_type = (
-                    NegationType(record.type) if record.type else NegationType.GENERAL
-                )
-                negation = Negation(
-                    word=record.word,
-                    english=record.english,
-                    type=negation_type,
-                    example=record.example,
-                )
-                self._loaded_negations.append(negation)
-
-    def _record_to_domain_model(self, rec: BaseRecord) -> Any:
-        """Convert a record into a legacy domain model where available.
-
-        Provides domain behavior (e.g., get_image_search_strategy,
-        get_combined_audio_text) expected by StandardMediaEnricher.
-        For unsupported types, returns the record itself.
-        """
-        try:
-            from .models.records import (
-                AdjectiveRecord,
-                AdverbRecord,
-                NegationRecord,
-                NounRecord,
-                VerbRecord,
-            )
-
-            if isinstance(rec, NounRecord):
-                return Noun(
-                    noun=rec.noun,
-                    article=rec.article,
-                    english=rec.english,
-                    plural=rec.plural,
-                    example=rec.example,
-                    related=rec.related,
-                )
-            if isinstance(rec, AdjectiveRecord):
-                return Adjective(
-                    word=rec.word,
-                    english=rec.english,
-                    example=rec.example,
-                    comparative=rec.comparative,
-                    superlative=rec.superlative,
-                )
-            if isinstance(rec, AdverbRecord):
-                from .models.adverb import Adverb as AdvModel
-                from .models.adverb import AdverbType
-
-                raw_type = (rec.type or "").strip()
-                try:
-                    adv_type = AdverbType(raw_type) if raw_type else AdverbType.TIME
-                except ValueError:
-                    mapping = {
-                        "location": AdverbType.LOCATION,
-                        "time": AdverbType.TIME,
-                        "frequency": AdverbType.FREQUENCY,
-                        "manner": AdverbType.MANNER,
-                        "intensity": AdverbType.INTENSITY,
-                        "addition": AdverbType.ADDITION,
-                        "limitation": AdverbType.LIMITATION,
-                        "attitude": AdverbType.ATTITUDE,
-                        "probability": AdverbType.PROBABILITY,
-                    }
-                    adv_type = mapping.get(raw_type.lower(), AdverbType.TIME)
-                return AdvModel(
-                    word=rec.word,
-                    english=rec.english,
-                    type=adv_type,
-                    example=rec.example,
-                )
-            if isinstance(rec, NegationRecord):
-                from .models.negation import Negation as NegModel
-                from .models.negation import NegationType
-
-                neg_type = NegationType(rec.type) if rec.type else NegationType.GENERAL
-                return NegModel(
-                    word=rec.word,
-                    english=rec.english,
-                    type=neg_type,
-                    example=rec.example,
-                )
-            if isinstance(rec, VerbRecord):
-                from .models.verb import Verb
-
-                return Verb(
-                    verb=rec.verb,
-                    english=rec.english,
-                    present_ich=rec.present_ich,
-                    present_du=rec.present_du,
-                    present_er=rec.present_er,
-                    perfect=rec.perfect,
-                    example=rec.example,
-                )
-        except Exception as e:
-            # If anything goes wrong, just fall back to the record itself
-            logger.debug(
-                f"Domain model conversion failed for {type(rec).__name__}: {e}"
-            )
-
-        # For other record types (verb, phrase, preposition, etc.),
-        # StandardMediaEnricher should be extended to operate on record dicts directly.
-        return rec
+# Legacy model conversion methods removed - Clean Pipeline uses records directly
 
     # Subdeck Organization Methods
 
@@ -506,121 +266,9 @@ class DeckBuilder:
         self._deck_manager.reset_to_main_deck()
         logger.info("Reset to main deck")
 
-    # Card Generation Methods
+    # Card Generation Methods (Clean Pipeline only)
 
-    def generate_noun_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded nouns using MVP architecture.
-
-        Args:
-            generate_media: Whether to generate audio/image media
-
-        Returns:
-            Number of cards created
-        """
-        if not self._loaded_nouns:
-            logger.warning("No nouns loaded - call load_nouns_from_csv() first")
-            return 0
-
-        # Create subdeck for nouns
-        self.create_subdeck("Nouns")
-
-        # Use the card generator factory to create a properly configured generator
-        noun_generator = self._card_factory.create_noun_generator()
-
-        cards_created = 0
-        for noun in self._loaded_nouns:
-            noun_generator.add_card(noun, generate_media=generate_media)
-            cards_created += 1
-
-        self.reset_to_main_deck()
-        logger.info(f"Generated {cards_created} noun cards")
-        return cards_created
-
-    def generate_adjective_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded adjectives using MVP architecture.
-
-        Args:
-            generate_media: Whether to generate audio/image media
-
-        Returns:
-            Number of cards created
-        """
-        if not self._loaded_adjectives:
-            logger.warning(
-                "No adjectives loaded - call load_adjectives_from_csv() first"
-            )
-            return 0
-
-        # Create subdeck for adjectives
-        self.create_subdeck("Adjectives")
-
-        # Use the card generator factory to create a properly configured generator
-        adjective_generator = self._card_factory.create_adjective_generator()
-
-        cards_created = 0
-        for adjective in self._loaded_adjectives:
-            adjective_generator.add_card(adjective, generate_media=generate_media)
-            cards_created += 1
-
-        self.reset_to_main_deck()
-        logger.info(f"Generated {cards_created} adjective cards")
-        return cards_created
-
-    def generate_adverb_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded adverbs using MVP architecture.
-
-        Args:
-            generate_media: Whether to generate audio/image media
-
-        Returns:
-            Number of cards created
-        """
-        if not self._loaded_adverbs:
-            logger.warning("No adverbs loaded - call load_adverbs_from_csv() first")
-            return 0
-
-        # Create subdeck for adverbs
-        self.create_subdeck("Adverbs")
-
-        # Use the card generator factory to create a properly configured generator
-        adverb_generator = self._card_factory.create_adverb_generator()
-
-        cards_created = 0
-        for adverb in self._loaded_adverbs:
-            adverb_generator.add_card(adverb, generate_media=generate_media)
-            cards_created += 1
-
-        self.reset_to_main_deck()
-        logger.info(f"Generated {cards_created} adverb cards")
-        return cards_created
-
-    def generate_negation_cards(self, generate_media: bool = True) -> int:
-        """Generate Anki cards for loaded negations using MVP architecture.
-
-        Args:
-            generate_media: Whether to generate audio/image media
-
-        Returns:
-            Number of cards created
-        """
-        if not self._loaded_negations:
-            logger.warning("No negations loaded - call load_negations_from_csv() first")
-            return 0
-
-        # Create subdeck for negations
-        self.create_subdeck("Negations")
-
-        # Use the card generator factory to create a properly configured generator
-        negation_generator = self._card_factory.create_negation_generator()
-
-        cards_created = 0
-        for negation in self._loaded_negations:
-            negation_generator.add_card(negation, generate_media=generate_media)
-            cards_created += 1
-
-        self.reset_to_main_deck()
-        logger.info(f"Generated {cards_created} negation cards")
-        return cards_created
+# Legacy individual card generation methods removed - use generate_all_cards() with Clean Pipeline
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
         """Generate all cards using Clean Pipeline.
@@ -632,8 +280,8 @@ class DeckBuilder:
             Dictionary with counts of cards generated by type
         """
         if not self._loaded_records:
-            logger.warning("No records loaded - using legacy fallback")
-            return self._generate_all_cards_legacy(generate_media)
+            logger.warning("No records loaded - call load_data_from_directory() first")
+            return {}
 
         logger.info(f"Generating cards for {len(self._loaded_records)} records")
 
@@ -866,34 +514,7 @@ class DeckBuilder:
 
         return results
 
-    def _generate_all_cards_legacy(self, generate_media: bool = True) -> dict[str, int]:
-        """Legacy fallback for card generation using old architecture.
-
-        Args:
-            generate_media: Whether to generate audio/image media
-
-        Returns:
-            Dictionary with counts of cards generated by type
-        """
-        logger.info("Using legacy card generation architecture")
-        results = {}
-
-        if self._loaded_nouns:
-            results["nouns"] = self.generate_noun_cards(generate_media)
-
-        if self._loaded_adjectives:
-            results["adjectives"] = self.generate_adjective_cards(generate_media)
-
-        if self._loaded_adverbs:
-            results["adverbs"] = self.generate_adverb_cards(generate_media)
-
-        if self._loaded_negations:
-            results["negations"] = self.generate_negation_cards(generate_media)
-
-        total = sum(results.values())
-        logger.info(f"Legacy architecture generated {total} total cards: {results}")
-
-        return results
+# Legacy fallback method removed - Clean Pipeline only
 
     # Media Generation Methods
 
