@@ -179,6 +179,7 @@ def test_main_prints_result(capsys: pytest.CaptureFixture[str]) -> None:
     import logging
 
     from langlearn.pipeline import pipeline as mod
+
     logging.getLogger(__name__)  # ensure logging import exercised
 
     mod.main()
