@@ -111,7 +111,7 @@ class TestServiceContainerTranslation:
         assert translation_service is not None
         assert isinstance(translation_service, AnthropicTranslationService)
 
-    @patch.dict('os.environ', {'DISABLE_TRANSLATION_SERVICE': '1'})
+    @patch.dict("os.environ", {"DISABLE_TRANSLATION_SERVICE": "1"})
     def test_factory_function_returns_none_when_unavailable(self) -> None:
         """Test factory function returns None when service unavailable."""
         # Arrange - service disabled via environment variable
@@ -218,7 +218,7 @@ class TestTranslationServiceErrorHandling:
             translation_service, AnthropicTranslationService
         )
 
-    @patch.dict('os.environ', {'DISABLE_TRANSLATION_SERVICE': '1'})
+    @patch.dict("os.environ", {"DISABLE_TRANSLATION_SERVICE": "1"})
     def test_multiple_service_requests_handle_failures_gracefully(self) -> None:
         """Test that multiple requests for unavailable service handle failures."""
         # Act - multiple requests should not crash
