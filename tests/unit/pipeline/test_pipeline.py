@@ -1,7 +1,4 @@
 import logging
-import re
-import sys
-from typing import Optional
 
 import pytest
 
@@ -67,8 +64,10 @@ def test_task_state_start_complete_toggles(caplog: pytest.LogCaptureFixture) -> 
         state.complete("out")
         assert state.is_completed is True
     # Ensure debug logs emitted
-    assert any("Starting task" in rec.message for rec in caplog.records)
-    assert any("Completed task" in rec.message for rec in caplog.records)
+    start_logged = any("Starting task" in rec.message for rec in caplog.records)  # type: ignore[unreachable]
+    complete_logged = any("Completed task" in rec.message for rec in caplog.records)
+    assert start_logged
+    assert complete_logged
 
 
 # -----------------------------
@@ -107,7 +106,7 @@ def test_task_run_sets_state_completed() -> None:
         ("", ""),
         ("abc", "ABC"),
         ("AbC!", "ABC!"),
-        ("straße", "STRASSE" if sys.version_info < (3, 12) else "STRASSE"),
+        ("straße", "STRASSE"),
         ("ümlaut", "ÜMLAUT"),
         ("123", "123"),
     ],
@@ -177,9 +176,10 @@ def test_pipeline_propagates_task_errors() -> None:
 
 def test_main_prints_result(capsys: pytest.CaptureFixture[str]) -> None:
     # Configure holder to known value and run the sample pipeline inside main
-    from langlearn.pipeline import pipeline as mod
+    import logging
 
-    mod.logging.getLogger(__name__)  # ensure logging import exercised
+    from langlearn.pipeline import pipeline as mod
+    logging.getLogger(__name__)  # ensure logging import exercised
 
     mod.main()
     captured = capsys.readouterr().out.strip().splitlines()

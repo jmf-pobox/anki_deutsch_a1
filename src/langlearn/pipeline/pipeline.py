@@ -343,7 +343,6 @@ class Pipeline(Generic[ValueT]):
         return self.__output.output
 
 
-
 def main() -> None:
     """Run a small demonstration of the pipeline.
 
