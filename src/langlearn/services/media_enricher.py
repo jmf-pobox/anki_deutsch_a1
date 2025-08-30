@@ -133,7 +133,8 @@ class StandardMediaEnricher(MediaEnricher):
         # Legacy mode: Use domain model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()
         logger.debug(
-            f"[MEDIA ENRICHER DEBUG] Legacy mode - processing record with model type: {model_type}"
+            f"[MEDIA ENRICHER DEBUG] Legacy mode - processing record with "
+            f"model type: {model_type}"
         )
         logger.debug(
             f"[MEDIA ENRICHER DEBUG] Record keys: {list(record.keys())[:10]}"
@@ -154,7 +155,8 @@ class StandardMediaEnricher(MediaEnricher):
         else:
             # Fallback to key-based detection for unknown legacy models
             logger.debug(
-                f"[MEDIA ENRICHER DEBUG] Unknown legacy model type {model_type}, falling back to key-based detection"
+                f"[MEDIA ENRICHER DEBUG] Unknown legacy model type {model_type}, "
+                f"falling back to key-based detection"
             )
             return self._enrich_record_key_based(enriched)
 
@@ -179,7 +181,8 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for noun records without legacy model
                     logger.debug(
-                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Noun model: {e}"
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Noun "
+                        f"model: {e}"
                     )
                     return enriched
             elif "word" in enriched and "comparative" in enriched:
@@ -198,7 +201,8 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for adjective records without legacy model
                     logger.debug(
-                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Adjective model: {e}"
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Adjective "
+                        f"model: {e}"
                     )
                     return enriched
             elif (
@@ -230,7 +234,8 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for adverb records without legacy model
                     logger.debug(
-                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Adverb model: {e}"
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Adverb "
+                        f"model: {e}"
                     )
                     return enriched
             elif "word" in enriched and enriched.get("type") in [
@@ -261,7 +266,8 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for negation records without legacy model
                     logger.debug(
-                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Negation model: {e}"
+                        f"[MEDIA ENRICHER DEBUG] Could not create legacy Negation "
+                        f"model: {e}"
                     )
                     return enriched
             elif "preposition" in enriched:
@@ -286,7 +292,8 @@ class StandardMediaEnricher(MediaEnricher):
                     return self._enrich_noun_case_context_record(enriched)
                 else:
                     logger.debug(
-                        f"[MEDIA ENRICHER DEBUG] Unknown card_type: {enriched.get('card_type')}"
+                        f"[MEDIA ENRICHER DEBUG] Unknown card_type: "
+                        f"{enriched.get('card_type')}"
                     )
                     return enriched
             # Article cloze card types
@@ -294,7 +301,8 @@ class StandardMediaEnricher(MediaEnricher):
                 return self._enrich_artikel_cloze_record(enriched)
             else:
                 logger.debug(
-                    f"[MEDIA ENRICHER DEBUG] No enrichment pattern matched for record keys: {list(enriched.keys())[:10]}"
+                    f"[MEDIA ENRICHER DEBUG] No enrichment pattern matched for "
+                    f"record keys: {list(enriched.keys())[:10]}"
                 )
                 return enriched
         except Exception as e:
