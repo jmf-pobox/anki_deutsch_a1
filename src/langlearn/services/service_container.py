@@ -1,6 +1,7 @@
 """Service container for dependency injection."""
 
 import logging
+import os
 from typing import Optional
 
 from .anthropic_service import AnthropicService
@@ -47,24 +48,12 @@ class ServiceContainer:
             # Try to create translation service using Anthropic
             anthropic_service = self.get_anthropic_service()
             if anthropic_service:
-                # Under pytest, avoid creating a real translation service when using
-                # the real AnthropicService (even if CI/env provides a key).
-                try:
-                    import sys
-
-                    from .anthropic_service import (
-                        AnthropicService as AnthropicServiceClass,
+                # Check for explicit test mode environment variable to avoid
+                # creating translation service during testing
+                if os.getenv("DISABLE_TRANSLATION_SERVICE") == "1":
+                    logger.debug(
+                        "Translation service disabled via DISABLE_TRANSLATION_SERVICE"
                     )
-
-                    if "pytest" in sys.modules and isinstance(
-                        anthropic_service, AnthropicServiceClass
-                    ):
-                        logger.debug(
-                            "Translation service unavailable: running under pytest"
-                        )
-                        return None
-                except Exception:
-                    # If environment detection fails, proceed conservatively
                     return None
 
                 # Require a real underlying client

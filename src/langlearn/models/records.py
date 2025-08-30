@@ -7,9 +7,23 @@ fields and domain models.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Literal, overload
+from typing import Any, Literal, Protocol, overload
 
 from pydantic import BaseModel, Field, field_validator, model_validator
+
+
+class RecordClassProtocol(Protocol):
+    """Protocol defining the interface that all record classes must implement."""
+
+    @classmethod
+    def get_field_names(cls) -> list[str]:
+        """Get the list of field names for this record type."""
+        ...
+
+    @classmethod
+    def get_expected_field_count(cls) -> int:
+        """Get the expected number of fields for this record type."""
+        ...
 
 
 class BaseRecord(BaseModel, ABC):
@@ -1286,7 +1300,7 @@ class UnifiedArticleRecord(BaseRecord):
 
 
 # Registry for mapping model types to record types
-RECORD_TYPE_REGISTRY = {
+RECORD_TYPE_REGISTRY: dict[str, type[RecordClassProtocol]] = {
     "noun": NounRecord,
     "adjective": AdjectiveRecord,
     "adverb": AdverbRecord,

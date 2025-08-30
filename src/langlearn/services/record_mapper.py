@@ -281,7 +281,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_field_names()  # type: ignore
+        return record_class.get_field_names()
 
     def get_expected_field_count_for_record_type(self, record_type: str) -> int:
         """Get expected field count for a record type.
@@ -302,7 +302,7 @@ class RecordMapper:
         from langlearn.models.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
-        return record_class.get_expected_field_count()  # type: ignore
+        return record_class.get_expected_field_count()
 
     def detect_csv_record_type(self, csv_path: str | Path) -> str:
         """Detect the record type from CSV file headers.
