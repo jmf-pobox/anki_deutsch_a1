@@ -8,15 +8,16 @@ injection principles.
 
 import logging
 from pathlib import Path
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from .backends.anki_backend import AnkiBackend
 from .backends.base import DeckBackend
+
 # CardGeneratorFactory import removed - using Clean Pipeline CardBuilder
 from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
+
 # Legacy domain model imports removed - using Clean Pipeline Records
-from .models.records import BaseRecord
 from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
 from .services.article_application_service import ArticleApplicationService
 from .services.card_builder import CardBuilder
@@ -28,6 +29,9 @@ from .services.service_container import (
     get_translation_service as _get_translation_service,
 )
 from .services.template_service import TemplateService
+
+if TYPE_CHECKING:
+    from .models.records import BaseRecord
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +175,7 @@ class DeckBuilder:
         else:
             self._media_enricher = None
 
-# Card generator factory removed - using CardBuilder service in Clean Pipeline
+        # Card generator factory removed - using CardBuilder service in Clean Pipeline
 
         # Clean Pipeline records (unified architecture)
         self._loaded_records: list[BaseRecord] = []
@@ -241,14 +245,14 @@ class DeckBuilder:
                 self._loaded_records.extend(records)
                 logger.info(f"Loaded {len(records)} {record_type} records")
 
-# Legacy compatibility removed - using Clean Pipeline only
+            # Legacy compatibility removed - using Clean Pipeline only
             else:
                 logger.debug(f"Data file not found: {file_path}")
 
         total_records = len(self._loaded_records)
         logger.info(f"Total records loaded via Clean Pipeline: {total_records}")
 
-# Legacy model conversion methods removed - Clean Pipeline uses records directly
+    # Legacy model conversion methods removed - Clean Pipeline uses records directly
 
     # Subdeck Organization Methods
 
@@ -268,7 +272,8 @@ class DeckBuilder:
 
     # Card Generation Methods (Clean Pipeline only)
 
-# Legacy individual card generation methods removed - use generate_all_cards() with Clean Pipeline
+    # Legacy individual card generation methods removed - use generate_all_cards()
+    # with Clean Pipeline
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
         """Generate all cards using Clean Pipeline.
@@ -325,16 +330,13 @@ class DeckBuilder:
 
                 # Collect all records and domain models for batch enrichment
                 record_dicts = []
-                domain_models = []
+                domain_models: list[None] = []
                 for rec in records:
-                    try:
-                        domain_model = self._record_to_domain_model(rec)
-                        record_dicts.append(rec.to_dict())
-                        domain_models.append(domain_model)
-                    except Exception as e:
-                        logger.warning(f"Failed to map record to domain model: {e}")
-                        record_dicts.append(rec.to_dict())
-                        domain_models.append(None)
+                    # Clean Pipeline: Records are already in proper format
+                    record_dicts.append(rec.to_dict())
+                    # For media enrichment, pass None as domain model
+                    # since records are self-contained
+                    domain_models.append(None)
 
                 # Batch enrich all records
                 try:
@@ -514,7 +516,7 @@ class DeckBuilder:
 
         return results
 
-# Legacy fallback method removed - Clean Pipeline only
+    # Legacy fallback method removed - Clean Pipeline only
 
     # Media Generation Methods
 
@@ -568,12 +570,7 @@ class DeckBuilder:
                 "media_enabled": self.enable_media_generation,
             },
             "loaded_data": {
-                # Legacy data (backward compatibility)
-                "nouns": len(self._loaded_nouns),
-                "adjectives": len(self._loaded_adjectives),
-                "adverbs": len(self._loaded_adverbs),
-                "negations": len(self._loaded_negations),
-                # Clean Pipeline data
+                # Clean Pipeline data (unified architecture)
                 **clean_pipeline_stats,
                 # Total records via Clean Pipeline
                 "total_clean_pipeline_records": len(self._loaded_records),
@@ -603,14 +600,9 @@ class DeckBuilder:
 
     def clear_loaded_data(self) -> None:
         """Clear all loaded data from memory."""
-        # Clear legacy data
-        self._loaded_nouns.clear()
-        self._loaded_adjectives.clear()
-        self._loaded_adverbs.clear()
-        self._loaded_negations.clear()
-        # Clear Clean Pipeline data
+        # Clear Clean Pipeline data (unified architecture)
         self._loaded_records.clear()
-        logger.info("Cleared all loaded data (legacy + Clean Pipeline records)")
+        logger.info("Cleared all loaded data (Clean Pipeline records)")
 
     # Context Manager Support
 

@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends.base import DeckBackend, MediaFile, NoteType
+from langlearn.backends.base import DeckBackend, MediaFile
 from langlearn.deck_builder import DeckBuilder
 from langlearn.models.adjective import Adjective
 from langlearn.models.adverb import Adverb, AdverbType
@@ -147,43 +147,7 @@ class TestGermanDeckBuilder:
             assert builder._media_service is None
             assert builder.enable_media_generation is False
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_load_nouns_from_csv(
-        self, mock_anki: Mock, sample_noun_data: list[Noun]
-    ) -> None:
-        """Test loading nouns from CSV file."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-
-        with patch.object(builder._csv_service, "read_csv") as mock_read:
-            mock_read.return_value = sample_noun_data
-
-            builder.load_nouns_from_csv("fake_nouns.csv")
-
-            assert len(builder._loaded_nouns) == 2
-            assert builder._loaded_nouns[0].noun == "Katze"
-            mock_read.assert_called_once()
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_load_adjectives_from_csv(
-        self, mock_anki: Mock, sample_adjective_data: list[Adjective]
-    ) -> None:
-        """Test loading adjectives from CSV file."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-
-        with patch.object(builder._csv_service, "read_csv") as mock_read:
-            mock_read.return_value = sample_adjective_data
-
-            builder.load_adjectives_from_csv("fake_adjectives.csv")
-
-            assert len(builder._loaded_adjectives) == 2
-            assert builder._loaded_adjectives[0].word == "schön"
-            mock_read.assert_called_once()
+    # Legacy CSV loading tests removed - use load_data_from_directory
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory(
@@ -249,129 +213,16 @@ class TestGermanDeckBuilder:
             builder.reset_to_main_deck()
             mock_reset.assert_called_once()
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_noun_cards_no_data(self, mock_anki: Mock) -> None:
-        """Test generating noun cards when no data is loaded."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
+    # Legacy noun card generation tests removed - use generate_all_cards
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+    # Legacy test removed: test_generate_noun_cards_with_media
+    # - tested functionality removed from DeckBuilder
 
-        result = builder.generate_noun_cards()
-        assert result == 0
+    # Legacy test removed: test_generate_adjective_cards_with_data
+    # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_noun_cards_with_data(
-        self, mock_anki: Mock, sample_noun_data: list[Noun]
-    ) -> None:
-        """Test generating noun cards with loaded data using MVP architecture."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_backend.add_note.return_value = None
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = sample_noun_data
-
-        # Mock the card generator's add_card method
-        with patch.object(
-            builder._card_factory, "create_noun_generator"
-        ) as mock_factory:
-            mock_generator = Mock()
-            mock_generator.add_card = Mock()
-            mock_factory.return_value = mock_generator
-
-            result = builder.generate_noun_cards(generate_media=False)
-
-            assert result == 2
-            # Verify the generator was created and add_card was called for each noun
-            mock_factory.assert_called_once()
-            assert mock_generator.add_card.call_count == 2
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_noun_cards_with_media(
-        self, mock_anki: Mock, sample_noun_data: list[Noun]
-    ) -> None:
-        """Test generating noun cards with media generation using MVP architecture."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_backend.add_note.return_value = None
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = sample_noun_data[:1]  # Just one noun for simplicity
-
-        # Mock the card generator's add_card method
-        with patch.object(
-            builder._card_factory, "create_noun_generator"
-        ) as mock_factory:
-            mock_generator = Mock()
-            mock_generator.add_card = Mock()
-            mock_factory.return_value = mock_generator
-
-            result = builder.generate_noun_cards(generate_media=True)
-
-            assert result == 1
-            # Verify generator was created and add_card called with media enabled
-            mock_factory.assert_called_once()
-            mock_generator.add_card.assert_called_once_with(
-                sample_noun_data[0], generate_media=True
-            )
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_adjective_cards_with_data(
-        self, mock_anki: Mock, sample_adjective_data: list[Adjective]
-    ) -> None:
-        """Test generating adjective cards with loaded data using MVP architecture."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_backend.add_note.return_value = None
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_adjectives = sample_adjective_data
-
-        # Mock the card generator's add_card method
-        with patch.object(
-            builder._card_factory, "create_adjective_generator"
-        ) as mock_factory:
-            mock_generator = Mock()
-            mock_generator.add_card = Mock()
-            mock_factory.return_value = mock_generator
-
-            result = builder.generate_adjective_cards(generate_media=False)
-
-            assert result == 2
-            # Verify generator was created and add_card called for each adjective
-            mock_factory.assert_called_once()
-            assert mock_generator.add_card.call_count == 2
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_all_cards(
-        self,
-        mock_anki: Mock,
-        sample_noun_data: list[Noun],
-        sample_adjective_data: list[Adjective],
-    ) -> None:
-        """Test generating all cards for loaded data."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = sample_noun_data
-        builder._loaded_adjectives = sample_adjective_data
-
-        with patch.object(builder, "generate_noun_cards") as mock_noun_cards:
-            mock_noun_cards.return_value = 2
-
-            with patch.object(builder, "generate_adjective_cards") as mock_adj_cards:
-                mock_adj_cards.return_value = 2
-
-                result = builder.generate_all_cards(generate_media=False)
-
-                assert result == {"nouns": 2, "adjectives": 2}
-                mock_noun_cards.assert_called_once_with(False)
-                mock_adj_cards.assert_called_once_with(False)
+    # Legacy test removed: test_generate_all_cards
+    # - tested functionality removed from DeckBuilder
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_export_deck(self, mock_anki: Mock) -> None:
@@ -385,34 +236,8 @@ class TestGermanDeckBuilder:
             builder.export_deck("output/test.apkg")
             mock_export.assert_called_once_with("output/test.apkg")
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_get_statistics(self, mock_anki: Mock) -> None:
-        """Test getting comprehensive statistics."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = [Mock()]
-        builder._loaded_adjectives = [Mock(), Mock()]
-
-        mock_deck_stats = {"notes_count": 10}
-        mock_media_stats = {"files_added": 5}
-
-        with patch.object(builder._deck_manager, "get_stats") as mock_get_deck_stats:
-            mock_get_deck_stats.return_value = mock_deck_stats
-
-            with patch.object(
-                builder._media_manager, "get_detailed_stats"
-            ) as mock_get_media_stats:
-                mock_get_media_stats.return_value = mock_media_stats
-
-                stats = builder.get_statistics()
-
-                assert stats["deck_info"]["name"] == "Test Deck"
-                assert stats["loaded_data"]["nouns"] == 1
-                assert stats["loaded_data"]["adjectives"] == 2
-                assert stats["deck_stats"] == mock_deck_stats
-                assert stats["files_added"] == 5
+    # Legacy test removed: test_get_statistics
+    # - tested functionality removed from DeckBuilder
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_get_subdeck_info(self, mock_anki: Mock) -> None:
@@ -444,20 +269,8 @@ class TestGermanDeckBuilder:
                     assert info["subdeck_names"] == ["Nouns", "Adjectives"]
                     assert len(info["full_subdeck_names"]) == 2
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_clear_loaded_data(self, mock_anki: Mock) -> None:
-        """Test clearing loaded data."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = [Mock()]
-        builder._loaded_adjectives = [Mock()]
-
-        builder.clear_loaded_data()
-
-        assert len(builder._loaded_nouns) == 0
-        assert len(builder._loaded_adjectives) == 0
+    # Legacy test removed: test_clear_loaded_data
+    # - tested functionality removed from DeckBuilder
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_context_manager_support(self, mock_anki: Mock) -> None:
@@ -499,206 +312,25 @@ class TestGermanDeckBuilder:
             result = builder.generate_all_media()
             assert result == mock_stats
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_load_adverbs_from_csv(
-        self, mock_anki: Mock, sample_adverb_data: list[Adverb]
-    ) -> None:
-        """Test loading adverbs from CSV file."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
+    # Legacy CSV loading tests for adverbs and negations removed
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+    # Legacy test removed: test_generate_adverb_cards_no_data
+    # - tested functionality removed from DeckBuilder
 
-        with patch.object(builder._csv_service, "read_csv") as mock_read:
-            mock_read.return_value = sample_adverb_data
+    # Legacy test removed: test_generate_adverb_cards_with_data
+    # - tested functionality removed from DeckBuilder
 
-            builder.load_adverbs_from_csv("fake_adverbs.csv")
+    # Legacy test removed: test_generate_negation_cards_no_data
+    # - tested functionality removed from DeckBuilder
 
-            assert len(builder._loaded_adverbs) == 2
-            assert builder._loaded_adverbs[0].word == "schnell"
-            mock_read.assert_called_once()
+    # Legacy test removed: test_generate_negation_cards_with_data
+    # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_load_negations_from_csv(
-        self, mock_anki: Mock, sample_negation_data: list[Negation]
-    ) -> None:
-        """Test loading negations from CSV file."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
+    # Legacy test removed: test_generate_adverb_cards_with_existing_media
+    # - tested functionality removed from DeckBuilder
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-
-        with patch.object(builder._csv_service, "read_csv") as mock_read:
-            mock_read.return_value = sample_negation_data
-
-            builder.load_negations_from_csv("fake_negations.csv")
-
-            assert len(builder._loaded_negations) == 2
-            assert builder._loaded_negations[0].word == "nicht"
-            mock_read.assert_called_once()
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_adverb_cards_no_data(self, mock_anki: Mock) -> None:
-        """Test generating adverb cards when no data is loaded."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-
-        result = builder.generate_adverb_cards()
-        assert result == 0
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_adverb_cards_with_data(
-        self, mock_anki: Mock, sample_adverb_data: list[Adverb]
-    ) -> None:
-        """Test generating adverb cards with loaded data using MVP architecture."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_backend.add_note.return_value = None
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_adverbs = sample_adverb_data
-
-        # Mock the card generator's add_card method
-        with patch.object(
-            builder._card_factory, "create_adverb_generator"
-        ) as mock_factory:
-            mock_generator = Mock()
-            mock_generator.add_card = Mock()
-            mock_factory.return_value = mock_generator
-
-            result = builder.generate_adverb_cards(generate_media=False)
-
-            assert result == 2
-            # Verify generator was created and add_card called for each adverb
-            mock_factory.assert_called_once()
-            assert mock_generator.add_card.call_count == 2
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_negation_cards_no_data(self, mock_anki: Mock) -> None:
-        """Test generating negation cards when no data is loaded."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-
-        result = builder.generate_negation_cards()
-        assert result == 0
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_negation_cards_with_data(
-        self, mock_anki: Mock, sample_negation_data: list[Negation]
-    ) -> None:
-        """Test generating negation cards with loaded data using MVP architecture."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_backend.add_note.return_value = None
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_negations = sample_negation_data
-
-        # Mock the card generator's add_card method
-        with patch.object(
-            builder._card_factory, "create_negation_generator"
-        ) as mock_factory:
-            mock_generator = Mock()
-            mock_generator.add_card = Mock()
-            mock_factory.return_value = mock_generator
-
-            result = builder.generate_negation_cards(generate_media=False)
-
-            assert result == 2
-            # Verify generator was created and add_card called for each negation
-            mock_factory.assert_called_once()
-            assert mock_generator.add_card.call_count == 2
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_adverb_cards_with_existing_media(
-        self, mock_anki: Mock, sample_adverb_data: list[Adverb]
-    ) -> None:
-        """Test generating adverb cards with existing media files."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        # Use adverb data without legacy fields
-        builder._loaded_adverbs = sample_adverb_data[:1]
-
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Adverb Note Type"
-        mock_media_file = MediaFile(
-            path="/fake/audio.mp3", reference="[sound:audio.mp3]"
-        )
-
-        with (
-            patch.object(Path, "exists", return_value=True),
-            patch.object(
-                builder._template_service, "get_adverb_note_type"
-            ) as mock_get_template,
-            patch.object(builder._deck_manager, "create_note_type") as mock_create_type,
-            patch.object(builder._media_manager, "add_media_file") as mock_add_media,
-            patch.object(builder._deck_manager, "add_note"),
-        ):
-            mock_get_template.return_value = mock_note_type
-            mock_create_type.return_value = "note_type_1"
-            mock_add_media.return_value = mock_media_file
-
-            result = builder.generate_adverb_cards(generate_media=True)
-
-            assert result == 1
-            # Should call add_media_file for existing audio and image
-            assert mock_add_media.call_count >= 1
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_negation_cards_with_media_generation(
-        self, mock_anki: Mock, sample_negation_data: list[Negation]
-    ) -> None:
-        """Test generating negation cards with media generation."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_backend.deck_name = "Test Deck"
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_negations = sample_negation_data[:1]  # Just one for simplicity
-
-        mock_note_type = Mock(spec=NoteType)
-        mock_note_type.name = "Test Negation Note Type"
-        mock_media_file = MediaFile(
-            path="/fake/audio.mp3", reference="[sound:audio.mp3]"
-        )
-
-        with patch.object(
-            builder._template_service, "get_negation_note_type"
-        ) as mock_get_template:
-            mock_get_template.return_value = mock_note_type
-
-            with patch.object(
-                builder._deck_manager, "create_note_type"
-            ) as mock_create_type:
-                mock_create_type.return_value = "note_type_1"
-
-                with patch.object(
-                    builder._media_manager, "generate_and_add_audio"
-                ) as mock_gen_audio:
-                    mock_gen_audio.return_value = mock_media_file
-
-                    with patch.object(
-                        builder._media_manager, "generate_and_add_image"
-                    ) as mock_gen_image:
-                        mock_gen_image.return_value = mock_media_file
-
-                        with patch.object(builder._deck_manager, "add_note"):
-                            result = builder.generate_negation_cards(
-                                generate_media=True
-                            )
-
-                            assert result == 1
-                            # Should generate audio for the negation word and example
-                            assert mock_gen_audio.call_count >= 1
+    # Legacy test removed: test_generate_negation_cards_with_media_generation
+    # - tested functionality removed from DeckBuilder
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
@@ -767,112 +399,12 @@ class TestGermanDeckBuilder:
                 # Should have loaded records from all files
                 assert len(builder._loaded_records) == 4
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_all_cards_with_all_types(
-        self,
-        mock_anki: Mock,
-        sample_noun_data: list[Noun],
-        sample_adjective_data: list[Adjective],
-        sample_adverb_data: list[Adverb],
-        sample_negation_data: list[Negation],
-    ) -> None:
-        """Test generating all cards for all loaded data types."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = sample_noun_data
-        builder._loaded_adjectives = sample_adjective_data
-        builder._loaded_adverbs = sample_adverb_data
-        builder._loaded_negations = sample_negation_data
+# Legacy test removed: test_generate_all_cards_with_all_types
+# - tested functionality removed from DeckBuilder
 
-        with (
-            patch.object(builder, "generate_noun_cards") as mock_noun_cards,
-            patch.object(builder, "generate_adjective_cards") as mock_adj_cards,
-            patch.object(builder, "generate_adverb_cards") as mock_adv_cards,
-            patch.object(builder, "generate_negation_cards") as mock_neg_cards,
-        ):
-            mock_noun_cards.return_value = 2
-            mock_adj_cards.return_value = 2
-            mock_adv_cards.return_value = 2
-            mock_neg_cards.return_value = 2
+# Legacy test removed: test_get_statistics_comprehensive
+# - tested functionality removed from DeckBuilder
 
-            result = builder.generate_all_cards(generate_media=False)
-
-            expected = {
-                "nouns": 2,
-                "adjectives": 2,
-                "adverbs": 2,
-                "negations": 2,
-            }
-            assert result == expected
-            mock_noun_cards.assert_called_once_with(False)
-            mock_adj_cards.assert_called_once_with(False)
-            mock_adv_cards.assert_called_once_with(False)
-            mock_neg_cards.assert_called_once_with(False)
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_get_statistics_comprehensive(
-        self,
-        mock_anki: Mock,
-        sample_noun_data: list[Noun],
-        sample_adjective_data: list[Adjective],
-        sample_adverb_data: list[Adverb],
-        sample_negation_data: list[Negation],
-    ) -> None:
-        """Test getting comprehensive statistics with all data types."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = sample_noun_data
-        builder._loaded_adjectives = sample_adjective_data
-        builder._loaded_adverbs = sample_adverb_data
-        builder._loaded_negations = sample_negation_data
-
-        mock_deck_stats = {"notes_count": 20}
-        mock_media_stats = {"files_added": 15}
-
-        with patch.object(builder._deck_manager, "get_stats") as mock_get_deck_stats:
-            mock_get_deck_stats.return_value = mock_deck_stats
-
-            with patch.object(
-                builder._media_manager, "get_detailed_stats"
-            ) as mock_get_media_stats:
-                mock_get_media_stats.return_value = mock_media_stats
-
-                stats = builder.get_statistics()
-
-                assert stats["deck_info"]["name"] == "Test Deck"
-                assert stats["loaded_data"]["nouns"] == 2
-                assert stats["loaded_data"]["adjectives"] == 2
-                assert stats["loaded_data"]["adverbs"] == 2
-                assert stats["loaded_data"]["negations"] == 2
-                assert stats["deck_stats"] == mock_deck_stats
-                assert stats["files_added"] == 15
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_clear_loaded_data_comprehensive(
-        self,
-        mock_anki: Mock,
-        sample_noun_data: list[Noun],
-        sample_adjective_data: list[Adjective],
-        sample_adverb_data: list[Adverb],
-        sample_negation_data: list[Negation],
-    ) -> None:
-        """Test clearing all loaded data types."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-        builder._loaded_nouns = sample_noun_data
-        builder._loaded_adjectives = sample_adjective_data
-        builder._loaded_adverbs = sample_adverb_data
-        builder._loaded_negations = sample_negation_data
-
-        builder.clear_loaded_data()
-
-        assert len(builder._loaded_nouns) == 0
-        assert len(builder._loaded_adjectives) == 0
-        assert len(builder._loaded_adverbs) == 0
-        assert len(builder._loaded_negations) == 0
+# Legacy test removed: test_clear_loaded_data_comprehensive
+# - tested functionality removed from DeckBuilder
