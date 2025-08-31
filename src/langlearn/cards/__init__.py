@@ -1,17 +1,13 @@
-"""Anki card generation functionality."""
+"""Legacy card generation functionality (deprecated).
 
-from .adjective import AdjectiveCardGenerator
-from .adverb import AdverbCardGenerator
-from .base import BaseCardGenerator
-from .factory import CardGeneratorFactory
-from .negation import NegationCardGenerator
-from .noun import NounCardGenerator
+This module previously contained legacy card generators that have been
+replaced by the Clean Pipeline Architecture using CardBuilder service.
+All functionality has been migrated to:
+- src/langlearn/services/card_builder.py
+- src/langlearn/models/records.py
 
-__all__ = [
-    "AdjectiveCardGenerator",
-    "AdverbCardGenerator",
-    "BaseCardGenerator",
-    "CardGeneratorFactory",
-    "NegationCardGenerator",
-    "NounCardGenerator",
-]
+This module is kept as a placeholder to prevent import errors during
+the migration period. It may be removed in a future version.
+"""
+
+__all__: list[str] = []
