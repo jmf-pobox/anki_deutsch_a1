@@ -33,22 +33,19 @@ The langlearn codebase follows clean architecture with clear separation of conce
 | **Class** | **File** | **Single Responsibility** |
 |-----------|----------|---------------------------|
 | **`Verb`** | `verb.py:6` | Abstract base class for German verbs with common conjugation fields and validation methods. |
-| **`RegularVerb`** | `regular_verb.py:6` | Handles regular German verb conjugation patterns with standard -en, -t, -st endings. |
-| **`IrregularVerb`** | `irregular_verb.py:6` | Manages irregular German verbs with non-standard conjugation patterns and stem changes. |
-| **`SeparableVerb`** | `separable_verb.py:6` | Specialized handling for German separable prefix verbs (aufstehen → ich stehe auf). |
 
 #### Grammar and Function Words
 
 | **Class** | **File** | **Single Responsibility** |
 |-----------|----------|---------------------------|
 | **`Preposition`** | `preposition.py:6` | German prepositions with case dependency (Akkusativ, Dativ, Genitiv) information. |
-| **`Conjunction`** | `conjunction.py:6` | German conjunctions and their syntactic behavior for sentence construction. |
-| **`Interjection`** | `interjection.py:6` | German interjections and exclamations with contextual usage information. |
-| **`PersonalPronoun`** | `personal_pronoun.py:6` | German personal pronouns with complete case/gender declension tables. |
-| **`PossessivePronoun`** | `possessive_pronoun.py:6` | German possessive pronouns with agreement rules for gender and case. |
-| **`OtherPronoun`** | `other_pronoun.py:6` | Miscellaneous German pronouns (demonstrative, interrogative, indefinite). |
-| **`CardinalNumber`** | `cardinal_number.py:6` | German cardinal numbers (1, 2, 3...) with spelling and usage rules. |
-| **`OrdinalNumber`** | `ordinal_number.py:6` | German ordinal numbers (1st, 2nd, 3rd...) with proper German endings. |
+
+#### **REMOVED Legacy Models** ❌
+*These models were removed during legacy cleanup (2025-08-30) as they were only used in tests and superseded by Clean Pipeline Records:*
+- ~~`RegularVerb`, `IrregularVerb`, `SeparableVerb`~~ → Replaced by VerbConjugationRecord
+- ~~`Conjunction`, `Interjection`~~ → Not used in production 
+- ~~`PersonalPronoun`, `PossessivePronoun`, `OtherPronoun`~~ → Not used in production
+- ~~`CardinalNumber`, `OrdinalNumber`~~ → Not used in production
 
 ---
 

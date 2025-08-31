@@ -453,11 +453,16 @@ class ArticlePatternProcessor:
                 f"  - example_audio: {enriched_data.get('example_audio', 'NOT FOUND')}"
             )
 
+        # Gender cards use the existing example_audio (which works correctly)
+        unique_audio = enriched_data.get("example_audio") if enriched_data else ""
+
         card_data = {
             "Text": cloze_text,
             "Explanation": explanation,
-            "Image": enriched_data.get("image_url") if enriched_data else "",
-            "Audio": enriched_data.get("audio_file") if enriched_data else "",
+            "Image": enriched_data.get("image")
+            if enriched_data and enriched_data.get("image")
+            else "",  # Use lowercase "image" from actual enrichment
+            "Audio": unique_audio,  # Use unique audio generated from cloze text
         }
         logger.debug(
             f"[ARTICLE PROCESSOR DEBUG] Card data Image field: {card_data['Image']}"
@@ -549,11 +554,18 @@ class ArticlePatternProcessor:
                 f"  - example_audio: {enriched_data.get('example_audio', 'NOT FOUND')}"
             )
 
+        # TODO: Context cards need unique audio generation but architecture
+        # doesn't support it
+        # For now, use blank audio instead of wrong reused audio from Gender cards
+        unique_audio = ""  # Blank audio field until architecture redesign
+
         card_data = {
             "Text": cloze_text,
             "Explanation": explanation,
-            "Image": enriched_data.get("image_url") if enriched_data else "",
-            "Audio": enriched_data.get("audio_file") if enriched_data else "",
+            "Image": enriched_data.get("image")
+            if enriched_data and enriched_data.get("image")
+            else "",  # Use lowercase "image" from actual enrichment
+            "Audio": unique_audio,  # Use unique audio generated from cloze text
         }
         logger.debug(
             f"[ARTICLE PROCESSOR DEBUG] Case card Image field: {card_data['Image']}"

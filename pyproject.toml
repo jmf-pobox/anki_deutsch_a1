@@ -68,9 +68,8 @@ dependencies = [
  app-cov = "PYTHONPATH=src coverage run --source=src/langlearn src/langlearn/main.py && coverage report --show-missing && coverage html"
  run-sample = "python examples/deck_builder_demo.py"
  run-all = "PYTHONPATH=src python src/langlearn/main.py"
- # Validation scripts - Critical verification layer
- validate-anki = "python scripts/validate_anki.py"
- simulate-cards = "python scripts/simulate_cards.py"
+ # Environment validation
+ test-env = "python scripts/test_api_key.py"
 
 [tool.ruff]
 line-length = 88

@@ -250,16 +250,13 @@ class AnkiBackend(DeckBackend):
             )
         else:
             processed_fields = self._process_fields_with_media(note_type_id, fields)
-        print(
-            f"DEBUG: Final processed fields: "
-            f"{[f[:30] + '...' if len(f) > 30 else f for f in processed_fields]}"
-        )
 
         # Create note - need to get the notetype dict first
         notetype = self._collection.models.get(anki_notetype_id)
         if notetype is None:
             raise ValueError(f"Note type not found: {anki_notetype_id}")
         note = self._collection.new_note(notetype)
+
         for i, field_value in enumerate(processed_fields):
             if i < len(note.fields):
                 # Extract and add media files from HTML content before setting field
@@ -267,13 +264,26 @@ class AnkiBackend(DeckBackend):
                     field_value
                 )
                 note.fields[i] = processed_field_value
+
+                # LOG EXACT FIELD ASSIGNMENT FOR MEDIA FIELDS
+                if any(
+                    media_key in field_value
+                    for media_key in ["<img", "[sound:", "audio", "image"]
+                ):
+                    logger.debug(f"Field[{i}] BEFORE processing: {field_value}")
+                    logger.debug(
+                        f"Field[{i}] AFTER processing: {processed_field_value}"
+                    )
+                    logger.debug(f"Field[{i}] ASSIGNED to note: {note.fields[i]}")
+
                 if "[sound:" in field_value:
-                    print(f"DEBUG: Setting field {i} to audio: {field_value}")
+                    logger.debug(f"Setting field {i} to audio: {field_value}")
 
         if tags:
             note.tags = tags
 
         self._collection.add_note(note, self._deck_id)
+
         return int(note.id)
 
     def _process_fields_with_media(
@@ -593,7 +603,7 @@ class AnkiBackend(DeckBackend):
 
             return result
         except Exception as e:
-            print(f"Error generating audio for '{text}': {e}")
+            logger.error(f"Error generating audio for '{text}': {e}")
             self._media_generation_stats["generation_errors"] += 1
             return None
 
@@ -625,7 +635,7 @@ class AnkiBackend(DeckBackend):
 
             return result
         except Exception as e:
-            print(f"Error downloading image for '{word}': {e}")
+            logger.error(f"Error downloading image for '{word}': {e}")
             self._media_generation_stats["generation_errors"] += 1
             return None
 

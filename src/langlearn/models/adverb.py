@@ -25,6 +25,38 @@ class AdverbType(str, Enum):
     PROBABILITY = "Modaladverb"  # 2 entries - vielleicht, wahrscheinlich
 
 
+# German adverb type names for recognition in media enrichment
+GERMAN_ADVERB_TYPES = [
+    "Ortsadverb",
+    "Zeitadverb",
+    "Artadverb",
+    "Gradadverb",
+    "Kausaladverb",
+    "Modaladverb",
+    "Lokaladverb",
+    "Temporaladverb",
+]
+
+# Mapping from German type names to English AdverbType enum values
+GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP = {
+    # German types -> English enum equivalents
+    "Ortsadverb": AdverbType.LOCATION,  # place adverb
+    "Lokaladverb": AdverbType.LOCATION,  # local adverb
+    "Zeitadverb": AdverbType.TIME,  # time adverb
+    "Temporaladverb": AdverbType.TIME,  # temporal adverb
+    "Artadverb": AdverbType.MANNER,  # manner adverb
+    "Modaladverb": AdverbType.MANNER,  # modal adverb
+    "Gradadverb": AdverbType.INTENSITY,  # degree adverb
+    "Kausaladverb": AdverbType.MANNER,  # causal adverb
+    # English types (existing)
+    "time": AdverbType.TIME,
+    "place": AdverbType.LOCATION,
+    "location": AdverbType.LOCATION,
+    "manner": AdverbType.MANNER,
+    "intensity": AdverbType.INTENSITY,
+}
+
+
 class Adverb(BaseModel):
     """Model representing a German adverb with its properties and business logic.
 

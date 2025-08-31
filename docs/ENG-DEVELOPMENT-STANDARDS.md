@@ -19,28 +19,28 @@ Language Learn now implements **enterprise-grade Clean Pipeline Architecture** w
 
 ---
 
-## 🏗️ **Clean Pipeline Architecture Overview**
+## 🏗️ **System Architecture Overview**
 
-### **Core Principle**: Separation of Concerns
+### **Core Principle**: Hybrid Processing
 ```
-CSV → Records → Domain Models → MediaEnricher → Enriched Records → CardBuilder → Formatted Cards
+CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → Formatted Cards
 ```
 
-### **Layer Responsibilities**:
-1. **Records Layer**: Pure data transport (DTOs)
-2. **Service Layer**: Business logic orchestration
-3. **Infrastructure Layer**: External API integration
-4. **Domain Layer**: German language validation
+### **Component Responsibilities**:
+1. **Records**: Pydantic data validation and transport
+2. **Domain Models**: German language business logic methods
+3. **MediaEnricher**: Orchestrates Records → Domain Models → enriched Records conversion
+4. **CardBuilder**: Transforms enriched Records into formatted card templates
 
 ### **Key Benefits**:
-- **Testability**: Each layer can be tested in isolation
+- **Testability**: Each component can be tested in isolation
 - **Maintainability**: Clear responsibility boundaries
 - **Extensibility**: Easy to add new word types
-- **Performance**: Optimized processing pipeline
+- **Performance**: Optimized dual-system processing
 
 ---
 
-## 📋 **Development Standards - Clean Architecture**
+## 📋 **Development Standards - Hybrid Architecture**
 
 ### **🔴 MANDATORY - Clean Architecture Principles**
 
@@ -282,7 +282,7 @@ class AnkiBackend:
             try:
                 return self._process_with_clean_pipeline(fields, note_type_name)
             except Exception as e:
-                logger.debug(f"Clean Pipeline processing error: {e}")
+                logger.debug(f"Records processing error: {e}")
         
         # Use standard field processing
         return self._process_with_field_system(fields, note_type_name)
