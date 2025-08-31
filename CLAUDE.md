@@ -412,17 +412,17 @@ The project uses the system keyring for secure credential storage:
 
 ```bash
 # Add API keys
-python src/langlearn/utils/api_keyring.py add ANTHROPIC_API_KEY your_key_here
-python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_key_here
+python scripts/api_keyring.py add ANTHROPIC_API_KEY your_key_here
+python scripts/api_keyring.py add PEXELS_API_KEY your_key_here
 
 # View stored keys
-python src/langlearn/utils/api_keyring.py view ANTHROPIC_API_KEY
+python scripts/api_keyring.py view ANTHROPIC_API_KEY
 
 # Remove keys
-python src/langlearn/utils/api_keyring.py remove ANTHROPIC_API_KEY
+python scripts/api_keyring.py remove ANTHROPIC_API_KEY
 
 # Sync keys to environment (for scripts)
-python src/langlearn/utils/sync_api_key.py
+python scripts/sync_api_key.py
 ```
 
 AWS credentials are managed via standard environment variables:

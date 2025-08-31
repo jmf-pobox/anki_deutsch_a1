@@ -50,7 +50,7 @@ export AWS_SECRET_ACCESS_KEY=your_secret
 export AWS_DEFAULT_REGION=us-east-1
 
 # Pexels API for contextual images
-python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_key
+python scripts/api_keyring.py add PEXELS_API_KEY your_key
 
 # Generate with full media integration
 hatch run app --generate-media
@@ -155,7 +155,7 @@ export AWS_DEFAULT_REGION=us-east-1
 
 **Pexels (Contextual Images):**
 ```bash
-python src/langlearn/utils/api_keyring.py add PEXELS_API_KEY your_key
+python scripts/api_keyring.py add PEXELS_API_KEY your_key
 ```
 
 ## 📊 Quality & Development
