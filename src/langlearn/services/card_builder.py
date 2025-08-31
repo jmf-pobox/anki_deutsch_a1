@@ -78,8 +78,34 @@ class CardBuilder:
 
         # Merge record data with enriched data
         card_data = record.to_dict()
+
+        # DIAGNOSTIC: Log what we're merging
+        logger.info(
+            f"[MEDIA TRACE] BEFORE merge for {record_type}: "
+            f"image={card_data.get('image', 'MISSING')}, "
+            f"word_audio={card_data.get('word_audio', 'MISSING')}, "
+            f"example_audio={card_data.get('example_audio', 'MISSING')}"
+        )
+
         if enriched_data:
+            logger.info(
+                f"[MEDIA TRACE] Merging enriched_data into {record_type}: "
+                f"image={enriched_data.get('image', 'MISSING')}, "
+                f"word_audio={enriched_data.get('word_audio', 'MISSING')}, "
+                f"example_audio={enriched_data.get('example_audio', 'MISSING')}"
+            )
             card_data.update(enriched_data)
+        else:
+            logger.warning(
+                f"[MEDIA TRACE] No enriched_data provided for {record_type} record"
+            )
+
+        logger.info(
+            f"[MEDIA TRACE] AFTER merge for {record_type}: "
+            f"image={card_data.get('image', 'MISSING')}, "
+            f"word_audio={card_data.get('word_audio', 'MISSING')}, "
+            f"example_audio={card_data.get('example_audio', 'MISSING')}"
+        )
 
         # Load template for this record type
         template = self._template_service.get_template(record_type)
@@ -89,6 +115,14 @@ class CardBuilder:
 
         # Extract and format field values
         field_values = self._extract_field_values(record_type, card_data, note_type)
+
+        field_summary = ', '.join([
+            f'({i}) {v[:20]}...' if len(v) > 20 else f'({i}) {v}'
+            for i, v in enumerate(field_values)
+        ])
+        logger.info(
+            f"[FIELD ORDER] Final field_values for {record_type}: [{field_summary}]"
+        )
 
         logger.debug("Built card with %d fields for %s", len(field_values), record_type)
         return field_values, note_type
@@ -141,6 +175,10 @@ class CardBuilder:
             NoteType configured for this record type
         """
         field_names = self._get_field_names_for_record_type(record_type)
+
+        logger.info(
+            f"[FIELD ORDER] NoteType field names for {record_type}: {field_names}"
+        )
 
         return NoteType(
             name=template.name,
@@ -371,12 +409,32 @@ class CardBuilder:
         """
         field_values = []
 
+        # DIAGNOSTIC: Log the incoming card_data to see what we have
+        media_fields = ["image", "word_audio", "example_audio", "phrase_audio"]
+        present_media = {k: v for k, v in card_data.items() if k in media_fields}
+        if present_media:
+            logger.info(
+                f"[MEDIA TRACE] {record_type} card_data contains media: {present_media}"
+            )
+        else:
+            logger.warning(
+                f"[MEDIA TRACE] {record_type} card_data has NO media fields! "
+                f"Keys: {list(card_data.keys())}"
+            )
+
         for field_name in note_type.fields:
             # Map Anki field names to record field names
             record_field = self._map_anki_field_to_record_field(field_name, record_type)
 
             # Get value from card data
             value = card_data.get(record_field, "")
+
+            # DIAGNOSTIC: Log media field mapping
+            if field_name in ["Image", "WordAudio", "ExampleAudio"]:
+                logger.info(
+                    f"[MEDIA TRACE] Mapping {field_name} -> {record_field} = "
+                    f"{value or 'EMPTY'}"
+                )
 
             # Format value if needed
             formatted_value = self._format_field_value(field_name, value)

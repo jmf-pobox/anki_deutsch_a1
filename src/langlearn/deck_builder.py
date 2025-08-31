@@ -362,8 +362,12 @@ class DeckBuilder:
                 }
                 for enriched in enriched_list:
                     if isinstance(enriched, dict):
+                        # CRITICAL FIX: Don't filter out empty values - let
+                        # CardBuilder handle them
+                        # The `and v` condition was causing data loss when MediaEnricher
+                        # couldn't generate media (e.g., API failures, missing files)
                         enriched_data_list.append(
-                            {k: v for k, v in enriched.items() if k in media_keys and v}
+                            {k: v for k, v in enriched.items() if k in media_keys}
                         )
                     else:
                         enriched_data_list.append({})

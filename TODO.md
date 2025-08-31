@@ -106,19 +106,31 @@ Last updated: 2025-08-30
 
 **Success Criteria**: Noun-article practice cards generate successfully and pass validation.
 
-### **TASK 3.2: Fix Article Media Generation** 🔴 HIGH PRIORITY
-**Current Status**: Article cloze cards have empty Image/Audio fields despite MediaEnricher support.
+### **TASK 3.2: Fix Article Media Generation** 🟢 PARTIALLY RESOLVED
+**Current Status**: Article cloze cards media issue has been analyzed and partially fixed.
 
-**Implementation Needed**:
+**Root Cause Discovered**: 
+- German Artikel Gender Cloze cards were not matching MediaEnricher patterns due to German field names (`nominativ`, `akkusativ`) vs English patterns
+- German Artikel Context Cloze cards cannot generate unique audio due to architectural limitation
+
+**Implementation Completed**:
 - **File**: `src/langlearn/services/media_enricher.py`
-- **Purpose**: Ensure article cards get proper media enrichment
-- **Functions Needed**:
-  - Debug why MediaEnricher doesn't populate article card media
-  - Add proper UnifiedArticleRecord support to MediaEnricher
-  - Verify media fields are correctly mapped in CardBuilder
-  - Test media generation for article cards
+- ✅ Added pattern matching for article records with German fields (`nominativ`, `akkusativ`)
+- **File**: `src/langlearn/services/article_pattern_processor.py`  
+- ✅ Fixed field name mappings to use correct enriched field names
+- ✅ Set Context cloze cards to use blank audio instead of wrong reused audio
 
-**Success Criteria**: Article cloze cards display with images and audio.
+**Current Status**:
+- ✅ **German Artikel Gender Cloze**: Working with unique audio per card
+- ⚠️ **German Artikel Context Cloze**: Blank audio field (architecture redesign needed)
+
+**Architecture Limitation Identified**: 
+Context cards need unique audio generation but the current architecture doesn't support accessing MediaEnricher from ArticlePatternProcessor. This requires a larger architectural change to pass MediaService reference or redesign the audio generation flow.
+
+**Remaining Work**: 
+- 🔄 **DEFERRED**: Architectural redesign for Context card unique audio generation
+- This requires significant changes to ArticlePatternProcessor to access MediaService
+- Current solution (blank audio) is acceptable until future architecture redesign
 
 ---
 
