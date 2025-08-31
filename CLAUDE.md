@@ -328,7 +328,7 @@ hatch run run-sample        # Run example deck creation
 hatch run run-adjectives    # Run adjectives-only deck creation
 
 # Environment Testing
-hatch run test-env          # Test API key setup and connectivity
+hatch run test-env          # Test all API keys (Anthropic + Pexels) setup and connectivity
 ```
 
 ### Testing Strategy

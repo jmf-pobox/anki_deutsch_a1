@@ -52,7 +52,7 @@ export AWS_DEFAULT_REGION=us-east-1
 # Pexels API for contextual images
 python scripts/api_keyring.py add PEXELS_API_KEY your_key
 
-# Test your API key setup
+# Test your API key setup (tests both Anthropic and Pexels APIs)
 hatch run test-env
 
 # Generate with full media integration
