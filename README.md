@@ -2,7 +2,7 @@
 
 **Multi-language flashcard generation system with language-specific grammar intelligence.**
 
-Language Learn creates comprehensive vocabulary decks using advanced Clean Pipeline Architecture. Currently supporting **German A1** as the first implementation, the system is designed for multi-language expansion with language-specific grammar handling, automatic media integration, and enterprise-grade quality standards.
+Language Learn creates comprehensive vocabulary decks using a hybrid architecture. Currently supporting **German A1** as the first implementation, the system is designed for multi-language expansion with language-specific grammar handling, automatic media integration, and enterprise-grade quality standards.
 
 [![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
 [![Quality](https://img.shields.io/badge/MyPy-0%20errors-brightgreen)](https://mypy-lang.org/)
@@ -16,7 +16,7 @@ Language Learn creates comprehensive vocabulary decks using advanced Clean Pipel
 - **Complete Grammar Coverage** → All word types with language-specific challenges (German: der/die/das articles, verb conjugations, cases)
 - **Rich Media Integration** → AWS Polly audio pronunciation, Pexels contextual images
 - **Smart Templates** → Clean card design with hint buttons, proper styling, contextual examples
-- **Multi-Language Ready** → Clean Pipeline Architecture designed for language expansion
+- **Multi-Language Ready** → Hybrid architecture designed for language expansion
 - **Enterprise Quality** → 686 tests, 0 MyPy errors, comprehensive security validation
 
 ## 🚀 Quick Start
@@ -117,32 +117,32 @@ sprechen,to speak,spreche,sprichst,spricht,habe gesprochen,Ich spreche Deutsch
 - **Negations:** German negation patterns and usage
 
 ### ✨ **Smart Features**
-- **Clean Pipeline Architecture:** Enterprise-grade data processing
+- **Hybrid Architecture:** Enterprise-grade data processing
 - **Media Integration:** Automatic audio/image embedding in .apkg files
 - **Security Validated:** Comprehensive filename sanitization
 - **Performance Optimized:** Batch processing and intelligent caching
 - **German-Specific Logic:** Handles separable verbs, case declensions, gender patterns
 
-## 🏗️ Clean Pipeline Architecture
+## 🏗️ System Architecture
 
-### Modern Enterprise Architecture
-The system uses **Clean Pipeline Architecture** for optimal performance and maintainability:
+### Hybrid Architecture
+The system uses a hybrid architecture for data processing:
 
 ```
-CSV → Records → Domain Models → MediaEnricher → CardBuilder → Anki Backend
+CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → AnkiBackend
 ```
 
-### Architecture Benefits:
-- **Separation of Concerns:** Each component has single responsibility
-- **High Testability:** 686 tests with comprehensive coverage
-- **Performance Optimized:** Batch processing and intelligent caching
-- **Security First:** Comprehensive input validation and sanitization
-- **Robust Architecture:** Reliable processing across all word types
+### Architecture Components:
+- **Records**: Pydantic data transport objects with validation
+- **Domain Models**: Objects with German language business logic methods  
+- **MediaEnricher**: Converts Records → Domain Models, calls business logic, returns enriched Records
+- **CardBuilder**: Transforms enriched Records into formatted card templates
+- **AnkiBackend**: Uses enriched Records for card creation, falls back to ModelFactory when needed
 
 ### Current Word Type Support:
-- ✅ **Modern Architecture:** noun, adjective, adverb, negation, **verb** (5/7 types)
-- ✅ **Supported:** preposition, phrase (2/7 types)
-- ✅ **Intelligent Processing:** System optimally handles all word types
+- ✅ **Full Support:** All 7 German word types (noun, adjective, adverb, negation, verb, preposition, phrase)
+- ✅ **Dual System:** Records for validation + Domain Models for business logic
+- ✅ **Media Generation:** German-specific audio and image processing
 
 ## ⚙️ Advanced Configuration
 
@@ -189,7 +189,7 @@ hatch run run-adjectives       # Generate adjectives-only deck
 
 ### **Phase 1: German Enhancement** ✅ **Current**
 - ✅ Complete German A1 implementation (1000+ cards, 7 word types)
-- ✅ Clean Pipeline Architecture foundation
+- ✅ Hybrid architecture foundation
 - 🔄 Enhanced processing architecture for all word types
 
 ### **Phase 2: Multi-Deck Support** 🎯 **Next**
@@ -246,7 +246,7 @@ The system demonstrates language-specific intelligence with German as the first 
 - **Context-Aware Learning:** Grammar-specific validation and templates
 
 ### Multi-Language Architecture Foundation
-The Clean Pipeline Architecture provides a proven foundation for language expansion:
+The hybrid architecture provides a proven foundation for language expansion:
 
 **Designed for Language Diversity:**
 - **Russian Readiness:** Case system handling, Cyrillic script support
@@ -269,11 +269,11 @@ hatch run format        # Code formatting (PEP 8 compliance)
 hatch run ruff check    # Linting (zero violations required)
 ```
 
-### Clean Pipeline Architecture
-- **Modern Design:** Clean separation of concerns with dependency inversion
+### Hybrid Architecture
+- **Dual Processing:** Records for validation + Domain Models for business logic
 - **High Testability:** Comprehensive test coverage with mocking and integration tests
 - **Type Safety:** MyPy strict mode compliance across entire codebase
-- **Multi-Language Ready:** Language-agnostic core with pluggable language modules
+- **Multi-Language Ready:** Language-agnostic Records with language-specific Domain Models
 - **Production Ready:** Security hardening and performance optimization
 
 ### Contributing Guidelines
@@ -281,14 +281,15 @@ hatch run ruff check    # Linting (zero violations required)
 2. **Follow Quality Standards:** All 6 quality gates must pass (see CLAUDE.md)
 3. **Use Micro-Commits:** Atomic changes with comprehensive testing
 4. **Branch Workflow:** Feature branches with PR review process
-5. **Architecture Compliance:** Follow Clean Pipeline patterns
+5. **Architecture Compliance:** Follow hybrid architecture patterns
 
 ### Key Architecture Files
-- **Clean Pipeline:** `src/langlearn/services/` (CardBuilder, MediaEnricher, RecordMapper)
-- **Language Models:** `src/langlearn/models/` (Currently German, designed for expansion)
-- **Records System:** Language-agnostic DTOs for data transport
+- **Services:** `src/langlearn/services/` (CardBuilder, MediaEnricher, RecordMapper)
+- **Models:** `src/langlearn/models/` (Records + Domain Models for German processing)
+- **Records System:** Pydantic objects for data validation and transport
+- **Domain Models:** Objects with German language business logic methods
 - **Backend Integration:** `src/langlearn/backends/` (Anki library abstraction)
 
 ---
 
-**🏆 Multi-language flashcard generation system with Clean Pipeline Architecture. Currently supporting German A1 with roadmap for Russian, Korean, and other languages.**
+**🏆 Multi-language flashcard generation system with hybrid architecture. Currently supporting German A1 with roadmap for Russian, Korean, and other languages.**

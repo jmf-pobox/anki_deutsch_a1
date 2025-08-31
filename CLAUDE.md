@@ -355,30 +355,30 @@ hatch run type           # Verify type safety
 - **`docs/ENG-QUALITY-METRICS.md`** - Current quality metrics and technical debt analysis
 - **`docs/ENG-DEVELOPMENT-STANDARDS.md`** - Architectural principles and development standards
 
-### Core Components - Clean Pipeline Architecture
+### Core Components - System Architecture
 
-The project uses **Clean Pipeline Architecture** for data processing with clear separation of concerns:
+The project uses a hybrid architecture for data processing:
 
-**Clean Pipeline Flow**: CSV → Records → Domain Models → MediaEnricher → Enriched Records → CardBuilder
+**Data Flow**: CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → AnkiBackend
 
 1. **Models** (`src/langlearn/models/`): 
-   - **Records System**: Lightweight Pydantic records (NounRecord, AdjectiveRecord, etc.) for data transport
-   - **Domain Models**: Rich models with German-specific validation (legacy compatibility for verb, preposition, phrase)
-   - **Factory**: Record creation and model factory patterns
+   - **Records**: Pydantic data transport objects (NounRecord, AdjectiveRecord, etc.) with validation
+   - **Domain Models**: Objects with German language business logic methods (Noun, Adjective, etc.)
+   - **Factory**: ModelFactory creates domain model instances for fallback processing
 
 2. **Services** (`src/langlearn/services/`): 
-   - **CardBuilder**: Final assembly service (Records → Formatted Cards)
-   - **MediaEnricher**: Audio/image generation with existence checking  
    - **RecordMapper**: CSV → Records conversion
+   - **MediaEnricher**: Converts Records → Domain Models, calls business logic methods, returns enriched Records
+   - **CardBuilder**: Enriched Records → formatted card templates
    - **External APIs**: AWS Polly, Pexels, Anthropic integration
 
 3. **Backends** (`src/langlearn/backends/`): 
    - **DeckBackend**: Abstract interface for deck generation
-   - **AnkiBackend**: Implementation using official Anki library to create .apkg files
+   - **AnkiBackend**: Uses enriched Records for card creation, falls back to ModelFactory when Records processing fails
 
 4. **Utils** (`src/langlearn/utils/`): API key management, audio/image utilities
 
-5. **Main Application** (`deck_builder.py`): High-level orchestrator with MVP architecture support
+5. **Main Application** (`deck_builder.py`): High-level orchestrator
 
 ### Data Architecture
 - **CSV Files** (`data/`): Source data for all parts of speech
@@ -386,28 +386,27 @@ The project uses **Clean Pipeline Architecture** for data processing with clear 
 - **Images** (`data/images/`): Pexels-sourced images with automatic backup
 - **Backups** (`data/backups/`): Automatic CSV backups during enrichment
 
-### Key Design Patterns - Clean Architecture Implementation
+### Key Design Patterns
 
-- **Clean Pipeline Architecture**: Clear data flow with single responsibility at each step
-  - **Records**: Lightweight data transfer objects (DTOs) for pure data transport
-  - **MediaEnricher**: Infrastructure service with existence checking and caching
-  - **CardBuilder**: Pure transformation service (Records → Formatted Cards)
-  - **Separation of Concerns**: German grammar logic separate from infrastructure
+- **Hybrid Architecture**: Data flows through both Records and Domain Models in sequence
+  - **Records**: Pydantic objects for data validation and transport
+  - **Domain Models**: Objects with German language business logic methods
+  - **MediaEnricher**: Orchestrates Records → Domain Models → enriched Records conversion
+  - **CardBuilder**: Transforms enriched Records into formatted card templates
 
-- **Unified Architecture**: Records-based system with CardBuilder service
+- **Dual Processing System**: Records and Domain Models work together
   - **Record Types**: All word types use Pydantic BaseRecord models for validation
-  - **CardBuilder**: Single service handles card generation for all word types
-  - **MediaEnricher**: Handles audio/image generation with existence checking
+  - **Domain Models**: Contain German-specific business logic methods (get_combined_audio_text, etc.)
+  - **MediaEnricher**: Bridges between the two systems for media generation
 
 - **Performance Optimizations**: 
   - **Hash-based Caching**: Avoids duplicate API calls for media generation
   - **Existence Checking**: MediaEnricher checks for existing files before generation
-  - **Optimized Field Processing**: Clean Pipeline reduces processing overhead
 
 - **German Language Specialization**: 
-  - **Pydantic Validation**: German-specific rules (article validation, case patterns)
+  - **Pydantic Validation**: German-specific rules in Records (article validation, case patterns)
   - **Template System**: HTML/CSS templates for different card types  
-  - **Rich Domain Models**: Context-aware German grammar handling
+  - **Business Logic Methods**: Domain models contain German grammar processing logic
 
 ## API Key Management
 
@@ -586,3 +585,4 @@ When you see an error like "Field 'DuForm' not found":
 - Explain what needs user verification
 - Never claim success without user confirmation
 - Keep responses focused on solving the actual problem
+- Do not make value judgements about the code quality unless asked to do so.  Only write factual statements into documentation.
