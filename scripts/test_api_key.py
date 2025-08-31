@@ -59,25 +59,61 @@ class CredentialManager:
 
 
 def main() -> None:
+    """Test environment setup for API key configuration."""
+    print("🔑 Testing API key environment setup...")
+    print()
+
     # Create a credential manager for your application
     key: str = "ANTHROPIC_API_KEY"
     cred_manager = CredentialManager(key)
 
     # Retrieve the key
+    print(f"📋 Checking keyring for {key}...")
     stored_key = cred_manager.get_password(key)
-    print(stored_key)
-    if stored_key is None:
-        raise ValueError(f"Key {key} not found in system keyring")
 
-    client = anthropic.Anthropic(
-        api_key=stored_key,
-    )
-    message = client.messages.create(
-        model="claude-3-7-sonnet-20250219",
-        max_tokens=1024,
-        messages=[{"role": "user", "content": "Hello, Claude"}],
-    )
-    print(message.content)
+    if stored_key is None:
+        print("❌ FAILED: API key not found in system keyring")
+        print()
+        print("🛠️  Setup Instructions:")
+        print(
+            "   Run: python scripts/api_keyring.py add ANTHROPIC_API_KEY your_key_here"
+        )
+        print("   Or set environment variable: export ANTHROPIC_API_KEY=your_key_here")
+        return
+
+    print("✅ API key found in keyring")
+    print(f"   Key starts with: {stored_key[:20]}...")
+    print()
+
+    # Test API connectivity
+    print("🌐 Testing Anthropic API connection...")
+    try:
+        client = anthropic.Anthropic(api_key=stored_key)
+        message = client.messages.create(
+            model="claude-3-7-sonnet-20250219",
+            max_tokens=50,
+            messages=[
+                {
+                    "role": "user",
+                    "content": "Say 'API test successful' in exactly those words.",
+                }
+            ],
+        )
+
+        response_text = message.content[0].text if message.content else ""
+        print("✅ API connection successful!")
+        print(f"   Response: {response_text}")
+        print()
+        print("🎉 Environment setup complete! Your API keys are working correctly.")
+
+    except Exception as e:
+        print("❌ FAILED: API connection error")
+        print(f"   Error: {e!s}")
+        print()
+        print("🛠️  Troubleshooting:")
+        print("   1. Verify your API key is valid at https://console.anthropic.com")
+        print("   2. Check your internet connection")
+        print("   3. Ensure you have sufficient API credits")
 
 
 if __name__ == "__main__":

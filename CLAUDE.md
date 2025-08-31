@@ -326,6 +326,9 @@ hatch run check-unit        # All checks with unit tests only
 hatch run app               # Run main deck creation
 hatch run run-sample        # Run example deck creation
 hatch run run-adjectives    # Run adjectives-only deck creation
+
+# Environment Testing
+hatch run test-env          # Test API key setup and connectivity
 ```
 
 ### Testing Strategy
@@ -423,6 +426,9 @@ python scripts/api_keyring.py remove ANTHROPIC_API_KEY
 
 # Sync keys to environment (for scripts)
 python scripts/sync_api_key.py
+
+# Test API key environment setup
+hatch run test-env
 ```
 
 AWS credentials are managed via standard environment variables:
