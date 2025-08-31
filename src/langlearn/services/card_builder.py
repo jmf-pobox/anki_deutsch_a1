@@ -116,10 +116,12 @@ class CardBuilder:
         # Extract and format field values
         field_values = self._extract_field_values(record_type, card_data, note_type)
 
-        field_summary = ', '.join([
-            f'({i}) {v[:20]}...' if len(v) > 20 else f'({i}) {v}'
-            for i, v in enumerate(field_values)
-        ])
+        field_summary = ", ".join(
+            [
+                f"({i}) {v[:20]}..." if len(v) > 20 else f"({i}) {v}"
+                for i, v in enumerate(field_values)
+            ]
+        )
         logger.info(
             f"[FIELD ORDER] Final field_values for {record_type}: [{field_summary}]"
         )

@@ -284,7 +284,6 @@ class AnkiBackend(DeckBackend):
 
         self._collection.add_note(note, self._deck_id)
 
-
         return int(note.id)
 
     def _process_fields_with_media(
@@ -762,7 +761,6 @@ class AnkiBackend(DeckBackend):
             exporter.include_media = True
 
         logger.info(f"Exporting deck with {len(self._media_files)} media files")
-
 
         try:
             # Try the modern API first
