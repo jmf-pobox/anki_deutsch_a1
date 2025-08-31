@@ -60,7 +60,7 @@ class CredentialManager:
             keyring.delete_password(self._app_name, username)
 
 
-def test_pexels_api(api_key: str) -> bool:
+def verify_pexels_api(api_key: str) -> bool:
     """Test Pexels API connectivity.
 
     Args:
@@ -178,7 +178,7 @@ def main() -> None:
 
         # Test API connectivity
         print("🌐 Testing Pexels API connection...")
-        if test_pexels_api(pexels_api_key):
+        if verify_pexels_api(pexels_api_key):
             tests_passed += 1
 
     print()
