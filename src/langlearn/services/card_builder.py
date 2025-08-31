@@ -79,33 +79,10 @@ class CardBuilder:
         # Merge record data with enriched data
         card_data = record.to_dict()
 
-        # DIAGNOSTIC: Log what we're merging
-        logger.info(
-            f"[MEDIA TRACE] BEFORE merge for {record_type}: "
-            f"image={card_data.get('image', 'MISSING')}, "
-            f"word_audio={card_data.get('word_audio', 'MISSING')}, "
-            f"example_audio={card_data.get('example_audio', 'MISSING')}"
-        )
-
         if enriched_data:
-            logger.info(
-                f"[MEDIA TRACE] Merging enriched_data into {record_type}: "
-                f"image={enriched_data.get('image', 'MISSING')}, "
-                f"word_audio={enriched_data.get('word_audio', 'MISSING')}, "
-                f"example_audio={enriched_data.get('example_audio', 'MISSING')}"
-            )
             card_data.update(enriched_data)
         else:
-            logger.warning(
-                f"[MEDIA TRACE] No enriched_data provided for {record_type} record"
-            )
-
-        logger.info(
-            f"[MEDIA TRACE] AFTER merge for {record_type}: "
-            f"image={card_data.get('image', 'MISSING')}, "
-            f"word_audio={card_data.get('word_audio', 'MISSING')}, "
-            f"example_audio={card_data.get('example_audio', 'MISSING')}"
-        )
+            logger.debug(f"No enriched_data provided for {record_type} record")
 
         # Load template for this record type
         template = self._template_service.get_template(record_type)
@@ -410,19 +387,6 @@ class CardBuilder:
             List of field values in the order defined by note_type.fields
         """
         field_values = []
-
-        # DIAGNOSTIC: Log the incoming card_data to see what we have
-        media_fields = ["image", "word_audio", "example_audio", "phrase_audio"]
-        present_media = {k: v for k, v in card_data.items() if k in media_fields}
-        if present_media:
-            logger.info(
-                f"[MEDIA TRACE] {record_type} card_data contains media: {present_media}"
-            )
-        else:
-            logger.warning(
-                f"[MEDIA TRACE] {record_type} card_data has NO media fields! "
-                f"Keys: {list(card_data.keys())}"
-            )
 
         for field_name in note_type.fields:
             # Map Anki field names to record field names

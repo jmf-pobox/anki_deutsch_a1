@@ -93,6 +93,12 @@ class MediaEnricher(ABC):
 class StandardMediaEnricher(MediaEnricher):
     """Standard implementation of MediaEnricher using existing services."""
 
+    def _get_german_adverb_types(self) -> list[str]:
+        """Get list of German adverb type names for recognition."""
+        from langlearn.models.adverb import GERMAN_ADVERB_TYPES
+
+        return GERMAN_ADVERB_TYPES
+
     def __init__(
         self,
         media_service: Any,  # MediaService - avoiding import for now
@@ -125,20 +131,9 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Handle Clean Pipeline mode (domain_model is None)
         if domain_model is None:
-            logger.info(
-                f"[EMPTY FIELD DIAGNOSIS] Processing record in Clean Pipeline mode. "
-                f"Record type: {record.get('__class_name__', 'unknown')}, "
-                f"Keys: {sorted(record.keys())[:15]}"
-            )
-            result = self._enrich_record_key_based(enriched)
-            media_count = sum(
-                1 for k, v in result.items() if ("audio" in k or "image" in k) and v
-            )
-            logger.info(
-                f"[EMPTY FIELD DIAGNOSIS] Clean Pipeline result for "
-                f"{record.get('__class_name__', 'unknown')}: Media: {media_count}"
-            )
-            return result
+            record_name = record.get("__class_name__", "unknown")
+            logger.debug(f"Processing record in key-based mode: {record_name}")
+            return self._enrich_record_key_based(enriched)
 
         # Legacy mode: Use domain model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()
@@ -173,12 +168,12 @@ class StandardMediaEnricher(MediaEnricher):
     def _enrich_record_key_based(self, enriched: dict[str, Any]) -> dict[str, Any]:
         """Enrich record using key-based detection (Clean Pipeline mode)."""
         record_type = enriched.get("__class_name__", "unknown")
-        logger.info(f"[EMPTY FIELD DIAGNOSIS] Key-based detection for {record_type}")
+        logger.debug(f"Key-based detection for {record_type}")
 
         try:
             # Try to detect record type by key patterns and enrich accordingly
             if "noun" in enriched and "article" in enriched:
-                logger.info(f"[DIAG] Detected NounRecord for {record_type}")
+                logger.debug(f"Detected NounRecord for {record_type}")
                 # NounRecord - determine if we need legacy domain model conversion
                 try:
                     from langlearn.models.noun import Noun
@@ -195,12 +190,11 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for noun records without legacy model
                     logger.warning(
-                        f"[DIAG] FAILED Noun model for {record_type}: {e}. "
-                        f"Returning UNENRICHED record (no media fields added)!"
+                        f"Failed to create Noun model for {record_type}: {e}"
                     )
                     return enriched
             elif "word" in enriched and "comparative" in enriched:
-                logger.info(f"[DIAG] Detected AdjectiveRecord for {record_type}")
+                logger.debug(f"Detected AdjectiveRecord for {record_type}")
                 # AdjectiveRecord - determine if we need legacy domain model conversion
                 try:
                     from langlearn.models.adjective import Adjective
@@ -216,8 +210,7 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for adjective records without legacy model
                     logger.warning(
-                        f"[DIAG] FAILED Adjective model for {record_type}: {e}. "
-                        f"Returning UNENRICHED record (no media fields added)!"
+                        f"Failed to create Adjective model for {record_type}: {e}"
                     )
                     return enriched
             elif (
@@ -228,46 +221,22 @@ class StandardMediaEnricher(MediaEnricher):
                     in ["time", "place", "manner", "intensity", "location"]
                     # CRITICAL FIX: Support German linguistic classifications
                     or "adverb" in enriched.get("type", "").lower()
-                    or enriched.get("type")
-                    in [
-                        "Ortsadverb",
-                        "Zeitadverb",
-                        "Artadverb",
-                        "Gradadverb",
-                        "Kausaladverb",
-                        "Modaladverb",
-                        "Lokaladverb",
-                        "Temporaladverb",
-                    ]
+                    or enriched.get("type") in self._get_german_adverb_types()
                 )
             ):
-                logger.info(f"[DIAG] Detected AdverbRecord for {record_type}")
+                logger.debug(f"Detected AdverbRecord for {record_type}")
                 # AdverbRecord - determine if we need legacy domain model conversion
                 try:
-                    from langlearn.models.adverb import Adverb, AdverbType
+                    from langlearn.models.adverb import (
+                        GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP,
+                        Adverb,
+                        AdverbType,
+                    )
 
-                    # Extended mapping to support both English and German type names
-                    adverb_type_map = {
-                        # English types (existing)
-                        "time": AdverbType.TIME,
-                        "place": AdverbType.LOCATION,
-                        "location": AdverbType.LOCATION,
-                        "manner": AdverbType.MANNER,
-                        "intensity": AdverbType.INTENSITY,
-                        # German types (new - map to closest English equivalent)
-                        "Ortsadverb": AdverbType.LOCATION,  # place adverb
-                        "Lokaladverb": AdverbType.LOCATION,  # local adverb
-                        "Zeitadverb": AdverbType.TIME,  # time adverb
-                        "Temporaladverb": AdverbType.TIME,  # temporal adverb
-                        "Artadverb": AdverbType.MANNER,  # manner adverb
-                        "Modaladverb": AdverbType.MANNER,  # modal adverb
-                        "Gradadverb": AdverbType.INTENSITY,  # degree adverb
-                        "Kausaladverb": AdverbType.MANNER,  # causal adverb
-                    }
                     adverb = Adverb(
                         word=enriched.get("word", ""),
                         english=enriched.get("english", ""),
-                        type=adverb_type_map.get(
+                        type=GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP.get(
                             enriched.get("type", ""), AdverbType.MANNER
                         ),
                         example=enriched.get("example", ""),
@@ -276,8 +245,7 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for adverb records without legacy model
                     logger.warning(
-                        f"[DIAG] FAILED Adverb model for {record_type}: {e}. "
-                        f"Returning UNENRICHED record (no media fields added)!"
+                        f"Failed to create Adverb model for {record_type}: {e}"
                     )
                     return enriched
             elif "word" in enriched and enriched.get("type") in [
@@ -286,7 +254,7 @@ class StandardMediaEnricher(MediaEnricher):
                 "temporal",
                 "spatial",
             ]:
-                logger.info(f"[DIAG] Detected NegationRecord for {record_type}")
+                logger.debug(f"Detected NegationRecord for {record_type}")
                 # NegationRecord - determine if we need legacy domain model conversion
                 try:
                     from langlearn.models.negation import Negation, NegationType
@@ -309,8 +277,7 @@ class StandardMediaEnricher(MediaEnricher):
                 except Exception as e:
                     # Fallback for negation records without legacy model
                     logger.warning(
-                        f"[DIAG] FAILED Negation model for {record_type}: {e}. "
-                        f"Returning UNENRICHED record (no media fields added)!"
+                        f"Failed to create Negation model for {record_type}: {e}"
                     )
                     return enriched
             elif "preposition" in enriched:
@@ -347,7 +314,7 @@ class StandardMediaEnricher(MediaEnricher):
                 return self._enrich_artikel_cloze_record(enriched)
             else:
                 logger.warning(
-                    f"[EMPTY FIELD DIAGNOSIS] NO PATTERN MATCHED for {record_type}! "
+                    f"No pattern matched for record type {record_type}. "
                     f"Record keys: {sorted(enriched.keys())[:15]}. "
                     f"Sample values: {dict(list(enriched.items())[:5])}"
                 )
