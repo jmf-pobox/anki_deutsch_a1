@@ -41,7 +41,8 @@
       "Bash(sqlite3:*)",
       "Bash(git rm:*)",
       "Bash(git mv:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

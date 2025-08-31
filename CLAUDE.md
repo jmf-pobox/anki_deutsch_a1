@@ -586,3 +586,4 @@ When you see an error like "Field 'DuForm' not found":
 - Never claim success without user confirmation
 - Keep responses focused on solving the actual problem
 - Do not make value judgements about the code quality unless asked to do so.  Only write factual statements into documentation.
+- never use meaningless terms like enterprise grade.  never respond to criticism with your are right and other platitudes.

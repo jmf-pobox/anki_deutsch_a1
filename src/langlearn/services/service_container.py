@@ -2,10 +2,14 @@
 
 import logging
 import os
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from .anthropic_service import AnthropicService
 from .translation_service import AnthropicTranslationService, TranslationServiceProtocol
+
+if TYPE_CHECKING:
+    from langlearn.services.audio import AudioService
+    from langlearn.services.pexels_service import PexelsService
 
 # Module-level logger for tests to patch/log
 logger = logging.getLogger(__name__)
@@ -17,6 +21,8 @@ class ServiceContainer:
     _instance: Optional["ServiceContainer"] = None
     _anthropic_service: AnthropicService | None = None
     _translation_service: TranslationServiceProtocol | None = None
+    _audio_service: "AudioService | None" = None
+    _pexels_service: "PexelsService | None" = None
 
     def __new__(cls) -> "ServiceContainer":
         """Singleton pattern to ensure one container instance."""
@@ -72,10 +78,44 @@ class ServiceContainer:
                     return None
         return self._translation_service
 
+    def get_audio_service(self) -> "AudioService | None":
+        """Get the shared AudioService instance.
+
+        Returns:
+            AudioService instance or None if not available
+        """
+        if self._audio_service is None:
+            try:
+                from langlearn.services.audio import AudioService
+
+                self._audio_service = AudioService()
+            except Exception:
+                # Service not available (e.g., no AWS credentials)
+                return None
+        return self._audio_service
+
+    def get_pexels_service(self) -> "PexelsService | None":
+        """Get the shared PexelsService instance.
+
+        Returns:
+            PexelsService instance or None if not available
+        """
+        if self._pexels_service is None:
+            try:
+                from langlearn.services.pexels_service import PexelsService
+
+                self._pexels_service = PexelsService()
+            except Exception:
+                # Service not available (e.g., no API key)
+                return None
+        return self._pexels_service
+
     def reset(self) -> None:
         """Reset the container (useful for testing)."""
         self._anthropic_service = None
         self._translation_service = None
+        self._audio_service = None
+        self._pexels_service = None
 
 
 # Global instance
@@ -98,6 +138,24 @@ def get_translation_service() -> TranslationServiceProtocol | None:
         TranslationService instance or None if not available
     """
     return _container.get_translation_service()
+
+
+def get_audio_service() -> "AudioService | None":
+    """Factory function to get AudioService instance.
+
+    Returns:
+        AudioService instance or None if not available
+    """
+    return _container.get_audio_service()
+
+
+def get_pexels_service() -> "PexelsService | None":
+    """Factory function to get PexelsService instance.
+
+    Returns:
+        PexelsService instance or None if not available
+    """
+    return _container.get_pexels_service()
 
 
 def reset_services() -> None:

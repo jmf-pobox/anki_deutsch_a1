@@ -12,12 +12,11 @@ Language Learn creates comprehensive vocabulary decks using a hybrid architectur
 ## 🎯 What This Does For You
 
 **Generate language-specific learning decks with production-grade quality:**
-- **Language-Specific Intelligence** → Adapts to unique grammar patterns (currently German A1, expanding to Russian, Korean, others)
+- **Language-Specific Intelligence** → Adapts to unique grammar patterns (currently German, expanding to Russian, Korean, others)
 - **Complete Grammar Coverage** → All word types with language-specific challenges (German: der/die/das articles, verb conjugations, cases)
 - **Rich Media Integration** → AWS Polly audio pronunciation, Pexels contextual images
 - **Smart Templates** → Clean card design with hint buttons, proper styling, contextual examples
-- **Multi-Language Ready** → Hybrid architecture designed for language expansion
-- **Enterprise Quality** → 686 tests, 0 MyPy errors, comprehensive security validation
+- **Test Coverage & Quality Tools** → 686 tests, 0 MyPy -strict errors
 
 ## 🚀 Quick Start
 
@@ -236,7 +235,7 @@ hatch run run-adjectives       # Generate adjectives-only deck
 
 ## 🎓 Language-Specific Intelligence
 
-### German A1 Implementation (Current)
+### German (Current)
 The system demonstrates language-specific intelligence with German as the first implementation:
 
 **German Grammar Challenges Solved:**
