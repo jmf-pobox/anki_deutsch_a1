@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -11,11 +12,13 @@ if TYPE_CHECKING:
 class MockMediaGenerationCapable:
     """Mock implementation of MediaGenerationCapable for testing."""
 
-    def get_image_search_strategy(self) -> "Callable[[], str]":
+    def get_image_search_strategy(
+        self, anthropic_service: AnthropicServiceProtocol
+    ) -> "Callable[[], str]":
         """Return a mock strategy that generates test search terms."""
 
         def strategy() -> str:
-            return "test search terms"
+            return "context-aware search terms"
 
         return strategy
 
@@ -36,11 +39,14 @@ class TestMediaGenerationCapable:
 
     def test_get_image_search_strategy_returns_callable(self) -> None:
         """Test that get_image_search_strategy returns a callable."""
+        from unittest.mock import Mock
+
         mock = MockMediaGenerationCapable()
-        strategy = mock.get_image_search_strategy()
+        mock_service = Mock(spec=AnthropicServiceProtocol)
+        strategy = mock.get_image_search_strategy(mock_service)
 
         assert callable(strategy)
-        assert strategy() == "test search terms"
+        assert strategy() == "context-aware search terms"
 
     def test_get_combined_audio_text_returns_string(self) -> None:
         """Test that get_combined_audio_text returns a string."""
@@ -52,14 +58,18 @@ class TestMediaGenerationCapable:
 
     def test_protocol_with_domain_model_interface(self) -> None:
         """Test protocol works with domain model interface."""
+        from unittest.mock import Mock
 
-        def use_media_capable(obj: MediaGenerationCapable) -> tuple[str, str]:
+        def use_media_capable(
+            obj: MediaGenerationCapable, service: AnthropicServiceProtocol
+        ) -> tuple[str, str]:
             """Function that uses MediaGenerationCapable protocol."""
-            strategy = obj.get_image_search_strategy()
+            strategy = obj.get_image_search_strategy(service)
             audio_text = obj.get_combined_audio_text()
             return strategy(), audio_text
 
         mock = MockMediaGenerationCapable()
-        result = use_media_capable(mock)
+        mock_service = Mock(spec=AnthropicServiceProtocol)
+        result = use_media_capable(mock, mock_service)
 
-        assert result == ("test search terms", "test audio text")
+        assert result == ("context-aware search terms", "test audio text")

@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+
 
 @runtime_checkable
 class MediaGenerationCapable(Protocol):
@@ -21,12 +23,16 @@ class MediaGenerationCapable(Protocol):
     coupling between MediaEnricher and domain models.
     """
 
-    def get_image_search_strategy(self) -> "Callable[[], str]":
-        """Get a strategy for generating image search terms.
+    def get_image_search_strategy(
+        self, anthropic_service: "AnthropicServiceProtocol"
+    ) -> "Callable[[], str]":
+        """Get a strategy for generating image search terms with dependency injection.
 
-        Returns a callable that when invoked will generate context-aware
-        search terms for image retrieval. The strategy pattern allows for
-        lazy evaluation to avoid unnecessary API calls.
+        The domain model constructs context-aware requests using its knowledge of
+        which fields are most relevant and part-of-speech specific guidance.
+
+        Args:
+            anthropic_service: Service for context-aware search term generation.
 
         Returns:
             A callable that generates image search terms when invoked
