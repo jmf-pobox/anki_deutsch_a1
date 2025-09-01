@@ -142,16 +142,9 @@ class Verb(BaseModel):
             logger.debug(f"Generating search terms for verb: '{self.verb}'")
 
             try:
-                # Create adapter for anthropic service interface compatibility
-                # Service expects .word, .english, .example but verb has .verb
-                class VerbAdapter:
-                    def __init__(self, verb_obj: "Verb") -> None:
-                        self.word = verb_obj.verb  # Map verb to word
-                        self.english = verb_obj.english
-                        self.example = verb_obj.example
-
-                adapter = VerbAdapter(self)
-                result = anthropic_service.generate_pexels_query(adapter)
+                # Use domain expertise to build rich context for the service
+                context = self._build_search_context()
+                result = anthropic_service.generate_pexels_query(context)
                 if result and result.strip():
                     ai_generated_terms = result.strip()
                     logger.info(f"AI terms for '{self.verb}': '{ai_generated_terms}'")

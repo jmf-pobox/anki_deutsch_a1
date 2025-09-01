@@ -11,11 +11,12 @@ class AnthropicServiceProtocol(Protocol):
     must follow to support media generation and other AI-powered features.
     """
 
-    def generate_pexels_query(self, model: Any) -> str:
-        """Generate a Pexels search query from a domain model.
+    def generate_pexels_query(self, context: Any) -> str:
+        """Generate a Pexels search query from rich domain context.
 
         Args:
-            model: Domain model containing the data to generate search terms for
+            context: Rich context string from domain model's _build_search_context()
+                    method containing German linguistic expertise and visualization guidance
 
         Returns:
             Search query string suitable for Pexels API

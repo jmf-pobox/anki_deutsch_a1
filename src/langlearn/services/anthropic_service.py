@@ -171,27 +171,21 @@ class AnthropicService:
             logger.error(f"Error generating translation: {e}")
             raise
 
-    def generate_pexels_query(self, model: Any) -> str:
-        """Generate a Pexels query prioritizing sentence context for relevant images."""
-        prompt = f"""You are a helpful assistant that generates search queries
-for finding relevant images based on sentence context.
+    def generate_pexels_query(self, context: Any) -> str:
+        """Generate a Pexels query from rich domain expertise context.
+        
+        Args:
+            context: Rich context string from domain model's _build_search_context()
+                    method containing German linguistic expertise and visualization guidance.
+        
+        Returns:
+            Search query string suitable for Pexels API.
+        """
+        prompt = f"""You are a helpful assistant that generates search queries for finding relevant images.
 
-German word: '{model.word}' (meaning: '{model.english}')
-Example sentence: '{model.example}'
+{context}
 
-Your task is to analyze the EXAMPLE SENTENCE FIRST to understand the visual context
-and situation where this word is used. Generate a Pexels search query that captures
-the scene, action, or visual concept from the example sentence rather than just the
-isolated word meaning.
-
-Guidelines:
-- PRIORITIZE the visual context from the example sentence over the bare word meaning
-- Extract concrete, visual elements from the sentence
-  (people, objects, actions, settings)
-- Keep the query between 2-5 words
-- Focus on what someone would actually see in the situation described
-- If the sentence shows the word in action/context, capture that action
-- Use specific, searchable terms that photographers would tag their images with
+Based on the rich context provided above, generate a concise Pexels search query (2-5 words) that captures the key visual concept. Follow the visualization strategy guidance provided and focus on terms that photographers would use to tag their images.
 
 Output only the search query, nothing else."""
 

@@ -221,7 +221,7 @@ class TestImageSearchStrategy:
     """Test image search strategy with domain expertise."""
 
     def test_image_search_strategy_uses_context(self) -> None:
-        """Test that image search strategy passes model object to service."""
+        """Test that image search strategy passes rich context string to service."""
         mock_service = Mock()
         mock_service.generate_pexels_query.return_value = "generated terms"
 
@@ -235,15 +235,17 @@ class TestImageSearchStrategy:
         strategy = adverb.get_image_search_strategy(mock_service)
         result = strategy()
 
-        # Verify service was called with model object for protocol
+        # Verify service was called with rich context string from domain expertise
         mock_service.generate_pexels_query.assert_called_once()
         called_arg = mock_service.generate_pexels_query.call_args[0][0]
 
-        # The argument should be the adverb model object
-        assert isinstance(called_arg, Adverb)
-        assert called_arg.word == "oben"
-        assert called_arg.english == "above"
-        assert called_arg.type == AdverbType.LOCATION
+        # The argument should be the rich context string from _build_search_context
+        assert isinstance(called_arg, str)
+        assert "German adverb: oben" in called_arg
+        assert "English: above" in called_arg
+        assert "Type: Ortsadverb (LOCATION)" in called_arg
+        assert "Der Vogel fliegt oben" in called_arg
+        assert "spatial relationships" in called_arg
 
         assert result == "generated terms"
 

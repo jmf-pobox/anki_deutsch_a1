@@ -118,16 +118,9 @@ class Phrase(BaseModel):
             logger.debug(f"Generating search terms for phrase: '{self.phrase}'")
 
             try:
-                # Create adapter for anthropic service interface compatibility
-                # Service expects .word, .english, .example but phrase has .phrase
-                class PhraseAdapter:
-                    def __init__(self, phrase_obj: "Phrase") -> None:
-                        self.word = phrase_obj.phrase  # Map phrase to word
-                        self.english = phrase_obj.english
-                        self.example = phrase_obj.context  # Map context to example
-
-                adapter = PhraseAdapter(self)
-                result = anthropic_service.generate_pexels_query(adapter)
+                # Use domain expertise to build rich context for the service
+                context = self._build_search_context()
+                result = anthropic_service.generate_pexels_query(context)
                 if result and result.strip():
                     ai_generated_terms = result.strip()
                     logger.info(f"AI terms for '{self.phrase}': '{ai_generated_terms}'")
