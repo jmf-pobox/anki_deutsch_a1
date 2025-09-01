@@ -1,25 +1,83 @@
-"""Model for German phrases with field processing capabilities."""
+"""German Phrase Domain Model.
 
+This module contains the domain model for German phrases with specialized logic for
+German language learning applications. The module is responsible for:
+
+CORE RESPONSIBILITIES:
+    - Modeling German phrase data (phrase, English, context, related phrases)
+    - Implementing MediaGenerationCapable protocol for media enrichment
+    - Providing German-specific linguistic validation and phrase categorization
+    - Contributing domain expertise for image search term generation
+    - Supporting audio generation with proper German phrase pronunciation
+
+DESIGN PRINCIPLES:
+    - Domain model is SMART: Contains German phrase expertise and linguistic knowledge
+    - Services are DUMB: External services receive rich context, no domain logic
+    - Single Responsibility: Phrase logic stays in Phrase model, not in services
+    - Dependency Injection: Protocol-based design for loose coupling
+
+GERMAN LINGUISTIC FEATURES:
+    - Phrase categorization system (greetings, farewells, formal, informal, general)
+    - Context-aware usage patterns and social register
+    - Situational appropriateness guidance for German conversation
+    - Context-driven search term generation using communicative scenarios
+    - Audio generation with natural German phrase intonation
+
+INTEGRATION POINTS:
+    - MediaGenerationCapable protocol for image/audio media enrichment
+    - AnthropicServiceProtocol for AI-powered search term generation
+    - MediaEnricher service for coordinated media asset generation
+
+Usage:
+    Basic usage:
+        >>> phrase = Phrase(
+        ...     phrase="Guten Morgen!",
+        ...     english="Good morning!",
+        ...     context="formal greeting used until about 10 AM",
+        ...     related="Guten Tag, Guten Abend"
+        ... )
+
+    Media generation with dependency injection:
+        >>> strategy = phrase.get_image_search_strategy(anthropic_service)
+        >>> search_terms = strategy()  # Returns context-aware search terms
+        >>> audio_text = phrase.get_combined_audio_text()  # German phrase audio
+"""
+
+import logging
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
-from .field_processor import (
-    FieldProcessingError,
-    FieldProcessor,
-    format_media_reference,
-    validate_minimum_fields,
-)
-
 if TYPE_CHECKING:
-    from .field_processor import MediaGenerator
+    from collections.abc import Callable
+
+    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
 
 
-class Phrase(BaseModel, FieldProcessor):
-    """Model representing a German phrase with its properties.
+logger = logging.getLogger(__name__)
 
-    Implements FieldProcessor interface to handle its own field processing
-    for media generation, following Domain-Driven Design principles.
+
+class Phrase(BaseModel):
+    """German phrase domain model with linguistic expertise and media generation.
+
+    Represents a German phrase with its properties, German linguistic knowledge,
+    and specialized logic for media enrichment. German phrases are characterized
+    by their communicative function, social register (formal/informal), and
+    situational appropriateness in German conversation.
+
+    This model implements MediaGenerationCapable protocol to contribute domain
+    expertise for image and audio generation, using situational strategies
+    for phrase concept visualization and natural German pronunciation.
+
+    Attributes:
+        phrase: The German phrase (e.g., "Guten Morgen!", "Wie geht's?")
+        english: English translation (e.g., "Good morning!", "How are you?")
+        context: Context or usage description explaining when/how to use
+        related: Related phrases or expressions with similar usage
+
+    Note:
+        This model follows the design principle that domain models are SMART
+        (contain expertise) while services are DUMB (execute instructions).
     """
 
     phrase: str = Field(..., description="The German phrase")
@@ -27,83 +85,166 @@ class Phrase(BaseModel, FieldProcessor):
     context: str = Field(..., description="Context or usage description")
     related: str = Field(..., description="Related phrases")
 
-    # Media fields (not from CSV but added during processing)
-    phrase_audio: str = Field(
-        default="", description="Audio file path for phrase pronunciation"
-    )
-    image_path: str = Field(
-        default="", description="Image file path for phrase visualization"
-    )
+    def get_image_search_strategy(
+        self, anthropic_service: "AnthropicServiceProtocol"
+    ) -> "Callable[[], str]":
+        """Get strategy for generating image search terms with domain expertise.
 
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: "MediaGenerator"
-    ) -> list[str]:
-        """Process phrase fields for media generation.
+        Creates a callable that uses this phrase's domain knowledge to generate
+        context-aware image search terms. The phrase contributes German linguistic
+        expertise (communicative function, social register, situational context) while
+        the anthropic service executes the actual AI processing.
 
-        Field layout:
-            [Phrase, English, Context, Related, PhraseAudio]
+        Design: Domain model is SMART (provides rich context), service is DUMB
+        (processes whatever context it receives).
 
         Args:
-            fields: List of field values from the note
-            media_generator: Interface for generating media files
+            anthropic_service: Service implementing AnthropicServiceProtocol for
+                AI-powered search term generation.
 
         Returns:
-            Updated fields list with media references
+            Callable that when invoked returns image search terms as string.
+            Falls back to direct English translation if service fails.
+
+        Example:
+            >>> phrase = Phrase(phrase="Guten Morgen!", english="Good morning!",
+            ...                context="formal greeting", related="Guten Tag")
+            >>> strategy = phrase.get_image_search_strategy(anthropic_service)
+            >>> search_terms = strategy()  # Returns context-aware search terms
         """
-        try:
-            validate_minimum_fields(fields, self.get_expected_field_count(), "Phrase")
-        except FieldProcessingError:
-            return fields
 
-        # Create working copy
-        processed_fields = fields.copy()
+        def generate_search_terms() -> str:
+            """Execute search term generation strategy with phrase context."""
+            logger.debug(f"Generating search terms for phrase: '{self.phrase}'")
 
-        # Extract field values for processing
-        if len(fields) < 5:
-            return processed_fields
+            try:
+                # Create adapter for anthropic service interface compatibility
+                # Service expects .word, .english, .example but phrase has .phrase
+                class PhraseAdapter:
+                    def __init__(self, phrase_obj: "Phrase") -> None:
+                        self.word = phrase_obj.phrase  # Map phrase to word
+                        self.english = phrase_obj.english
+                        self.example = phrase_obj.context  # Map context to example
 
-        phrase = fields[0] if len(fields) > 0 else ""
+                adapter = PhraseAdapter(self)
+                result = anthropic_service.generate_pexels_query(adapter)
+                if result and result.strip():
+                    ai_generated_terms = result.strip()
+                    logger.info(f"AI terms for '{self.phrase}': '{ai_generated_terms}'")
+                    return ai_generated_terms
+            except Exception as e:
+                logger.warning(f"AI generation failed for '{self.phrase}': {e}")
+                # Service failed, use fallback
+                pass
 
-        # Generate phrase audio if PhraseAudio field (index 4) is empty
-        if len(processed_fields) > 4 and not processed_fields[4] and phrase:
-            audio_path = media_generator.generate_audio(phrase)
-            if audio_path:
-                processed_fields[4] = format_media_reference(audio_path, "audio")
+            # Fallback to direct English translation
+            logger.info(f"Fallback terms for '{self.phrase}': '{self.english}'")
+            return self.english
 
-        return processed_fields
+        return generate_search_terms
 
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for phrase notes.
+    def get_combined_audio_text(self) -> str:
+        """Get combined text for German phrase audio generation.
 
         Returns:
-            5 fields: (Phrase, English, Context, Related, PhraseAudio)
-        """
-        return 5
+            The German phrase for audio generation with natural pronunciation.
+            For phrases, we use the phrase directly as it represents a complete
+            communicative unit.
 
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected phrase structure.
+        Example:
+            >>> phrase = Phrase(phrase="Guten Morgen!", english="Good morning!",
+            ...                context="formal greeting", related="Guten Tag")
+            >>> phrase.get_combined_audio_text()
+            'Guten Morgen!'
+        """
+        return self.phrase
+
+    def _build_search_context(self) -> str:
+        """Build rich context for image search using German phrase expertise.
+
+        Constructs visualization guidance based on German linguistic knowledge.
+        Considers phrase category (greeting, farewell, formal, etc.), social register,
+        and communicative function to provide situational strategies for representing
+        phrase concepts visually.
+
+        This method embodies the domain model's expertise about German phrases and
+        their visualization challenges, providing rich context that services can
+        use without needing to understand German communicative patterns.
+
+        Returns:
+            Formatted context string with:
+            - Phrase details (German phrase, English translation, category)
+            - Situational visualization strategy
+            - Context and usage information
+            - Instructions for generating appropriate search terms
+
+        Example:
+            For greeting "Guten Morgen!":
+                "Focus on morning greeting scenario, show people meeting in morning"
+            For farewell "Auf Wiedersehen!":
+                "Focus on parting scenario, show people saying goodbye"
+
+        Note:
+            This is a private method called by get_image_search_strategy() to
+            contribute domain expertise to the search term generation process.
+        """
+        # Determine visualization strategy based on phrase category
+        category = self.get_phrase_category()
+        situational_strategy = self._get_situational_visualization_strategy(category)
+
+        return f"""
+        German phrase: {self.phrase}
+        English: {self.english}
+        Category: {category}
+        Context: {self.context}
+        Related phrases: {self.related}
+
+        Challenge: Generate search terms for images representing this phrase situation.
+        Visual strategy: {situational_strategy}
+
+        Generate search terms that photographers would use to tag images of
+        people in situations where this phrase would be used.
+        """
+
+    def _get_situational_visualization_strategy(self, category: str) -> str:
+        """Get situational visualization strategy for phrase categories.
 
         Args:
-            fields: Field values to validate
+            category: The phrase category (greeting, farewell, formal, etc.)
 
         Returns:
-            True if fields have valid phrase structure
+            Strategic guidance for visualizing phrase situations based on German
+            communicative context and social appropriateness.
         """
-        return len(fields) >= self.get_expected_field_count()
+        category_strategies = {
+            "greeting": (
+                "Focus on meeting and greeting scenarios. Show people encountering "
+                "each other for the first time in the day, waving, shaking hands, "
+                "or acknowledging each other in appropriate social contexts."
+            ),
+            "farewell": (
+                "Focus on parting and departure scenarios. Show people saying goodbye, "
+                "waving farewell, leaving situations, or concluding interactions "
+                "with appropriate emotional tone."
+            ),
+            "formal": (
+                "Focus on formal or professional contexts. Show business settings, "
+                "official interactions, respectful exchanges, or situations requiring "
+                "polite and proper German communication."
+            ),
+            "informal": (
+                "Focus on casual, friendly interactions. Show relaxed social settings, "
+                "friends talking, informal gatherings, or everyday conversation "
+                "scenarios with comfortable, approachable atmosphere."
+            ),
+            "general": (
+                "Focus on the communicative situation implied by the phrase. Show "
+                "people engaged in conversation or interaction that would naturally "
+                "lead to using this expression in German."
+            ),
+        }
 
-    def _get_field_names(self) -> list[str]:
-        """Return the field names for phrase cards.
-
-        Returns:
-            List of field names corresponding to field positions
-        """
-        return [
-            "Phrase",  # 0
-            "English",  # 1
-            "Context",  # 2
-            "Related",  # 3
-            "PhraseAudio",  # 4
-        ]
+        return category_strategies.get(category, category_strategies["general"])
 
     def is_greeting(self) -> bool:
         """Check if this phrase is a greeting.

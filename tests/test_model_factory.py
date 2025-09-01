@@ -3,7 +3,8 @@ Tests for ModelFactory implementation.
 
 This module tests the factory that creates appropriate FieldProcessor instances
 based on note type detection patterns. The factory now supports Clean Pipeline
-Architecture where certain word types (noun, adjective, adverb, negation) return
+Architecture where certain word types (noun, adjective, adverb, negation, verb, phrase)
+return
 None and are handled by the Records system instead.
 """
 
@@ -11,9 +12,7 @@ import pytest
 
 from langlearn.models.field_processor import FieldProcessor
 from langlearn.models.model_factory import ModelFactory
-from langlearn.models.phrase import Phrase
 from langlearn.models.preposition import Preposition
-from langlearn.models.verb import Verb
 
 
 class TestModelFactory:
@@ -92,15 +91,15 @@ class TestModelFactory:
             )
 
     def test_create_verb_processor(self) -> None:
-        """Test creating verb field processor."""
+        """Test that verb returns None (handled by Clean Pipeline)."""
         processor = ModelFactory.create_field_processor("German Verb")
 
-        assert processor is not None
-        assert isinstance(processor, Verb)
-        assert isinstance(processor, FieldProcessor)
+        assert processor is None, (
+            "Verb types should return None - handled by Clean Pipeline Architecture"
+        )
 
     def test_verb_detection_patterns(self) -> None:
-        """Test various verb note type name patterns."""
+        """Test various verb note type name patterns return None (Clean Pipeline)."""
         test_cases = [
             "German Verb",
             "verb",
@@ -112,8 +111,9 @@ class TestModelFactory:
 
         for note_type in test_cases:
             processor = ModelFactory.create_field_processor(note_type)
-            assert processor is not None, f"Failed to detect verb in: {note_type}"
-            assert isinstance(processor, Verb)
+            assert processor is None, (
+                f"Verb type '{note_type}' should return None - Clean Pipeline handles"
+            )
 
     def test_create_preposition_processor(self) -> None:
         """Test creating preposition field processor."""
@@ -142,15 +142,15 @@ class TestModelFactory:
             assert isinstance(processor, Preposition)
 
     def test_create_phrase_processor(self) -> None:
-        """Test creating phrase field processor."""
+        """Test that phrase returns None (handled by Clean Pipeline)."""
         processor = ModelFactory.create_field_processor("German Phrase")
 
-        assert processor is not None
-        assert isinstance(processor, Phrase)
-        assert isinstance(processor, FieldProcessor)
+        assert processor is None, (
+            "Phrase types should return None - handled by Clean Pipeline Architecture"
+        )
 
     def test_phrase_detection_patterns(self) -> None:
-        """Test various phrase note type name patterns."""
+        """Test various phrase note type name patterns return None (Clean Pipeline)."""
         test_cases = [
             "German Phrase",
             "phrase",
@@ -162,8 +162,9 @@ class TestModelFactory:
 
         for note_type in test_cases:
             processor = ModelFactory.create_field_processor(note_type)
-            assert processor is not None, f"Failed to detect phrase in: {note_type}"
-            assert isinstance(processor, Phrase)
+            assert processor is None, (
+                f"Phrase type '{note_type}' should return None - Clean Pipeline handles"
+            )
 
     def test_unsupported_note_types(self) -> None:
         """Test that unsupported note types return None."""

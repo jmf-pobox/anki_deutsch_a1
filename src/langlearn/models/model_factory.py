@@ -6,9 +6,7 @@ should handle field processing based on note type names or field patterns.
 """
 
 from .field_processor import FieldProcessor
-from .phrase import Phrase
 from .preposition import Preposition
-from .verb import Verb
 
 
 class ModelFactory:
@@ -32,24 +30,16 @@ class ModelFactory:
         note_type_lower = note_type_name.lower()
 
         # Clean Pipeline Architecture types - return None (handled by Clean Pipeline)
-        clean_pipeline_types = ["adjective", "noun", "adverb", "negation"]
+        clean_pipeline_types = [
+            "adjective",
+            "noun",
+            "adverb",
+            "negation",
+            "verb",
+            "phrase",
+        ]
         if any(word_type in note_type_lower for word_type in clean_pipeline_types):
             return None
-
-        # Verb detection
-        if "verb" in note_type_lower:
-            return Verb(
-                verb="",
-                english="",
-                present_ich="",
-                present_du="",
-                present_er="",
-                perfect="",
-                example="",
-                word_audio="",
-                example_audio="",
-                image_path="",
-            )
 
         # Preposition detection
         if "preposition" in note_type_lower:
@@ -61,17 +51,6 @@ class ModelFactory:
                 example2="",
                 audio1="",
                 audio2="",
-                image_path="",
-            )
-
-        # Phrase detection
-        if "phrase" in note_type_lower:
-            return Phrase(
-                phrase="",
-                english="",
-                context="",
-                related="",
-                phrase_audio="",
                 image_path="",
             )
 

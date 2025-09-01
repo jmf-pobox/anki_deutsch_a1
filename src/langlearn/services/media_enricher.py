@@ -102,6 +102,7 @@ class StandardMediaEnricher(MediaEnricher):
     def __init__(
         self,
         media_service: Any,  # MediaService - avoiding import for now
+        anthropic_service: Any,  # AnthropicServiceProtocol - avoiding import for now
         translation_service: TranslationServiceProtocol | None = None,
         audio_base_path: Path = Path("data/audio"),
         image_base_path: Path = Path("data/images"),
@@ -110,11 +111,13 @@ class StandardMediaEnricher(MediaEnricher):
 
         Args:
             media_service: Existing MediaService instance
+            anthropic_service: Anthropic service for AI-powered search term generation
             translation_service: Translation service for German-to-English conversion
             audio_base_path: Base directory for audio files
             image_base_path: Base directory for image files
         """
         self._media_service = media_service
+        self._anthropic_service = anthropic_service
         self._translation_service = translation_service
         self._audio_base_path = audio_base_path
         self._image_base_path = image_base_path
@@ -280,10 +283,27 @@ class StandardMediaEnricher(MediaEnricher):
                         f"Failed to create Negation model for {record_type}: {e}"
                     )
                     return enriched
+            elif "phrase" in enriched and "context" in enriched:
+                logger.debug(f"Detected PhraseRecord for {record_type}")
+                # PhraseRecord - use Clean Pipeline approach with MediaGenerationCapable
+                try:
+                    from langlearn.models.phrase import Phrase
+
+                    phrase = Phrase(
+                        phrase=enriched.get("phrase", ""),
+                        english=enriched.get("english", ""),
+                        context=enriched.get("context", ""),
+                        related=enriched.get("related", ""),
+                    )
+                    return self._enrich_phrase_record_clean(enriched, phrase)
+                except Exception as e:
+                    # Fallback for phrase records without legacy model
+                    logger.warning(
+                        f"Failed to create Phrase model for {record_type}: {e}"
+                    )
+                    return enriched
             elif "preposition" in enriched:
                 return self._enrich_preposition_record(enriched)
-            elif "phrase" in enriched:
-                return self._enrich_phrase_record(enriched)
             elif "verb" in enriched:
                 return self._enrich_verb_record(enriched)
             elif "infinitive" in enriched:
@@ -351,17 +371,13 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             word = record["noun"]
             if not self.image_exists(word):
-                # Translate German example to English for better Pexels search
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
+                # Use MediaGenerationCapable protocol for domain expertise
+                search_strategy = noun.get_image_search_strategy(
+                    self._anthropic_service
+                )
+                search_terms = search_strategy()
                 fallback = record.get("english", word)
-                # Use fallback if translation failed
-                final_search_terms = (
-                    search_terms if search_terms is not None else fallback
-                )
-                image_path = self._get_or_generate_image(
-                    word, final_search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -399,22 +415,79 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Translate German example to English for better Pexels search
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
+                # Use MediaGenerationCapable protocol for domain expertise
+                search_strategy = adjective.get_image_search_strategy(
+                    self._anthropic_service
+                )
+                search_terms = search_strategy()
                 fallback = record.get("english", word)
-                # Use fallback if translation failed
-                final_search_terms = (
-                    search_terms if search_terms is not None else fallback
-                )
-                image_path = self._get_or_generate_image(
-                    word, final_search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
                 # Use existing image without any API calls
                 image_filename = self._get_image_filename(word)
+                record["image"] = f'<img src="{image_filename}">'
+
+        return record
+
+    def _enrich_phrase_record_clean(
+        self, record: dict[str, Any], phrase: Any
+    ) -> dict[str, Any]:
+        """Enrich phrase record with media using MediaGenerationCapable protocol."""
+        # Generate phrase audio (main phrase pronunciation)
+        if not record.get("phrase_audio"):
+            combined_text = phrase.get_combined_audio_text()
+            audio_path = self._get_or_generate_audio(combined_text)
+            if audio_path:
+                record["phrase_audio"] = f"[sound:{Path(audio_path).name}]"
+
+        # Generate image using MediaGenerationCapable protocol
+        if not record.get("image") and record.get("phrase"):
+            phrase_text = record["phrase"]
+            if not self.image_exists(phrase_text):
+                # Use the new MediaGenerationCapable protocol with dependency injection
+                try:
+                    # Use injected anthropic service for consistency
+                    if self._anthropic_service:
+                        search_strategy = phrase.get_image_search_strategy(
+                            self._anthropic_service
+                        )
+                        search_terms = search_strategy()
+                        fallback_terms = (
+                            record.get("context")
+                            or record.get("english")
+                            or phrase_text
+                        )
+                        image_path = self._get_or_generate_image(
+                            phrase_text, search_terms, fallback_terms
+                        )
+                        if image_path:
+                            record["image"] = f'<img src="{Path(image_path).name}">'
+                    else:
+                        # Fallback to English translation if no Anthropic service
+                        search_terms = record.get("english", phrase_text)
+                        fallback_terms = record.get("context") or phrase_text
+                        image_path = self._get_or_generate_image(
+                            phrase_text, search_terms, fallback_terms
+                        )
+                        if image_path:
+                            record["image"] = f'<img src="{Path(image_path).name}">'
+                except Exception as e:
+                    logger.warning(
+                        f"Failed to use MediaGenerationCapable for '{phrase_text}': {e}"
+                    )
+                    # Fallback to English translation
+                    search_terms = record.get("english", phrase_text)
+                    fallback_terms = record.get("context") or phrase_text
+                    image_path = self._get_or_generate_image(
+                        phrase_text, search_terms, fallback_terms
+                    )
+                    if image_path:
+                        record["image"] = f'<img src="{Path(image_path).name}">'
+            else:
+                # Use existing image without any API calls
+                image_filename = self._get_image_filename(phrase_text)
                 record["image"] = f'<img src="{image_filename}">'
 
         return record
@@ -439,17 +512,13 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Translate German example to English for better Pexels search
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
+                # Use MediaGenerationCapable protocol for domain expertise
+                search_strategy = adverb.get_image_search_strategy(
+                    self._anthropic_service
+                )
+                search_terms = search_strategy()
                 fallback = record.get("english", word)
-                # Use fallback if translation failed
-                final_search_terms = (
-                    search_terms if search_terms is not None else fallback
-                )
-                image_path = self._get_or_generate_image(
-                    word, final_search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -479,17 +548,13 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("word") and record.get("example"):
             word = record["word"]
             if not self.image_exists(word):
-                # Translate German example to English for better Pexels search
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
+                # Use MediaGenerationCapable protocol for domain expertise
+                search_strategy = negation.get_image_search_strategy(
+                    self._anthropic_service
+                )
+                search_terms = search_strategy()
                 fallback = record.get("english", word)
-                # Use fallback if translation failed
-                final_search_terms = (
-                    search_terms if search_terms is not None else fallback
-                )
-                image_path = self._get_or_generate_image(
-                    word, final_search_terms, fallback
-                )
+                image_path = self._get_or_generate_image(word, search_terms, fallback)
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -532,17 +597,45 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             infinitive = record["infinitive"]
             if not self.image_exists(infinitive):
-                # Translate German example to English for better Pexels search results
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
-                fallback = record.get("english", infinitive)
-                # Use fallback if translation failed
-                final_search_terms = (
-                    search_terms if search_terms is not None else fallback
-                )
-                image_path = self._get_or_generate_image(
-                    infinitive, final_search_terms, fallback
-                )
+                # Use MediaGenerationCapable protocol with verb model
+                try:
+                    from langlearn.models.verb import Verb
+
+                    verb_model = Verb(
+                        verb=record["infinitive"],
+                        english=record.get("english", ""),
+                        classification=record.get("classification", ""),
+                        present_ich=record.get("ich", ""),
+                        present_du=record.get("du", ""),
+                        present_er=record.get("er_sie_es", ""),
+                        präteritum=record.get("präteritum", ""),
+                        auxiliary=record.get("auxiliary", ""),
+                        perfect=record.get("perfect", ""),
+                        example=record.get("example", ""),
+                        separable=record.get("separable", False),
+                    )
+                    search_strategy = verb_model.get_image_search_strategy(
+                        self._anthropic_service
+                    )
+                    search_terms = search_strategy()
+                    fallback = record.get("english", infinitive)
+                    image_path = self._get_or_generate_image(
+                        infinitive, search_terms, fallback
+                    )
+                except Exception as e:
+                    # Fallback to direct translation if verb model fails
+                    logger.warning(
+                        f"Verb model for conjugation image failed for "
+                        f"'{infinitive}': {e}"
+                    )
+                    search_terms = fallback  # Direct fallback instead of translation
+                    fallback = record.get("english", infinitive)
+                    final_search_terms = (
+                        search_terms if search_terms is not None else fallback
+                    )
+                    image_path = self._get_or_generate_image(
+                        infinitive, final_search_terms, fallback
+                    )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
@@ -641,55 +734,21 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             preposition = record["preposition"]
             if not self.image_exists(preposition):
-                # Translate German example1 to English for better Pexels search results
-                german_example = record["example1"]
-                search_terms = self._translate_for_search(german_example)
+                # Use English fallback for better Pexels search results
                 fallback = record.get("english", preposition)
+                search_terms = fallback  # Direct fallback instead of translation
                 # Use fallback if translation failed
                 final_search_terms = (
                     search_terms if search_terms is not None else fallback
                 )
-                image_path = self.generate_image(final_search_terms, fallback)
+                image_path = self.generate_image_with_word(
+                    preposition, final_search_terms, fallback
+                )
                 if image_path:
                     record["image"] = f'<img src="{Path(image_path).name}">'
             else:
                 # Use existing image without any API calls
                 image_filename = self._get_image_filename(preposition)
-                record["image"] = f'<img src="{image_filename}">'
-
-        return record
-
-    def _enrich_phrase_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Enrich phrase record with audio and image based on the phrase itself.
-
-        - Image: use the phrase text as the filename/search key; fallback to
-          context or english for search terms when available.
-        - Audio: generate pronunciation for the full phrase (back-side only).
-        """
-        # Phrase audio
-        if not record.get("phrase_audio") and record.get("phrase"):
-            audio_path = self._get_or_generate_audio(record["phrase"])
-            if audio_path:
-                record["phrase_audio"] = f"[sound:{Path(audio_path).name}]"
-
-        # Phrase image (front-side visual cue). Use phrase for filename and search.
-        if not record.get("image") and record.get("phrase"):
-            phrase_text = record.get("phrase", "")
-            if not self.image_exists(phrase_text):
-                # Translate German phrase to English for better Pexels search results
-                search_terms = self._translate_for_search(phrase_text)
-                # Prefer context as an assisting hint if present; else english
-                fallback_terms = record.get("context") or record.get("english") or ""
-                # Use fallback if translation failed
-                final_search_terms = (
-                    search_terms if search_terms is not None else fallback_terms
-                )
-                image_path = self.generate_image(final_search_terms, fallback_terms)
-                if image_path:
-                    record["image"] = f'<img src="{Path(image_path).name}">'
-            else:
-                # Use existing image without any API calls
-                image_filename = self._get_image_filename(phrase_text)
                 record["image"] = f'<img src="{image_filename}">'
 
         return record
@@ -758,14 +817,44 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             verb = record.get("verb") or record.get("infinitive", "")
             if not self.image_exists(verb):
-                # Translate example sentence to English for better Pexels search
-                search_terms = (
-                    self._translate_for_search(record["example"]) or record["example"]
-                )
-                fallback = record.get("english", verb)
-                image_path = self.generate_image(search_terms, fallback)
-                if image_path:
-                    record["image"] = f'<img src="{Path(image_path).name}">'
+                # Use MediaGenerationCapable protocol with verb model
+                try:
+                    from langlearn.models.verb import Verb
+
+                    verb_model = Verb(
+                        verb=record["verb"],
+                        english=record.get("english", ""),
+                        classification=record.get("classification", ""),
+                        present_ich=record.get("present_ich", ""),
+                        present_du=record.get("present_du", ""),
+                        present_er=record.get("present_er", ""),
+                        präteritum=record.get("präteritum", ""),
+                        auxiliary=record.get("auxiliary", ""),
+                        perfect=record.get("perfect", ""),
+                        example=record.get("example", ""),
+                        separable=record.get("separable", False),
+                    )
+                    search_strategy = verb_model.get_image_search_strategy(
+                        self._anthropic_service
+                    )
+                    search_terms = search_strategy()
+                    fallback = record.get("english", verb)
+                    image_path = self.generate_image_with_word(
+                        verb, search_terms, fallback
+                    )
+                    if image_path:
+                        record["image"] = f'<img src="{Path(image_path).name}">'
+                except Exception as e:
+                    # Fallback to direct translation if verb model fails
+                    logger.warning(f"Verb model for image failed for '{verb}': {e}")
+                    # Direct fallback instead of translation
+                    search_terms = record.get("english", verb)
+                    fallback = record.get("english", verb)
+                    image_path = self.generate_image_with_word(
+                        verb, search_terms, fallback
+                    )
+                    if image_path:
+                        record["image"] = f'<img src="{Path(image_path).name}">'
             else:
                 # Use existing image without any API calls
                 image_filename = self._get_image_filename(verb)
@@ -829,8 +918,7 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Generate image based on example sentence
         if not record.get("image") and record.get("beispiel_nom"):
-            # Use the image search strategy from the record
-            search_strategy = article_record.get_image_search_strategy()
+            # Note: article_record.get_image_search_strategy() available if needed
 
             # Extract a noun from the example for the filename
             example_nom = record.get("beispiel_nom", "")
@@ -867,7 +955,7 @@ class StandardMediaEnricher(MediaEnricher):
                     logger.debug(
                         f"[ARTICLE DEBUG] Image doesn't exist, generating for '{noun}'"
                     )
-                    search_terms = self._translate_for_search(search_strategy)
+                    search_terms = noun  # Direct fallback instead of translation
                     fallback = noun
                     # Use fallback if translation failed
                     final_search_terms = (
@@ -964,10 +1052,9 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             noun = record["noun_only"]
             if not self.image_exists(noun):
-                # Translate German example to English for better Pexels search
-                german_example = record["example_nom"]
-                search_terms = self._translate_for_search(german_example)
+                # Use English fallback for better Pexels search
                 fallback = record.get("noun_english", noun)
+                search_terms = fallback  # Direct fallback instead of translation
                 # Use fallback if translation failed
                 final_search_terms = (
                     search_terms if search_terms is not None else fallback
@@ -1012,10 +1099,9 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             noun = record["noun_only"]
             if not self.image_exists(noun):
-                # Translate German example to English for better Pexels search
-                german_example = record["example_nom"]
-                search_terms = self._translate_for_search(german_example)
+                # Use English fallback for better Pexels search
                 fallback = record.get("noun_english", noun)
+                search_terms = fallback  # Direct fallback instead of translation
                 # Use fallback if translation failed
                 final_search_terms = (
                     search_terms if search_terms is not None else fallback
@@ -1056,10 +1142,9 @@ class StandardMediaEnricher(MediaEnricher):
         ):
             noun = record["noun_only"]
             if not self.image_exists(noun):
-                # Translate German example to English for better Pexels search
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
+                # Use English fallback for better Pexels search
                 fallback = record.get("english_meaning", noun)
+                search_terms = fallback  # Direct fallback instead of translation
                 # Use fallback if translation failed
                 final_search_terms = (
                     search_terms if search_terms is not None else fallback
@@ -1102,10 +1187,9 @@ class StandardMediaEnricher(MediaEnricher):
         if not record.get("image") and record.get("noun") and record.get("example"):
             noun = record["noun"]
             if not self.image_exists(noun):
-                # Translate German example to English for better Pexels search
-                german_example = record["example"]
-                search_terms = self._translate_for_search(german_example)
+                # Use English fallback for better Pexels search
                 fallback = record.get("english", noun)
+                search_terms = fallback  # Direct fallback instead of translation
                 # Use fallback if translation failed
                 final_search_terms = (
                     search_terms if search_terms is not None else fallback
@@ -1158,7 +1242,7 @@ class StandardMediaEnricher(MediaEnricher):
                 noun = noun_candidates[0]  # Use first capitalized word as noun
                 if not self.image_exists(noun):
                     # Translate German sentence to English for better Pexels search
-                    search_terms = self._translate_for_search(clean_text)
+                    search_terms = noun  # Direct fallback instead of translation
                     fallback = noun
                     # Use fallback if translation failed
                     final_search_terms = (
@@ -1178,39 +1262,6 @@ class StandardMediaEnricher(MediaEnricher):
                     )
 
         return record
-
-    def _translate_for_search(self, german_text: str | None) -> str | None:
-        """Translate German text to English for better image search results.
-
-        Uses the translation service to convert German text to English,
-        which significantly improves Pexels API search results since
-        Pexels is primarily English-focused.
-
-        Args:
-            german_text: German text to translate (sentence, phrase, or word)
-
-        Returns:
-            English translation if translation service available and successful,
-            otherwise returns original German text as fallback
-        """
-        if not german_text or not german_text.strip():
-            return german_text
-
-        # If no translation service available, return original text
-        if not self._translation_service:
-            logger.debug("No translation service available, using original German text")
-            return german_text
-
-        try:
-            translated = self._translation_service.translate_to_english(german_text)
-            logger.debug(
-                f"Translated for image search: '{german_text}' → '{translated}'"
-            )
-            return translated
-        except Exception as e:
-            logger.warning(f"Translation failed for '{german_text}': {e}")
-            # Fallback to original German text
-            return german_text
 
     def _get_or_generate_audio(self, text: str) -> str | None:
         """Get existing audio or generate if not exists.

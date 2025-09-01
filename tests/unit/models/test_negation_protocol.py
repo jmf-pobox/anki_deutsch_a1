@@ -202,7 +202,7 @@ class TestNegationProtocolCompliance:
         assert "at all emphasis prohibition strong" in result
 
     def test_negation_type_strategies(self) -> None:
-        """Test that different negation types get appropriate visualization strategies."""
+        """Test that different negation types get appropriate strategies."""
         type_test_cases = [
             (NegationType.GENERAL, "prohibition symbols"),
             (NegationType.ARTICLE, "absence or lack of objects"),

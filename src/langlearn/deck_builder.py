@@ -162,14 +162,17 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
-            from .services import get_translation_service
+            from .services import get_anthropic_service, get_translation_service
             from .services.media_enricher import StandardMediaEnricher
 
             # Get translation service for improved image search
             translation_service = get_translation_service()
+            # Get anthropic service for AI-powered search term generation
+            anthropic_service = get_anthropic_service()
 
             self._media_enricher = StandardMediaEnricher(
                 media_service=self._media_service,
+                anthropic_service=anthropic_service,
                 translation_service=translation_service,
             )
         else:

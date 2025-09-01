@@ -44,6 +44,7 @@ Usage:
         >>> audio_text = noun.get_combined_audio_text()  # Article + noun forms
 """
 
+import logging
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
@@ -52,6 +53,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+
+
+logger = logging.getLogger(__name__)
 
 
 class Noun(BaseModel):
@@ -257,18 +261,32 @@ class Noun(BaseModel):
 
         def generate_search_terms() -> str:
             """Execute search term generation strategy with noun context."""
+            logger.debug(f"Generating search terms for noun: '{self.noun}'")
+
             try:
-                # Use domain expertise to build rich context for the service
-                context = self._build_search_context()
-                result = anthropic_service.generate_pexels_query(context)
+                # Create adapter for anthropic service interface compatibility
+                # Service expects .word, .english, .example but noun has .noun
+                class NounAdapter:
+                    def __init__(self, noun_obj: "Noun") -> None:
+                        self.word = noun_obj.noun  # Map noun to word
+                        self.english = noun_obj.english
+                        self.example = noun_obj.example
+
+                adapter = NounAdapter(self)
+                result = anthropic_service.generate_pexels_query(adapter)
                 if result and result.strip():
-                    return result.strip()
-            except Exception:
+                    ai_generated_terms = result.strip()
+                    logger.info(f"AI terms for '{self.noun}': '{ai_generated_terms}'")
+                    return ai_generated_terms
+            except Exception as e:
+                logger.warning(f"AI generation failed for '{self.noun}': {e}")
                 # Service failed, use fallback
                 pass
 
             # Fallback to domain-specific handling
-            return self._get_fallback_search_terms()
+            fallback_terms = self._get_fallback_search_terms()
+            logger.info(f"Fallback terms for '{self.noun}': '{fallback_terms}'")
+            return fallback_terms
 
         return generate_search_terms
 
@@ -368,6 +386,3 @@ class Noun(BaseModel):
         Generate search terms that photographers would use to tag images of
         this concept.
         """
-
-
-# Removed field processing methods - now pure domain model with only business logic

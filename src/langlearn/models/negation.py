@@ -223,9 +223,8 @@ class Negation(BaseModel):
         def generate_search_terms() -> str:
             """Execute search term generation strategy with negation context."""
             try:
-                # Use domain expertise to build rich context for the service
-                context = self._build_search_context()
-                result = anthropic_service.generate_pexels_query(context)
+                # Pass model object directly - negation has compatible fields
+                result = anthropic_service.generate_pexels_query(self)
                 if result and result.strip():
                     return result.strip()
             except Exception:

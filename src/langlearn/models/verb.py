@@ -1,26 +1,93 @@
-"""Model for German verbs with field processing capabilities."""
+"""German Verb Domain Model.
 
+This module contains the domain model for German verbs with specialized logic for
+German language learning applications. The module is responsible for:
+
+CORE RESPONSIBILITIES:
+    - Modeling German verb data (infinitive, English, conjugations, tense, example)
+    - Implementing MediaGenerationCapable protocol for media enrichment
+    - Providing German-specific linguistic validation and conjugation patterns
+    - Contributing domain expertise for image search term generation
+    - Supporting audio generation with proper conjugation pronunciation and SSML
+
+DESIGN PRINCIPLES:
+    - Domain model is SMART: Contains German verb expertise and linguistic knowledge
+    - Services are DUMB: External services receive rich context, no domain logic
+    - Single Responsibility: Verb logic stays in Verb model, not in services
+    - Dependency Injection: Protocol-based design for loose coupling
+
+GERMAN LINGUISTIC FEATURES:
+    - Conjugation system across all tenses (present, preterite, perfect, imperative)
+    - Verb classifications (regelmäßig, unregelmäßig, gemischt)
+    - Separable vs non-separable verb patterns
+    - Auxiliary verb selection (haben vs sein) for perfect tenses
+    - Context-aware search term generation using action/concept visualization
+    - SSML-enhanced audio generation with German tense labels
+
+INTEGRATION POINTS:
+    - MediaGenerationCapable protocol for image/audio media enrichment
+    - AnthropicServiceProtocol for AI-powered search term generation
+    - MediaEnricher service for coordinated media asset generation
+
+Usage:
+    Basic usage:
+        >>> verb = Verb(
+        ...     verb="arbeiten",
+        ...     english="to work",
+        ...     classification="regelmäßig",
+        ...     present_ich="arbeite",
+        ...     present_du="arbeitest",
+        ...     present_er="arbeitet",
+        ...     perfect="hat gearbeitet",
+        ...     example="Er arbeitet in einer Bank."
+        ... )
+
+    Media generation with dependency injection:
+        >>> strategy = verb.get_image_search_strategy(anthropic_service)
+        >>> search_terms = strategy()  # Returns context-aware search terms
+        >>> audio_text = verb.get_combined_audio_text()  # SSML conjugation audio
+"""
+
+import logging
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
-from .field_processor import (
-    FieldProcessingError,
-    FieldProcessor,
-    format_media_reference,
-    validate_minimum_fields,
-)
-
 if TYPE_CHECKING:
-    from .field_processor import MediaGenerator
+    from collections.abc import Callable
+
+    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
 
 
-class Verb(BaseModel, FieldProcessor):
-    """Model representing a German verb with its conjugations.
+logger = logging.getLogger(__name__)
 
-    Implements FieldProcessor interface to handle its own field processing
-    for media generation, following Domain-Driven Design principles.
-    Enhanced to match VerbRecord structure with all tenses.
+
+class Verb(BaseModel):
+    """German verb domain model with linguistic expertise and media generation.
+
+    Represents a German verb with its properties, German linguistic knowledge,
+    and specialized logic for media enrichment. German verbs are characterized
+    by their complex conjugation patterns, tense systems, auxiliary selection,
+    and separable/non-separable distinctions.
+
+    This model implements MediaGenerationCapable protocol to contribute domain
+    expertise for image and audio generation, using action-based strategies
+    for verb concept visualization and SSML for conjugation pronunciation.
+
+    Attributes:
+        verb: The German verb in infinitive form (e.g., "arbeiten", "gehen")
+        english: English translation (e.g., "to work", "to go")
+        classification: Verb classification (regelmäßig, unregelmäßig, gemischt)
+        present_ich/du/er: Present tense conjugations
+        präteritum: Preterite form (3rd person singular)
+        auxiliary: Auxiliary verb for perfect tense (haben or sein)
+        perfect: Perfect tense form
+        example: German example sentence demonstrating usage
+        separable: Whether the verb is separable (true/false)
+
+    Note:
+        This model follows the design principle that domain models are SMART
+        (contain expertise) while services are DUMB (execute instructions).
     """
 
     verb: str = Field(..., description="The German verb in infinitive form")
@@ -40,90 +107,65 @@ class Verb(BaseModel, FieldProcessor):
     example: str = Field(..., description="Example sentence using the verb")
     separable: bool = Field(default=False, description="Whether the verb is separable")
 
-    # Media fields (not from CSV but added during processing)
-    word_audio: str = Field(
-        default="", description="Audio file path for conjugated verb"
-    )
-    example_audio: str = Field(
-        default="", description="Audio file path for example sentence"
-    )
-    image_path: str = Field(
-        default="", description="Image file path for verb visualization"
-    )
+    def get_image_search_strategy(
+        self, anthropic_service: "AnthropicServiceProtocol"
+    ) -> "Callable[[], str]":
+        """Get strategy for generating image search terms with domain expertise.
 
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: "MediaGenerator"
-    ) -> list[str]:
-        """Process verb fields for media generation.
+        Creates a callable that uses this verb's domain knowledge to generate
+        context-aware image search terms. The verb contributes German linguistic
+        expertise (action concepts, separable patterns, tense context) while
+        the anthropic service executes the actual AI processing.
 
-        Field layout:
-            [Verb, English, ich_form, du_form, er_form, perfect, Example, ExampleAudio]
+        Design: Domain model is SMART (provides rich context), service is DUMB
+        (processes whatever context it receives).
 
         Args:
-            fields: List of field values from the note
-            media_generator: Interface for generating media files
+            anthropic_service: Service implementing AnthropicServiceProtocol for
+                AI-powered search term generation.
 
         Returns:
-            Updated fields list with media references
+            Callable that when invoked returns image search terms as string.
+            Falls back to direct English translation if service fails.
+
+        Example:
+            >>> verb = Verb(verb="arbeiten", english="to work",
+            ...             present_ich="arbeite", present_du="arbeitest",
+            ...             present_er="arbeitet", perfect="hat gearbeitet",
+            ...             example="Er arbeitet in einer Bank.")
+            >>> strategy = verb.get_image_search_strategy(anthropic_service)
+            >>> search_terms = strategy()  # Returns context-aware search terms
         """
-        try:
-            validate_minimum_fields(fields, self.get_expected_field_count(), "Verb")
-        except FieldProcessingError:
-            return fields
 
-        # Create working copy
-        processed_fields = fields.copy()
+        def generate_search_terms() -> str:
+            """Execute search term generation strategy with verb context."""
+            logger.debug(f"Generating search terms for verb: '{self.verb}'")
 
-        # Extract field values for processing
-        if len(fields) < 8:
-            return processed_fields
+            try:
+                # Create adapter for anthropic service interface compatibility
+                # Service expects .word, .english, .example but verb has .verb
+                class VerbAdapter:
+                    def __init__(self, verb_obj: "Verb") -> None:
+                        self.word = verb_obj.verb  # Map verb to word
+                        self.english = verb_obj.english
+                        self.example = verb_obj.example
 
-        example = fields[6] if len(fields) > 6 else ""
+                adapter = VerbAdapter(self)
+                result = anthropic_service.generate_pexels_query(adapter)
+                if result and result.strip():
+                    ai_generated_terms = result.strip()
+                    logger.info(f"AI terms for '{self.verb}': '{ai_generated_terms}'")
+                    return ai_generated_terms
+            except Exception as e:
+                logger.warning(f"AI generation failed for '{self.verb}': {e}")
+                # Service failed, use fallback
+                pass
 
-        # Generate example audio if ExampleAudio field (index 7) is empty
-        if len(processed_fields) > 7 and not processed_fields[7] and example:
-            audio_path = media_generator.generate_audio(example)
-            if audio_path:
-                processed_fields[7] = format_media_reference(audio_path, "audio")
+            # Fallback to direct English translation
+            logger.info(f"Fallback terms for '{self.verb}': '{self.english}'")
+            return self.english
 
-        return processed_fields
-
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for verb notes.
-
-        Returns:
-            8 fields: (Verb, English, ich_form, du_form, er_form, perfect,
-                     Example, ExampleAudio)
-        """
-        return 8
-
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected verb structure.
-
-        Args:
-            fields: Field values to validate
-
-        Returns:
-            True if fields have valid verb structure
-        """
-        return len(fields) >= self.get_expected_field_count()
-
-    def _get_field_names(self) -> list[str]:
-        """Return the field names for verb cards.
-
-        Returns:
-            List of field names corresponding to field positions
-        """
-        return [
-            "Verb",  # 0
-            "English",  # 1
-            "ich_form",  # 2
-            "du_form",  # 3
-            "er_form",  # 4
-            "perfect",  # 5
-            "Example",  # 6
-            "ExampleAudio",  # 7
-        ]
+        return generate_search_terms
 
     def get_combined_audio_text(self) -> str:
         """Get combined text for verb conjugation audio with German tense labels.
@@ -158,3 +200,192 @@ class Verb(BaseModel, FieldProcessor):
             )
 
         return ", ".join(parts)
+
+    def _build_search_context(self) -> str:
+        """Build rich context for image search using German verb expertise.
+
+        Constructs visualization guidance based on German linguistic knowledge.
+        Considers verb action concepts, separable patterns, and tense context to
+        provide action-focused strategies for representing verb concepts visually.
+
+        This method embodies the domain model's expertise about German verbs and
+        their visualization challenges, providing rich context that services can
+        use without needing to understand German conjugation patterns.
+
+        Returns:
+            Formatted context string with:
+            - Verb details (German infinitive, English translation, classification)
+            - Action-based visualization strategy
+            - Example usage and conjugation context
+            - Instructions for generating appropriate search terms
+
+        Example:
+            For action verb "arbeiten":
+                "Focus on the action being performed, show people working"
+            For motion verb "gehen":
+                "Focus on movement and direction, show people walking"
+
+        Note:
+            This is a private method called by get_image_search_strategy() to
+            contribute domain expertise to the search term generation process.
+        """
+        # Determine visualization strategy based on verb action concept
+        action_strategy = self._get_action_visualization_strategy()
+
+        # Add classification context (German linguistic feature)
+        classification_info = self.classification or "standard verb"
+
+        # Add separable context if applicable
+        separable_info = "separable" if self.separable else "non-separable"
+
+        return f"""
+        German verb: {self.verb} ({separable_info}, {classification_info})
+        English: {self.english}
+        Example usage: {self.example}
+        Conjugations available: {self._get_available_conjugations()}
+
+        Challenge: Generate search terms for images representing this verb action.
+        Visual strategy: {action_strategy}
+
+        Generate search terms that photographers would use to tag images of
+        people performing this action or demonstrating this concept.
+        """
+
+    def _get_action_visualization_strategy(self) -> str:
+        """Get action-focused visualization strategy for verb concepts.
+
+        Returns:
+            Strategic guidance for visualizing verb actions based on German
+            verb semantics and common usage patterns.
+        """
+        english_lower = self.english.lower()
+
+        # Motion verbs - focus on movement and direction
+        motion_verbs = {
+            "go",
+            "come",
+            "walk",
+            "run",
+            "drive",
+            "travel",
+            "move",
+            "leave",
+            "arrive",
+            "return",
+            "follow",
+            "lead",
+            "jump",
+            "climb",
+            "fall",
+        }
+
+        # Work/activity verbs - focus on people performing tasks
+        work_verbs = {
+            "work",
+            "study",
+            "learn",
+            "teach",
+            "write",
+            "read",
+            "cook",
+            "clean",
+            "build",
+            "make",
+            "create",
+            "fix",
+            "help",
+            "serve",
+            "sell",
+            "buy",
+        }
+
+        # Communication verbs - focus on social interaction
+        communication_verbs = {
+            "speak",
+            "talk",
+            "say",
+            "tell",
+            "ask",
+            "answer",
+            "call",
+            "listen",
+            "explain",
+            "discuss",
+            "argue",
+            "agree",
+            "disagree",
+        }
+
+        # Emotion/state verbs - use symbolic or contextual representation
+        state_verbs = {
+            "be",
+            "have",
+            "feel",
+            "think",
+            "believe",
+            "know",
+            "understand",
+            "remember",
+            "forget",
+            "hope",
+            "want",
+            "need",
+            "like",
+            "love",
+            "hate",
+        }
+
+        verb_strategies = [
+            (
+                motion_verbs,
+                "Focus on movement and direction. Show people or objects "
+                "in motion, emphasizing movement from one place to another.",
+            ),
+            (
+                work_verbs,
+                "Focus on people actively performing the task or activity. "
+                "Show clear action shots with visible tools or environment.",
+            ),
+            (
+                communication_verbs,
+                "Focus on social interaction and communication. "
+                "Show people engaged in conversation or expressing.",
+            ),
+            (
+                state_verbs,
+                "Use contextual scenes that imply the mental or emotional "
+                "state. Show situations where this feeling would be evident.",
+            ),
+        ]
+
+        for verb_type, strategy in verb_strategies:
+            if any(verb in english_lower for verb in verb_type):
+                return strategy
+
+        # Default action-focused strategy
+        return (
+            "Focus on the physical action being performed. Show people actively "
+            "engaged in the activity with clear visual demonstration of concept."
+        )
+
+    def _get_available_conjugations(self) -> str:
+        """Get summary of available conjugation data for context.
+
+        Returns:
+            String describing which tenses and forms are available for this verb.
+        """
+        conjugations = []
+
+        if self.present_ich or self.present_du or self.present_er:
+            conjugations.append("present tense")
+
+        if self.präteritum:
+            conjugations.append("preterite")
+
+        if self.perfect:
+            conjugations.append("perfect")
+
+        if self.auxiliary:
+            conjugations.append(f"auxiliary: {self.auxiliary}")
+
+        return ", ".join(conjugations) if conjugations else "basic forms"

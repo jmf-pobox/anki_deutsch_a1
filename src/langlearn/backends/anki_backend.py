@@ -105,8 +105,12 @@ class AnkiBackend(DeckBackend):
             self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
         # Create MediaEnricher for Clean Pipeline Architecture
+        from langlearn.services import get_anthropic_service
+
+        anthropic_service = get_anthropic_service()
         self._media_enricher = StandardMediaEnricher(
             self._media_service,
+            anthropic_service,
             audio_base_path=self._project_root / "data" / "audio",
             image_base_path=self._project_root / "data" / "images",
         )
