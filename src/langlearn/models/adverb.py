@@ -74,7 +74,8 @@ class Adverb(BaseModel):
         """
 
         def generate_search_terms() -> str:
-            """Execute search term generation strategy with adverb context."""
+            """Execute a search term generation strategy with adverb
+            context."""
             try:
                 result = anthropic_service.generate_pexels_query(self)
                 if result and result.strip():
@@ -83,8 +84,8 @@ class Adverb(BaseModel):
                 # Service failed, use fallback
                 pass
 
-            # Simple fallback: use the raw German word
-            return self.word
+            # Simple fallback: use the example sentence
+            return self.example
 
         return generate_search_terms
 
@@ -103,17 +104,10 @@ class Adverb(BaseModel):
         """Legacy method for backward compatibility - executes strategy immediately.
 
         Note: This method maintains compatibility but should be replaced with
-        get_image_search_strategy() for better performance. Uses a mock service
-        that always fails to trigger the fallback behavior.
+        get_image_search_strategy() for better performance. Returns simple fallback.
         """
-        from unittest.mock import Mock
-
-        # Create a mock service that fails to trigger fallback
-        mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Legacy fallback")
-
-        strategy = self.get_image_search_strategy(mock_service)
-        return strategy()
+        # Simple fallback: use the raw German word directly
+        return self.word
 
     def _build_search_context(self) -> str:
         """Build adverb-specific context for image search term generation.
@@ -130,15 +124,13 @@ class Adverb(BaseModel):
                 "or environmental contexts"
             ),
             AdverbType.TIME: (
-                "Use temporal symbols like clocks, calendars, "
-                "or sequential imagery"
+                "Use temporal symbols like clocks, calendars, or sequential imagery"
             ),
             AdverbType.FREQUENCY: (
                 "Show repetition patterns, cycles, or counting symbols"
             ),
             AdverbType.MANNER: (
-                "Focus on how actions are performed, style, "
-                "or method indicators"
+                "Focus on how actions are performed, style, or method indicators"
             ),
             AdverbType.INTENSITY: (
                 "Use visual emphasis, gradients, or scale representations"

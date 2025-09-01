@@ -71,7 +71,7 @@ class TestAdverbProtocolCompliance:
 
         assert isinstance(search_terms, str)
         assert isinstance(audio, str)
-        assert search_terms == "hier"  # Raw German word fallback
+        assert search_terms == "Das Buch liegt hier auf dem Tisch."  # Example fallback
         assert audio == "hier. Das Buch liegt hier auf dem Tisch."
 
     def test_protocol_with_mock_anthropic_service(self) -> None:
