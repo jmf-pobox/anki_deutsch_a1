@@ -2,20 +2,21 @@
 
 Comprehensive tests for the German adverb domain model covering:
 - Basic model initialization and validation
-- AdverbType enumeration and German linguistic classifications  
+- AdverbType enumeration and German linguistic classifications
 - Audio text generation for pronunciation context
 - Context building for type-specific image search guidance
 - Edge cases and error handling
 """
 
-import pytest
 from unittest.mock import Mock
 
+import pytest
+
 from langlearn.models.adverb import (
-    Adverb, 
-    AdverbType, 
     GERMAN_ADVERB_TYPES,
-    GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP
+    GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP,
+    Adverb,
+    AdverbType,
 )
 
 
@@ -55,14 +56,16 @@ class TestAdverbBasics:
 
     def test_required_fields_validation(self) -> None:
         """Test that missing required fields raise validation errors."""
-        with pytest.raises(ValueError):
-            Adverb()  # Missing all required fields
-        
-        with pytest.raises(ValueError):
-            Adverb(word="test")  # Missing english, type, example
-            
-        with pytest.raises(ValueError):
-            Adverb(word="test", english="test")  # Missing type, example
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError):
+            Adverb()  # type: ignore[call-arg] # Missing all required fields
+
+        with pytest.raises(ValidationError):
+            Adverb(word="test")  # type: ignore[call-arg] # Missing english, type, example
+
+        with pytest.raises(ValidationError):
+            Adverb(word="test", english="test")  # type: ignore[call-arg] # Missing type, example
 
 
 class TestAdverbType:
@@ -71,7 +74,7 @@ class TestAdverbType:
     def test_adverb_type_german_values(self) -> None:
         """Test that AdverbType contains correct German linguistic terms."""
         assert AdverbType.LOCATION.value == "Ortsadverb"
-        assert AdverbType.TIME.value == "Zeitadverb" 
+        assert AdverbType.TIME.value == "Zeitadverb"
         assert AdverbType.FREQUENCY.value == "Häufigkeitsadverb"
         assert AdverbType.MANNER.value == "Modaladverb"
         assert AdverbType.INTENSITY.value == "Gradadverb"
@@ -87,11 +90,11 @@ class TestAdverbType:
         # Test core German types
         assert GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP["Ortsadverb"] == AdverbType.LOCATION
         assert GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP["Zeitadverb"] == AdverbType.TIME
-        
+
         # Test alternative German names
         assert GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP["Lokaladverb"] == AdverbType.LOCATION
         assert GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP["Temporaladverb"] == AdverbType.TIME
-        
+
         # Test English compatibility
         assert GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP["time"] == AdverbType.TIME
         assert GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP["location"] == AdverbType.LOCATION
@@ -104,24 +107,44 @@ class TestAudioGeneration:
         """Test that audio text combines word and example correctly."""
         adverb = Adverb(
             word="schnell",
-            english="quickly", 
+            english="quickly",
             type=AdverbType.MANNER,
-            example="Er läuft schnell."
+            example="Er läuft schnell.",
         )
-        
+
         audio_text = adverb.get_combined_audio_text()
         assert audio_text == "schnell. Er läuft schnell."
 
     def test_get_combined_audio_text_different_types(self) -> None:
         """Test audio generation for different adverb types."""
         test_cases = [
-            (AdverbType.TIME, "heute", "today", "Heute regnet es.", "heute. Heute regnet es."),
-            (AdverbType.LOCATION, "dort", "there", "Das Buch liegt dort.", "dort. Das Buch liegt dort."),
-            (AdverbType.INTENSITY, "sehr", "very", "Das ist sehr gut.", "sehr. Das ist sehr gut.")
+            (
+                AdverbType.TIME,
+                "heute",
+                "today",
+                "Heute regnet es.",
+                "heute. Heute regnet es.",
+            ),
+            (
+                AdverbType.LOCATION,
+                "dort",
+                "there",
+                "Das Buch liegt dort.",
+                "dort. Das Buch liegt dort.",
+            ),
+            (
+                AdverbType.INTENSITY,
+                "sehr",
+                "very",
+                "Das ist sehr gut.",
+                "sehr. Das ist sehr gut.",
+            ),
         ]
-        
+
         for adverb_type, word, english, example, expected in test_cases:
-            adverb = Adverb(word=word, english=english, type=adverb_type, example=example)
+            adverb = Adverb(
+                word=word, english=english, type=adverb_type, example=example
+            )
             assert adverb.get_combined_audio_text() == expected
 
 
@@ -133,10 +156,10 @@ class TestContextBuilding:
         adverb = Adverb(
             word="langsam",
             english="slowly",
-            type=AdverbType.MANNER, 
-            example="Sie geht langsam."
+            type=AdverbType.MANNER,
+            example="Sie geht langsam.",
         )
-        
+
         context = adverb._build_search_context()
         assert "langsam" in context
         assert "slowly" in context
@@ -147,34 +170,49 @@ class TestContextBuilding:
         """Test that different adverb types get appropriate guidance."""
         test_cases = [
             (AdverbType.TIME, ["temporal symbols", "clocks", "calendars"]),
-            (AdverbType.LOCATION, ["spatial relationships", "directional arrows", "environmental contexts"]),
-            (AdverbType.MANNER, ["Focus on how actions are performed", "style", "method indicators"]),
-            (AdverbType.FREQUENCY, ["repetition patterns", "cycles", "counting symbols"]),
-            (AdverbType.INTENSITY, ["visual emphasis", "gradients", "scale representations"])
+            (
+                AdverbType.LOCATION,
+                [
+                    "spatial relationships",
+                    "directional arrows",
+                    "environmental contexts",
+                ],
+            ),
+            (
+                AdverbType.MANNER,
+                ["Focus on how actions are performed", "style", "method indicators"],
+            ),
+            (
+                AdverbType.FREQUENCY,
+                ["repetition patterns", "cycles", "counting symbols"],
+            ),
+            (
+                AdverbType.INTENSITY,
+                ["visual emphasis", "gradients", "scale representations"],
+            ),
         ]
-        
+
         for adverb_type, expected_keywords in test_cases:
             adverb = Adverb(
-                word="test", 
-                english="test", 
-                type=adverb_type,
-                example="Test sentence."
+                word="test", english="test", type=adverb_type, example="Test sentence."
             )
             context = adverb._build_search_context()
-            
+
             for keyword in expected_keywords:
-                assert keyword in context, f"Missing '{keyword}' in context for {adverb_type}"
+                assert keyword in context, (
+                    f"Missing '{keyword}' in context for {adverb_type}"
+                )
 
     def test_build_search_context_unknown_type_fallback(self) -> None:
         """Test fallback guidance for unknown adverb types."""
         # This tests the fallback in the type_guidance.get() call
         adverb = Adverb(
             word="test",
-            english="test", 
+            english="test",
             type=AdverbType.MANNER,  # Use valid type but test fallback logic
-            example="Test."
+            example="Test.",
         )
-        
+
         context = adverb._build_search_context()
         assert "Generate search terms" in context
 
@@ -186,45 +224,45 @@ class TestImageSearchStrategy:
         """Test that image search strategy passes rich context to service."""
         mock_service = Mock()
         mock_service.generate_pexels_query.return_value = "generated terms"
-        
+
         adverb = Adverb(
             word="oben",
             english="above",
             type=AdverbType.LOCATION,
-            example="Der Vogel fliegt oben."
+            example="Der Vogel fliegt oben.",
         )
-        
+
         strategy = adverb.get_image_search_strategy(mock_service)
         result = strategy()
-        
+
         # Verify service was called with rich context, not raw model
         mock_service.generate_pexels_query.assert_called_once()
         called_arg = mock_service.generate_pexels_query.call_args[0][0]
-        
+
         # The argument should be the rich context string
         assert isinstance(called_arg, str)
         assert "oben" in called_arg
         assert "above" in called_arg
         assert "LOCATION" in called_arg
         assert "spatial relationships" in called_arg
-        
+
         assert result == "generated terms"
 
     def test_image_search_strategy_service_failure_fallback(self) -> None:
         """Test fallback when service fails."""
         mock_service = Mock()
         mock_service.generate_pexels_query.side_effect = Exception("Service failed")
-        
+
         adverb = Adverb(
             word="gestern",
             english="yesterday",
             type=AdverbType.TIME,
-            example="Gestern war Sonntag."
+            example="Gestern war Sonntag.",
         )
-        
+
         strategy = adverb.get_image_search_strategy(mock_service)
         result = strategy()
-        
+
         # Should fall back to example sentence
         assert result == "Gestern war Sonntag."
 
@@ -232,17 +270,17 @@ class TestImageSearchStrategy:
         """Test fallback when service returns empty result."""
         mock_service = Mock()
         mock_service.generate_pexels_query.return_value = ""  # Empty result
-        
+
         adverb = Adverb(
             word="nie",
-            english="never", 
+            english="never",
             type=AdverbType.FREQUENCY,
-            example="Ich bin nie müde."
+            example="Ich bin nie müde.",
         )
-        
+
         strategy = adverb.get_image_search_strategy(mock_service)
         result = strategy()
-        
+
         # Should fall back to example sentence
         assert result == "Ich bin nie müde."
 
@@ -253,14 +291,11 @@ class TestEdgeCases:
     def test_adverb_with_minimal_data(self) -> None:
         """Test adverb with minimal required data."""
         adverb = Adverb(
-            word="ja",
-            english="yes",
-            type=AdverbType.ATTITUDE, 
-            example="Ja."
+            word="ja", english="yes", type=AdverbType.ATTITUDE, example="Ja."
         )
-        
+
         assert adverb.get_combined_audio_text() == "ja. Ja."
-        
+
         context = adverb._build_search_context()
         assert "ja" in context
         assert "yes" in context
@@ -271,13 +306,13 @@ class TestEdgeCases:
             word="natürlich",
             english="naturally",
             type=AdverbType.ATTITUDE,
-            example="Natürlich ist das möglich."
+            example="Natürlich ist das möglich.",
         )
-        
+
         audio_text = adverb.get_combined_audio_text()
         assert "natürlich" in audio_text
         assert "möglich" in audio_text
-        
+
         context = adverb._build_search_context()
         assert "natürlich" in context
 
@@ -288,11 +323,11 @@ class TestEdgeCases:
             word="manchmal",
             english="sometimes",
             type=AdverbType.FREQUENCY,
-            example=long_example
+            example=long_example,
         )
-        
+
         audio_text = adverb.get_combined_audio_text()
         assert audio_text == f"manchmal. {long_example}"
-        
+
         context = adverb._build_search_context()
         assert long_example in context

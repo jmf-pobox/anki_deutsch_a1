@@ -12,9 +12,9 @@ CORE RESPONSIBILITIES:
 
 DESIGN PRINCIPLES:
     - Domain model is SMART: Contains German adverb expertise and linguistic knowledge
-    - Services are DUMB: External services receive rich context, don't contain domain logic
-    - Single Responsibility: Adverb logic stays in Adverb model, not scattered in services
-    - Dependency Injection: Protocol-based design for loose coupling with external services
+    - Services are DUMB: External services receive rich context, no domain logic
+    - Single Responsibility: Adverb logic stays in Adverb model, not in services
+    - Dependency Injection: Protocol-based design for loose coupling
 
 GERMAN LINGUISTIC FEATURES:
     - 9 adverb types with German classifications (Ortsadverb, Zeitadverb, etc.)
@@ -30,16 +30,16 @@ INTEGRATION POINTS:
 Usage:
     Basic usage:
         >>> adverb = Adverb(
-        ...     word="heute", 
-        ...     english="today", 
+        ...     word="heute",
+        ...     english="today",
         ...     type=AdverbType.TIME,
         ...     example="Heute ist schönes Wetter."
         ... )
-        
+
     Media generation with dependency injection:
         >>> strategy = adverb.get_image_search_strategy(anthropic_service)
         >>> search_terms = strategy()  # Returns context-aware search terms
-        >>> audio_text = adverb.get_combined_audio_text()  # "heute. Heute ist schönes Wetter."
+        >>> audio_text = adverb.get_combined_audio_text()  # Combined text
 """
 
 from enum import Enum
@@ -55,14 +55,14 @@ if TYPE_CHECKING:
 
 class AdverbType(str, Enum):
     """German adverb type classifications.
-    
+
     Represents the nine types of German adverbs with their German linguistic
     classifications. Each type has specific visualization strategies for
     image search term generation.
-    
+
     Attributes:
         LOCATION: Ortsadverb - spatial adverbs (hier, dort, etc.)
-        TIME: Zeitadverb - temporal adverbs (heute, morgen, etc.) 
+        TIME: Zeitadverb - temporal adverbs (heute, morgen, etc.)
         FREQUENCY: Häufigkeitsadverb - frequency adverbs (oft, manchmal, etc.)
         MANNER: Modaladverb - manner adverbs (schnell, langsam, etc.)
         INTENSITY: Gradadverb - degree adverbs (sehr, ziemlich, etc.)
@@ -106,16 +106,16 @@ class Adverb(BaseModel):
 
     Represents a German adverb with its properties, German linguistic knowledge,
     and specialized logic for media enrichment. German adverbs are invariant words
-    that modify verbs, adjectives, or other adverbs, providing information about 
+    that modify verbs, adjectives, or other adverbs, providing information about
     time, place, manner, degree, etc.
 
-    This model implements MediaGenerationCapable protocol to contribute domain 
+    This model implements MediaGenerationCapable protocol to contribute domain
     expertise for image and audio generation, using type-specific strategies
     for abstract adverbial concept visualization.
 
     Attributes:
         word: The German adverb (e.g., "heute", "schnell")
-        english: English translation (e.g., "today", "quickly") 
+        english: English translation (e.g., "today", "quickly")
         type: AdverbType classification (TIME, LOCATION, MANNER, etc.)
         example: German example sentence demonstrating usage
 
@@ -135,11 +135,11 @@ class Adverb(BaseModel):
         """Get strategy for generating image search terms with domain expertise.
 
         Creates a callable that uses this adverb's domain knowledge to generate
-        context-aware image search terms. The adverb contributes type-specific 
+        context-aware image search terms. The adverb contributes type-specific
         visualization strategies (e.g., TIME adverbs need temporal symbols) while
         the anthropic service executes the actual AI processing.
 
-        Design: Domain model is SMART (provides rich context), service is DUMB 
+        Design: Domain model is SMART (provides rich context), service is DUMB
         (processes whatever context it receives).
 
         Args:
@@ -151,7 +151,7 @@ class Adverb(BaseModel):
             Falls back to example sentence if service fails.
 
         Example:
-            >>> adverb = Adverb(word="heute", english="today", type=AdverbType.TIME, 
+            >>> adverb = Adverb(word="heute", english="today", type=AdverbType.TIME,
             ...                example="Heute regnet es.")
             >>> strategy = adverb.get_image_search_strategy(anthropic_service)
             >>> search_terms = strategy()  # Returns context-aware search terms
@@ -185,8 +185,8 @@ class Adverb(BaseModel):
             Formatted string: "{word}. {example}" for audio generation.
 
         Example:
-            >>> adverb = Adverb(word="schnell", english="quickly", 
-            ...                type=AdverbType.MANNER, 
+            >>> adverb = Adverb(word="schnell", english="quickly",
+            ...                type=AdverbType.MANNER,
             ...                example="Er läuft schnell.")
             >>> adverb.get_combined_audio_text()
             'schnell. Er läuft schnell.'
@@ -214,7 +214,7 @@ class Adverb(BaseModel):
             For AdverbType.TIME:
                 "Use temporal symbols like clocks, calendars, or sequential imagery"
             For AdverbType.LOCATION:
-                "Consider spatial relationships, directional arrows, environmental contexts"
+                "Consider spatial relationships, directional arrows, contexts"
 
         Note:
             This is a private method called by get_image_search_strategy() to
