@@ -1,4 +1,47 @@
-"""Model for German negation words."""
+"""German Negation Domain Model.
+
+This module contains the domain model for German negation words with specialized logic
+for German language learning applications. The module is responsible for:
+
+CORE RESPONSIBILITIES:
+    - Modeling German negation data (word, English translation, type, example)
+    - Implementing MediaGenerationCapable protocol for media enrichment
+    - Providing German-specific linguistic validation and position rules
+    - Contributing domain expertise for image search term generation
+    - Supporting audio generation with proper negation context
+
+DESIGN PRINCIPLES:
+    - Domain model is SMART: Contains German negation expertise and linguistic
+      knowledge
+    - Services are DUMB: External services receive rich context, no domain logic
+    - Single Responsibility: Negation logic stays in Negation model, not in services
+    - Dependency Injection: Protocol-based design for loose coupling
+
+GERMAN LINGUISTIC FEATURES:
+    - 7 negation types with specific position and usage rules
+    - Position validation based on German syntax (nicht, kein, niemand, etc.)
+    - Context-aware visualization strategies for abstract negation concepts
+    - Type-specific search term generation using linguistic domain knowledge
+
+INTEGRATION POINTS:
+    - MediaGenerationCapable protocol for image/audio media enrichment
+    - AnthropicServiceProtocol for AI-powered search term generation
+    - MediaEnricher service for coordinated media asset generation
+
+Usage:
+    Basic usage:
+        >>> negation = Negation(
+        ...     word="nicht",
+        ...     english="not",
+        ...     type=NegationType.GENERAL,
+        ...     example="Ich bin nicht müde."
+        ... )
+
+    Media generation with dependency injection:
+        >>> strategy = negation.get_image_search_strategy(anthropic_service)
+        >>> search_terms = strategy()  # Returns context-aware search terms
+        >>> audio_text = negation.get_combined_audio_text()  # Word + example
+"""
 
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -8,7 +51,7 @@ from pydantic import BaseModel, Field
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-# Removed field_processor import - now pure domain model
+    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
 
 
 class NegationType(str, Enum):
@@ -24,13 +67,25 @@ class NegationType(str, Enum):
 
 
 class Negation(BaseModel):
-    """Model representing a German negation word with its properties and business logic.
+    """German negation domain model with linguistic expertise and media generation.
 
-    German negation words follow specific rules for their position and usage:
-    - 'nicht' typically comes at the end of the clause or before adjectives/adverbs
-    - 'kein/keine' replace indefinite articles
-    - Pronouns like 'nichts' and 'niemand' can be subjects or objects
-    - Temporal and spatial negations follow time/place position rules
+    Represents a German negation word with its properties, German linguistic knowledge,
+    and specialized logic for media enrichment. German negation follows specific
+    syntactic rules and position requirements depending on the negation type.
+
+    This model implements MediaGenerationCapable protocol to contribute domain
+    expertise for image and audio generation, using type-specific strategies
+    for abstract negation concept visualization.
+
+    Attributes:
+        word: The German negation word (e.g., "nicht", "kein", "niemand")
+        english: English translation (e.g., "not", "no", "nobody")
+        type: NegationType classification (GENERAL, ARTICLE, PRONOUN, etc.)
+        example: German example sentence demonstrating proper usage
+
+    Note:
+        This model follows the design principle that domain models are SMART
+        (contain expertise) while services are DUMB (execute instructions).
     """
 
     word: str = Field(..., description="The German negation word")
@@ -46,17 +101,14 @@ class Negation(BaseModel):
         """
         # Example must contain the negation (case-insensitive)
         if not any(part.lower() in self.example.lower() for part in self.word.split()):
-            print(f"Negation {self.word} not found in example")
             return False
 
         # Example must be a complete sentence
         if not any(self.example.endswith(p) for p in ".!?"):
-            print("Example missing end punctuation")
             return False
 
         # Example must start with a capital letter
         if not self.example[0].isupper():
-            print("Example does not start with capital letter")
             return False
 
         # Check negation position and usage
@@ -70,8 +122,6 @@ class Negation(BaseModel):
         """
         # Split the example into words
         words = self.example.rstrip(".!?").split()
-        print(f"Validating position for {self.word} (type: {self.type})")
-        print(f"Words in example: {words}")
 
         # Convert words to lowercase for case-insensitive comparison
         words_lower = [w.lower() for w in words]
@@ -81,7 +131,6 @@ class Negation(BaseModel):
         try:
             # Find position of first part
             neg_pos = words_lower.index(word_parts[0])
-            print(f"Found {word_parts[0]} at position {neg_pos}")
 
             # For multi-word negations, verify all parts are present in sequence
             if len(word_parts) > 1:
@@ -90,128 +139,122 @@ class Negation(BaseModel):
                         neg_pos + i >= len(words_lower)
                         or words_lower[neg_pos + i] != part
                     ):
-                        print(
-                            f"Multi-word negation parts not in sequence at "
-                            f"position {neg_pos + i}"
-                        )
                         return False
         except ValueError:
-            print(f"Could not find {self.word} in {words}")
             return False
 
         # General negation (nicht) typically comes at the end or before adjectives
         if self.type == NegationType.GENERAL:
-            print("Checking general negation position")
             # Should not be at the start
             if neg_pos == 0:
-                print("General negation at start - invalid")
                 return False
             # Should be at the end or before an adjective/adverb
             if neg_pos == len(words) - 1:  # At end
-                print("General negation at end - valid")
                 return True
             if neg_pos < len(words) - 1:  # Before adjective/adverb
-                print("General negation before next word - valid")
                 return True
 
         # Article negations (kein/keine) come where articles would
-        if self.type == NegationType.ARTICLE:
-            print("Checking article negation position")
+        if self.type == NegationType.ARTICLE and neg_pos < len(words) - 1:
             # Should be followed by a noun (simplified check)
-            if neg_pos < len(words) - 1:
-                print("Article negation before noun - valid")
-                return True
+            return True
 
         # Pronouns can be subjects (start) or objects (middle/end)
-        if self.type == NegationType.PRONOUN:
-            print("Checking pronoun negation position")
+        if self.type == NegationType.PRONOUN and (neg_pos == 0 or neg_pos > 0):
             # Can be at start or in sentence
-            if neg_pos == 0 or neg_pos > 0:
-                print("Pronoun negation in valid position")
-                return True
+            return True
 
         # Temporal negations follow time expression rules
-        if self.type == NegationType.TEMPORAL:
-            print("Checking temporal negation position")
+        if self.type == NegationType.TEMPORAL and neg_pos < len(words) - 1:
             # Should not be at the very end
-            if neg_pos < len(words) - 1:
-                print("Temporal negation in valid position")
-                return True
+            return True
 
         # Spatial negations follow place expression rules
-        if self.type == NegationType.SPATIAL:
-            print("Checking spatial negation position")
+        if self.type == NegationType.SPATIAL and neg_pos > 0:
             # Should be in the middle or end of clause
-            if neg_pos > 0:
-                print("Spatial negation in valid position")
-                return True
+            return True
 
         # Correlative negations need their pair (simplified check)
-        if self.type == NegationType.CORRELATIVE:
-            print("Checking correlative negation position")
+        if self.type == NegationType.CORRELATIVE and neg_pos < len(words) - 2:
             # Should be followed by more words (for the 'noch' part)
-            if neg_pos < len(words) - 2:
-                print("Correlative negation with space for pair - valid")
-                return True
+            return True
 
         # Intensifiers modify other negations or come at clause end
         if self.type == NegationType.INTENSIFIER:
-            print("Checking intensifier negation position")
             # Account for multi-word intensifiers
             total_words = len(word_parts)
             # Should be at end or before what they modify
             if neg_pos + total_words == len(words):  # At end
-                print("Intensifier negation at end - valid")
                 return True
             if neg_pos + total_words < len(words):  # Before what they modify
-                print("Intensifier negation before modified word - valid")
                 return True
 
-        print("No valid position found")
         return False
 
-    def get_image_search_strategy(self) -> "Callable[[], str]":
-        """Get a strategy for generating search terms without executing it immediately.
+    def get_image_search_strategy(
+        self, anthropic_service: "AnthropicServiceProtocol"
+    ) -> "Callable[[], str]":
+        """Get strategy for generating image search terms with domain expertise.
 
-        This lazy evaluation approach prevents unnecessary Anthropic API calls
-        when images already exist or aren't needed.
+        Creates a callable that uses this negation's domain knowledge to generate
+        context-aware image search terms. The negation contributes German linguistic
+        expertise (type-specific positioning, abstract concept visualization) while
+        the anthropic service executes the actual AI processing.
+
+        Design: Domain model is SMART (provides rich context), service is DUMB
+        (processes whatever context it receives).
+
+        Args:
+            anthropic_service: Service implementing AnthropicServiceProtocol for
+                AI-powered search term generation.
 
         Returns:
-            A callable that when invoked will generate context-aware search terms,
-            with fallback to negation concept mappings
+            Callable that when invoked returns image search terms as string.
+            Falls back to type-specific concept mappings if service fails.
+
+        Example:
+            >>> negation = Negation(word="nicht", english="not",
+            ...                    type=NegationType.GENERAL,
+            ...                    example="Ich bin nicht müde.")
+            >>> strategy = negation.get_image_search_strategy(anthropic_service)
+            >>> search_terms = strategy()  # Returns context-aware search terms
         """
 
         def generate_search_terms() -> str:
-            """Execute the search term generation strategy."""
-            if not self.english.strip():
-                return ""
-
-            # Try to use Anthropic service for context-aware query generation
+            """Execute search term generation strategy with negation context."""
             try:
-                from langlearn.services.service_container import get_anthropic_service
-
-                service = get_anthropic_service()
-                if service:
-                    context_query = service.generate_pexels_query(self)
-                    if context_query and context_query.strip():
-                        return context_query.strip()
+                # Use domain expertise to build rich context for the service
+                context = self._build_search_context()
+                result = anthropic_service.generate_pexels_query(context)
+                if result and result.strip():
+                    return result.strip()
             except Exception:
-                # Fall back to negation concept mappings if Anthropic service fails
+                # Service failed, use fallback
                 pass
 
-            # Return fallback search terms
+            # Fallback to domain-specific handling
             return self._get_fallback_search_terms()
 
         return generate_search_terms
 
-    def get_image_search_terms(self) -> str:
-        """Legacy method for backward compatibility - executes strategy immediately.
+    def get_combined_audio_text(self) -> str:
+        """Get combined text for German negation audio generation.
 
-        Note: This method maintains compatibility but should be replaced with
-        get_image_search_strategy() for better performance.
+        Combines the negation word with its example sentence to provide proper
+        pronunciation context for German language learners. This helps learners
+        understand negation usage patterns and positioning rules.
+
+        Returns:
+            Formatted string: "{word}. {example}" for audio generation.
+
+        Example:
+            >>> negation = Negation(word="nicht", english="not",
+            ...                    type=NegationType.GENERAL,
+            ...                    example="Ich bin nicht müde.")
+            >>> negation.get_combined_audio_text()
+            'nicht. Ich bin nicht müde.'
         """
-        strategy = self.get_image_search_strategy()
-        return strategy()
+        return f"{self.word}. {self.example}"
 
     def _get_fallback_search_terms(self) -> str:
         """Get fallback search terms using negation concept mappings."""
@@ -251,5 +294,81 @@ class Negation(BaseModel):
             self.type, f"{self.english} negation prohibition symbol"
         )
 
+    def _build_search_context(self) -> str:
+        """Build rich context for image search using German negation expertise.
 
-# Removed field processing methods - now pure domain model with only business logic
+        Constructs visualization guidance based on German linguistic knowledge.
+        Considers negation type, positioning rules, and provides type-specific
+        strategies for representing abstract negation concepts visually.
+
+        This method embodies the domain model's expertise about German negation
+        and visualization challenges, providing rich context that services can
+        use without needing to understand German syntactic rules.
+
+        Returns:
+            Formatted context string with:
+            - Negation details (German word, English translation, type)
+            - Type-specific visualization strategy and positioning context
+            - Example usage demonstrating proper German syntax
+            - Instructions for generating appropriate search terms
+
+        Example:
+            For NegationType.GENERAL ("nicht"):
+                "Use prohibition symbols, crossed-out imagery, stop signs"
+            For NegationType.PRONOUN ("niemand"):
+                "Show emptiness, absence of people, void spaces"
+
+        Note:
+            This is a private method called by get_image_search_strategy() to
+            contribute domain expertise to the search term generation process.
+        """
+        # Map negation types to visualization strategies
+        type_strategies = {
+            NegationType.GENERAL: (
+                "Use prohibition symbols like stop signs, red X marks, or "
+                "crossed-out imagery. Show actions or states being negated."
+            ),
+            NegationType.ARTICLE: (
+                "Show absence or lack of objects. Use empty spaces, zero "
+                "symbols, or 'no entry' signs with objects."
+            ),
+            NegationType.PRONOUN: (
+                "Represent emptiness or void. Show silhouettes, empty chairs, "
+                "or spaces where people/things should be but aren't."
+            ),
+            NegationType.TEMPORAL: (
+                "Use time-related imagery with prohibition. Show clocks with "
+                "X marks, calendars crossed out, or 'never' symbols."
+            ),
+            NegationType.SPATIAL: (
+                "Show empty locations or 'nowhere' concepts. Use void spaces, "
+                "maps with no destinations, or empty landscapes."
+            ),
+            NegationType.CORRELATIVE: (
+                "Represent choice rejection. Show two options both being "
+                "refused, either/or scenarios with both crossed out."
+            ),
+            NegationType.INTENSIFIER: (
+                "Emphasize prohibition strongly. Use bold red symbols, "
+                "multiple X marks, or intensified 'forbidden' imagery."
+            ),
+        }
+
+        strategy = type_strategies.get(
+            self.type,
+            "Use general prohibition or negation symbols to represent this concept.",
+        )
+
+        return f"""
+        German negation: {self.word} (English: {self.english})
+        Type: {self.type.value} negation
+        Example usage: {self.example}
+
+        Challenge: Negation words are abstract concepts representing absence,
+        prohibition, or denial. They need symbolic or metaphorical representation.
+
+        Visual strategy: {strategy}
+
+        Generate search terms that photographers would use to tag images showing
+        prohibition, absence, or negation concepts.
+        """

@@ -99,8 +99,8 @@ class TestNounDomainBehavior:
                 f"{noun_text} should be {'concrete' if expected else 'abstract'}"
             )
 
-    def test_get_image_search_terms_concrete(self) -> None:
-        """Test image search terms for concrete nouns use direct translation."""
+    def test_fallback_search_terms_concrete(self) -> None:
+        """Test fallback search terms for concrete nouns use direct translation."""
         noun = Noun(
             noun="Katze",
             article="die",
@@ -109,9 +109,10 @@ class TestNounDomainBehavior:
             example="",
             related="",
         )
-        assert noun.get_image_search_terms() == "cat"
+        # Test internal fallback method
+        assert noun._get_fallback_search_terms() == "cat"
 
-    def test_get_image_search_terms_abstract(self) -> None:
+    def test_fallback_search_terms_abstract(self) -> None:
         """Test enhanced search terms for abstract concepts."""
         # Test specific concept mappings
         love_noun = Noun(
@@ -122,7 +123,7 @@ class TestNounDomainBehavior:
             example="",
             related="",
         )
-        result = love_noun.get_image_search_terms()
+        result = love_noun._get_fallback_search_terms()
         assert "heart symbol" in result and "family together" in result
 
         freedom_noun = Noun(
@@ -133,7 +134,7 @@ class TestNounDomainBehavior:
             example="",
             related="",
         )
-        result = freedom_noun.get_image_search_terms()
+        result = freedom_noun._get_fallback_search_terms()
         assert "person celebrating independence" in result
 
         # Test fallback for unmapped abstract concepts
@@ -145,7 +146,7 @@ class TestNounDomainBehavior:
             example="",
             related="",
         )
-        result = abstract_noun.get_image_search_terms()
+        result = abstract_noun._get_fallback_search_terms()
         assert result == "wisdom concept symbol"
 
     def test_domain_methods_integration(self) -> None:
@@ -163,7 +164,7 @@ class TestNounDomainBehavior:
         # All methods should work
         assert concrete_noun.is_concrete() is True
         assert concrete_noun.get_combined_audio_text() == "der Hund, die Hunde"
-        assert concrete_noun.get_image_search_terms() == "dog"
+        assert concrete_noun._get_fallback_search_terms() == "dog"
 
         # Test an abstract noun
         abstract_noun = Noun(
@@ -177,7 +178,7 @@ class TestNounDomainBehavior:
 
         assert abstract_noun.is_concrete() is False
         assert abstract_noun.get_combined_audio_text() == "die Hoffnung, die "
-        assert "sunrise bright future" in abstract_noun.get_image_search_terms()
+        assert "sunrise bright future" in abstract_noun._get_fallback_search_terms()
 
     @pytest.mark.parametrize(
         "noun,article,english,plural,expected_audio",
@@ -217,4 +218,5 @@ class TestNounDomainBehavior:
 
         # But other methods should handle gracefully
         assert empty_noun.get_combined_audio_text() == "der , die "
-        assert empty_noun.get_image_search_terms() == ""  # Direct English translation
+        # Empty English should return empty string in fallback
+        assert empty_noun._get_fallback_search_terms() == " concept symbol"
