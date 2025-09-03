@@ -186,9 +186,7 @@ def anki_backend_with_mocks(
     mock_media_service: Any,
 ) -> Generator[AnkiBackend, None, None]:
     """Create an AnkiBackend instance with mocked services via dependency injection."""
-    backend = AnkiBackend(
-        "Test Deck", "Test description", media_service=mock_media_service
-    )
+    backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
     yield backend
     # Cleanup if needed - removed as AnkiBackend doesn't have cleanup method
     pass
@@ -201,10 +199,8 @@ def deck_builder_with_mocks(
     """Create a DeckBuilder instance with mocked services via dependency injection."""
     builder = DeckBuilder(
         "Test Deck",
-        enable_media_generation=True,
         audio_service=mock_audio_service,
         pexels_service=mock_pexels_service,
-        media_service=mock_media_service,
     )
     yield builder
 
@@ -212,9 +208,10 @@ def deck_builder_with_mocks(
 @pytest.fixture
 def anki_backend_no_aws(
     mock_external_services: Any,
+    mock_media_service: Any,
 ) -> Generator[AnkiBackend, None, None]:
     """Create an AnkiBackend instance with mocked external services."""
-    backend = AnkiBackend("Test Deck", "Test description")
+    backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
     yield backend
     # Cleanup if needed - removed as AnkiBackend doesn't have cleanup method
     pass

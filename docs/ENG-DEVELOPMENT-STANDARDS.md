@@ -11,26 +11,27 @@
 
 Language Learn now implements **enterprise-grade Clean Pipeline Architecture** with multi-language foundation, comprehensive test coverage, and language-specific intelligence. This document provides development guidance for the multi-language Clean Architecture implementation, using German A1 as the proven first language.
 
-### **Multi-Language Architecture Status**:
-- ✅ **Clean Pipeline Architecture**: Multi-language foundation with German A1 complete (5/7 word types)
-- ✅ **Language Expansion Ready**: Architecture validated and ready for Russian, Korean, others
-- ✅ **Quality Metrics**: **686 tests**, 73%+ coverage, 0 MyPy errors, 0 linting violations
-- ✅ **Production Proven**: Enterprise-grade implementation with language-specific intelligence
+### **Modern Python Architecture Status**:
+- ✅ **Dataclass Migration Complete**: All domain models migrated from Pydantic to dataclass + MediaGenerationCapable
+- ✅ **Protocol Compliance**: Formal MediaGenerationCapable implementation across all 7 word types
+- ✅ **Legacy Elimination**: FieldProcessor and ModelFactory completely removed
+- ✅ **Quality Metrics**: **595 tests**, comprehensive coverage, 0 MyPy errors, 0 linting violations
+- ✅ **Production Proven**: Enterprise-grade implementation with modern Python patterns
 
 ---
 
 ## 🏗️ **System Architecture Overview**
 
-### **Core Principle**: Hybrid Processing
+### **Core Principle**: Clean Pipeline Architecture
 ```
-CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → Formatted Cards
+CSV → Records → Domain Models → MediaEnricher → Enriched Records → CardBuilder → AnkiBackend → .apkg
 ```
 
 ### **Component Responsibilities**:
-1. **Records**: Pydantic data validation and transport
-2. **Domain Models**: German language business logic methods
-3. **MediaEnricher**: Orchestrates Records → Domain Models → enriched Records conversion
-4. **CardBuilder**: Transforms enriched Records into formatted card templates
+1. **Records**: Pydantic data validation and transport (for CSV processing)
+2. **Domain Models**: Modern dataclass models with MediaGenerationCapable protocol and German expertise
+3. **MediaEnricher**: Audio and image generation with existence checking and caching
+4. **CardBuilder**: Transforms records into formatted Anki card templates
 
 ### **Key Benefits**:
 - **Testability**: Each component can be tested in isolation
@@ -157,91 +158,121 @@ def build_card_from_record(self, record: BaseRecord) -> tuple:
 
 ### **Adding New Word Types to Clean Pipeline**
 
-#### **Step 1: Create Record Type**
+#### **Step 1: Create Domain Model**
 ```python
-# File: src/langlearn/models/records.py
-class VerbRecord(BaseRecord):
-    """Record for German verb data."""
+# File: src/langlearn/models/verb.py
+@dataclass
+class Verb(MediaGenerationCapable):
+    """Modern dataclass model for German verbs."""
     
-    verb: str = Field(..., description="German verb")
-    english: str = Field(..., description="English translation")
-    present_ich: str = Field(..., description="Present tense (ich)")
-    # ... additional fields
+    verb: str
+    english: str
+    present_ich: str
+    present_du: str
+    present_er: str
+    perfect: str
+    example: str
     
-    def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary for processing."""
-        return {
-            "verb": self.verb,
-            "english": self.english,
-            "present_ich": self.present_ich,
-            # ... map all fields
-        }
+    def __post_init__(self) -> None:
+        """Validate verb data after initialization."""
+        required_fields = ["verb", "english", "present_ich", "present_du", "present_er"]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
+    
+    def get_combined_audio_text(self) -> str:
+        """Get text for audio generation."""
+        return f"{self.verb}. {self.example}"
+    
+    def get_image_search_strategy(self) -> str:
+        """Get search strategy for image generation."""
+        return f"{self.english} action verb"
 ```
 
-#### **Step 2: Update CardBuilder**
+#### **Step 2: Integration in AnkiBackend**
 ```python
-# File: src/langlearn/services/card_builder.py  
-def get_supported_record_types(self) -> list[str]:
-    """Add new record type to supported list."""
-    return ["noun", "adjective", "adverb", "negation", "verb"]  # Add verb
-
-def _get_field_names_for_record_type(self, record_type: str) -> list[str]:
-    """Add field mapping for new type."""
-    field_mappings = {
-        # ... existing mappings
-        "verb": [
-            "Verb", "English", "PresentIch", "PresentDu", "PresentEr",
-            "Perfect", "Example", "Image", "WordAudio", "ExampleAudio"
-        ],
-    }
-    return field_mappings.get(record_type, [])
+# File: src/langlearn/backends/anki_backend.py
+def process_verb(self, verb_data: list[str]) -> tuple[list[str], NoteType]:
+    """Process verb data using domain model."""
+    verb = Verb(
+        verb=verb_data[0],
+        english=verb_data[1], 
+        present_ich=verb_data[2],
+        present_du=verb_data[3],
+        present_er=verb_data[4],
+        perfect=verb_data[5],
+        example=verb_data[6]
+    )
+    
+    # Use MediaGenerationCapable protocol methods
+    enriched_data = self._media_enricher.enrich_model(verb)
+    return self._card_builder.build_card_from_model(verb, enriched_data)
 ```
 
 #### **Step 3: Create Comprehensive Tests**  
 ```python
-# File: tests/test_card_builder.py
-def test_build_card_from_verb_record(self, card_builder: CardBuilder):
-    """Test verb record processing."""
-    record = create_record("verb", ["gehen", "to go", "gehe", "gehst", "geht", "gegangen", "Ich gehe."])
-    field_values, note_type = card_builder.build_card_from_record(record)
+# File: tests/unit/models/test_verb_protocol.py
+def test_verb_mediageneration_protocol(self):
+    """Test verb MediaGenerationCapable protocol compliance."""
+    verb = Verb(
+        verb="gehen",
+        english="to go", 
+        present_ich="gehe",
+        present_du="gehst",
+        present_er="geht",
+        perfect="gegangen",
+        example="Ich gehe."
+    )
     
-    assert len(field_values) == 10  # Verify field count
-    assert field_values[0] == "gehen"  # Verb
-    assert note_type.name == "German Verb with Media"
-    # ... comprehensive field verification
+    # Test protocol compliance
+    assert isinstance(verb, MediaGenerationCapable)
+    assert verb.get_combined_audio_text() == "gehen. Ich gehe."
+    assert "action verb" in verb.get_image_search_strategy()
 ```
 
 ### **Service Integration Pattern**
 
-#### **Dependency Injection Pattern**
+#### **Domain Model Integration Pattern**
 ```python
-# ✅ CORRECT: Constructor injection with interfaces
-class CardBuilder:
-    def __init__(self, template_service: TemplateService | None = None):
-        if template_service is None:
-            template_service = TemplateService(Path("templates"))
-        self._template_service = template_service
+# ✅ CORRECT: MediaGenerationCapable protocol usage
+class MediaEnricher:
+    def enrich_model(self, model: MediaGenerationCapable) -> dict:
+        """Enrich any model implementing MediaGenerationCapable."""
+        audio_text = model.get_combined_audio_text()
+        image_strategy = model.get_image_search_strategy()
+        
+        return {
+            "word_audio": self._generate_audio(audio_text),
+            "image": self._generate_image(image_strategy)
+        }
 
-# ✅ CORRECT: Service composition
+# ✅ CORRECT: Direct domain model usage
 class AnkiBackend:
-    def __init__(self, media_service: MediaService | None = None):
-        self._media_enricher = MediaEnricher(media_service)
-        self._card_builder = CardBuilder()
-        # Clean separation of concerns
+    def process_noun(self, noun_data: list[str]) -> tuple[list[str], NoteType]:
+        noun = Noun(**dict(zip(["noun", "article", "english", "plural", "example"], noun_data)))
+        enriched_data = self._media_enricher.enrich_model(noun)
+        return self._format_card_fields(noun, enriched_data)
 ```
 
 #### **Error Propagation Pattern**
 ```python
-# ✅ CORRECT: Clean error handling chain
+# ✅ CORRECT: Domain model validation and error handling
 def process_fields_with_media_generation(self, fields: list, note_type_name: str):
     try:
-        # Try Clean Pipeline first
-        record = self._record_mapper.create_record(note_type_name, fields)
-        enriched_data = self._media_enricher.enrich_record(record)
-        return self._card_builder.build_card_from_record(record, enriched_data)
-    except (RecordMappingError, UnsupportedRecordType):
-        # Process with appropriate handler
-        return self._process_fields(fields, note_type_name)
+        # Create domain model (validation in __post_init__)
+        model = self._create_domain_model(note_type_name, fields)
+        
+        # Use MediaGenerationCapable protocol
+        enriched_data = self._media_enricher.enrich_model(model)
+        return self._format_card_fields(model, enriched_data)
+    except ValueError as e:
+        # Handle domain model validation errors
+        logger.warning(f"Model validation failed: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Failed to process {note_type_name}: {e}")
+        raise
 ```
 
 ---

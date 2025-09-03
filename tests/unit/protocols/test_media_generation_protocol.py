@@ -2,7 +2,9 @@
 
 from typing import TYPE_CHECKING
 
-from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -13,7 +15,7 @@ class MockMediaGenerationCapable:
     """Mock implementation of MediaGenerationCapable for testing."""
 
     def get_image_search_strategy(
-        self, anthropic_service: AnthropicServiceProtocol
+        self, anthropic_service: ImageQueryGenerationProtocol
     ) -> "Callable[[], str]":
         """Return a mock strategy that generates test search terms."""
 
@@ -42,7 +44,7 @@ class TestMediaGenerationCapable:
         from unittest.mock import Mock
 
         mock = MockMediaGenerationCapable()
-        mock_service = Mock(spec=AnthropicServiceProtocol)
+        mock_service = Mock(spec=ImageQueryGenerationProtocol)
         strategy = mock.get_image_search_strategy(mock_service)
 
         assert callable(strategy)
@@ -61,7 +63,7 @@ class TestMediaGenerationCapable:
         from unittest.mock import Mock
 
         def use_media_capable(
-            obj: MediaGenerationCapable, service: AnthropicServiceProtocol
+            obj: MediaGenerationCapable, service: ImageQueryGenerationProtocol
         ) -> tuple[str, str]:
             """Function that uses MediaGenerationCapable protocol."""
             strategy = obj.get_image_search_strategy(service)
@@ -69,7 +71,7 @@ class TestMediaGenerationCapable:
             return strategy(), audio_text
 
         mock = MockMediaGenerationCapable()
-        mock_service = Mock(spec=AnthropicServiceProtocol)
+        mock_service = Mock(spec=ImageQueryGenerationProtocol)
         result = use_media_capable(mock, mock_service)
 
         assert result == ("context-aware search terms", "test audio text")

@@ -1,3 +1,21 @@
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
+
+logger = logging.getLogger(__name__)
+
+
 """German Verb Domain Model.
 
 This module contains the domain model for German verbs with specialized logic for
@@ -48,21 +66,9 @@ Usage:
         >>> audio_text = verb.get_combined_audio_text()  # SSML conjugation audio
 """
 
-import logging
-from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
-
-
-logger = logging.getLogger(__name__)
-
-
-class Verb(BaseModel):
+@dataclass
+class Verb(MediaGenerationCapable):
     """German verb domain model with linguistic expertise and media generation.
 
     Represents a German verb with its properties, German linguistic knowledge,
@@ -90,26 +96,54 @@ class Verb(BaseModel):
         (contain expertise) while services are DUMB (execute instructions).
     """
 
-    verb: str = Field(..., description="The German verb in infinitive form")
-    english: str = Field(..., description="English translation")
-    classification: str = Field(
-        default="",
-        description="Verb classification (regelmäßig, unregelmäßig, gemischt)",
-    )
-    present_ich: str = Field(..., description="First person singular present tense")
-    present_du: str = Field(..., description="Second person singular present tense")
-    present_er: str = Field(..., description="Third person singular present tense")
-    präteritum: str = Field(
-        default="", description="Präteritum 3rd person singular form"
-    )
-    auxiliary: str = Field(default="", description="Auxiliary verb (haben or sein)")
-    perfect: str = Field(..., description="Perfect tense form")
-    example: str = Field(..., description="Example sentence using the verb")
-    separable: bool = Field(default=False, description="Whether the verb is separable")
+    verb: str
+    english: str
+    present_ich: str
+    present_du: str
+    present_er: str
+    perfect: str
+    example: str
+    classification: str = field(default="")
+    präteritum: str = field(default="")
+    auxiliary: str = field(default="")
+    separable: bool = field(default=False)
+
+    def __post_init__(self) -> None:
+        """Validate the verb data after initialization."""
+        # Validate core required fields
+        required_fields = [
+            "verb",
+            "english",
+            "present_ich",
+            "present_du",
+            "present_er",
+            "perfect",
+            "example",
+        ]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
+
+        # Validate separable is boolean
+        if not isinstance(self.separable, bool):
+            raise ValueError(
+                f"Field 'separable' must be a boolean, got {type(self.separable)}"
+            )
+
+        # Validate auxiliary if provided (should be haben or sein)
+        if (
+            self.auxiliary
+            and self.auxiliary.strip()
+            and self.auxiliary not in {"haben", "sein"}
+        ):
+            raise ValueError(
+                f"Invalid auxiliary verb: {self.auxiliary}. Must be 'haben' or 'sein'."
+            )
 
     def get_image_search_strategy(
-        self, anthropic_service: "AnthropicServiceProtocol"
-    ) -> "Callable[[], str]":
+        self, anthropic_service: ImageQueryGenerationProtocol
+    ) -> Callable[[], str]:
         """Get strategy for generating image search terms with domain expertise.
 
         Creates a callable that uses this verb's domain knowledge to generate
@@ -121,7 +155,7 @@ class Verb(BaseModel):
         (processes whatever context it receives).
 
         Args:
-            anthropic_service: Service implementing AnthropicServiceProtocol for
+            anthropic_service: Service implementing ImageQueryGenerationProtocol for
                 AI-powered search term generation.
 
         Returns:
@@ -144,7 +178,7 @@ class Verb(BaseModel):
             try:
                 # Use domain expertise to build rich context for the service
                 context = self._build_search_context()
-                result = anthropic_service.generate_pexels_query(context)
+                result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     ai_generated_terms = result.strip()
                     logger.info(f"AI terms for '{self.verb}': '{ai_generated_terms}'")

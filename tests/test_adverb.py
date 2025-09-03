@@ -56,16 +56,33 @@ class TestAdverbBasics:
 
     def test_required_fields_validation(self) -> None:
         """Test that missing required fields raise validation errors."""
-        from pydantic import ValidationError
-
-        with pytest.raises(ValidationError):
+        # Test that missing required fields raise TypeError (dataclass requirement)
+        with pytest.raises(TypeError):
             Adverb()  # type: ignore[call-arg] # Missing all required fields
 
-        with pytest.raises(ValidationError):
+        with pytest.raises(TypeError):
             Adverb(word="test")  # type: ignore[call-arg] # Missing english, type, example
 
-        with pytest.raises(ValidationError):
+        with pytest.raises(TypeError):
             Adverb(word="test", english="test")  # type: ignore[call-arg] # Missing type, example
+
+        # Test that empty strings raise ValueError (__post_init__ validation)
+        with pytest.raises(ValueError, match="Required field 'word' cannot be empty"):
+            Adverb(word="", english="test", type=AdverbType.LOCATION, example="Test.")
+
+        with pytest.raises(
+            ValueError, match="Required field 'english' cannot be empty"
+        ):
+            Adverb(word="test", english="", type=AdverbType.LOCATION, example="Test.")
+
+        with pytest.raises(
+            ValueError, match="Required field 'example' cannot be empty"
+        ):
+            Adverb(word="test", english="test", type=AdverbType.LOCATION, example="")
+
+        # Test that invalid type raises ValueError
+        with pytest.raises(ValueError, match="Type must be an AdverbType"):
+            Adverb(word="test", english="test", type="invalid", example="Test.")  # type: ignore[arg-type]
 
 
 class TestAdverbType:
@@ -223,7 +240,7 @@ class TestImageSearchStrategy:
     def test_image_search_strategy_uses_context(self) -> None:
         """Test that image search strategy passes rich context string to service."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "generated terms"
+        mock_service.generate_image_query.return_value = "generated terms"
 
         adverb = Adverb(
             word="oben",
@@ -236,8 +253,8 @@ class TestImageSearchStrategy:
         result = strategy()
 
         # Verify service was called with rich context string from domain expertise
-        mock_service.generate_pexels_query.assert_called_once()
-        called_arg = mock_service.generate_pexels_query.call_args[0][0]
+        mock_service.generate_image_query.assert_called_once()
+        called_arg = mock_service.generate_image_query.call_args[0][0]
 
         # The argument should be the rich context string from _build_search_context
         assert isinstance(called_arg, str)
@@ -252,7 +269,7 @@ class TestImageSearchStrategy:
     def test_image_search_strategy_service_failure_fallback(self) -> None:
         """Test fallback when service fails."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         adverb = Adverb(
             word="gestern",
@@ -270,7 +287,7 @@ class TestImageSearchStrategy:
     def test_image_search_strategy_empty_result_fallback(self) -> None:
         """Test fallback when service returns empty result."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = ""  # Empty result
+        mock_service.generate_image_query.return_value = ""  # Empty result
 
         adverb = Adverb(
             word="nie",

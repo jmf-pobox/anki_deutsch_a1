@@ -1,15 +1,13 @@
 """Service protocols for dependency injection."""
 
-from .anthropic_protocol import AnthropicServiceProtocol
-from .audio_protocol import AudioServiceProtocol
-from .media_generation_protocol import MediaGenerationCapable
-from .media_protocol import MediaServiceProtocol
-from .pexels_protocol import PexelsServiceProtocol
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
+from langlearn.protocols.image_search_protocol import ImageSearchProtocol
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 __all__ = [
-    "AnthropicServiceProtocol",
-    "AudioServiceProtocol",
+    "ImageQueryGenerationProtocol",
+    "ImageSearchProtocol",
     "MediaGenerationCapable",
-    "MediaServiceProtocol",
-    "PexelsServiceProtocol",
 ]

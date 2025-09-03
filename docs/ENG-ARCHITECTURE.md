@@ -10,9 +10,11 @@ The Anki German Language Deck Generator implements **Clean Pipeline Architecture
 
 ### Key Achievements
 - **Clean Architecture**: Enterprise-grade separation of concerns
-- **Type Safety**: 100% MyPy strict compliance (0 errors)
-- **Quality**: 813 tests passing with comprehensive coverage
+- **Modern Python**: All domain models migrated to dataclasses with protocol compliance
+- **Type Safety**: 100% MyPy strict compliance (0 errors in 98 source files)
+- **Quality**: 595 tests passing with comprehensive coverage
 - **Production Ready**: Successfully deployed with complete German A1 support
+- **Protocol Compliance**: Formal MediaGenerationCapable implementation across all models
 
 ## Architectural Principles
 
@@ -28,9 +30,10 @@ The Anki German Language Deck Generator implements **Clean Pipeline Architecture
 **Location**: `src/langlearn/models/`  
 **Responsibility**: Core business logic and German language rules
 
-- **Records**: Lightweight DTOs for data transport
-- **Domain Models**: Rich models with German grammar validation
-- **Validation**: Pydantic-based schema enforcement
+- **Records**: Lightweight Pydantic DTOs for data transport and validation
+- **Domain Models**: Rich dataclass models with MediaGenerationCapable protocol
+- **Validation**: Modern Python patterns with inline __post_init__ validation
+- **German Expertise**: SMART domain models containing linguistic knowledge
 
 ### 2. Application Layer
 **Location**: `src/langlearn/services/`  

@@ -4,7 +4,9 @@ from unittest.mock import Mock
 
 from langlearn.models.noun import Noun
 from langlearn.protocols import MediaGenerationCapable
-from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
 
 
 class TestNounProtocolCompliance:
@@ -35,7 +37,7 @@ class TestNounProtocolCompliance:
 
         # Test get_image_search_strategy returns callable with mock service
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mock search terms"
+        mock_service.generate_image_query.return_value = "mock search terms"
 
         strategy = noun.get_image_search_strategy(mock_service)
         assert callable(strategy)
@@ -49,7 +51,7 @@ class TestNounProtocolCompliance:
         """Test protocol works with dependency injection pattern."""
 
         def use_media_capable(
-            obj: MediaGenerationCapable, service: AnthropicServiceProtocol
+            obj: MediaGenerationCapable, service: ImageQueryGenerationProtocol
         ) -> tuple[str, str]:
             """Function that uses MediaGenerationCapable protocol."""
             strategy = obj.get_image_search_strategy(service)
@@ -66,7 +68,7 @@ class TestNounProtocolCompliance:
 
         # Create mock service that fails to simulate fallback
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         # Should work through protocol interface with fallback when service fails
         search_terms, audio = use_media_capable(noun, mock_service)
@@ -79,7 +81,7 @@ class TestNounProtocolCompliance:
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mocked search terms"
+        mock_service.generate_image_query.return_value = "mocked search terms"
 
         noun = Noun(
             noun="Auto",
@@ -93,7 +95,7 @@ class TestNounProtocolCompliance:
         result = strategy()
 
         assert result == "mocked search terms"
-        mock_service.generate_pexels_query.assert_called_once()
+        mock_service.generate_image_query.assert_called_once()
 
     def test_context_building_for_concrete_noun(self) -> None:
         """Test that concrete nouns build appropriate context."""
@@ -144,7 +146,7 @@ class TestNounProtocolCompliance:
     def test_fallback_handling_for_concrete_noun(self) -> None:
         """Test fallback behavior for concrete nouns when service fails."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         noun = Noun(
             noun="Hund",
@@ -163,7 +165,7 @@ class TestNounProtocolCompliance:
     def test_fallback_handling_for_abstract_noun(self) -> None:
         """Test fallback behavior for abstract nouns when service fails."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         noun = Noun(
             noun="Liebe",
@@ -176,8 +178,8 @@ class TestNounProtocolCompliance:
         strategy = noun.get_image_search_strategy(mock_service)
         result = strategy()
 
-        # Should fall back to enhanced search terms for abstract concepts
-        assert "heart symbol family together" in result
+        # Should fall back to simple English translation
+        assert result == "love"
 
     def test_gender_context_in_search_terms(self) -> None:
         """Test that gender context is included in search context."""

@@ -4,7 +4,9 @@ from unittest.mock import Mock
 
 from langlearn.models.negation import Negation, NegationType
 from langlearn.protocols import MediaGenerationCapable
-from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
 
 
 class TestNegationProtocolCompliance:
@@ -33,7 +35,7 @@ class TestNegationProtocolCompliance:
 
         # Test get_image_search_strategy returns callable with mock service
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mock search terms"
+        mock_service.generate_image_query.return_value = "mock search terms"
 
         strategy = negation.get_image_search_strategy(mock_service)
         assert callable(strategy)
@@ -47,7 +49,7 @@ class TestNegationProtocolCompliance:
         """Test protocol works with dependency injection pattern."""
 
         def use_media_capable(
-            obj: MediaGenerationCapable, service: AnthropicServiceProtocol
+            obj: MediaGenerationCapable, service: ImageQueryGenerationProtocol
         ) -> tuple[str, str]:
             """Function that uses MediaGenerationCapable protocol."""
             strategy = obj.get_image_search_strategy(service)
@@ -63,7 +65,7 @@ class TestNegationProtocolCompliance:
 
         # Create mock service that fails to simulate fallback
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         # Should work through protocol interface with fallback when service fails
         search_terms, audio = use_media_capable(negation, mock_service)
@@ -78,7 +80,7 @@ class TestNegationProtocolCompliance:
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mocked search terms"
+        mock_service.generate_image_query.return_value = "mocked search terms"
 
         negation = Negation(
             word="nie",
@@ -91,7 +93,7 @@ class TestNegationProtocolCompliance:
         result = strategy()
 
         assert result == "mocked search terms"
-        mock_service.generate_pexels_query.assert_called_once()
+        mock_service.generate_image_query.assert_called_once()
 
     def test_context_building_for_general_negation(self) -> None:
         """Test that general negations build appropriate context."""
@@ -160,7 +162,7 @@ class TestNegationProtocolCompliance:
     def test_fallback_handling_with_concept_mappings(self) -> None:
         """Test fallback behavior uses negation-specific concept mappings."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         test_cases = [
             ("nothing", "nichts", "empty void blank nothing"),
@@ -185,7 +187,7 @@ class TestNegationProtocolCompliance:
     def test_fallback_handling_with_type_mappings(self) -> None:
         """Test fallback behavior uses type-specific mappings when no concept match."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         # Use an english translation that won't match any concept mappings
         negation = Negation(
@@ -262,7 +264,7 @@ class TestNegationProtocolCompliance:
     def test_empty_service_result_fallback(self) -> None:
         """Test fallback when service returns empty result."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = ""  # Empty result
+        mock_service.generate_image_query.return_value = ""  # Empty result
 
         negation = Negation(
             word="nicht",

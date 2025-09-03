@@ -11,6 +11,8 @@ from typing import Any, Literal, TypedDict, cast
 import requests
 from requests.exceptions import HTTPError
 
+from langlearn.protocols.image_search_protocol import ImageSearchProtocol
+
 # Set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -82,7 +84,7 @@ class Photo(TypedDict):
     alt: str
 
 
-class PexelsService:
+class PexelsService(ImageSearchProtocol):
     """Service for interacting with the Pexels API."""
 
     def __init__(self) -> None:

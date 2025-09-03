@@ -1,3 +1,21 @@
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass
+from enum import Enum
+from typing import TYPE_CHECKING
+
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
+
+logger = logging.getLogger(__name__)
+
 """German Adverb Domain Model.
 
 This module contains the domain model for German adverbs with specialized logic for
@@ -41,16 +59,6 @@ Usage:
         >>> search_terms = strategy()  # Returns context-aware search terms
         >>> audio_text = adverb.get_combined_audio_text()  # Combined text
 """
-
-from enum import Enum
-from typing import TYPE_CHECKING
-
-from pydantic import BaseModel, Field
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
 
 
 class AdverbType(str, Enum):
@@ -101,7 +109,8 @@ GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP = {
 }
 
 
-class Adverb(BaseModel):
+@dataclass
+class Adverb(MediaGenerationCapable):
     """German adverb domain model with linguistic expertise and media generation.
 
     Represents a German adverb with its properties, German linguistic knowledge,
@@ -124,14 +133,27 @@ class Adverb(BaseModel):
         (contain expertise) while services are DUMB (execute instructions).
     """
 
-    word: str = Field(..., description="The German adverb")
-    english: str = Field(..., description="English translation")
-    type: AdverbType = Field(..., description="Type of adverb")
-    example: str = Field(..., description="Example sentence using the adverb")
+    word: str
+    english: str
+    type: AdverbType
+    example: str
+
+    def __post_init__(self) -> None:
+        """Validate the adverb data after initialization."""
+        # Validate core required fields
+        required_fields = ["word", "english", "example"]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
+
+        # Validate type is an AdverbType enum
+        if not isinstance(self.type, AdverbType):
+            raise ValueError(f"Type must be an AdverbType, got {type(self.type)}")
 
     def get_image_search_strategy(
-        self, anthropic_service: "AnthropicServiceProtocol"
-    ) -> "Callable[[], str]":
+        self, anthropic_service: ImageQueryGenerationProtocol
+    ) -> Callable[[], str]:
         """Get strategy for generating image search terms with domain expertise.
 
         Creates a callable that uses this adverb's domain knowledge to generate
@@ -143,7 +165,7 @@ class Adverb(BaseModel):
         (processes whatever context it receives).
 
         Args:
-            anthropic_service: Service implementing AnthropicServiceProtocol for
+            anthropic_service: Service implementing ImageQueryGenerationProtocol for
                 AI-powered search term generation.
 
         Returns:
@@ -162,7 +184,7 @@ class Adverb(BaseModel):
             try:
                 # Use domain expertise to build rich context for the service
                 context = self._build_search_context()
-                result = anthropic_service.generate_pexels_query(context)
+                result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
             except Exception:

@@ -17,13 +17,13 @@ from langlearn.backends.anki_backend import AnkiBackend
 class TestAnkiBackendDeduplication:
     """Test AnkiBackend media deduplication and optimization features."""
 
-    def test_audio_deduplication_new_file(self) -> None:
+    def test_audio_deduplication_new_file(self, mock_media_service: Mock) -> None:
         """Test audio generation for new file (not duplicate)."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Mock file system - file doesn't exist (new file)
             text = "Guten Tag"
@@ -44,13 +44,13 @@ class TestAnkiBackendDeduplication:
                 assert backend._media_generation_stats["audio_reused"] == 0
                 mock_audio.assert_called_once_with(text)
 
-    def test_audio_deduplication_existing_file(self) -> None:
+    def test_audio_deduplication_existing_file(self, mock_media_service: Mock) -> None:
         """Test audio deduplication when file already exists."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Mock file system - file exists (duplicate)
             text = "Hallo Welt"
@@ -70,13 +70,13 @@ class TestAnkiBackendDeduplication:
                 assert backend._media_generation_stats["audio_generated"] == 0
                 assert backend._media_generation_stats["audio_reused"] == 1
 
-    def test_image_deduplication_new_file(self) -> None:
+    def test_image_deduplication_new_file(self, mock_media_service: Mock) -> None:
         """Test image generation for new file (not duplicate)."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Mock file system - file doesn't exist (new file)
             word = "Katze"
@@ -97,13 +97,13 @@ class TestAnkiBackendDeduplication:
                 assert backend._media_generation_stats["images_reused"] == 0
                 mock_image.assert_called_once_with(word, "cat", "")
 
-    def test_image_deduplication_existing_file(self) -> None:
+    def test_image_deduplication_existing_file(self, mock_media_service: Mock) -> None:
         """Test image deduplication when file already exists."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Mock file system - file exists (duplicate)
             word = "Hund"
@@ -123,13 +123,15 @@ class TestAnkiBackendDeduplication:
                 assert backend._media_generation_stats["images_downloaded"] == 0
                 assert backend._media_generation_stats["images_reused"] == 1
 
-    def test_mixed_media_deduplication_statistics(self) -> None:
+    def test_mixed_media_deduplication_statistics(
+        self, mock_media_service: Mock
+    ) -> None:
         """Test statistics tracking with mixed new and duplicate media."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Directly set statistics to test calculation logic
             backend._media_generation_stats.update(
@@ -150,7 +152,7 @@ class TestAnkiBackendDeduplication:
             assert stats["images_reused"] == 1
             assert stats["generation_errors"] == 0
 
-    def test_deduplication_stats_in_get_stats(self) -> None:
+    def test_deduplication_stats_in_get_stats(self, mock_media_service: Mock) -> None:
         """Test that deduplication stats appear in comprehensive statistics."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -163,7 +165,7 @@ class TestAnkiBackendDeduplication:
             )
             mock_collection.db.scalar.return_value = 10
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Set up deduplication statistics
             backend._media_generation_stats.update(
@@ -190,13 +192,15 @@ class TestAnkiBackendDeduplication:
             assert media_stats["total_media_generated"] == 4  # 3 audio + 1 image
             assert media_stats["total_media_reused"] == 6  # 2 audio + 4 image
 
-    def test_audio_hash_based_deduplication_logic(self) -> None:
+    def test_audio_hash_based_deduplication_logic(
+        self, mock_media_service: Mock
+    ) -> None:
         """Test that audio deduplication uses correct MD5 hash logic."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
             text = "Spezielle deutsche Wörter"
             expected_hash = hashlib.md5(text.encode()).hexdigest()
 
@@ -215,13 +219,15 @@ class TestAnkiBackendDeduplication:
                 backend._generate_or_get_audio(text)
                 assert backend._media_generation_stats["audio_reused"] == 1
 
-    def test_image_word_based_deduplication_logic(self) -> None:
+    def test_image_word_based_deduplication_logic(
+        self, mock_media_service: Mock
+    ) -> None:
         """Test that image deduplication uses word-based file naming."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
             word = "Schmetterling"
 
             # Test word-based filename logic
@@ -238,13 +244,15 @@ class TestAnkiBackendDeduplication:
                 backend._generate_or_get_image(word, "butterfly")
                 assert backend._media_generation_stats["images_reused"] == 1
 
-    def test_deduplication_with_media_service_failure(self) -> None:
+    def test_deduplication_with_media_service_failure(
+        self, mock_media_service: Mock
+    ) -> None:
         """Test deduplication behavior when MediaService fails."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             with (
                 patch.object(
@@ -260,13 +268,13 @@ class TestAnkiBackendDeduplication:
                 assert backend._media_generation_stats["audio_generated"] == 0
                 assert backend._media_generation_stats["audio_reused"] == 0
 
-    def test_optimization_directory_setup(self) -> None:
+    def test_optimization_directory_setup(self, mock_media_service: Mock) -> None:
         """Test that AnkiBackend sets up optimized directory structure."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Verify directories are set up for optimization
             assert backend._audio_dir is not None
@@ -274,13 +282,13 @@ class TestAnkiBackendDeduplication:
             assert str(backend._audio_dir).endswith("data/audio")
             assert str(backend._images_dir).endswith("data/images")
 
-    def test_concurrent_deduplication_safety(self) -> None:
+    def test_concurrent_deduplication_safety(self, mock_media_service: Mock) -> None:
         """Test deduplication is safe under concurrent access patterns."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Simulate concurrent calls with same text
             text = "Gleichzeitig"
@@ -309,13 +317,13 @@ class TestAnkiBackendDeduplication:
 class TestAnkiBackendOptimizationFeatures:
     """Test AnkiBackend optimization features beyond deduplication."""
 
-    def test_media_directory_optimization(self) -> None:
+    def test_media_directory_optimization(self, mock_media_service: Mock) -> None:
         """Test optimized media directory structure creation."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Verify directory paths are set up correctly for optimization
             assert backend._audio_dir is not None
@@ -323,13 +331,13 @@ class TestAnkiBackendOptimizationFeatures:
             assert "audio" in str(backend._audio_dir)
             assert "images" in str(backend._images_dir)
 
-    def test_statistics_optimization_tracking(self) -> None:
+    def test_statistics_optimization_tracking(self, mock_media_service: Mock) -> None:
         """Test that statistics track optimization effectiveness."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Set up scenario with high reuse (good optimization)
             backend._media_generation_stats.update(

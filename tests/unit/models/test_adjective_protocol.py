@@ -4,7 +4,9 @@ from unittest.mock import Mock
 
 from langlearn.models.adjective import Adjective
 from langlearn.protocols import MediaGenerationCapable
-from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
 
 
 class TestAdjectiveProtocolCompliance:
@@ -35,7 +37,7 @@ class TestAdjectiveProtocolCompliance:
 
         # Test get_image_search_strategy returns callable with mock service
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mock search terms"
+        mock_service.generate_image_query.return_value = "mock search terms"
 
         strategy = adjective.get_image_search_strategy(mock_service)
         assert callable(strategy)
@@ -49,7 +51,7 @@ class TestAdjectiveProtocolCompliance:
         """Test protocol works with dependency injection pattern."""
 
         def use_media_capable(
-            obj: MediaGenerationCapable, service: AnthropicServiceProtocol
+            obj: MediaGenerationCapable, service: ImageQueryGenerationProtocol
         ) -> tuple[str, str]:
             """Function that uses MediaGenerationCapable protocol."""
             strategy = obj.get_image_search_strategy(service)
@@ -66,7 +68,7 @@ class TestAdjectiveProtocolCompliance:
 
         # Create mock service that fails to simulate fallback
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         # Should work through protocol interface with fallback when service fails
         search_terms, audio = use_media_capable(adjective, mock_service)
@@ -79,7 +81,7 @@ class TestAdjectiveProtocolCompliance:
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mocked search terms"
+        mock_service.generate_image_query.return_value = "mocked search terms"
 
         adjective = Adjective(
             word="klein",
@@ -93,7 +95,7 @@ class TestAdjectiveProtocolCompliance:
         result = strategy()
 
         assert result == "mocked search terms"
-        mock_service.generate_pexels_query.assert_called_once()
+        mock_service.generate_image_query.assert_called_once()
 
     def test_context_building_for_concrete_adjective(self) -> None:
         """Test that concrete adjectives build appropriate context."""
@@ -143,7 +145,7 @@ class TestAdjectiveProtocolCompliance:
     def test_fallback_handling_for_concrete_adjective(self) -> None:
         """Test fallback behavior for concrete adjectives when service fails."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         adjective = Adjective(
             word="blau",
@@ -162,7 +164,7 @@ class TestAdjectiveProtocolCompliance:
     def test_fallback_handling_for_abstract_adjective_with_mapping(self) -> None:
         """Test fallback behavior for abstract adjectives with concept mapping."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         adjective = Adjective(
             word="ehrlich",
@@ -181,7 +183,7 @@ class TestAdjectiveProtocolCompliance:
     def test_fallback_handling_for_unmapped_adjective(self) -> None:
         """Test fallback behavior for adjectives without concept mapping."""
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         adjective = Adjective(
             word="ungewöhnlich",

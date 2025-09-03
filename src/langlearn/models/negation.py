@@ -1,3 +1,21 @@
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass
+from enum import Enum
+from typing import TYPE_CHECKING
+
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
+
+logger = logging.getLogger(__name__)
+
 """German Negation Domain Model.
 
 This module contains the domain model for German negation words with specialized logic
@@ -43,16 +61,6 @@ Usage:
         >>> audio_text = negation.get_combined_audio_text()  # Word + example
 """
 
-from enum import Enum
-from typing import TYPE_CHECKING
-
-from pydantic import BaseModel, Field
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
-
 
 class NegationType(str, Enum):
     """Types of German negation words."""
@@ -66,7 +74,8 @@ class NegationType(str, Enum):
     INTENSIFIER = "intensifier"  # gar nicht, überhaupt nicht
 
 
-class Negation(BaseModel):
+@dataclass
+class Negation(MediaGenerationCapable):
     """German negation domain model with linguistic expertise and media generation.
 
     Represents a German negation word with its properties, German linguistic knowledge,
@@ -88,10 +97,23 @@ class Negation(BaseModel):
         (contain expertise) while services are DUMB (execute instructions).
     """
 
-    word: str = Field(..., description="The German negation word")
-    english: str = Field(..., description="English translation")
-    type: NegationType = Field(..., description="Type of negation")
-    example: str = Field(..., description="Example sentence using the negation")
+    word: str
+    english: str
+    type: NegationType
+    example: str
+
+    def __post_init__(self) -> None:
+        """Validate the negation data after initialization."""
+        # Validate core required fields
+        required_fields = ["word", "english", "example"]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
+
+        # Validate type is a NegationType enum
+        if not isinstance(self.type, NegationType):
+            raise ValueError(f"Type must be a NegationType, got {type(self.type)}")
 
     def validate_example(self) -> bool:
         """Validate that the example contains the negation and follows basic rules.
@@ -192,8 +214,8 @@ class Negation(BaseModel):
         return False
 
     def get_image_search_strategy(
-        self, anthropic_service: "AnthropicServiceProtocol"
-    ) -> "Callable[[], str]":
+        self, anthropic_service: ImageQueryGenerationProtocol
+    ) -> Callable[[], str]:
         """Get strategy for generating image search terms with domain expertise.
 
         Creates a callable that uses this negation's domain knowledge to generate
@@ -205,7 +227,7 @@ class Negation(BaseModel):
         (processes whatever context it receives).
 
         Args:
-            anthropic_service: Service implementing AnthropicServiceProtocol for
+            anthropic_service: Service implementing ImageQueryGenerationProtocol for
                 AI-powered search term generation.
 
         Returns:
@@ -225,7 +247,7 @@ class Negation(BaseModel):
             try:
                 # Use domain expertise to build rich context for the service
                 context = self._build_search_context()
-                result = anthropic_service.generate_pexels_query(context)
+                result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
             except Exception:

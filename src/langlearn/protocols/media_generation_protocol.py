@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
+
 """Protocol defining the interface for media generation capabilities.
 
 This protocol defines the contract that domain models must implement to support
@@ -6,12 +10,12 @@ work with any domain model that provides media generation capabilities without
 tight coupling to specific implementations.
 """
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
-
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
 
 
 @runtime_checkable
@@ -24,8 +28,8 @@ class MediaGenerationCapable(Protocol):
     """
 
     def get_image_search_strategy(
-        self, anthropic_service: "AnthropicServiceProtocol"
-    ) -> "Callable[[], str]":
+        self, anthropic_service: ImageQueryGenerationProtocol
+    ) -> Callable[[], str]:
         """Get a strategy for generating image search terms with dependency injection.
 
         The domain model constructs context-aware requests using its knowledge of

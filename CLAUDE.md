@@ -593,3 +593,4 @@ When you see an error like "Field 'DuForm' not found":
 - never use mock objects in production code, only test code.
 - ask me for design direction, do not come up with your own ideas of what good is.
 - make your commit messages modest and relatively short.
+- always us direct imports using __future__ in Python

@@ -2,7 +2,9 @@
 
 from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.protocols import MediaGenerationCapable
-from langlearn.protocols.anthropic_protocol import AnthropicServiceProtocol
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
 
 
 class TestAdverbProtocolCompliance:
@@ -33,7 +35,7 @@ class TestAdverbProtocolCompliance:
         from unittest.mock import Mock
 
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mock search terms"
+        mock_service.generate_image_query.return_value = "mock search terms"
 
         strategy = adverb.get_image_search_strategy(mock_service)
         assert callable(strategy)
@@ -48,7 +50,7 @@ class TestAdverbProtocolCompliance:
         from unittest.mock import Mock
 
         def use_media_capable(
-            obj: MediaGenerationCapable, service: AnthropicServiceProtocol
+            obj: MediaGenerationCapable, service: ImageQueryGenerationProtocol
         ) -> tuple[str, str]:
             """Function that uses MediaGenerationCapable protocol."""
             strategy = obj.get_image_search_strategy(service)
@@ -64,7 +66,7 @@ class TestAdverbProtocolCompliance:
 
         # Create mock service that fails to simulate fallback
         mock_service = Mock()
-        mock_service.generate_pexels_query.side_effect = Exception("Service failed")
+        mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         # Should work through protocol interface with fallback when service fails
         search_terms, audio = use_media_capable(adverb, mock_service)
@@ -79,7 +81,7 @@ class TestAdverbProtocolCompliance:
         from unittest.mock import Mock
 
         mock_service = Mock()
-        mock_service.generate_pexels_query.return_value = "mocked search terms"
+        mock_service.generate_image_query.return_value = "mocked search terms"
 
         adverb = Adverb(
             word="schnell",
@@ -92,7 +94,7 @@ class TestAdverbProtocolCompliance:
         result = strategy()
 
         assert result == "mocked search terms"
-        mock_service.generate_pexels_query.assert_called_once()
+        mock_service.generate_image_query.assert_called_once()
 
     def test_context_building_for_different_types(self) -> None:
         """Test that different adverb types build appropriate context."""

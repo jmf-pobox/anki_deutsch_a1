@@ -18,12 +18,14 @@ from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
 
 # Legacy domain model imports removed - using Clean Pipeline Records
-from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
+# Removed unused protocol imports - services are used directly
 from .services.article_application_service import ArticleApplicationService
+from .services.audio import AudioService
 from .services.card_builder import CardBuilder
 from .services.csv_service import CSVService
 from .services.media_file_registrar import MediaFileRegistrar
-from .services.media_service import MediaService
+from .services.media_service import MediaGenerationConfig, MediaService
+from .services.pexels_service import PexelsService
 from .services.record_mapper import RecordMapper
 from .services.service_container import (
     get_translation_service as _get_translation_service,
@@ -75,24 +77,19 @@ class DeckBuilder:
         self,
         deck_name: str,
         backend_type: str = "anki",
-        enable_media_generation: bool = True,
-        audio_service: AudioServiceProtocol | None = None,
-        pexels_service: PexelsServiceProtocol | None = None,
-        media_service: MediaServiceProtocol | None = None,
+        audio_service: AudioService | None = None,
+        pexels_service: PexelsService | None = None,
     ) -> None:
         """Initialize the deck builder.
 
         Args:
             deck_name: Name of the Anki deck to create
             backend_type: Backend to use ("anki")
-            enable_media_generation: Whether to enable media generation services
-            audio_service: Optional AudioServiceProtocol for dependency injection
-            pexels_service: Optional PexelsServiceProtocol for dependency injection
-            media_service: Optional MediaServiceProtocol for dependency injection
+            audio_service: Optional AudioService for dependency injection
+            pexels_service: Optional PexelsService for dependency injection
         """
         self.deck_name = deck_name
         self.backend_type = backend_type
-        self.enable_media_generation = enable_media_generation
 
         # Initialize services
         self._csv_service = CSVService()
@@ -113,49 +110,30 @@ class DeckBuilder:
         # Initialize StandardMediaEnricher (type annotation)
         self._media_enricher: Any = None  # Will be properly initialized later
 
-        # Initialize media service with dependency injection
-        self._media_service: MediaServiceProtocol | None = None
-        if media_service is not None:
-            # Use provided media service (for dependency injection)
-            self._media_service = media_service
-        elif enable_media_generation:
-            from .services.audio import AudioService
-            from .services.media_service import MediaGenerationConfig
-            from .services.pexels_service import PexelsService
+        # Initialize dependencies for media service
+        project_root = Path(__file__).parent.parent.parent  # Go up to project root
 
-            # Initialize dependencies for media service with dependency injection
-            project_root = Path(__file__).parent.parent.parent  # Go up to project root
+        # Use provided services or create defaults
+        actual_audio_service = audio_service or AudioService(
+            output_dir=str(project_root / "data" / "audio")
+        )
+        actual_pexels_service = pexels_service or PexelsService()
+        media_config = MediaGenerationConfig()
 
-            # Use provided services or create defaults
-            actual_audio_service = audio_service or AudioService(
-                output_dir=str(project_root / "data" / "audio")
-            )
-            actual_pexels_service = pexels_service or PexelsService()
-            media_config = MediaGenerationConfig()
-
-            # Cast to concrete types since MediaService requires concrete types
-            from typing import cast
-
-            self._media_service = cast(
-                "MediaServiceProtocol",
-                MediaService(
-                    audio_service=cast("AudioService", actual_audio_service),
-                    pexels_service=cast("PexelsService", actual_pexels_service),
-                    config=media_config,
-                    project_root=project_root,
-                ),
-            )
+        # Always create media service - no optional media
+        self._media_service = MediaService(
+            audio_service=actual_audio_service,
+            pexels_service=actual_pexels_service,
+            config=media_config,
+            project_root=project_root,
+        )
 
         # Initialize backend
         self._backend = self._create_backend(deck_name, backend_type)
 
         # Initialize managers with dependency injection
         self._deck_manager = DeckManager(self._backend)
-        # Cast MediaServiceProtocol to MediaService for MediaManager
-        media_service_for_manager = (
-            cast("MediaService", self._media_service) if self._media_service else None
-        )
-        self._media_manager = MediaManager(self._backend, media_service_for_manager)
+        self._media_manager = MediaManager(self._backend, self._media_service)
 
         # Initialize MediaFileRegistrar for Clean Pipeline
         self._media_file_registrar = MediaFileRegistrar()
@@ -234,9 +212,6 @@ class DeckBuilder:
             "verbs.csv": "verb",
             # Modern multi-tense verb system - same subdeck as basic verbs
             "verbs_unified.csv": "verb_conjugation",  # Multi-tense verb system
-            # "regular_verbs.csv": "verb",
-            # "irregular_verbs.csv": "verb",
-            # "separable_verbs.csv": "verb",
         }
 
         for filename, record_type in csv_to_record_type.items():
@@ -274,9 +249,6 @@ class DeckBuilder:
         logger.info("Reset to main deck")
 
     # Card Generation Methods (Clean Pipeline only)
-
-    # Legacy individual card generation methods removed - use generate_all_cards()
-    # with Clean Pipeline
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
         """Generate all cards using Clean Pipeline.
@@ -523,25 +495,6 @@ class DeckBuilder:
 
         return results
 
-    # Legacy fallback method removed - Clean Pipeline only
-
-    # Media Generation Methods
-
-    def generate_all_media(self) -> dict[str, Any]:
-        """Generate all media for loaded data.
-
-        Returns:
-            Statistics about media generation
-        """
-        if not self._media_service:
-            logger.warning("Media generation disabled")
-            return {}
-
-        # Media generation happens during card creation
-        # This method provides a way to pre-generate media if needed
-        logger.info("Media will be generated during card creation")
-        return self._media_manager.get_detailed_stats()
-
     # Export and Statistics Methods
 
     def export_deck(self, output_path: str | Path) -> None:
@@ -574,7 +527,7 @@ class DeckBuilder:
             "deck_info": {
                 "name": self.deck_name,
                 "backend_type": self.backend_type,
-                "media_enabled": self.enable_media_generation,
+                "media_enabled": True,
             },
             "loaded_data": {
                 # Clean Pipeline data (unified architecture)

@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Any
+from unittest.mock import Mock
 
 import pytest
 
@@ -29,9 +30,9 @@ class StubEnricher:
     ],
 )
 def test_cloze_article_backend_mapping_returns_media(
-    tmp_path: Path, note_type_name: str
+    tmp_path: Path, note_type_name: str, mock_media_service: Mock
 ) -> None:
-    backend = AnkiBackend("Test Deck")
+    backend = AnkiBackend("Test Deck", mock_media_service)
 
     # Inject stub enricher and an in-memory media service to avoid side effects
     # Monkeypatch the backend's media enricher with a stub that supplies media

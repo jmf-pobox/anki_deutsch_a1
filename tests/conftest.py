@@ -88,4 +88,6 @@ def mock_media_service() -> Mock:
     service = Mock()
     service.generate_audio.return_value = "/fake/audio.mp3"
     service.generate_image.return_value = "/fake/image.jpg"
+    service.generate_or_get_audio.return_value = "/fake/audio.mp3"
+    service.generate_or_get_image.return_value = "/fake/image.jpg"
     return service

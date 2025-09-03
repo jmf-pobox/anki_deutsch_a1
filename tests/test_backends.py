@@ -3,6 +3,7 @@
 import os
 import tempfile
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
@@ -35,9 +36,11 @@ class TestBackendAbstraction:
             f.write(b"fake audio content")
             return f.name
 
-    def test_anki_backend_basic_functionality(self, sample_note_type: NoteType) -> None:
+    def test_anki_backend_basic_functionality(
+        self, sample_note_type: NoteType, mock_media_service: Mock
+    ) -> None:
         """Test basic functionality of the official Anki backend."""
-        backend = AnkiBackend("Test Deck", "Test Description")
+        backend = AnkiBackend("Test Deck", mock_media_service, "Test Description")
 
         # Test note type creation
         note_type_id = backend.create_note_type(sample_note_type)
@@ -58,10 +61,12 @@ class TestBackendAbstraction:
         # which requires at least 5 fields for adjective cards
         assert stats["media_files_count"] == 0
 
-    def test_media_file_handling(self, temp_audio_file: str) -> None:
+    def test_media_file_handling(
+        self, temp_audio_file: str, mock_media_service: Mock
+    ) -> None:
         """Test media file handling with Anki backend."""
         # Test with Anki backend
-        anki_backend = AnkiBackend("Media Test")
+        anki_backend = AnkiBackend("Media Test", mock_media_service)
         media_file = anki_backend.add_media_file(temp_audio_file)
         # AnkiBackend wraps audio files in [sound:] format for Anki compatibility
         expected_reference = f"[sound:{os.path.basename(temp_audio_file)}]"
@@ -72,11 +77,11 @@ class TestBackendAbstraction:
         os.unlink(temp_audio_file)
 
     def test_export_functionality(
-        self, sample_note_type: NoteType, tmp_path: Path
+        self, sample_note_type: NoteType, tmp_path: Path, mock_media_service: Mock
     ) -> None:
         """Test export functionality for Anki backend."""
         # Test Anki backend export (Phase 2: .apkg files)
-        anki_backend = AnkiBackend("Export Test")
+        anki_backend = AnkiBackend("Export Test", mock_media_service)
         note_type_id = anki_backend.create_note_type(sample_note_type)
         anki_backend.add_note(note_type_id, ["test", "test", "Test sentence"])
 
@@ -90,9 +95,9 @@ class TestBackendAbstraction:
         # Verify file is substantial (indicating real deck export)
         assert anki_output.stat().st_size > 1000  # >1KB
 
-    def test_error_handling(self) -> None:
+    def test_error_handling(self, mock_media_service: Mock) -> None:
         """Test error handling in Anki backend."""
-        backend = AnkiBackend("Error Test")
+        backend = AnkiBackend("Error Test", mock_media_service)
 
         # Test adding note with invalid note type ID
         with pytest.raises(ValueError, match="Note type ID"):
@@ -102,9 +107,11 @@ class TestBackendAbstraction:
         with pytest.raises(FileNotFoundError):
             backend.add_media_file("/path/to/nonexistent/file.mp3")
 
-    def test_backend_interface_compatibility(self, sample_note_type: NoteType) -> None:
+    def test_backend_interface_compatibility(
+        self, sample_note_type: NoteType, mock_media_service: Mock
+    ) -> None:
         """Test that Anki backend implements the interface correctly."""
-        backend = AnkiBackend("Interface Test")
+        backend = AnkiBackend("Interface Test", mock_media_service)
 
         # Test interface methods exist and work
         assert hasattr(backend, "create_note_type")

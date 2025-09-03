@@ -16,7 +16,7 @@ from langlearn.backends.base import CardTemplate, NoteType
 class TestAnkiBackendErrorHandling:
     """Test AnkiBackend error handling and recovery mechanisms."""
 
-    def test_collection_creation_failure(self) -> None:
+    def test_collection_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of Anki Collection creation failure."""
         with (
             patch(
@@ -27,9 +27,9 @@ class TestAnkiBackendErrorHandling:
             pytest.raises(Exception, match="Collection creation failed"),
         ):
             # Should raise exception during initialization
-            AnkiBackend("Test Deck")
+            AnkiBackend("Test Deck", mock_media_service)
 
-    def test_deck_creation_failure(self) -> None:
+    def test_deck_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of deck creation failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -43,9 +43,9 @@ class TestAnkiBackendErrorHandling:
 
             # Should raise exception during initialization
             with pytest.raises(Exception, match="Deck creation failed"):
-                AnkiBackend("Test Deck")
+                AnkiBackend("Test Deck", mock_media_service)
 
-    def test_note_type_creation_failure(self) -> None:
+    def test_note_type_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of note type creation failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -62,7 +62,7 @@ class TestAnkiBackendErrorHandling:
             mock_collection.models = mock_models
             mock_models.new.side_effect = Exception("Note type creation failed")
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             template = CardTemplate(
                 name="Test Card",
@@ -78,7 +78,7 @@ class TestAnkiBackendErrorHandling:
             with pytest.raises(Exception, match="Note type creation failed"):
                 backend.create_note_type(note_type)
 
-    def test_field_addition_failure(self) -> None:
+    def test_field_addition_failure(self, mock_media_service: Mock) -> None:
         """Test handling of field addition failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -97,7 +97,7 @@ class TestAnkiBackendErrorHandling:
             mock_models.new_field.return_value = {"name": "field"}
             mock_models.add_field.side_effect = Exception("Field addition failed")
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             note_type = NoteType(
                 name="Test Type", fields=["Field1", "Field2"], templates=[]
@@ -107,7 +107,7 @@ class TestAnkiBackendErrorHandling:
             with pytest.raises(Exception, match="Field addition failed"):
                 backend.create_note_type(note_type)
 
-    def test_template_addition_failure(self) -> None:
+    def test_template_addition_failure(self, mock_media_service: Mock) -> None:
         """Test handling of template addition failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -132,7 +132,7 @@ class TestAnkiBackendErrorHandling:
             mock_models.add_template.side_effect = Exception("Template addition failed")
             mock_models.add.return_value = Mock(id=98765)
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             template = CardTemplate(
                 name="Test Card",
@@ -148,7 +148,7 @@ class TestAnkiBackendErrorHandling:
             with pytest.raises(Exception, match="Template addition failed"):
                 backend.create_note_type(note_type)
 
-    def test_note_creation_failure(self) -> None:
+    def test_note_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of note creation failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -160,7 +160,7 @@ class TestAnkiBackendErrorHandling:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Set up note type mapping
             from anki.models import NotetypeId
@@ -183,7 +183,9 @@ class TestAnkiBackendErrorHandling:
                 # Should raise exception during note creation
                 backend.add_note("test_id", ["field1", "field2"])
 
-    def test_note_addition_to_collection_failure(self) -> None:
+    def test_note_addition_to_collection_failure(
+        self, mock_media_service: Mock
+    ) -> None:
         """Test handling of note addition to collection failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -195,7 +197,7 @@ class TestAnkiBackendErrorHandling:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             from anki.models import NotetypeId
 
@@ -223,7 +225,7 @@ class TestAnkiBackendErrorHandling:
                 # Should raise exception during note addition to collection
                 backend.add_note("test_id", ["field1", "field2"])
 
-    def test_media_service_failure_recovery(self) -> None:
+    def test_media_service_failure_recovery(self, mock_media_service: Mock) -> None:
         """Test graceful handling of media service failures."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -235,7 +237,7 @@ class TestAnkiBackendErrorHandling:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Test audio service failure recovery
             with patch.object(
@@ -261,7 +263,7 @@ class TestAnkiBackendErrorHandling:
                 assert result is None
                 assert backend._media_generation_stats["generation_errors"] == 2
 
-    def test_media_file_not_found_error(self) -> None:
+    def test_media_file_not_found_error(self, mock_media_service: Mock) -> None:
         """Test handling of missing media files."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -274,13 +276,13 @@ class TestAnkiBackendErrorHandling:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Should raise FileNotFoundError for missing media file
             with pytest.raises(FileNotFoundError, match="Media file not found"):
                 backend.add_media_file("/nonexistent/file.mp3")
 
-    def test_media_file_addition_failure(self) -> None:
+    def test_media_file_addition_failure(self, mock_media_service: Mock) -> None:
         """Test handling of media file addition failure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -296,13 +298,13 @@ class TestAnkiBackendErrorHandling:
                 "Media addition failed"
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Should raise exception during media file addition
             with pytest.raises(Exception, match="Media addition failed"):
                 backend.add_media_file("/existing/file.mp3")
 
-    def test_export_all_methods_failure(self) -> None:
+    def test_export_all_methods_failure(self, mock_media_service: Mock) -> None:
         """Test handling when all export methods fail."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -317,7 +319,7 @@ class TestAnkiBackendErrorHandling:
                 "Collection export failed"
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             with patch("anki.exporting.AnkiPackageExporter") as mock_exporter_cls:
                 mock_exporter = Mock()
@@ -335,7 +337,7 @@ class TestAnkiBackendErrorHandling:
                         backend._collection_path, "/tmp/test_export.apkg"
                     )
 
-    def test_database_query_failure_in_stats(self) -> None:
+    def test_database_query_failure_in_stats(self, mock_media_service: Mock) -> None:
         """Test handling of database query failure in statistics."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -352,7 +354,7 @@ class TestAnkiBackendErrorHandling:
             mock_db.scalar.side_effect = Exception("Database query failed")
             mock_collection.db = mock_db
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
             backend._note_type_map = {"1": Mock()}
             backend._media_files = [Mock()]
 
@@ -366,74 +368,7 @@ class TestAnkiBackendErrorHandling:
             # notes_count should default to 0 due to database failure
             assert stats["notes_count"] == 0
 
-    def test_field_processing_exception_recovery(self) -> None:
-        """Test recovery from field processing exceptions."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            mock_collection = Mock()
-            mock_col_cls.return_value = mock_collection
-            mock_collection.decks.add_normal_deck_with_name.return_value = Mock(
-                id=12345
-            )
-
-            backend = AnkiBackend("Test Deck")
-
-            from anki.models import NotetypeId
-
-            backend._note_type_map["test_id"] = NotetypeId(67890)
-            mock_notetype = {"name": "German Noun"}
-            mock_collection.models.get.return_value = mock_notetype
-
-            # Mock ModelFactory to raise exception
-            with patch(
-                "langlearn.models.model_factory.ModelFactory.create_field_processor",
-                side_effect=Exception("Field processor creation failed"),
-            ):
-                original_fields = ["field1", "field2"]
-                result = backend._process_fields_with_media("test_id", original_fields)
-
-                # Should return original fields on exception
-                assert result == original_fields
-
-    def test_domain_media_generator_failure(self) -> None:
-        """Test handling of domain media generator failures."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            mock_collection = Mock()
-            mock_col_cls.return_value = mock_collection
-            mock_collection.decks.add_normal_deck_with_name.return_value = Mock(
-                id=12345
-            )
-
-            backend = AnkiBackend("Test Deck")
-
-            from anki.models import NotetypeId
-
-            backend._note_type_map["test_id"] = NotetypeId(67890)
-            mock_notetype = {"name": "German Noun"}
-            mock_collection.models.get.return_value = mock_notetype
-
-            # Mock field processor that raises exception during processing
-            with patch(
-                "langlearn.models.model_factory.ModelFactory.create_field_processor"
-            ) as mock_factory:
-                mock_processor = Mock()
-                mock_processor.process_fields_for_media_generation.side_effect = (
-                    Exception("Media generation failed")
-                )
-                mock_factory.return_value = mock_processor
-
-                original_fields = ["field1", "field2"]
-                result = backend._process_fields_with_media("test_id", original_fields)
-
-                # Should return original fields on exception
-                assert result == original_fields
-
-    def test_cleanup_failure_handling(self) -> None:
+    def test_cleanup_failure_handling(self, mock_media_service: Mock) -> None:
         """Test handling of cleanup failures during destruction."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -445,40 +380,13 @@ class TestAnkiBackendErrorHandling:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # The cleanup should handle failures gracefully due to ignore_errors=True
             # We can't easily test this because the mock side_effect will still raise
             # Let's test that the cleanup method exists and can be called
             assert hasattr(backend, "__del__")
             assert callable(backend.__del__)
-
-    def test_service_initialization_failure_recovery(self) -> None:
-        """Test recovery from service initialization failures."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            mock_collection = Mock()
-            mock_col_cls.return_value = mock_collection
-            mock_collection.decks.add_normal_deck_with_name.return_value = Mock(
-                id=12345
-            )
-
-            # Mock service initialization failures
-            with (
-                patch(
-                    "langlearn.backends.anki_backend.AudioService",
-                    side_effect=Exception("Audio service init failed"),
-                ),
-                patch(
-                    "langlearn.backends.anki_backend.PexelsService",
-                    side_effect=Exception("Pexels service init failed"),
-                ),
-                pytest.raises((Exception, RuntimeError)),
-            ):
-                # Should raise exception if services can't be created
-                AnkiBackend("Test Deck")
 
     def test_partial_service_failure_with_custom_services(self) -> None:
         """Test handling partial failures with custom service injection."""

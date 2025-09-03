@@ -19,7 +19,7 @@ from langlearn.backends.base import CardTemplate, NoteType
 class TestAnkiBackendCoreMethodsCoverage:
     """Test AnkiBackend core methods for complete coverage."""
 
-    def test_create_note_type_complete_flow(self) -> None:
+    def test_create_note_type_complete_flow(self, mock_media_service: Mock) -> None:
         """Test complete note type creation flow."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -51,7 +51,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_changes.id = 98765
             mock_models.add.return_value = mock_changes
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Create note type with templates
             template = CardTemplate(
@@ -84,7 +84,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             assert len(backend._note_type_map) == 1
             assert backend._next_note_type_id == 2
 
-    def test_create_note_type_without_templates(self) -> None:
+    def test_create_note_type_without_templates(self, mock_media_service: Mock) -> None:
         """Test note type creation without templates."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -103,7 +103,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_models.new_field.return_value = {"name": "field"}
             mock_models.add.return_value = Mock(id=54321)
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Create note type without templates
             note_type = NoteType(
@@ -121,7 +121,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             # CSS should not be set for empty templates
             assert "css" not in mock_notetype
 
-    def test_add_note_complete_flow(self) -> None:
+    def test_add_note_complete_flow(self, mock_media_service: Mock) -> None:
         """Test complete note addition flow."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -133,7 +133,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Set up note type mapping
             from anki.models import NotetypeId
@@ -183,19 +183,19 @@ class TestAnkiBackendCoreMethodsCoverage:
                     mock_note, backend._deck_id
                 )
 
-    def test_add_note_invalid_note_type_error(self) -> None:
+    def test_add_note_invalid_note_type_error(self, mock_media_service: Mock) -> None:
         """Test error handling for invalid note type ID."""
         with (
             patch("langlearn.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             # Try to add note with non-existent note type
             with pytest.raises(ValueError, match="Note type ID invalid_id not found"):
                 backend.add_note("invalid_id", ["field1", "field2"])
 
-    def test_add_note_without_tags(self) -> None:
+    def test_add_note_without_tags(self, mock_media_service: Mock) -> None:
         """Test adding note without tags."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -207,7 +207,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             from anki.models import NotetypeId
 
@@ -234,7 +234,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 assert note_id == 22222
                 # With Mock objects, tags will be set, so we verify the call worked
 
-    def test_add_note_notetype_not_found_error(self) -> None:
+    def test_add_note_notetype_not_found_error(self, mock_media_service: Mock) -> None:
         """Test error when note type is not found in collection."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -246,7 +246,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             from anki.models import NotetypeId
 
@@ -258,115 +258,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             with pytest.raises(ValueError, match="Note type not found: 99999"):
                 backend.add_note("test_id", ["field1", "field2"])
 
-    def test_process_fields_with_media_note_type_id_resolution(self) -> None:
-        """Test field processing with note type ID resolution."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            mock_collection = Mock()
-            mock_col_cls.return_value = mock_collection
-            mock_collection.decks.add_normal_deck_with_name.return_value = Mock(
-                id=12345
-            )
-
-            backend = AnkiBackend("Test Deck")
-
-            # Set up note type mapping and mock resolution
-            from anki.models import NotetypeId
-
-            backend._note_type_map["1"] = NotetypeId(12345)
-            mock_notetype = {"name": "German Adjective"}
-            mock_collection.models.get.return_value = mock_notetype
-
-            # Mock ModelFactory to return a processor
-            with patch(
-                "langlearn.models.model_factory.ModelFactory.create_field_processor"
-            ) as mock_factory:
-                mock_processor = Mock()
-                mock_processor.process_fields_for_media_generation.return_value = [
-                    "schön",
-                    "beautiful",
-                    "processed_field",
-                ]
-                mock_factory.return_value = mock_processor
-
-                fields = ["schön", "beautiful", "original_field"]
-                result = backend._process_fields_with_media("1", fields)
-
-                # Verify note type was resolved and processor was used
-                mock_collection.models.get.assert_called_once_with(NotetypeId(12345))
-                mock_factory.assert_called_once_with("German Adjective")
-                mock_processor.process_fields_for_media_generation.assert_called_once_with(
-                    fields, backend._domain_media_generator
-                )
-                assert result == ["schön", "beautiful", "processed_field"]
-
-    def test_process_fields_with_media_direct_name_input(self) -> None:
-        """Test field processing with direct note type name (backward compatibility)."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection"),
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            backend = AnkiBackend("Test Deck")
-
-            # Mock ModelFactory for direct name usage
-            with patch(
-                "langlearn.models.model_factory.ModelFactory.create_field_processor"
-            ) as mock_factory:
-                mock_processor = Mock()
-                mock_processor.process_fields_for_media_generation.return_value = [
-                    "processed1",
-                    "processed2",
-                ]
-                mock_factory.return_value = mock_processor
-
-                fields = ["original1", "original2"]
-                result = backend._process_fields_with_media("German Verb", fields)
-
-                # Should use the name directly without resolution
-                mock_factory.assert_called_once_with("German Verb")
-                assert result == ["processed1", "processed2"]
-
-    def test_process_fields_with_media_unsupported_type(self) -> None:
-        """Test field processing for unsupported note type."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection"),
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            backend = AnkiBackend("Test Deck")
-
-            # Mock ModelFactory to return None (unsupported type)
-            with patch(
-                "langlearn.models.model_factory.ModelFactory.create_field_processor",
-                return_value=None,
-            ):
-                fields = ["field1", "field2"]
-                result = backend._process_fields_with_media("Unsupported Type", fields)
-
-                # Should return original fields unchanged
-                assert result == fields
-
-    def test_process_fields_with_media_exception_handling(self) -> None:
-        """Test exception handling in field processing."""
-        with (
-            patch("langlearn.backends.anki_backend.Collection"),
-            patch("tempfile.mkdtemp", return_value="/tmp/test"),
-        ):
-            backend = AnkiBackend("Test Deck")
-
-            # Mock ModelFactory to raise exception
-            with patch(
-                "langlearn.models.model_factory.ModelFactory.create_field_processor",
-                side_effect=Exception("Processing error"),
-            ):
-                fields = ["field1", "field2"]
-                result = backend._process_fields_with_media("German Noun", fields)
-
-                # Should return original fields on exception
-                assert result == fields
-
-    def test_export_deck_export_to_file_method(self) -> None:
+    def test_export_deck_export_to_file_method(self, mock_media_service: Mock) -> None:
         """Test deck export using export_to_file method."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -378,7 +270,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
             backend._media_files = [Mock(), Mock()]  # 2 media files
 
             # Mock AnkiPackageExporter with export_to_file method
@@ -400,7 +292,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                     "/output/test.apkg"
                 )
 
-    def test_export_deck_exportinto_fallback(self) -> None:
+    def test_export_deck_exportinto_fallback(self, mock_media_service: Mock) -> None:
         """Test deck export fallback to exportInto method."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -412,7 +304,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
             with patch("anki.exporting.AnkiPackageExporter") as mock_exporter_cls:
                 mock_exporter = Mock()
@@ -428,8 +320,8 @@ class TestAnkiBackendCoreMethodsCoverage:
                     "/output/fallback.apkg"
                 )
 
-    def test_export_deck_collection_fallback(self) -> None:
-        """Test deck export fallback to collection method."""
+    def test_export_deck_collection_fallback(self, mock_media_service: Mock) -> None:
+        """Test deck export fallback to shutil.copy2 when no exporter methods exist."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
@@ -439,25 +331,27 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_collection.decks.add_normal_deck_with_name.return_value = Mock(
                 id=12345
             )
-            mock_collection.export_anki_package = Mock()
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
 
-            with patch("anki.exporting.AnkiPackageExporter") as mock_exporter_cls:
+            with (
+                patch("anki.exporting.AnkiPackageExporter") as mock_exporter_cls,
+                patch("shutil.copy2") as mock_copy,
+            ):
                 mock_exporter = Mock()
                 mock_exporter_cls.return_value = mock_exporter
-                # Remove both methods to trigger collection fallback
+                # Remove both methods to trigger shutil.copy2 fallback
                 del mock_exporter.export_to_file
                 del mock_exporter.exportInto
 
                 backend.export_deck("/output/collection.apkg")
 
-                # Should fallback to collection export
-                mock_collection.export_anki_package.assert_called_once_with(
-                    "/output/collection.apkg", [backend._deck_id], True
+                # Should fallback to shutil.copy2
+                mock_copy.assert_called_once_with(
+                    backend._collection_path, "/output/collection.apkg"
                 )
 
-    def test_export_deck_logging_functionality(self) -> None:
+    def test_export_deck_logging_functionality(self, mock_media_service: Mock) -> None:
         """Test export deck logging functionality."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -469,7 +363,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
             backend._media_files = [Mock(), Mock(), Mock()]  # 3 media files
 
             # Mock exporter for successful export
@@ -488,7 +382,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                         "Exporting deck with 3 media files"
                     )
 
-    def test_get_stats_exception_handling(self) -> None:
+    def test_get_stats_exception_handling(self, mock_media_service: Mock) -> None:
         """Test exception handling in get_stats method."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -505,7 +399,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_db.scalar.side_effect = Exception("Database error")
             mock_collection.db = mock_db
 
-            backend = AnkiBackend("Test Deck")
+            backend = AnkiBackend("Test Deck", mock_media_service)
             backend._note_type_map = {"1": Mock()}
             backend._media_files = [Mock(), Mock()]
 

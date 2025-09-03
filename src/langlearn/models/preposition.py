@@ -1,123 +1,136 @@
-"""Model for German prepositions with field processing capabilities."""
+"""German Preposition Domain Model."""
 
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
-
-from .field_processor import (
-    FieldProcessingError,
-    FieldProcessor,
-    format_media_reference,
-    validate_minimum_fields,
-)
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
-    from .field_processor import MediaGenerator
+    from collections.abc import Callable
+
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
 
 
-class Preposition(BaseModel, FieldProcessor):
-    """Model representing a German preposition with its properties.
+@dataclass
+class Preposition(MediaGenerationCapable):
+    """German preposition domain model with linguistic expertise and media generation.
 
-    Implements FieldProcessor interface to handle its own field processing
-    for media generation, following Domain-Driven Design principles.
+    Represents a German preposition with its properties, German linguistic knowledge,
+    and specialized logic for media enrichment. German prepositions govern the case
+    of their objects and establish relationships (spatial, temporal, abstract) between
+    sentence elements.
+
+    This model implements MediaGenerationCapable protocol to contribute domain
+    expertise for image and audio generation, using relationship-based strategies
+    for preposition concept visualization.
+
+    Attributes:
+        preposition: The German preposition (e.g., "auf", "in", "mit")
+        english: English translation (e.g., "on", "in", "with")
+        case: German case(s) governed (e.g., "Akkusativ", "Dativ", "Akkusativ/Dativ")
+        example1: First German example sentence demonstrating usage
+        example2: Second example sentence (optional)
+        audio1/audio2/image_path: Media fields (populated during processing)
+
+    Note:
+        This model follows the design principle that domain models are SMART
+        (contain expertise) while services are DUMB (execute instructions).
     """
 
-    preposition: str = Field(..., description="The German preposition")
-    english: str = Field(..., description="English translation")
-    case: str = Field(
-        ...,
-        description="The case(s) the preposition takes (Accusative/Dative/Genitive)",
-    )
-    example1: str = Field(..., description="First example sentence")
-    example2: str = Field(..., description="Second example sentence")
-
+    preposition: str
+    english: str
+    case: str
+    example1: str = field(default="")
+    example2: str = field(default="")
     # Media fields (not from CSV but added during processing)
-    audio1: str = Field(default="", description="Audio file path for first example")
-    audio2: str = Field(default="", description="Audio file path for second example")
-    image_path: str = Field(
-        default="", description="Image file path for preposition visualization"
-    )
+    audio1: str = field(default="")
+    audio2: str = field(default="")
+    image_path: str = field(default="")
 
-    def process_fields_for_media_generation(
-        self, fields: list[str], media_generator: "MediaGenerator"
-    ) -> list[str]:
-        """Process preposition fields for media generation.
+    def __post_init__(self) -> None:
+        """Validate the preposition data after initialization."""
+        # Validate case contains valid German cases (if case is provided)
+        if self.case and self.case.strip():
+            valid_cases = [
+                "Accusative",
+                "Dative",
+                "Genitive",
+                "Akkusativ",
+                "Dativ",
+                "Genitiv",
+            ]
+            case_parts = self.case.replace("/", " ").split()
+            if not any(case_part in valid_cases for case_part in case_parts):
+                raise ValueError(f"Invalid case specification: {self.case}")
 
-        Field layout:
-            [Preposition, English, Case, Example1, Example2, Audio1, Audio2]
+    def get_image_search_strategy(
+        self, anthropic_service: "ImageQueryGenerationProtocol"
+    ) -> "Callable[[], str]":
+        """Get strategy for generating image search terms with domain expertise.
 
-        Args:
-            fields: List of field values from the note
-            media_generator: Interface for generating media files
-
-        Returns:
-            Updated fields list with media references
-        """
-        try:
-            validate_minimum_fields(
-                fields, self.get_expected_field_count(), "Preposition"
-            )
-        except FieldProcessingError:
-            return fields
-
-        # Create working copy
-        processed_fields = fields.copy()
-
-        # Extract field values for processing
-        if len(fields) < 7:
-            return processed_fields
-
-        example1 = fields[3] if len(fields) > 3 else ""
-        example2 = fields[4] if len(fields) > 4 else ""
-
-        # Generate audio for first example if Audio1 field (index 5) is empty
-        if len(processed_fields) > 5 and not processed_fields[5] and example1:
-            audio_path = media_generator.generate_audio(example1)
-            if audio_path:
-                processed_fields[5] = format_media_reference(audio_path, "audio")
-
-        # Generate audio for second example if Audio2 field (index 6) is empty
-        if len(processed_fields) > 6 and not processed_fields[6] and example2:
-            audio_path = media_generator.generate_audio(example2)
-            if audio_path:
-                processed_fields[6] = format_media_reference(audio_path, "audio")
-
-        return processed_fields
-
-    def get_expected_field_count(self) -> int:
-        """Return expected number of fields for preposition notes.
-
-        Returns:
-            7 fields: (Preposition, English, Case, Example1, Example2, Audio1, Audio2)
-        """
-        return 7
-
-    def validate_field_structure(self, fields: list[str]) -> bool:
-        """Validate that fields match expected preposition structure.
+        Creates a callable that uses this preposition's domain knowledge to generate
+        context-aware image search terms based on the preposition's spatial/temporal
+        meaning and example usage.
 
         Args:
-            fields: Field values to validate
+            anthropic_service: Service implementing ImageQueryGenerationProtocol for
+                AI-powered search term generation.
 
         Returns:
-            True if fields have valid preposition structure
+            Callable that when invoked returns image search terms as string.
+            Falls back to direct English translation if service fails.
         """
-        return len(fields) >= self.get_expected_field_count()
 
-    def _get_field_names(self) -> list[str]:
-        """Return the field names for preposition cards.
+        def generate_search_terms() -> str:
+            """Execute search term generation strategy with preposition context."""
+            try:
+                # Use domain expertise to build rich context for the service
+                context = self._build_search_context()
+                result = anthropic_service.generate_image_query(context)
+                if result and result.strip():
+                    return result.strip()
+            except Exception:
+                # Service failed, use fallback
+                pass
+
+            # Fallback to direct English translation
+            return self.english
+
+        return generate_search_terms
+
+    def get_combined_audio_text(self) -> str:
+        """Get combined text for German preposition audio generation.
 
         Returns:
-            List of field names corresponding to field positions
+            Combined text with preposition and both examples for pronunciation context.
         """
-        return [
-            "Preposition",  # 0
-            "English",  # 1
-            "Case",  # 2
-            "Example1",  # 3
-            "Example2",  # 4
-            "Audio1",  # 5
-            "Audio2",  # 6
-        ]
+        parts = [self.preposition]
+        if self.example1:
+            parts.append(self.example1)
+        if self.example2:
+            parts.append(self.example2)
+        return ". ".join(parts)
+
+    def _build_search_context(self) -> str:
+        """Build rich context for image search using German preposition expertise."""
+        case_info = self.get_case_description()
+        two_way_info = " (two-way preposition)" if self.is_two_way_preposition() else ""
+
+        return f"""
+        German preposition: {self.preposition}
+        English: {self.english}
+        Grammar: {case_info}{two_way_info}
+        Example 1: {self.example1}
+        Example 2: {self.example2}
+
+        Challenge: Generate search terms for images representing this preposition's
+        spatial, temporal, or abstract relationship concept.
+
+        Generate search terms that photographers would use to tag images showing
+        the relationship or concept this preposition represents.
+        """
 
     def get_case_description(self) -> str:
         """Get human-readable description of the grammatical case(s).

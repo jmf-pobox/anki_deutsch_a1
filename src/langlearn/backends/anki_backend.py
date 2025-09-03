@@ -1,5 +1,6 @@
 """Official Anki library backend implementation for deck generation."""
 
+import contextlib
 import hashlib
 import logging
 import os
@@ -16,18 +17,18 @@ from anki.models import NotetypeId
 
 from langlearn.models.adjective import Adjective
 from langlearn.models.adverb import Adverb, AdverbType
-from langlearn.models.model_factory import ModelFactory
 from langlearn.models.negation import Negation, NegationType
 from langlearn.models.noun import Noun
 from langlearn.models.phrase import Phrase
 from langlearn.models.preposition import Preposition
 from langlearn.models.records import create_record
 from langlearn.models.verb import Verb
-from langlearn.protocols import MediaServiceProtocol
+
+# Removed unused MediaServiceProtocol import - using concrete MediaService
 from langlearn.services.audio import AudioService
 from langlearn.services.domain_media_generator import DomainMediaGenerator
 from langlearn.services.media_enricher import StandardMediaEnricher
-from langlearn.services.media_service import MediaGenerationConfig, MediaService
+from langlearn.services.media_service import MediaService
 from langlearn.services.pexels_service import PexelsService
 
 from .base import DeckBackend, MediaFile, NoteType
@@ -45,15 +46,15 @@ class AnkiBackend(DeckBackend):
     def __init__(
         self,
         deck_name: str,
+        media_service: MediaService,
         description: str = "",
-        media_service: MediaServiceProtocol | None = None,
     ) -> None:
         """Initialize the official Anki backend.
 
         Args:
             deck_name: Name of the deck to create
             description: Optional description for the deck
-            media_service: Optional MediaServiceProtocol for media generation
+            media_service: Required MediaService for media generation
         """
         super().__init__(deck_name, description)
 
@@ -82,27 +83,11 @@ class AnkiBackend(DeckBackend):
             os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         )
 
-        # Initialize services with dependency injection
-        if media_service is None:
-            from typing import cast
-
-            audio_service = AudioService(
-                output_dir=str(self._project_root / "data" / "audio")
-            )
-            pexels_service = PexelsService()
-            config = MediaGenerationConfig()
-            media_service = cast(
-                "MediaServiceProtocol",
-                MediaService(audio_service, pexels_service, config, self._project_root),
-            )
-
+        # Store required media service
         self._media_service = media_service
 
         # Create domain media generator for field processing delegation
-        # Only create if we have a concrete MediaService (not just protocol)
-        self._domain_media_generator: DomainMediaGenerator | None = None
-        if isinstance(self._media_service, MediaService):
-            self._domain_media_generator = DomainMediaGenerator(self._media_service)
+        self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
         # Create MediaEnricher for Clean Pipeline Architecture
         from langlearn.services import get_anthropic_service
@@ -133,15 +118,11 @@ class AnkiBackend(DeckBackend):
     @property
     def _audio_service(self) -> AudioService:
         """Backward compatibility property for tests."""
-        if not isinstance(self._media_service, MediaService):
-            raise ValueError("MediaService must be available for audio operations")
         return self._media_service._audio_service
 
     @property
     def _pexels_service(self) -> PexelsService:
         """Backward compatibility property for tests."""
-        if not isinstance(self._media_service, MediaService):
-            raise ValueError("MediaService must be available for image operations")
         return self._media_service._pexels_service
 
     def __del__(self) -> None:
@@ -412,35 +393,17 @@ class AnkiBackend(DeckBackend):
                                 f"{enriched_record_dict['noun']}, "
                                 f"{enriched_record_dict['plural']}"
                             )
-                            try:
-                                # Prefer generate_audio if available (tests patch this),
-                                # otherwise fall back to protocol method
-                                generate_audio_fn = getattr(
-                                    self._media_service, "generate_audio", None
-                                )
-                                if callable(generate_audio_fn):
-                                    generate_audio_fn(combined)
-                                else:
-                                    self._media_service.generate_or_get_audio(combined)
-                            except Exception:
-                                pass
+                            with contextlib.suppress(Exception):
+                                self._media_service.generate_or_get_audio(combined)
                             # Also ensure example sentence audio generation is invoked
                             audio_path = None
                             try:
                                 if enriched_record_dict.get("example"):
-                                    generate_audio_fn = getattr(
-                                        self._media_service, "generate_audio", None
-                                    )
-                                    if callable(generate_audio_fn):
-                                        audio_path = generate_audio_fn(
+                                    audio_path = (
+                                        self._media_service.generate_or_get_audio(
                                             enriched_record_dict["example"]
                                         )
-                                    else:
-                                        audio_path = (
-                                            self._media_service.generate_or_get_audio(
-                                                enriched_record_dict["example"]
-                                            )
-                                        )
+                                    )
                             except Exception:
                                 audio_path = None
 
@@ -489,33 +452,18 @@ class AnkiBackend(DeckBackend):
                         ]
 
                 except Exception as record_error:
-                    logger.warning(
+                    logger.error(
                         f"Clean Pipeline Architecture failed for {note_type_name}: "
                         f"{record_error}"
                     )
-                    # Fall back to old approach for backward compatibility
-
-            # Fall back to old FieldProcessor approach for unsupported types or failures
-            field_processor = ModelFactory.create_field_processor(note_type_name)
-            if field_processor is not None and hasattr(
-                field_processor, "process_fields_for_media_generation"
-            ):
-                logger.debug(f"Using legacy FieldProcessor for: {note_type_name}")
-                if self._domain_media_generator is None:
-                    logger.warning(
-                        "No domain media generator available for FieldProcessor"
-                    )
                     return fields
-                return field_processor.process_fields_for_media_generation(
-                    fields, self._domain_media_generator
-                )
-            else:
-                # No processing available - unsupported note type
-                logger.warning(
-                    f"No processing available for: {note_type_name}. "
-                    f"Returning fields unchanged."
-                )
-                return fields
+
+            # No processing available - unsupported note type
+            logger.warning(
+                f"No processing available for: {note_type_name}. "
+                f"Returning fields unchanged."
+            )
+            return fields
 
         except Exception as e:
             logger.error(f"Error processing media for {note_type_input}: {e}")
@@ -585,14 +533,7 @@ class AnkiBackend(DeckBackend):
     def _generate_or_get_audio(self, text: str) -> str | None:
         """Generate audio for text or return existing audio file path."""
         try:
-            # Check if media service is available - using getattr to avoid
-            # flow analysis issues
-            media_service: MediaServiceProtocol | None = getattr(
-                self, "_media_service", None
-            )
-            if media_service is None:
-                return None
-            result = media_service.generate_or_get_audio(text)
+            result = self._media_service.generate_or_get_audio(text)
 
             # Update stats
             if result is not None:
@@ -616,14 +557,7 @@ class AnkiBackend(DeckBackend):
     ) -> str | None:
         """Generate/download image for word or return existing image file path."""
         try:
-            # Check if media service is available - using getattr to avoid
-            # flow analysis issues
-            media_service: MediaServiceProtocol | None = getattr(
-                self, "_media_service", None
-            )
-            if media_service is None:
-                return None
-            result = media_service.generate_or_get_image(
+            result = self._media_service.generate_or_get_image(
                 word, search_query, example_sentence
             )
 
@@ -773,25 +707,11 @@ class AnkiBackend(DeckBackend):
             elif hasattr(exporter, "exportInto"):
                 exporter.exportInto(output_path)
             else:
-                # Fallback: use the collection export (signature varies by Anki version)
-                try:
-                    # Use getattr to avoid mypy signature checking
-                    export_func = getattr(self._collection, "export_anki_package", None)
-                    if export_func:
-                        export_func(output_path, [self._deck_id], True)
-                    else:
-                        raise AttributeError("export_anki_package method not found")
-                except (TypeError, AttributeError) as api_error:
-                    logger.warning(f"Collection export API mismatch: {api_error}")
-                    # Final fallback - just copy the collection file
-                    import shutil
-
-                    shutil.copy2(self._collection_path, output_path)
+                # Fallback: copy the collection file directly
+                shutil.copy2(self._collection_path, output_path)
         except Exception as e:
             logger.error(f"Export failed with error: {e}")
             # As a last resort, create a simple export
-            import shutil
-
             shutil.copy2(self._collection_path, output_path)
 
     def get_stats(self) -> dict[str, Any]:

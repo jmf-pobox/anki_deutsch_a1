@@ -17,31 +17,42 @@ The langlearn codebase follows clean architecture with clear separation of conce
 
 ### 🏗️ `/src/langlearn/models/` - Domain Models Layer
 
-**Package Responsibility**: Contains Pydantic domain models representing German vocabulary with language-specific validation and behavior. These are rich domain models that encapsulate German grammar rules, not just data containers.
+**Package Responsibility**: Contains modern Python domain models representing German vocabulary with language-specific validation and behavior. Features dataclass-based rich domain models with MediaGenerationCapable protocol compliance that encapsulate German grammar rules and linguistic expertise.
 
 #### Core German Vocabulary Models
 
 | **Class** | **File** | **Single Responsibility** |
 |-----------|----------|---------------------------|
-| **`Noun`** | `noun.py:6` | Represents German nouns with article/gender, plural forms, and case information. Provides `get_combined_audio_text()`, `is_concrete()`, and `get_image_search_terms()` methods for German-specific processing. |
-| **`Adjective`** | `adjective.py:6` | Handles German adjectives with comparative/superlative forms and declension validation. Includes `get_combined_audio_text()`, `validate_comparative()`, and `validate_superlative()` methods. |
-| **`Adverb`** | `adverb.py:6` | Models German adverbs with type classification (time, place, manner, degree). Includes `AdverbType` enum for categorization. |
-| **`Negation`** | `negation.py:6` | Represents German negation patterns and words (nicht, kein, nie, etc.). Includes `NegationType` enum for different negation categories. |
+| **`Noun`** | `noun.py:6` | Dataclass representing German nouns with article/gender, plural forms, and case information. Implements MediaGenerationCapable with `get_combined_audio_text()`, `is_concrete()`, and `get_image_search_strategy()` methods for German-specific media generation. |
+| **`Adjective`** | `adjective.py:6` | Dataclass handling German adjectives with comparative/superlative forms and declension validation. MediaGenerationCapable with `get_combined_audio_text()`, `validate_comparative()`, and `validate_superlative()` methods. |
+| **`Adverb`** | `adverb.py:6` | Dataclass modeling German adverbs with type classification (time, place, manner, degree). MediaGenerationCapable with `AdverbType` enum for categorization and context-aware media generation. |
+| **`Negation`** | `negation.py:6` | Dataclass representing German negation patterns and words (nicht, kein, nie, etc.). MediaGenerationCapable with `NegationType` enum and position validation for German syntax rules. |
 
 #### Verb Hierarchy (German Verb System)
 
 | **Class** | **File** | **Single Responsibility** |
 |-----------|----------|---------------------------|
-| **`Verb`** | `verb.py:6` | Abstract base class for German verbs with common conjugation fields and validation methods. |
+| **`Verb`** | `verb.py:6` | Dataclass for German verbs with conjugation patterns, tense forms, and auxiliary selection. MediaGenerationCapable with comprehensive German verb validation and pronunciation support. |
 
 #### Grammar and Function Words
 
 | **Class** | **File** | **Single Responsibility** |
 |-----------|----------|---------------------------|
-| **`Preposition`** | `preposition.py:6` | German prepositions with case dependency (Akkusativ, Dativ, Genitiv) information. |
+| **`Preposition`** | `preposition.py:6` | Dataclass for German prepositions with case governance (Akkusativ, Dativ, Genitiv) and two-way preposition logic. MediaGenerationCapable with relationship-based image search and pronunciation support. |
+| **`Phrase`** | `phrase.py:6` | Dataclass for German phrases and expressions with contextual usage information. MediaGenerationCapable with situational media generation and communicative function support. |
 
-#### **REMOVED Legacy Models** ❌
-*These models were removed during legacy cleanup (2025-08-30) as they were only used in tests and superseded by Clean Pipeline Records:*
+#### **REMOVED Legacy Architecture** ❌
+
+**Migration Completed (2025-09-02)**: All domain models migrated from Pydantic to modern Python patterns.
+
+*Legacy Components Eliminated:*
+- ~~`FieldProcessor` interface~~ → Replaced by Clean Pipeline Architecture
+- ~~`ModelFactory` class~~ → Eliminated factory pattern, direct protocol compliance
+- ~~Pydantic BaseModel inheritance~~ → Migrated to @dataclass + MediaGenerationCapable
+- ~~Dual inheritance (BaseModel + FieldProcessor)~~ → Single MediaGenerationCapable protocol
+- ~~Metaclass conflicts~~ → Resolved with protocol-based design
+
+*Legacy Domain Models Removed (2025-08-30):*
 - ~~`RegularVerb`, `IrregularVerb`, `SeparableVerb`~~ → Replaced by VerbConjugationRecord
 - ~~`Conjunction`, `Interjection`~~ → Not used in production 
 - ~~`PersonalPronoun`, `PossessivePronoun`, `OtherPronoun`~~ → Not used in production
