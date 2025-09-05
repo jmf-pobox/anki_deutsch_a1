@@ -7,7 +7,6 @@ removing infrastructure concerns from domain models.
 
 import logging
 import re
-from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +15,7 @@ from .translation_service import TranslationServiceProtocol
 logger = logging.getLogger(__name__)
 
 
-class MediaEnricher(ABC):
+class MediaEnricher:
     """Abstract base class for media enrichment services.
 
     This service handles all media-related operations including:
@@ -24,70 +23,6 @@ class MediaEnricher(ABC):
     - Generating missing media (audio, images)
     - Managing media file paths and references
     """
-
-    @abstractmethod
-    def enrich_record(
-        self, record: dict[str, Any], domain_model: Any
-    ) -> dict[str, Any]:
-        """Enrich a record with media files based on domain model business rules.
-
-        Args:
-            record: Base record data from CSV
-            domain_model: Domain model instance for business logic
-
-        Returns:
-            Enriched record with media references added
-        """
-        pass
-
-    @abstractmethod
-    def audio_exists(self, text: str) -> bool:
-        """Check if audio file exists for given text.
-
-        Args:
-            text: Text to check audio for
-
-        Returns:
-            True if audio file exists
-        """
-        pass
-
-    @abstractmethod
-    def image_exists(self, word: str) -> bool:
-        """Check if image file exists for given word.
-
-        Args:
-            word: Word to check image for
-
-        Returns:
-            True if image file exists
-        """
-        pass
-
-    @abstractmethod
-    def generate_audio(self, text: str) -> str | None:
-        """Generate audio file for text if not exists.
-
-        Args:
-            text: Text to generate audio for
-
-        Returns:
-            Path to audio file or None if generation failed
-        """
-        pass
-
-    @abstractmethod
-    def generate_image(self, search_terms: str, fallback: str) -> str | None:
-        """Generate image file for search terms if not exists.
-
-        Args:
-            search_terms: Primary search terms for image
-            fallback: Fallback search terms
-
-        Returns:
-            Path to image file or None if generation failed
-        """
-        pass
 
 
 class StandardMediaEnricher(MediaEnricher):
@@ -130,13 +65,149 @@ class StandardMediaEnricher(MediaEnricher):
         self, record: dict[str, Any], domain_model: Any
     ) -> dict[str, Any]:
         """Enrich record with media based on domain model type and business rules."""
+        domain_type = type(domain_model).__name__ if domain_model else "None"
+        logger.info(f"[ENRICH RECORD DEBUG] Called with domain_model: {domain_type}")
         enriched = record.copy()
 
         # Handle Clean Pipeline mode (domain_model is None)
         if domain_model is None:
-            record_name = record.get("__class_name__", "unknown")
-            logger.debug(f"Processing record in key-based mode: {record_name}")
-            return self._enrich_record_key_based(enriched)
+            record_type = enriched.get("__class_name__", "unknown")
+            logger.debug(f"Clean Pipeline key-based detection for {record_type}")
+            logger.debug(
+                f"[CLEAN PIPELINE DEBUG] Available keys: {sorted(enriched.keys())}"
+            )
+
+            # Try to detect record type by key patterns and enrich accordingly
+            if "noun" in enriched and "article" in enriched:
+                logger.debug(f"Detected NounRecord for {record_type}")
+                # NounRecord - create domain model for compatibility
+                try:
+                    from langlearn.models.noun import Noun
+
+                    noun = Noun(
+                        noun=enriched.get("noun", ""),
+                        article=enriched.get("article", ""),
+                        english=enriched.get("english", ""),
+                        plural=enriched.get("plural", ""),
+                        example=enriched.get("example", ""),
+                        related=enriched.get("related", ""),
+                    )
+                    return self._enrich_noun_record(enriched, noun)
+                except Exception:
+                    logger.debug(
+                        "Could not create Noun domain model, using direct enrichment"
+                    )
+                    return enriched
+
+            elif "word" in enriched and (
+                "positive" in enriched or "comparative" in enriched
+            ):
+                logger.debug(f"Detected AdjectiveRecord for {record_type}")
+                # AdjectiveRecord
+                try:
+                    from langlearn.models.adjective import Adjective
+
+                    adjective = Adjective(
+                        word=enriched.get("word", ""),
+                        english=enriched.get("english", ""),
+                        example=enriched.get("example", ""),
+                        comparative=enriched.get("comparative", ""),
+                        superlative=enriched.get("superlative", ""),
+                    )
+                    return self._enrich_adjective_record(enriched, adjective)
+                except Exception:
+                    logger.debug(
+                        "Could not create Adjective domain model, using direct "
+                        "enrichment"
+                    )
+                    return enriched
+
+            elif (
+                "word" in enriched and "type" in enriched and "context" not in enriched
+            ):
+                logger.debug(f"Detected AdverbRecord for {record_type}")
+                logger.debug(f"[ADVERB DEBUG] Record keys: {sorted(enriched.keys())}")
+                # AdverbRecord
+                try:
+                    from langlearn.models.adverb import Adverb
+
+                    adverb_type = enriched.get("type", "")
+                    adverb = Adverb(
+                        word=enriched.get("word", ""),
+                        english=enriched.get("english", ""),
+                        type=adverb_type,
+                        example=enriched.get("example", ""),
+                    )
+                    return self._enrich_adverb_record(enriched, adverb)
+                except Exception:
+                    logger.debug(
+                        "Could not create Adverb domain model, using direct enrichment"
+                    )
+                    return enriched
+
+            elif "word" in enriched and "context" in enriched and "type" in enriched:
+                logger.debug(f"Detected NegationRecord for {record_type}")
+                # NegationRecord
+                try:
+                    from langlearn.models.negation import Negation
+
+                    negation = Negation(
+                        word=enriched.get("word", ""),
+                        english=enriched.get("english", ""),
+                        type=enriched.get("type", ""),
+                        example=enriched.get("example", ""),
+                    )
+                    return self._enrich_negation_record(enriched, negation)
+                except Exception:
+                    logger.debug(
+                        "Could not create Negation domain model, using direct "
+                        "enrichment"
+                    )
+                    return enriched
+
+            # Handle phrases (Clean Pipeline mode)
+            elif "phrase" in enriched and "context" in enriched:
+                logger.debug(f"Detected PhraseRecord for {record_type}")
+                try:
+                    from langlearn.models.phrase import Phrase
+
+                    phrase = Phrase(
+                        phrase=enriched.get("phrase", ""),
+                        english=enriched.get("english", ""),
+                        context=enriched.get("context", ""),
+                        related=enriched.get("related", ""),
+                    )
+                    return self._enrich_phrase_record_clean(enriched, phrase)
+                except Exception:
+                    logger.debug(
+                        "Could not create Phrase domain model, using direct enrichment"
+                    )
+                    return enriched
+
+            # Handle verb conjugations (Clean Pipeline mode)
+            elif "infinitive" in enriched and "du" in enriched and "er" in enriched:
+                logger.debug(f"Detected VerbConjugationRecord for {record_type}")
+                return self._enrich_verb_conjugation_record_fallback(enriched)
+
+            # Handle articles (Clean Pipeline mode)
+            elif "nominativ" in enriched and "akkusativ" in enriched:
+                logger.debug(f"Detected UnifiedArticleRecord for {record_type}")
+                return self._enrich_artikel_cloze_record(enriched)
+
+            # Handle fallback for preposition/verb legacy models
+            elif "preposition" in enriched:
+                return self._enrich_preposition_record(enriched)
+            elif "verb" in enriched and "english" in enriched:
+                return self._enrich_verb_record(enriched)
+            # Article cloze card types
+            elif "text" in enriched and "explanation" in enriched:
+                return self._enrich_artikel_cloze_record(enriched)
+            else:
+                logger.warning(
+                    f"No Clean Pipeline pattern matched for record type {record_type}. "
+                    f"Record keys: {sorted(enriched.keys())[:15]}"
+                )
+                return enriched
 
         # Legacy mode: Use domain model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()
@@ -166,187 +237,17 @@ class StandardMediaEnricher(MediaEnricher):
                 f"[MEDIA ENRICHER DEBUG] Unknown legacy model type {model_type}, "
                 f"falling back to key-based detection"
             )
-            return self._enrich_record_key_based(enriched)
-
-    def _enrich_record_key_based(self, enriched: dict[str, Any]) -> dict[str, Any]:
-        """Enrich record using key-based detection (Clean Pipeline mode)."""
-        record_type = enriched.get("__class_name__", "unknown")
-        logger.debug(f"Key-based detection for {record_type}")
-
-        try:
-            # Try to detect record type by key patterns and enrich accordingly
-            if "noun" in enriched and "article" in enriched:
-                logger.debug(f"Detected NounRecord for {record_type}")
-                # NounRecord - determine if we need legacy domain model conversion
-                try:
-                    from langlearn.models.noun import Noun
-
-                    noun = Noun(
-                        noun=enriched.get("noun", ""),
-                        article=enriched.get("article", ""),
-                        english=enriched.get("english", ""),
-                        plural=enriched.get("plural", ""),
-                        example=enriched.get("example", ""),
-                        related=enriched.get("related", ""),
-                    )
-                    return self._enrich_noun_record(enriched, noun)
-                except Exception as e:
-                    # Fallback for noun records without legacy model
-                    logger.warning(
-                        f"Failed to create Noun model for {record_type}: {e}"
-                    )
-                    return enriched
-            elif "word" in enriched and "comparative" in enriched:
-                logger.debug(f"Detected AdjectiveRecord for {record_type}")
-                # AdjectiveRecord - determine if we need legacy domain model conversion
-                try:
-                    from langlearn.models.adjective import Adjective
-
-                    adjective = Adjective(
-                        word=enriched.get("word", ""),
-                        english=enriched.get("english", ""),
-                        example=enriched.get("example", ""),
-                        comparative=enriched.get("comparative", ""),
-                        superlative=enriched.get("superlative", ""),
-                    )
-                    return self._enrich_adjective_record(enriched, adjective)
-                except Exception as e:
-                    # Fallback for adjective records without legacy model
-                    logger.warning(
-                        f"Failed to create Adjective model for {record_type}: {e}"
-                    )
-                    return enriched
-            elif (
-                "word" in enriched
-                and "type" in enriched
-                and (
-                    enriched.get("type")
-                    in ["time", "place", "manner", "intensity", "location"]
-                    # CRITICAL FIX: Support German linguistic classifications
-                    or "adverb" in enriched.get("type", "").lower()
-                    or enriched.get("type") in self._get_german_adverb_types()
-                )
-            ):
-                logger.debug(f"Detected AdverbRecord for {record_type}")
-                # AdverbRecord - determine if we need legacy domain model conversion
-                try:
-                    from langlearn.models.adverb import (
-                        GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP,
-                        Adverb,
-                        AdverbType,
-                    )
-
-                    adverb = Adverb(
-                        word=enriched.get("word", ""),
-                        english=enriched.get("english", ""),
-                        type=GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP.get(
-                            enriched.get("type", ""), AdverbType.MANNER
-                        ),
-                        example=enriched.get("example", ""),
-                    )
-                    return self._enrich_adverb_record(enriched, adverb)
-                except Exception as e:
-                    # Fallback for adverb records without legacy model
-                    logger.warning(
-                        f"Failed to create Adverb model for {record_type}: {e}"
-                    )
-                    return enriched
-            elif "word" in enriched and enriched.get("type") in [
-                "general",
-                "article",
-                "temporal",
-                "spatial",
-            ]:
-                logger.debug(f"Detected NegationRecord for {record_type}")
-                # NegationRecord - determine if we need legacy domain model conversion
-                try:
-                    from langlearn.models.negation import Negation, NegationType
-
-                    negation_type_map = {
-                        "general": NegationType.GENERAL,
-                        "article": NegationType.ARTICLE,
-                        "temporal": NegationType.TEMPORAL,
-                        "spatial": NegationType.SPATIAL,
-                    }
-                    negation = Negation(
-                        word=enriched.get("word", ""),
-                        english=enriched.get("english", ""),
-                        type=negation_type_map.get(
-                            enriched.get("type", ""), NegationType.GENERAL
-                        ),
-                        example=enriched.get("example", ""),
-                    )
-                    return self._enrich_negation_record(enriched, negation)
-                except Exception as e:
-                    # Fallback for negation records without legacy model
-                    logger.warning(
-                        f"Failed to create Negation model for {record_type}: {e}"
-                    )
-                    return enriched
-            elif "phrase" in enriched and "context" in enriched:
-                logger.debug(f"Detected PhraseRecord for {record_type}")
-                # PhraseRecord - use Clean Pipeline approach with MediaGenerationCapable
-                try:
-                    from langlearn.models.phrase import Phrase
-
-                    phrase = Phrase(
-                        phrase=enriched.get("phrase", ""),
-                        english=enriched.get("english", ""),
-                        context=enriched.get("context", ""),
-                        related=enriched.get("related", ""),
-                    )
-                    return self._enrich_phrase_record_clean(enriched, phrase)
-                except Exception as e:
-                    # Fallback for phrase records without legacy model
-                    logger.warning(
-                        f"Failed to create Phrase model for {record_type}: {e}"
-                    )
-                    return enriched
-            elif "preposition" in enriched:
-                return self._enrich_preposition_record(enriched)
-            elif "verb" in enriched:
-                return self._enrich_verb_record(enriched)
-            elif "infinitive" in enriched:
-                # Handle VerbConjugationRecord that falls through
-                return self._enrich_verb_conjugation_record_fallback(enriched)
-            # Article card types
-            elif "front_text" in enriched and "gender" in enriched:
-                if "case" in enriched:
-                    return self._enrich_artikel_context_record(enriched)
-                else:
-                    return self._enrich_artikel_gender_record(enriched)
-            elif "card_type" in enriched:
-                if enriched["card_type"] == "noun_article_recognition":
-                    return self._enrich_noun_article_recognition_record(enriched)
-                elif enriched["card_type"] == "noun_case_context":
-                    return self._enrich_noun_case_context_record(enriched)
-                else:
-                    logger.debug(
-                        f"[MEDIA ENRICHER DEBUG] Unknown card_type: "
-                        f"{enriched.get('card_type')}"
-                    )
-                    return enriched
-            # Article records with German fields
-            elif "nominativ" in enriched and "akkusativ" in enriched:
-                return self._enrich_unified_article_record(enriched, None)
-            # Article cloze card types
-            elif "text" in enriched and "explanation" in enriched:
-                return self._enrich_artikel_cloze_record(enriched)
-            else:
-                logger.warning(
-                    f"No pattern matched for record type {record_type}. "
-                    f"Record keys: {sorted(enriched.keys())[:15]}. "
-                    f"Sample values: {dict(list(enriched.items())[:5])}"
-                )
-                return enriched
-        except Exception as e:
-            logger.warning(f"Key-based enrichment failed: {e}")
             return enriched
 
     def _enrich_noun_record(self, record: dict[str, Any], noun: Any) -> dict[str, Any]:
         """Enrich noun record with media."""
         logger.debug("[NOUN DEBUG] Entering _enrich_noun_record")
         logger.debug(f"[NOUN DEBUG] Record fields: {list(record.keys())[:10]}")
+
+        word = noun.noun if hasattr(noun, "noun") else record.get("noun", "")
+        if not word:
+            logger.warning("[NOUN DEBUG] No noun word found in record or model")
+            return record
 
         # Generate word audio (combined article + noun + plural)
         if not record.get("word_audio"):
@@ -362,13 +263,8 @@ class StandardMediaEnricher(MediaEnricher):
             if audio_path:
                 record["example_audio"] = f"[sound:{Path(audio_path).name}]"
 
-        # Generate image based on example sentence (only for concrete nouns)
-        if (
-            not record.get("image")
-            and noun.is_concrete()
-            and record.get("noun")
-            and record.get("example")
-        ):
+        # Generate image based on example sentence
+        if not record.get("image") and record.get("noun") and record.get("example"):
             word = record["noun"]
             if not self.image_exists(word):
                 # Use MediaGenerationCapable protocol for domain expertise
@@ -1011,6 +907,7 @@ class StandardMediaEnricher(MediaEnricher):
         Returns:
             List of enriched record dictionaries
         """
+        logger.debug(f"[ENRICH RECORDS DEBUG] Called with {len(record_dicts)} records")
         enriched_records = []
 
         for record_dict, domain_model in zip(record_dicts, domain_models, strict=False):
@@ -1020,6 +917,14 @@ class StandardMediaEnricher(MediaEnricher):
             except Exception as e:
                 word = record_dict.get("word", "unknown")
                 logger.warning(f"Record enrichment failed for {word}: {e}")
+                logger.debug(
+                    f"[ENRICH RECORDS DEBUG] Exception details: {type(e).__name__}: {e}"
+                )
+                import traceback
+
+                logger.debug(
+                    f"[ENRICH RECORDS DEBUG] Traceback: {traceback.format_exc()}"
+                )
                 enriched_records.append({})
 
         return enriched_records
@@ -1308,7 +1213,16 @@ class StandardMediaEnricher(MediaEnricher):
             return False
 
         image_filename = self._get_image_filename(word)
-        return (self._image_base_path / image_filename).exists()
+        full_path = self._image_base_path / image_filename
+        exists = full_path.exists()
+
+        # Debug logging to understand what's happening
+        logger.debug(
+            f"[IMAGE EXISTS DEBUG] word={word}, filename={image_filename}, "
+            f"path={full_path}, exists={exists}"
+        )
+
+        return exists
 
     def generate_audio(self, text: str) -> str | None:
         """Generate audio file for text."""

@@ -1,6 +1,7 @@
 """Tests for Verb model and MediaGenerationCapable protocol compliance."""
 
 from unittest.mock import Mock
+
 import pytest
 
 from langlearn.models.verb import Verb
@@ -16,12 +17,12 @@ class TestVerbProtocol:
             verb="gehen",
             english="to go",
             present_ich="gehe",
-            present_du="gehst", 
+            present_du="gehst",
             present_er="geht",
             perfect="gegangen",
-            example="Ich gehe zur Schule."
+            example="Ich gehe zur Schule.",
         )
-        
+
         assert verb.verb == "gehen"
         assert verb.english == "to go"
         assert verb.present_ich == "gehe"
@@ -40,25 +41,29 @@ class TestVerbProtocol:
                 present_du="gehst",
                 present_er="geht",
                 perfect="gegangen",
-                example="Example"
+                example="Example",
             )
 
     def test_verb_initialization_empty_english(self) -> None:
         """Test verb initialization fails with empty english."""
-        with pytest.raises(ValueError, match="Required field 'english' cannot be empty"):
+        with pytest.raises(
+            ValueError, match="Required field 'english' cannot be empty"
+        ):
             Verb(
                 verb="gehen",
                 english="",
                 present_ich="gehe",
                 present_du="gehst",
-                present_er="geht", 
+                present_er="geht",
                 perfect="gegangen",
-                example="Example"
+                example="Example",
             )
 
     def test_verb_initialization_empty_present_forms(self) -> None:
         """Test verb initialization fails with empty present forms."""
-        with pytest.raises(ValueError, match="Required field 'present_ich' cannot be empty"):
+        with pytest.raises(
+            ValueError, match="Required field 'present_ich' cannot be empty"
+        ):
             Verb(
                 verb="gehen",
                 english="to go",
@@ -66,7 +71,7 @@ class TestVerbProtocol:
                 present_du="gehst",
                 present_er="geht",
                 perfect="gegangen",
-                example="Example"
+                example="Example",
             )
 
     def test_verb_initialization_whitespace_only(self) -> None:
@@ -79,20 +84,20 @@ class TestVerbProtocol:
                 present_du="gehst",
                 present_er="geht",
                 perfect="gegangen",
-                example="Example"
+                example="Example",
             )
 
     def test_verb_initialization_none_values(self) -> None:
         """Test verb initialization fails with None values."""
         with pytest.raises(ValueError, match="Required field 'verb' cannot be empty"):
             Verb(
-                verb=None,
+                verb=None,  # type: ignore[arg-type]
                 english="to go",
                 present_ich="gehe",
                 present_du="gehst",
                 present_er="geht",
                 perfect="gegangen",
-                example="Example"
+                example="Example",
             )
 
     def test_mediageneration_protocol_compliance(self) -> None:
@@ -104,9 +109,9 @@ class TestVerbProtocol:
             present_du="läufst",
             present_er="läuft",
             perfect="gelaufen",
-            example="Ich laufe jeden Tag."
+            example="Ich laufe jeden Tag.",
         )
-        
+
         assert isinstance(verb, MediaGenerationCapable)
 
     def test_get_combined_audio_text(self) -> None:
@@ -118,11 +123,11 @@ class TestVerbProtocol:
             present_du="sprichst",
             present_er="spricht",
             perfect="gesprochen",
-            example="Ich spreche Deutsch."
+            example="Ich spreche Deutsch.",
         )
-        
+
         result = verb.get_combined_audio_text()
-        
+
         # Should combine verb with conjugations and German labels
         assert "sprechen" in result
         assert "Präsens" in result
@@ -134,19 +139,19 @@ class TestVerbProtocol:
         assert isinstance(result, str)
 
     def test_get_combined_audio_text_minimal(self) -> None:
-        """Test get_combined_audio_text with minimal verb data.""" 
+        """Test get_combined_audio_text with minimal verb data."""
         verb = Verb(
             verb="lesen",
-            english="to read", 
+            english="to read",
             present_ich="lese",
             present_du="liest",
             present_er="liest",
             perfect="gelesen",
-            example="Ich lese ein Buch."
+            example="Ich lese ein Buch.",
         )
-        
+
         result = verb.get_combined_audio_text()
-        
+
         # Should include the verb
         assert "lesen" in result
         # Should include present forms
@@ -161,20 +166,20 @@ class TestVerbProtocol:
             present_du="schwimmst",
             present_er="schwimmt",
             perfect="geschwommen",
-            example="Ich schwimme im See."
+            example="Ich schwimme im See.",
         )
-        
+
         mock_anthropic_service = Mock()
         mock_anthropic_service.generate_image_query.return_value = "person swimming"
-        
+
         strategy = verb.get_image_search_strategy(mock_anthropic_service)
-        
+
         # Strategy should be callable
         assert callable(strategy)
-        
+
         # Execute strategy
         result = strategy()
-        
+
         assert result == "person swimming"
         mock_anthropic_service.generate_image_query.assert_called_once()
 
@@ -183,19 +188,19 @@ class TestVerbProtocol:
         verb = Verb(
             verb="kochen",
             english="to cook",
-            present_ich="koche", 
+            present_ich="koche",
             present_du="kochst",
             present_er="kocht",
             perfect="gekocht",
-            example="Ich koche Pasta."
+            example="Ich koche Pasta.",
         )
-        
+
         mock_anthropic_service = Mock()
         mock_anthropic_service.generate_image_query.return_value = "person cooking"
-        
+
         strategy = verb.get_image_search_strategy(mock_anthropic_service)
         strategy()
-        
+
         # Check that context was passed to the service
         call_args = mock_anthropic_service.generate_image_query.call_args[0][0]
         assert "kochen" in call_args
@@ -208,15 +213,15 @@ class TestVerbProtocol:
             verb="aufstehen",
             english="to get up",
             present_ich="stehe auf",
-            present_du="stehst auf", 
+            present_du="stehst auf",
             present_er="steht auf",
             perfect="aufgestanden",
-            example="Ich stehe um 7 Uhr auf."
+            example="Ich stehe um 7 Uhr auf.",
         )
-        
+
         # Test if method exists and works
-        if hasattr(verb, 'is_separable'):
-            assert verb.is_separable() == True
+        if hasattr(verb, "is_separable"):
+            assert verb.is_separable()
 
     def test_is_separable_verb_negative(self) -> None:
         """Test is_separable method for non-separable verbs."""
@@ -225,14 +230,14 @@ class TestVerbProtocol:
             english="to go",
             present_ich="gehe",
             present_du="gehst",
-            present_er="geht", 
+            present_er="geht",
             perfect="gegangen",
-            example="Ich gehe nach Hause."
+            example="Ich gehe nach Hause.",
         )
-        
+
         # Test if method exists and works
-        if hasattr(verb, 'is_separable'):
-            assert verb.is_separable() == False
+        if hasattr(verb, "is_separable"):
+            assert not verb.is_separable()
 
     def test_get_auxiliary_verb_haben(self) -> None:
         """Test auxiliary verb detection for haben verbs."""
@@ -242,17 +247,17 @@ class TestVerbProtocol:
             present_ich="lerne",
             present_du="lernst",
             present_er="lernt",
-            perfect="gelernt", 
-            example="Ich habe Deutsch gelernt."
+            perfect="gelernt",
+            example="Ich habe Deutsch gelernt.",
         )
-        
+
         # Test if method exists
-        if hasattr(verb, 'get_auxiliary_verb'):
+        if hasattr(verb, "get_auxiliary_verb"):
             auxiliary = verb.get_auxiliary_verb()
             assert auxiliary in ["haben", "sein"]
 
     def test_get_auxiliary_verb_sein(self) -> None:
-        """Test auxiliary verb detection for sein verbs.""" 
+        """Test auxiliary verb detection for sein verbs."""
         verb = Verb(
             verb="gehen",
             english="to go",
@@ -260,11 +265,11 @@ class TestVerbProtocol:
             present_du="gehst",
             present_er="geht",
             perfect="gegangen",
-            example="Ich bin nach Hause gegangen."
+            example="Ich bin nach Hause gegangen.",
         )
-        
+
         # Test if method exists
-        if hasattr(verb, 'get_auxiliary_verb'):
+        if hasattr(verb, "get_auxiliary_verb"):
             auxiliary = verb.get_auxiliary_verb()
             assert auxiliary in ["haben", "sein"]
 
@@ -272,16 +277,16 @@ class TestVerbProtocol:
         """Test verb conjugation pattern validation."""
         verb = Verb(
             verb="haben",
-            english="to have", 
+            english="to have",
             present_ich="habe",
             present_du="hast",
             present_er="hat",
             perfect="gehabt",
-            example="Ich habe einen Hund."
+            example="Ich habe einen Hund.",
         )
-        
+
         # Test if validation method exists
-        if hasattr(verb, 'validate_conjugation'):
+        if hasattr(verb, "validate_conjugation"):
             # Should not raise exception for valid conjugation
             verb.validate_conjugation()
 
@@ -291,12 +296,12 @@ class TestVerbProtocol:
             verb="hören",
             english="to hear",
             present_ich="höre",
-            present_du="hörst", 
+            present_du="hörst",
             present_er="hört",
             perfect="gehört",
-            example="Ich höre Musik."
+            example="Ich höre Musik.",
         )
-        
+
         assert verb.verb == "hören"
         assert "hören" in verb.get_combined_audio_text()
 
@@ -307,15 +312,15 @@ class TestVerbProtocol:
             english="to be",
             present_ich="bin",
             present_du="bist",
-            present_er="ist", 
+            present_er="ist",
             perfect="gewesen",
-            example="Ich bin müde."
+            example="Ich bin müde.",
         )
-        
+
         # Test if irregular detection exists
-        if hasattr(verb, 'is_irregular'):
+        if hasattr(verb, "is_irregular"):
             # sein should be detected as irregular
-            assert verb.is_irregular() == True
+            assert verb.is_irregular()
 
     def test_modal_verb_detection(self) -> None:
         """Test modal verb detection."""
@@ -326,27 +331,27 @@ class TestVerbProtocol:
             present_du="kannst",
             present_er="kann",
             perfect="gekonnt",
-            example="Ich kann schwimmen."
+            example="Ich kann schwimmen.",
         )
-        
+
         # Test if modal detection exists
-        if hasattr(verb, 'is_modal'):
-            assert verb.is_modal() == True
+        if hasattr(verb, "is_modal"):
+            assert verb.is_modal()
 
     def test_verb_stem_extraction(self) -> None:
         """Test verb stem extraction for conjugation."""
         verb = Verb(
-            verb="spielen", 
+            verb="spielen",
             english="to play",
             present_ich="spiele",
             present_du="spielst",
             present_er="spielt",
             perfect="gespielt",
-            example="Ich spiele Fußball."
+            example="Ich spiele Fußball.",
         )
-        
+
         # Test if stem extraction exists
-        if hasattr(verb, 'get_stem'):
+        if hasattr(verb, "get_stem"):
             stem = verb.get_stem()
             assert stem == "spiel"
 
@@ -358,12 +363,12 @@ class TestVerbProtocol:
             present_ich="mache",
             present_du="machst",
             present_er="macht",
-            perfect="gemacht", 
-            example="Ich habe es gemacht."
+            perfect="gemacht",
+            example="Ich habe es gemacht.",
         )
-        
+
         # Test if perfect formation method exists
-        if hasattr(verb, 'get_perfect_form'):
+        if hasattr(verb, "get_perfect_form"):
             perfect = verb.get_perfect_form()
             assert "gemacht" in perfect
 

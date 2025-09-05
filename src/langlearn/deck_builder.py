@@ -22,7 +22,6 @@ from .managers.media_manager import MediaManager
 from .services.article_application_service import ArticleApplicationService
 from .services.audio import AudioService
 from .services.card_builder import CardBuilder
-from .services.csv_service import CSVService
 from .services.media_file_registrar import MediaFileRegistrar
 from .services.media_service import MediaGenerationConfig, MediaService
 from .services.pexels_service import PexelsService
@@ -90,9 +89,6 @@ class DeckBuilder:
         """
         self.deck_name = deck_name
         self.backend_type = backend_type
-
-        # Initialize services
-        self._csv_service = CSVService()
 
         # Initialize Clean Pipeline services
         self._record_mapper = RecordMapper()

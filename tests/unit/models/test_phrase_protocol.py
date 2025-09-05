@@ -1,6 +1,7 @@
 """Tests for Phrase model and MediaGenerationCapable protocol compliance."""
 
 from unittest.mock import Mock
+
 import pytest
 
 from langlearn.models.phrase import Phrase
@@ -14,54 +15,54 @@ class TestPhraseProtocol:
         """Test phrase initialization with valid data."""
         phrase = Phrase(
             phrase="Guten Morgen",
-            english="Good morning", 
+            english="Good morning",
             context="Greeting used in the morning",
-            related="Guten Tag, Hallo"
+            related="Guten Tag, Hallo",
         )
-        
+
         assert phrase.phrase == "Guten Morgen"
         assert phrase.english == "Good morning"
-        assert phrase.context == "Greeting used in the morning" 
+        assert phrase.context == "Greeting used in the morning"
         assert phrase.related == "Guten Tag, Hallo"
 
     def test_phrase_initialization_empty_phrase(self) -> None:
         """Test phrase initialization fails with empty phrase."""
         with pytest.raises(ValueError, match="Required field 'phrase' cannot be empty"):
             Phrase(
-                phrase="",
-                english="Good morning",
-                context="Greeting",
-                related="Hallo"
+                phrase="", english="Good morning", context="Greeting", related="Hallo"
             )
 
     def test_phrase_initialization_empty_english(self) -> None:
         """Test phrase initialization fails with empty english."""
-        with pytest.raises(ValueError, match="Required field 'english' cannot be empty"):
+        with pytest.raises(
+            ValueError, match="Required field 'english' cannot be empty"
+        ):
             Phrase(
-                phrase="Guten Morgen",
-                english="",
-                context="Greeting",
-                related="Hallo"
+                phrase="Guten Morgen", english="", context="Greeting", related="Hallo"
             )
 
     def test_phrase_initialization_empty_context(self) -> None:
         """Test phrase initialization fails with empty context."""
-        with pytest.raises(ValueError, match="Required field 'context' cannot be empty"):
+        with pytest.raises(
+            ValueError, match="Required field 'context' cannot be empty"
+        ):
             Phrase(
                 phrase="Guten Morgen",
                 english="Good morning",
                 context="",
-                related="Hallo"
+                related="Hallo",
             )
 
     def test_phrase_initialization_empty_related(self) -> None:
         """Test phrase initialization fails with empty related."""
-        with pytest.raises(ValueError, match="Required field 'related' cannot be empty"):
+        with pytest.raises(
+            ValueError, match="Required field 'related' cannot be empty"
+        ):
             Phrase(
                 phrase="Guten Morgen",
-                english="Good morning", 
+                english="Good morning",
                 context="Greeting",
-                related=""
+                related="",
             )
 
     def test_phrase_initialization_whitespace_only(self) -> None:
@@ -70,18 +71,18 @@ class TestPhraseProtocol:
             Phrase(
                 phrase="   \t\n   ",
                 english="Good morning",
-                context="Greeting", 
-                related="Hallo"
+                context="Greeting",
+                related="Hallo",
             )
 
     def test_phrase_initialization_none_values(self) -> None:
         """Test phrase initialization fails with None values."""
         with pytest.raises(ValueError, match="Required field 'phrase' cannot be empty"):
             Phrase(
-                phrase=None,
+                phrase=None,  # type: ignore[arg-type]
                 english="Good morning",
                 context="Greeting",
-                related="Hallo"
+                related="Hallo",
             )
 
     def test_mediageneration_protocol_compliance(self) -> None:
@@ -90,9 +91,9 @@ class TestPhraseProtocol:
             phrase="Wie geht's?",
             english="How are you?",
             context="Informal greeting",
-            related="Wie geht es Ihnen?"
+            related="Wie geht es Ihnen?",
         )
-        
+
         assert isinstance(phrase, MediaGenerationCapable)
 
     def test_get_combined_audio_text(self) -> None:
@@ -100,12 +101,12 @@ class TestPhraseProtocol:
         phrase = Phrase(
             phrase="Danke schön",
             english="Thank you very much",
-            context="Polite thanks", 
-            related="Danke, Vielen Dank"
+            context="Polite thanks",
+            related="Danke, Vielen Dank",
         )
-        
+
         result = phrase.get_combined_audio_text()
-        
+
         assert result == "Danke schön"
         assert isinstance(result, str)
 
@@ -115,20 +116,22 @@ class TestPhraseProtocol:
             phrase="Auf Wiedersehen",
             english="Goodbye",
             context="Formal farewell",
-            related="Tschüss, Bis bald"
+            related="Tschüss, Bis bald",
         )
-        
+
         mock_anthropic_service = Mock()
-        mock_anthropic_service.generate_image_query.return_value = "people saying goodbye"
-        
+        mock_anthropic_service.generate_image_query.return_value = (
+            "people saying goodbye"
+        )
+
         strategy = phrase.get_image_search_strategy(mock_anthropic_service)
-        
+
         # Strategy should be callable
         assert callable(strategy)
-        
+
         # Execute strategy
         result = strategy()
-        
+
         assert result == "people saying goodbye"
         mock_anthropic_service.generate_image_query.assert_called_once()
 
@@ -138,15 +141,15 @@ class TestPhraseProtocol:
             phrase="Entschuldigung",
             english="Excuse me",
             context="Polite way to get attention or apologize",
-            related="Es tut mir leid, Verzeihung"
+            related="Es tut mir leid, Verzeihung",
         )
-        
+
         mock_anthropic_service = Mock()
         mock_anthropic_service.generate_image_query.return_value = "person apologizing"
-        
+
         strategy = phrase.get_image_search_strategy(mock_anthropic_service)
         strategy()
-        
+
         # Check that context was passed to the service
         call_args = mock_anthropic_service.generate_image_query.call_args[0][0]
         assert "Entschuldigung" in call_args
@@ -160,11 +163,11 @@ class TestPhraseProtocol:
             phrase="Hallo",
             english="Hello",
             context="Common informal greeting",
-            related="Hi, Guten Tag"
+            related="Hi, Guten Tag",
         )
-        
+
         category = phrase.get_phrase_category()
-        
+
         assert category == "greeting"
 
     def test_get_phrase_category_farewell(self) -> None:
@@ -173,11 +176,11 @@ class TestPhraseProtocol:
             phrase="Tschüss",
             english="Bye",
             context="Informal way to say goodbye",
-            related="Auf Wiedersehen, Bis später"
+            related="Auf Wiedersehen, Bis später",
         )
-        
+
         category = phrase.get_phrase_category()
-        
+
         assert category == "farewell"
 
     def test_get_phrase_category_politeness(self) -> None:
@@ -186,11 +189,11 @@ class TestPhraseProtocol:
             phrase="Bitte schön",
             english="You're welcome",
             context="Polite response to thanks",
-            related="Gern geschehen, Bitte sehr"
+            related="Gern geschehen, Bitte sehr",
         )
-        
+
         category = phrase.get_phrase_category()
-        
+
         # Check actual return value based on implementation
         assert category in ["formal", "politeness", "general"]
 
@@ -200,11 +203,11 @@ class TestPhraseProtocol:
             phrase="Wo ist das Badezimmer?",
             english="Where is the bathroom?",
             context="Common travel question",
-            related="Wo ist die Toilette?"
+            related="Wo ist die Toilette?",
         )
-        
+
         category = phrase.get_phrase_category()
-        
+
         # Check actual return value based on implementation
         assert category in ["question", "general"]
 
@@ -214,34 +217,34 @@ class TestPhraseProtocol:
             phrase="Das ist interessant",
             english="That is interesting",
             context="Expression of interest",
-            related="Das ist spannend"
+            related="Das ist spannend",
         )
-        
+
         category = phrase.get_phrase_category()
-        
+
         assert category == "general"
 
     def test_is_greeting_positive(self) -> None:
         """Test is_greeting method for greeting phrases."""
         phrase = Phrase(
             phrase="Guten Tag",
-            english="Good day", 
+            english="Good day",
             context="Formal greeting",
-            related="Guten Morgen, Hallo"
+            related="Guten Morgen, Hallo",
         )
-        
-        assert phrase.is_greeting() == True
+
+        assert phrase.is_greeting()
 
     def test_is_greeting_negative(self) -> None:
         """Test is_greeting method for non-greeting phrases."""
         phrase = Phrase(
             phrase="Das ist gut",
             english="That is good",
-            context="Expression of approval", 
-            related="Das ist schön"
+            context="Expression of approval",
+            related="Das ist schön",
         )
-        
-        assert phrase.is_greeting() == False
+
+        assert not phrase.is_greeting()
 
     def test_is_farewell_positive(self) -> None:
         """Test is_farewell method for farewell phrases."""
@@ -249,21 +252,21 @@ class TestPhraseProtocol:
             phrase="Auf Wiedersehen",
             english="Goodbye",
             context="Formal farewell",
-            related="Tschüss, Bis bald"
+            related="Tschüss, Bis bald",
         )
-        
-        assert phrase.is_farewell() == True
+
+        assert phrase.is_farewell()
 
     def test_is_farewell_negative(self) -> None:
         """Test is_farewell method for non-farewell phrases."""
         phrase = Phrase(
             phrase="Wie geht's?",
             english="How are you?",
-            context="Informal greeting", 
-            related="Wie geht es dir?"
+            context="Informal greeting",
+            related="Wie geht es dir?",
         )
-        
-        assert phrase.is_farewell() == False
+
+        assert not phrase.is_farewell()
 
     def test_build_search_context(self) -> None:
         """Test _build_search_context private method functionality."""
@@ -271,9 +274,9 @@ class TestPhraseProtocol:
             phrase="Entschuldigung",
             english="Excuse me",
             context="Polite attention-getting phrase",
-            related="Verzeihung, Es tut mir leid"
+            related="Verzeihung, Es tut mir leid",
         )
-        
+
         # Since this is a private method, test via public method that uses it
         strategy = phrase.get_image_search_strategy(Mock())
         # Just ensure it works without error
@@ -285,9 +288,9 @@ class TestPhraseProtocol:
             phrase="Schönen Tag noch!",
             english="Have a nice day!",
             context="Farewell wish for a good day",
-            related="Einen schönen Tag, Alles Gute"
+            related="Einen schönen Tag, Alles Gute",
         )
-        
+
         assert phrase.phrase == "Schönen Tag noch!"
         assert "Schönen" in phrase.get_combined_audio_text()
 
@@ -299,14 +302,14 @@ class TestPhraseProtocol:
             "environments where showing respect and maintaining proper etiquette "
             "is important for establishing good relationships."
         )
-        
+
         phrase = Phrase(
             phrase="Sehr erfreut, Sie kennenzulernen",
             english="Very pleased to meet you",
             context=long_context,
-            related="Freut mich, Schön Sie zu treffen"
+            related="Freut mich, Schön Sie zu treffen",
         )
-        
+
         assert len(phrase.context) > 100
         category = phrase.get_phrase_category()
         assert category in ["greeting", "formal", "general"]

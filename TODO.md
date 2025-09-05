@@ -1,4 +1,90 @@
-# Project TODO - Remaining Tasks
+# TODO: Eliminate Pattern Detection Hack
+
+## Problem Statement
+The media enricher contains a hacky "pattern detection" fallback mechanism that examines dictionary field names to guess record types. This violates clean architecture principles:
+
+- **Poor Type Safety**: Relies on string field inspection instead of proper types
+- **High Conditional Complexity**: Multiple fragile if/elif chains with field name combinations
+- **Indirect Representation**: Record types inferred through side effects rather than explicit design
+- **Failure-Prone**: 114 records fail because field patterns don't match expectations
+
+## Current Hack (TO BE ELIMINATED)
+```python
+# This is terrible craftsmanship:
+if "noun" in enriched and "article" in enriched:
+    # guess it's a noun
+elif "word" in enriched and "type" in enriched and "context" not in enriched:
+    # guess it's an adverb  
+elif "word" in enriched and "context" in enriched and "type" in enriched:
+    # guess it's a negation
+# ... more guessing
+```
+
+## Clean Architecture Solution
+
+### Phase 1: Eliminate the Guessing Game
+**Principle**: Records must know their own type explicitly, not through field inspection.
+
+**Implementation**: Each record passes its type information directly to the media enricher.
+
+**Options**:
+1. **Record Type Field**: Add explicit `record_type` field to each record
+2. **Type-Safe Dispatch**: Use proper polymorphic dispatch on record classes
+3. **Enum-Based Type**: Use strongly typed enum for record classification
+
+### Phase 2: Type-Safe Media Enrichment Dispatch
+**Current**: `enrich_record(record_dict, domain_model=None)` + field guessing
+**Target**: Direct method dispatch based on explicit type information
+
+**Design**: 
+```python
+# Well-typed, direct, low complexity:
+match record.get_type():
+    case RecordType.NOUN:
+        return self._enrich_noun_record(record, domain_model)
+    case RecordType.ADJECTIVE:  
+        return self._enrich_adjective_record(record, domain_model)
+    # ... explicit, typed dispatch
+```
+
+### Phase 3: Remove All Fallback Logic
+**Delete entirely**:
+- Pattern detection conditionals
+- Field name inspection logic  
+- Guessing mechanisms
+- Exception handlers that mask type errors
+
+**Replace with**:
+- Explicit type checking
+- Fail-fast on unknown types
+- Clear error messages for missing type information
+
+## Success Criteria
+1. **Zero conditional complexity** for type detection
+2. **100% media generation success rate** restored  
+3. **Type-safe dispatch** with no string-based field inspection
+4. **Fail-fast behavior** when type information is missing or invalid
+5. **All fallback mechanisms eliminated** from codebase
+
+## Implementation Order
+1. Add explicit type information to all records  
+2. Implement type-safe dispatch mechanism
+3. Delete pattern detection logic entirely
+4. Verify 100% media generation success
+5. Remove all defensive/fallback code patterns
+
+## Quality Gate
+**This change is complete when**:
+- No `if field_name in record` conditionals exist for type detection
+- Media enricher dispatch is based solely on explicit type information
+- All 972 records generate media successfully
+- Code is well-typed, direct, and has low conditional complexity
+
+**Principal Engineer Standard**: No hacks, no fallbacks, no guessing. Clean, typed, explicit design only.
+
+---
+
+# Project TODO - Remaining Tasks (ARCHIVED)
 
 Last updated: 2025-09-02
 
