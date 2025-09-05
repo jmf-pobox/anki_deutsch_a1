@@ -303,10 +303,10 @@ class DeckBuilder:
                 record_dicts = []
                 domain_models: list[None] = []
                 for rec in records:
-                    # Clean Pipeline: Records are already in proper format
-                    record_dicts.append(rec.to_dict())
+                    # Clean Pipeline: Records include type info
+                    record_dicts.append(rec.to_enrichment_dict())
                     # For media enrichment, pass None as domain model
-                    # since records are self-contained
+                    # since records are self-contained and include type information
                     domain_models.append(None)
 
                 # Batch enrich all records

@@ -71,16 +71,19 @@ class StandardMediaEnricher(MediaEnricher):
 
         # Handle Clean Pipeline mode (domain_model is None)
         if domain_model is None:
-            record_type = enriched.get("__class_name__", "unknown")
-            logger.debug(f"Clean Pipeline key-based detection for {record_type}")
-            logger.debug(
-                f"[CLEAN PIPELINE DEBUG] Available keys: {sorted(enriched.keys())}"
-            )
+            # Type-safe dispatch using explicit record type information
+            record_type_str = enriched.get("__record_type__")
+            if not record_type_str:
+                raise ValueError("Record missing type information - cannot dispatch")
 
-            # Try to detect record type by key patterns and enrich accordingly
-            if "noun" in enriched and "article" in enriched:
-                logger.debug(f"Detected NounRecord for {record_type}")
-                # NounRecord - create domain model for compatibility
+            logger.debug(f"Type-safe dispatch for record type: {record_type_str}")
+
+            # Import RecordType enum for comparison
+            from langlearn.models.records import RecordType
+
+            # Dispatch based on explicit type information - no more guessing!
+            if record_type_str == RecordType.NOUN.value:
+                logger.debug("Type-safe dispatch: NounRecord")
                 try:
                     from langlearn.models.noun import Noun
 
@@ -99,11 +102,8 @@ class StandardMediaEnricher(MediaEnricher):
                     )
                     return enriched
 
-            elif "word" in enriched and (
-                "positive" in enriched or "comparative" in enriched
-            ):
-                logger.debug(f"Detected AdjectiveRecord for {record_type}")
-                # AdjectiveRecord
+            elif record_type_str == RecordType.ADJECTIVE.value:
+                logger.debug("Type-safe dispatch: AdjectiveRecord")
                 try:
                     from langlearn.models.adjective import Adjective
 
@@ -117,17 +117,12 @@ class StandardMediaEnricher(MediaEnricher):
                     return self._enrich_adjective_record(enriched, adjective)
                 except Exception:
                     logger.debug(
-                        "Could not create Adjective domain model, using direct "
-                        "enrichment"
+                        "Could not create Adjective domain model, direct enrichment"
                     )
                     return enriched
 
-            elif (
-                "word" in enriched and "type" in enriched and "context" not in enriched
-            ):
-                logger.debug(f"Detected AdverbRecord for {record_type}")
-                logger.debug(f"[ADVERB DEBUG] Record keys: {sorted(enriched.keys())}")
-                # AdverbRecord
+            elif record_type_str == RecordType.ADVERB.value:
+                logger.debug("Type-safe dispatch: AdverbRecord")
                 try:
                     from langlearn.models.adverb import Adverb
 
@@ -145,9 +140,8 @@ class StandardMediaEnricher(MediaEnricher):
                     )
                     return enriched
 
-            elif "word" in enriched and "context" in enriched and "type" in enriched:
-                logger.debug(f"Detected NegationRecord for {record_type}")
-                # NegationRecord
+            elif record_type_str == RecordType.NEGATION.value:
+                logger.debug("Type-safe dispatch: NegationRecord")
                 try:
                     from langlearn.models.negation import Negation
 
@@ -160,14 +154,12 @@ class StandardMediaEnricher(MediaEnricher):
                     return self._enrich_negation_record(enriched, negation)
                 except Exception:
                     logger.debug(
-                        "Could not create Negation domain model, using direct "
-                        "enrichment"
+                        "Could not create Negation domain model, direct enrichment"
                     )
                     return enriched
 
-            # Handle phrases (Clean Pipeline mode)
-            elif "phrase" in enriched and "context" in enriched:
-                logger.debug(f"Detected PhraseRecord for {record_type}")
+            elif record_type_str == RecordType.PHRASE.value:
+                logger.debug("Type-safe dispatch: PhraseRecord")
                 try:
                     from langlearn.models.phrase import Phrase
 
@@ -184,30 +176,28 @@ class StandardMediaEnricher(MediaEnricher):
                     )
                     return enriched
 
-            # Handle verb conjugations (Clean Pipeline mode)
-            elif "infinitive" in enriched and "du" in enriched and "er" in enriched:
-                logger.debug(f"Detected VerbConjugationRecord for {record_type}")
+            elif record_type_str == RecordType.VERB_CONJUGATION.value:
+                logger.debug("Type-safe dispatch: VerbConjugationRecord")
                 return self._enrich_verb_conjugation_record_fallback(enriched)
 
-            # Handle articles (Clean Pipeline mode)
-            elif "nominativ" in enriched and "akkusativ" in enriched:
-                logger.debug(f"Detected UnifiedArticleRecord for {record_type}")
+            elif record_type_str == RecordType.UNIFIED_ARTICLE.value:
+                logger.debug("Type-safe dispatch: UnifiedArticleRecord")
                 return self._enrich_artikel_cloze_record(enriched)
 
-            # Handle fallback for preposition/verb legacy models
-            elif "preposition" in enriched:
+            elif record_type_str == RecordType.PREPOSITION.value:
+                logger.debug("Type-safe dispatch: PrepositionRecord")
                 return self._enrich_preposition_record(enriched)
-            elif "verb" in enriched and "english" in enriched:
+
+            elif record_type_str == RecordType.VERB.value:
+                logger.debug("Type-safe dispatch: VerbRecord")
                 return self._enrich_verb_record(enriched)
-            # Article cloze card types
-            elif "text" in enriched and "explanation" in enriched:
-                return self._enrich_artikel_cloze_record(enriched)
+
             else:
-                logger.warning(
-                    f"No Clean Pipeline pattern matched for record type {record_type}. "
-                    f"Record keys: {sorted(enriched.keys())[:15]}"
+                # Fail fast on unknown types - no more silent fallbacks
+                raise ValueError(
+                    f"Unknown record type: {record_type_str}. "
+                    f"Type-safe dispatch requires explicit handling for all types."
                 )
-                return enriched
 
         # Legacy mode: Use domain model type for type-specific enrichment
         model_type = type(domain_model).__name__.lower()

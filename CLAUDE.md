@@ -4,16 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Anki German Language Deck Generator
 
-This project generates customized German language Anki decks for A1-level learners, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
+This project generates customized German language Anki decks, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
 
 ## CRITICAL DEBUGGING PRINCIPLES (READ FIRST - PREVENTS WASTED TIME)
-
-**🚨 LESSON FROM $566 WASTED**: Fixing peripheral issues while ignoring explicit error messages is PROHIBITED.
 
 ### Johnson's Law (ABSOLUTE TRUTH)
 **"Any property of software that has not been verified, does not exist."**
 - This applies to: functionality, bug fixes, code quality, design compliance, EVERYTHING
-- You CANNOT verify end-to-end functionality - only the user can
 - NEVER claim something works without user confirmation
 
 ### Root Cause First Protocol (MANDATORY)
@@ -24,20 +21,17 @@ When encountering errors, follow this EXACT sequence:
    - Example: "KeyError: 'english'" → Add the missing key
    - Example: "Template syntax error" → Fix the template syntax
 
-2. **FIX ONLY THE ROOT CAUSE** - Do NOT fix peripheral issues first
-   - ❌ WRONG: Fix unit tests, validation, formatting while error persists
-   - ✅ RIGHT: Fix the exact issue the error message indicates
-
-3. **VERIFY WITH MINIMAL TESTING** - Test ONLY the broken functionality
+2. **VERIFY WITH MINIMAL TESTING** - Test ONLY the broken functionality
    - Add targeted logging/debugging at the error point
    - Run the specific failing operation
    - Confirm error is resolved
 
-4. **KEEP DEBUGGING TOOLS** - NEVER remove logging until user confirms success
+3. **KEEP DEBUGGING TOOLS** - NEVER remove logging until user confirms 
+    success
    - Debugging code stays until user says "it works"
    - Better to have extra logging than to be blind
 
-5. **REQUEST USER VERIFICATION** - You cannot determine if it works
+4. **REQUEST USER VERIFICATION** - You cannot determine if it works
    - "Please test [specific functionality] and confirm"
    - "Check if [specific error] still occurs"
    - Wait for explicit confirmation before proceeding
@@ -45,9 +39,7 @@ When encountering errors, follow this EXACT sequence:
 ### Prohibited Behaviors That Waste Time
 - ❌ Claiming "I've fixed it" without user confirmation
 - ❌ Removing debugging tools before user verifies the fix
-- ❌ Fixing code quality issues while core functionality is broken
 - ❌ Making assumptions about what "should" work
-- ❌ Declaring victory based on unit tests passing
 
 ## REQUIRED READING
 
@@ -240,7 +232,7 @@ GitHub issues serve as **state management markers** that identify where code div
 
 **Johnson's Law Reminder**: You CANNOT verify if something works. Only the user can.
 
-After experiencing $566 in wasted costs from false success claims, the following communication protocol is MANDATORY:
+The following communication protocol is MANDATORY:
 
 ### ❌ PROHIBITED Communication Patterns:
 ```
@@ -336,6 +328,7 @@ The project uses separate test categories with comprehensive coverage measuremen
 - **Unit tests**: Mock external dependencies, run with `hatch run test-unit`
 - **Integration tests**: Require live API keys, marked with `@pytest.mark.live`, run with `hatch run test-integration`
 - **Coverage testing**: Use `hatch run test-cov` for complete measurement (target: >85%)
+- **Ask the user**: The user will import the deck into Anki and verify actual functionality.
 - API keys are managed via the system keyring using the `api_keyring.py` utility
 
 
@@ -459,13 +452,6 @@ This project addresses unique aspects of German language learning:
 
 ## Current Status
 
-### Quality Metrics
-- **Tests**: 813 passing (792 unit + 21 integration)
-- **Coverage**: 24.79% overall
-- **Type Safety**: 0 MyPy errors in strict mode (133 source files)
-- **Linting**: 0 Ruff violations
-- **Architecture**: Clean Pipeline with SRP implementation
-
 ### Supported Word Types
 - **Fully Supported**: noun, adjective, adverb, negation, verb (via Records + CardBuilder)
 - **Legacy Support**: preposition, phrase (via fallback system)
@@ -487,23 +473,13 @@ Key directories:
 
 1. **MyPy Compliance**: 0 errors required in strict mode
 2. **Ruff Linting**: 0 violations required
-3. **Test Suite**: All 813 tests must pass
-4. **Coverage**: Must not decrease from 24.79%
+3. **Test Suite**: All tests must pass
+4. **Coverage**: Must not decrease from 74%
 5. **Branch Workflow**: All changes via feature branches
 
 See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete quality gate requirements and workflow.
 
 ## SUCCESS RATE TRACKING
-
-**📈 GOAL**: Move from 5-0% PR success rate to 90%+ through micro-commits
-
-### Time Waste Prevention Checklist:
-- [ ] Commit affects only 1-2 files
-- [ ] Change is <50 lines (preferred) or <100 lines (max)
-- [ ] Single architectural layer modified
-- [ ] Tier 2 validation passes before commit
-- [ ] Clear, specific commit message
-- [ ] Push frequency: every 3-5 commits
 
 ### Red Flags That Indicate Batch Accumulation (STOP IMMEDIATELY):
 - 🚩 More than 5 files in staging area
@@ -514,10 +490,10 @@ See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete quality gate requirements and w
 
 **⚠️ QUALITY GATE ENFORCEMENT**: The micro-commit workflow + progressive quality gates are NOT optional - they prevent the massive time waste we just experienced.
 
-**🚨 LESSON LEARNED**: We achieved 502→0 MyPy errors through discipline. We must apply the same discipline to commit size to prevent 5% success rates!
 - always run the formatter immediately before committing
 - Always follow Python PEP 8 standards on imports. Imports are always put at the top of the fileV, just after any module comments and docstrings, and before module globals and constants.
-Imports should be grouped in the following order:
+
+- Imports should be grouped in the following order:
 
 Standard library imports.
 Related third party imports.
@@ -527,26 +503,11 @@ You should put a blank line between each group of imports.
 Absolute imports are recommended
 - do not exceed 88 characters per line to meet the ruff check guidelines.
 
-
-
 ## Environment Troubleshooting (Hatch + PyCharm)
-
-Why you might see: bad interpreter: ...python3.13: no such file or directory
-- Root cause: A stale project-local .venv (or its hatch shim) pointing to a removed Python 3.13 interpreter. Even if Hatch uses its own managed env elsewhere, shells or IDEs may still pick up .venv/bin/hatch and print the noisy prefix before running the real command.
 
 Recommended setup
 - Prefer Hatch-managed environments: Let `hatch env create` manage the venv outside the repo (default). You do not need a project-local .venv for Hatch.
-- If a `.venv` directory exists in the project and causes noise, either remove it or rename it (e.g., `.venv.bck`).
 - Always run hatch from PATH (e.g., `hatch run type`), not from `.venv/bin/hatch`.
-
-One-time cleanup (if you see the bad interpreter prefix)
-1) Move/Remove the local venv: `rm -rf .venv` (or rename to `.venv.bck`)
-2) Create/verify Hatch env: `hatch env create`
-3) Validate: `hatch run type && hatch run test-unit`
-
-PyCharm configuration
-- Preferences > Project > Python Interpreter: select the interpreter provided by Hatch (or a fresh local one you trust), not the old `.venv` that referenced Python 3.13.
-- Run/Debug Configurations: set the Working directory to the project root and ensure the selected interpreter matches the above.
 
 Team practice to avoid friction
 - Do not commit or rely on a project-local `.venv` for Hatch-driven workflows.
@@ -561,7 +522,7 @@ With this setup, the noisy interpreter message disappears, and Hatch commands be
 - unless you have tested something and can prove it works or you have asked me to confirm it works, do not declare arrogantly that issues are resolved.  It is sloppy work that is not acceptable.
 - always read the design documentation in docs/*.md and always updated the design documentation in docs/*.md when making changes. This way you do not have search the codebase blindly over and over again.
 - always run the code quality tools after each 2-4 edits
-- do not say things are solved unless you have proven it or I have confirmed it.
+- do not say things are solved unless you have proven it or the user has confirmed it.
 - always run the app before stating you have complete work.  Look for obvious errors and address them before declaring the job is done.
 ## FINAL REMINDERS - CORE PRINCIPLES
 
@@ -594,3 +555,6 @@ When you see an error like "Field 'DuForm' not found":
 - ask me for design direction, do not come up with your own ideas of what good is.
 - make your commit messages modest and relatively short.
 - always us direct imports using __future__ in Python
+- do not code hacks, defensive coding, fallbacks. 
+- the goal is to write well-typed code with low conditional complexity 
+  that fails (e.g., throws and exception) when validation fails.

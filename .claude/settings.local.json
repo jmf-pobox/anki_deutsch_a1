@@ -53,7 +53,10 @@
       "Bash(sed:*)",
       "Bash(fi)",
       "Bash(done)",
-      "Bash(for file in tests/test_backend_interface.py tests/test_media_integration.py)"
+      "Bash(for file in tests/test_backend_interface.py tests/test_media_integration.py)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

@@ -7,9 +7,28 @@ fields and domain models.
 """
 
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import Any, Literal, Protocol, overload
 
 from pydantic import BaseModel, Field, field_validator, model_validator
+
+
+class RecordType(Enum):
+    """Strongly-typed enumeration for record types."""
+
+    NOUN = "noun"
+    ADJECTIVE = "adjective"
+    ADVERB = "adverb"
+    NEGATION = "negation"
+    PHRASE = "phrase"
+    VERB_CONJUGATION = "verb_conjugation"
+    UNIFIED_ARTICLE = "unified_article"
+    PREPOSITION = "preposition"
+    VERB = "verb"
+    VERB_IMPERATIVE = "verb_imperative"
+    ARTICLE = "article"
+    INDEFINITE_ARTICLE = "indefinite_article"
+    NEGATIVE_ARTICLE = "negative_article"
 
 
 class RecordClassProtocol(Protocol):
@@ -35,6 +54,16 @@ class BaseRecord(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
+    def get_record_type(cls) -> RecordType:
+        """Get the strongly-typed record type for this record class.
+
+        Returns:
+            RecordType enum value
+        """
+        pass
+
+    @classmethod
+    @abstractmethod
     def from_csv_fields(cls, fields: list[str]) -> "BaseRecord":
         """Create record from CSV field array.
 
@@ -54,6 +83,16 @@ class BaseRecord(BaseModel, ABC):
             Dictionary representation suitable for MediaEnricher
         """
         pass
+
+    def to_enrichment_dict(self) -> dict[str, Any]:
+        """Convert record to dictionary with type information for media enrichment.
+
+        Returns:
+            Dictionary with record type and field data for type-safe dispatch
+        """
+        result = self.to_dict()
+        result["__record_type__"] = self.get_record_type().value
+        return result
 
     @classmethod
     @abstractmethod
@@ -92,6 +131,11 @@ class NounRecord(BaseRecord):
     example_audio: str | None = Field(
         default=None, description="Example audio reference"
     )
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for nouns."""
+        return RecordType.NOUN
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "NounRecord":
@@ -152,6 +196,11 @@ class AdjectiveRecord(BaseRecord):
     )
 
     @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for adjectives."""
+        return RecordType.ADJECTIVE
+
+    @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "AdjectiveRecord":
         """Create AdjectiveRecord from CSV fields."""
         if len(fields) < 4:
@@ -207,6 +256,11 @@ class AdverbRecord(BaseRecord):
     )
 
     @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for adverbs."""
+        return RecordType.ADVERB
+
+    @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "AdverbRecord":
         """Create AdverbRecord from CSV fields."""
         if len(fields) < 4:
@@ -258,6 +312,11 @@ class NegationRecord(BaseRecord):
     example_audio: str | None = Field(
         default=None, description="Example audio reference"
     )
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for negations."""
+        return RecordType.NEGATION
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "NegationRecord":
@@ -327,6 +386,11 @@ class VerbRecord(BaseRecord):
         default=None, description="Example sentence audio reference"
     )
     image: str | None = Field(default=None, description="Image reference")
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for verbs."""
+        return RecordType.VERB
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbRecord":
@@ -442,6 +506,11 @@ class VerbConjugationRecord(BaseRecord):
         default=None, description="Example audio reference"
     )
     image: str | None = Field(default=None, description="Image reference")
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for verb conjugations."""
+        return RecordType.VERB_CONJUGATION
 
     @field_validator("classification")
     @classmethod
@@ -657,6 +726,11 @@ class VerbImperativeRecord(BaseRecord):
         return v.strip()
 
     @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for type-safe dispatch."""
+        return RecordType.VERB
+
+    @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbImperativeRecord":
         """Create VerbImperativeRecord from CSV fields."""
         if len(fields) < 7:
@@ -746,6 +820,11 @@ class PrepositionRecord(BaseRecord):
     image: str | None = Field(default=None, description="Image reference")
 
     @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for prepositions."""
+        return RecordType.PREPOSITION
+
+    @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "PrepositionRecord":
         """Create PrepositionRecord from CSV field array.
 
@@ -816,6 +895,11 @@ class PhraseRecord(BaseRecord):
         default=None, description="Phrase pronunciation audio reference"
     )
     image: str | None = Field(default=None, description="Image reference")
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for phrases."""
+        return RecordType.PHRASE
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "PhraseRecord":
@@ -895,6 +979,11 @@ class ArticleRecord(BaseRecord):
         if v not in valid_genders:
             raise ValueError(f"Invalid gender: {v}. Must be one of {valid_genders}")
         return v
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for type-safe dispatch."""
+        return RecordType.ARTICLE
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "ArticleRecord":
@@ -985,6 +1074,11 @@ class IndefiniteArticleRecord(BaseRecord):
         return v
 
     @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for type-safe dispatch."""
+        return RecordType.ARTICLE
+
+    @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "IndefiniteArticleRecord":
         """Create IndefiniteArticleRecord from CSV fields."""
         if len(fields) != cls.get_expected_field_count():
@@ -1073,6 +1167,11 @@ class NegativeArticleRecord(BaseRecord):
         return v
 
     @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for type-safe dispatch."""
+        return RecordType.ARTICLE
+
+    @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "NegativeArticleRecord":
         """Create NegativeArticleRecord from CSV fields."""
         if len(fields) != cls.get_expected_field_count():
@@ -1156,6 +1255,11 @@ class UnifiedArticleRecord(BaseRecord):
         default=None, description="Example audio reference"
     )
     image: str | None = Field(default=None, description="Image reference")
+
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for unified articles."""
+        return RecordType.UNIFIED_ARTICLE
 
     @field_validator("artikel_typ")
     @classmethod
