@@ -113,6 +113,28 @@ class Preposition(MediaGenerationCapable):
             parts.append(self.example2)
         return ". ".join(parts)
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for preposition cards.
+
+        Prepositions require multiple audio segments for their examples:
+        - word_audio: The preposition with both examples
+        - example1_audio: First example demonstrating usage
+        - example2_audio: Second example demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        audio_segments = {
+            "word_audio": self.get_combined_audio_text(),
+        }
+
+        if self.example1:
+            audio_segments["example1_audio"] = self.example1
+        if self.example2:
+            audio_segments["example2_audio"] = self.example2
+
+        return audio_segments
+
     def _build_search_context(self) -> str:
         """Build rich context for image search using German preposition expertise."""
         case_info = self.get_case_description()

@@ -28,6 +28,13 @@ class MockMediaGenerationCapable:
         """Return mock audio text."""
         return "test audio text"
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Return mock audio segments."""
+        return {
+            "word_audio": "test audio text",
+            "example_audio": "test example audio",
+        }
+
 
 class TestMediaGenerationCapable:
     """Test MediaGenerationCapable protocol compliance."""

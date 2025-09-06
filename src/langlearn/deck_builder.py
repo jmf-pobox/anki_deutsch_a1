@@ -317,7 +317,10 @@ class DeckBuilder:
                         record_dicts.append(rec.to_dict())
                         domain_models.append(domain_model)
                     except ValueError as e:
-                        logger.info(f"No domain model for {type(rec).__name__}: {e}")
+                        logger.warning(f"No domain model for {type(rec).__name__}: {e}")
+                        logger.warning(
+                            "CRITICAL: This record will have NO MEDIA generated!"
+                        )
                         # Track records without domain models
                         skipped_indices.append(i)
                         continue
@@ -362,6 +365,12 @@ class DeckBuilder:
                     "ihr_audio",
                     "sie_audio",
                     "wir_audio",
+                    # Article-specific audio fields (CRITICAL FIX)
+                    "pattern_audio",
+                    "example_nom_audio",
+                    "example_akk_audio",
+                    "example_dat_audio",
+                    "example_gen_audio",
                 }
                 for enriched in enriched_list:
                     # CRITICAL FIX: Don't filter out empty values - let
@@ -395,69 +404,32 @@ class DeckBuilder:
                     verb_records, enriched_data_list
                 )
 
-            # Special handling for unified article records with noun integration
+            # Special handling for unified articles (MediaEnricher + specialized cards)
             elif record_type == "unified_article":
                 from .models.records import (
                     ArticleRecord,
                     IndefiniteArticleRecord,
                     NegativeArticleRecord,
-                    NounRecord,
                     UnifiedArticleRecord,
                 )
 
-                # Filter unified article records
-                unified_article_records = [
-                    r for r in records if isinstance(r, UnifiedArticleRecord)
-                ]
-                logger.info(
-                    f"Processing unified article system with "
-                    f"{len(unified_article_records)} article pattern records"
-                )
-
-                # Generate article pattern cards (same as before)
-                from typing import cast
-
-                article_records_for_pattern = cast(
-                    "list[ArticleRecord | IndefiniteArticleRecord | "
-                    "NegativeArticleRecord | UnifiedArticleRecord]",
-                    unified_article_records,
-                )
-                pattern_cards = self._card_builder.build_article_pattern_cards(
-                    article_records_for_pattern, enriched_data_list
-                )
-
-                # Get noun records for noun-article practice cards
-                noun_records = [
+                # Filter unified article records (supporting all article types)
+                article_records = [
                     r
-                    for r_type, record_list in records_by_type.items()
-                    if r_type == "noun"
-                    for r in record_list
-                    if isinstance(r, NounRecord)
+                    for r in records
+                    if isinstance(
+                        r,
+                        ArticleRecord
+                        | IndefiniteArticleRecord
+                        | NegativeArticleRecord
+                        | UnifiedArticleRecord,
+                    )
                 ]
 
-                if noun_records:
-                    logger.info(
-                        f"Skipping noun-article practice cards for "
-                        f"{len(noun_records)} noun records "
-                        f"(temporarily disabled for cloze testing)"
-                    )
-                    # TEMPORARY: Disable noun-article cards to focus on testing
-                    # cloze deletion system
-                    # TODO: Update ArticleApplicationService to use cloze deletion
-                    # instead of templates
-                    # noun_enriched_data: list[dict[str, Any]] = [{}] * len(
-                    #     noun_records
-                    # )
-                    # noun_article_cards = (
-                    #     self._article_service.generate_noun_article_cards(
-                    #         noun_records, noun_enriched_data
-                    #     )
-                    # )
-                    # For now, only use pattern cards (cloze deletion)
-                    cards = pattern_cards
-                else:
-                    logger.info("No noun records found for noun-article integration")
-                    cards = pattern_cards
+                # Use specialized article card building WITH enriched media data
+                cards = self._card_builder.build_article_pattern_cards(
+                    article_records, enriched_data_list
+                )
             else:
                 # Standard single-card generation for other record types
                 cards = self._card_builder.build_cards_from_records(

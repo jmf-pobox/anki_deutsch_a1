@@ -53,3 +53,17 @@ class MediaGenerationCapable(Protocol):
             Text string for audio generation
         """
         ...
+
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for this word type.
+
+        Returns all audio field names and their corresponding text content
+        that should be generated for cards of this type. This enables
+        100% media coverage by generating appropriate audio for each
+        field expected by the card templates.
+
+        Returns:
+            Dictionary mapping audio field names to text content.
+            E.g., {"word_audio": "das Haus", "example_audio": "Das ist mein Haus"}
+        """
+        ...

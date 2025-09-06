@@ -561,16 +561,16 @@ class TestCardBuilderIntegration:
 
         # Verify field count matches new PROD-CARD-SPEC.md structure
         assert len(field_values) == 11  # All verb imperative fields per specification
-        assert field_values[0] == ""  # Image
+        assert field_values[0] == "arbeiten"  # Infinitive (Sort Field)
         assert field_values[1] == "to work"  # English
-        assert field_values[2] == "arbeiten"  # Infinitive
-        assert field_values[3] == "arbeite"  # Du
-        assert field_values[4] == "arbeitet"  # Ihr
-        assert field_values[5] == "arbeiten Sie"  # Sie
-        assert field_values[6] == "arbeiten wir"  # Wir
-        assert field_values[7] == "Arbeite schneller!"  # ExampleDu
-        assert field_values[8] == "Arbeitet zusammen!"  # ExampleIhr
-        assert field_values[9] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[2] == "arbeite"  # Du
+        assert field_values[3] == "arbeitet"  # Ihr
+        assert field_values[4] == "arbeiten Sie"  # Sie
+        assert field_values[5] == "arbeiten wir"  # Wir
+        assert field_values[6] == "Arbeite schneller!"  # ExampleDu
+        assert field_values[7] == "Arbeitet zusammen!"  # ExampleIhr
+        assert field_values[8] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[9] == ""  # Image
         assert field_values[10] == ""  # WordAudio
 
         # Verify note type

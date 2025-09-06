@@ -128,6 +128,21 @@ class Adjective(MediaGenerationCapable):
             parts.append(self.superlative)
         return ", ".join(parts)
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for adjective cards.
+
+        Adjectives require two audio segments:
+        - word_audio: The adjective with comparative and superlative forms
+        - example_audio: The example sentence demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
+        }
+
     def validate_comparative(self) -> bool:
         """Validate that the comparative form follows German grammar rules.
 

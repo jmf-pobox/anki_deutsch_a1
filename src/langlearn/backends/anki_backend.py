@@ -355,16 +355,61 @@ class AnkiBackend(DeckBackend):
                 if audio_field:
                     cloze_record["audio"] = audio_field
 
-                # Legacy media enrichment removed - now handled by deck_builder
-                # through domain model-based MediaEnricher
-                enriched = cloze_record
+                # Create Article domain model from cloze data to enable media generation
+                try:
+                    from langlearn.models.article import Article
 
-                return [
-                    enriched.get("text", ""),
-                    enriched.get("explanation", ""),
-                    enriched.get("image", ""),
-                    enriched.get("audio", ""),
-                ]
+                    # Create Article domain model with cloze data
+                    # The Article model contains the German linguistic logic
+                    article_model = Article(
+                        artikel_typ="bestimmt",  # Default for cloze exercises
+                        geschlecht="maskulin",  # Default, could be extracted
+                        nominativ="der",  # Default values for cloze
+                        akkusativ="den",
+                        dativ="dem",
+                        genitiv="des",
+                        beispiel_nom=Article.extract_clean_text_from_cloze(
+                            text
+                        ),  # Use domain model logic
+                        beispiel_akk="",
+                        beispiel_dat="",
+                        beispiel_gen="",
+                    )
+
+                    # Use MediaEnricher with Article domain model
+                    media_data = self._media_enricher.enrich_with_media(article_model)
+
+                    # Merge media data into the record
+                    enriched = cloze_record.copy()
+                    enriched.update(media_data)
+
+                    # Format media for Anki
+                    image_filename = enriched.get("image", "")
+                    audio_filename = enriched.get(
+                        "word_audio", enriched.get("audio", "")
+                    )
+
+                    formatted_image = (
+                        f'<img src="{image_filename}" />' if image_filename else ""
+                    )
+                    formatted_audio = (
+                        f"[sound:{audio_filename}]" if audio_filename else ""
+                    )
+
+                    return [
+                        enriched.get("text", ""),
+                        enriched.get("explanation", ""),
+                        formatted_image,
+                        formatted_audio,
+                    ]
+                except Exception as e:
+                    logger.warning(f"Media enrichment failed for cloze article: {e}")
+                    return [
+                        cloze_record.get("text", ""),
+                        cloze_record.get("explanation", ""),
+                        cloze_record.get("image", ""),
+                        cloze_record.get("audio", ""),
+                    ]
 
             if record_type is not None:
                 # Use Clean Pipeline Architecture

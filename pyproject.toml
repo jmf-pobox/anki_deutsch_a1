@@ -92,6 +92,11 @@ select = [
     "RUF", # Ruff-specific rules
 ]
 
+ignore = [
+    "TC001",  # Move import into TYPE_CHECKING - too aggressive for runtime imports
+    "TC003",  # Move standard lib import into TYPE_CHECKING - unnecessary overhead
+]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"

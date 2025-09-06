@@ -82,12 +82,6 @@ def main() -> None:
                 for name in subdeck_info["subdeck_names"]:
                     print(f"      - {name}")
 
-            # Show media statistics if available
-            if "media_stats" in final_stats:
-                media_stats = final_stats["media_stats"]
-                print(f"   🎵 Media files: {media_stats['files_added']}")
-                print(f"   💾 Total size: {media_stats['total_size_bytes']:,} bytes")
-
             # Export deck
             output_file = output_dir / f"{deck_name.replace(' ', '_').lower()}.apkg"
             print(f"\n💾 Exporting deck to {output_file}...")

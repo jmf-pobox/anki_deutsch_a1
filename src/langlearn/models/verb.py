@@ -200,9 +200,28 @@ class Verb(MediaGenerationCapable):
         Returns:
             Combined text with German labels, conjugations, and SSML pause tags:
             "arbeiten, Präsens ich arbeite, du arbeitest, Perfekt hat gearbeitet"
+            Or for imperatives: "arbeiten, Imperativ du fahr ab"
         """
         parts = [self.verb]
 
+        # Check if this is an imperative (indicated by placeholder values)
+        is_imperative = (
+            self.present_ich == "[imperative]"
+            or self.perfect == "[imperative]"
+            or (
+                self.present_ich == "[imperative]" and self.present_er == "[imperative]"
+            )
+        )
+
+        if is_imperative:
+            # For imperatives, only include the actual imperative forms
+            parts.append("<break strength='strong'/>Imperativ")
+            if self.present_du and self.present_du != "[imperative]":
+                parts.append(f"du {self.present_du}")
+            # Note: other imperative forms (ihr, Sie, wir) not in basic Verb model
+            return ", ".join(parts)
+
+        # Regular conjugation handling (not imperative)
         # Präsens (Present tense) with German label
         if self.present_ich or self.present_du or self.present_er:
             parts.append("<break strength='strong'/>Präsens")
@@ -227,6 +246,40 @@ class Verb(MediaGenerationCapable):
             )
 
         return ", ".join(parts)
+
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for verb cards.
+
+        Verbs require multiple audio segments including conjugation forms:
+        - word_audio: Complete conjugation with tense labels
+        - example_audio: Example sentence demonstrating usage
+        - du_audio: 2nd person singular form (if available)
+        - ihr_audio: 2nd person plural form (if available)
+        - sie_audio: 3rd person plural form (if available)
+        - wir_audio: 1st person plural form (if available)
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        audio_segments = {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
+        }
+
+        # Add conjugation-specific audio if forms are available
+        if self.present_du:
+            audio_segments["du_audio"] = f"du {self.present_du}"
+
+        # For verb models that have additional conjugations, add them
+        # These fields may not be present in all verb instances
+        if hasattr(self, "present_ihr") and self.present_ihr:
+            audio_segments["ihr_audio"] = f"ihr {self.present_ihr}"
+        if hasattr(self, "present_sie") and self.present_sie:
+            audio_segments["sie_audio"] = f"sie {self.present_sie}"
+        if hasattr(self, "present_wir") and self.present_wir:
+            audio_segments["wir_audio"] = f"wir {self.present_wir}"
+
+        return audio_segments
 
     def _build_search_context(self) -> str:
         """Build rich context for image search using German verb expertise.

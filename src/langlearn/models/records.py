@@ -728,7 +728,7 @@ class VerbImperativeRecord(BaseRecord):
     @classmethod
     def get_record_type(cls) -> RecordType:
         """Return the record type for type-safe dispatch."""
-        return RecordType.VERB
+        return RecordType.VERB_IMPERATIVE
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbImperativeRecord":

@@ -146,6 +146,21 @@ class Noun(MediaGenerationCapable):
         else:
             return f"{self.article} {self.noun}, die {self.plural}"
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for noun cards.
+
+        Nouns require two audio segments:
+        - word_audio: The noun with its article and plural form
+        - example_audio: The example sentence demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
+        }
+
     def is_concrete(self) -> bool:
         """Determine if this noun represents a concrete concept.
 

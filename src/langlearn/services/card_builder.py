@@ -270,9 +270,8 @@ class CardBuilder:
                 "ExampleAudio",
             ],
             "verb_imperative": [
-                "Image",
+                "Infinitive",  # Sort Field - primary identifier
                 "English",
-                "Infinitive",
                 "Du",
                 "Ihr",
                 "Sie",
@@ -280,6 +279,7 @@ class CardBuilder:
                 "ExampleDu",
                 "ExampleIhr",
                 "ExampleSie",
+                "Image",
                 "WordAudio",
             ],
             "artikel_gender_cloze": [
@@ -599,10 +599,11 @@ class CardBuilder:
         # Convert to string
         str_value = str(value)
 
-        # Apply field-specific formatting
+        # Apply field-specific formatting for media file detection
         if (
             field_name
             in [
+                "Audio",
                 "WordAudio",
                 "ExampleAudio",
                 "Example1Audio",
@@ -613,16 +614,13 @@ class CardBuilder:
                 "SieAudio",
             ]
             and str_value
+            and not str_value.startswith("[sound:")
         ):
-            # Ensure audio fields have proper Anki format
-            if not str_value.startswith("[sound:") and not str_value.endswith("]"):
-                str_value = f"[sound:{str_value}]"
+            # Format audio for MediaFileRegistrar detection
+            str_value = f"[sound:{str_value}]"
 
-        elif (
-            field_name == "Image"
-            and str_value
-            and not (str_value.startswith("<img") and str_value.endswith(">"))
-        ):
+        elif field_name == "Image" and str_value and not str_value.startswith("<img"):
+            # Format image for MediaFileRegistrar detection
             str_value = f'<img src="{str_value}" />'
 
         return str_value

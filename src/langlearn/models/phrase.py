@@ -167,6 +167,19 @@ class Phrase(MediaGenerationCapable):
         """
         return self.phrase
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for phrase cards.
+
+        Phrases require phrase_audio instead of word_audio since they represent
+        complete communicative units rather than individual words.
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "phrase_audio": self.phrase,
+        }
+
     def _build_search_context(self) -> str:
         """Build rich context for image search using German phrase expertise.
 

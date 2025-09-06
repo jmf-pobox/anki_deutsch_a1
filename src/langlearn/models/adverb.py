@@ -215,6 +215,21 @@ class Adverb(MediaGenerationCapable):
         """
         return f"{self.word}. {self.example}"
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for adverb cards.
+
+        Adverbs require two audio segments:
+        - word_audio: The adverb word and example sentence
+        - example_audio: The example sentence demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
+        }
+
     def _build_search_context(self) -> str:
         """Build rich context for image search using German adverb expertise.
 

@@ -9,20 +9,12 @@ from __future__ import annotations
 import hashlib
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.services.anthropic_service import AnthropicService
+from langlearn.services.audio import AudioService
 from langlearn.services.pexels_service import PexelsService
-
-if TYPE_CHECKING:
-    from langlearn.services.audio_service import AudioService
-else:
-    # Runtime import to avoid circular dependency
-    try:
-        from langlearn.services.audio_service import AudioService
-    except ImportError:
-        AudioService = None  # type: ignore[misc,assignment]
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +22,7 @@ logger = logging.getLogger(__name__)
 class MediaEnricher:
     """Abstract base class for media enrichment."""
 
-    def enrich_with_media(
-        self, domain_model: MediaGenerationCapable
-    ) -> dict[str, Any]:
+    def enrich_with_media(self, domain_model: MediaGenerationCapable) -> dict[str, Any]:
         """Enrich domain model with media using its domain expertise.
 
         Args:
@@ -49,7 +39,7 @@ class StandardMediaEnricher(MediaEnricher):
 
     def __init__(
         self,
-        audio_service: "AudioService",
+        audio_service: AudioService,
         pexels_service: PexelsService,
         anthropic_service: AnthropicService,
         audio_base_path: Path,
@@ -74,9 +64,7 @@ class StandardMediaEnricher(MediaEnricher):
         self._audio_base_path.mkdir(parents=True, exist_ok=True)
         self._image_base_path.mkdir(parents=True, exist_ok=True)
 
-    def enrich_with_media(
-        self, domain_model: MediaGenerationCapable
-    ) -> dict[str, Any]:
+    def enrich_with_media(self, domain_model: MediaGenerationCapable) -> dict[str, Any]:
         """Enrich domain model with media using its domain expertise.
 
         Args:
@@ -90,26 +78,32 @@ class StandardMediaEnricher(MediaEnricher):
 
         media_data: dict[str, Any] = {}
 
-        # Generate audio using domain model's audio strategy
+        # Generate all audio segments using domain model's audio strategy
         try:
-            audio_text = domain_model.get_combined_audio_text()
-            if audio_text:
-                audio_hash = self._generate_content_hash(audio_text)
-                audio_filename = f"{audio_hash}.mp3"
-                audio_path = self._audio_base_path / audio_filename
+            audio_segments = domain_model.get_audio_segments()
+            logger.debug(
+                f"Generating {len(audio_segments)} audio segments for {model_name}: "
+                f"{list(audio_segments.keys())}"
+            )
 
-                if not audio_path.exists():
-                    logger.debug(f"Generating audio: {audio_text[:50]}...")
-                    self._audio_service.generate_audio(audio_text, audio_path)
-                    logger.info(f"Generated audio: {audio_path}")
-                else:
-                    logger.debug(f"Audio exists: {audio_path}")
+            for audio_field, audio_text in audio_segments.items():
+                if audio_text:
+                    audio_hash = self._generate_content_hash(audio_text)
+                    audio_filename = f"{audio_hash}.mp3"
+                    audio_path = self._audio_base_path / audio_filename
 
-                media_data["word_audio"] = audio_filename
+                    if not audio_path.exists():
+                        logger.debug(f"Generating {audio_field}: {audio_text[:50]}...")
+                        generated_path = self._audio_service.generate_audio(audio_text)
+                        logger.info(f"Generated {audio_field}: {generated_path}")
+                    else:
+                        logger.debug(f"{audio_field} exists: {audio_path}")
+
+                    media_data[audio_field] = audio_filename
         except Exception as e:
             logger.warning(f"Audio generation failed for {model_name}: {e}")
 
-        # Generate image using domain model's image strategy  
+        # Generate image using domain model's image strategy
         try:
             # First check if image already exists before calling expensive Anthropic API
             model_word = self._extract_primary_word(domain_model)
@@ -139,7 +133,7 @@ class StandardMediaEnricher(MediaEnricher):
                     else:
                         logger.debug(f"No search query generated for {model_name}")
                 else:
-                    logger.debug(f"No image strategy available for {model_name}")
+                    logger.debug(f"No image strategy available for {model_name}")  # type: ignore[unreachable]
         except Exception as e:
             logger.warning(f"Image generation failed for {model_name}: {e}")
 
@@ -189,17 +183,21 @@ class StandardMediaEnricher(MediaEnricher):
         """Extract the primary word from domain model for filename generation."""
         # Use domain model's primary identifier for filename
         if hasattr(domain_model, "noun"):
-            return cast(str, domain_model.noun)
+            return cast("str", domain_model.noun)
         elif hasattr(domain_model, "word"):
-            return cast(str, domain_model.word)
+            return cast("str", domain_model.word)
         elif hasattr(domain_model, "phrase"):
             # Use first word of phrase for filename
-            phrase = cast(str, domain_model.phrase)
+            phrase = cast("str", domain_model.phrase)
             return phrase.split()[0] if phrase else "phrase"
         elif hasattr(domain_model, "verb"):
-            return cast(str, domain_model.verb)
+            return cast("str", domain_model.verb)
         elif hasattr(domain_model, "preposition"):
-            return cast(str, domain_model.preposition)
+            return cast("str", domain_model.preposition)
+        elif hasattr(domain_model, "nominativ"):
+            # Article domain model - use gender and type for unique filename
+            article = cast("Any", domain_model)  # Article type
+            return f"{article.geschlecht}_{article.artikel_typ}"
         else:
             # Fallback to class name
             return type(domain_model).__name__.lower()

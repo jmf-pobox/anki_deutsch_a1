@@ -278,6 +278,21 @@ class Negation(MediaGenerationCapable):
         """
         return f"{self.word}. {self.example}"
 
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for negation cards.
+
+        Negations require two audio segments:
+        - word_audio: The negation word and example sentence
+        - example_audio: The example sentence demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
+        }
+
     def _get_fallback_search_terms(self) -> str:
         """Get fallback search terms using negation concept mappings."""
 
