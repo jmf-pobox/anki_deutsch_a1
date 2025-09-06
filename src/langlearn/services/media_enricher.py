@@ -109,20 +109,24 @@ class StandardMediaEnricher(MediaEnricher):
         except Exception as e:
             logger.warning(f"Audio generation failed for {model_name}: {e}")
 
-        # Generate image using domain model's image strategy
+        # Generate image using domain model's image strategy  
         try:
-            image_strategy = domain_model.get_image_search_strategy(
-                self._anthropic_service
-            )
-            if image_strategy is not None:
-                search_query = image_strategy()
-                if search_query:
-                    # Use domain model class name for image filename
-                    model_word = self._extract_primary_word(domain_model)
-                    image_filename = f"{model_word.lower()}.jpg"
-                    image_path = self._image_base_path / image_filename
+            # First check if image already exists before calling expensive Anthropic API
+            model_word = self._extract_primary_word(domain_model)
+            image_filename = f"{model_word.lower()}.jpg"
+            image_path = self._image_base_path / image_filename
 
-                    if not image_path.exists():
+            if image_path.exists():
+                logger.debug(f"Image exists: {image_path}")
+                media_data["image"] = image_filename
+            else:
+                # Image doesn't exist - now use domain model's image strategy
+                image_strategy = domain_model.get_image_search_strategy(
+                    self._anthropic_service
+                )
+                if image_strategy is not None:
+                    search_query = image_strategy()
+                    if search_query:
                         logger.debug(f"Generating image for query: {search_query}")
                         success = self._pexels_service.download_image(
                             search_query, str(image_path)
@@ -133,8 +137,9 @@ class StandardMediaEnricher(MediaEnricher):
                         else:
                             logger.warning(f"Image generation failed: {search_query}")
                     else:
-                        logger.debug(f"Image exists: {image_path}")
-                        media_data["image"] = image_filename
+                        logger.debug(f"No search query generated for {model_name}")
+                else:
+                    logger.debug(f"No image strategy available for {model_name}")
         except Exception as e:
             logger.warning(f"Image generation failed for {model_name}: {e}")
 
