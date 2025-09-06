@@ -136,18 +136,21 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
-            from .services import get_anthropic_service, get_translation_service
+            from .services import get_anthropic_service
             from .services.media_enricher import StandardMediaEnricher
 
-            # Get translation service for improved image search
-            translation_service = get_translation_service()
+            # Translation service not needed for domain-model MediaEnricher
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()
+            if anthropic_service is None:
+                raise ValueError("AnthropicService is required for media enrichment")
 
             self._media_enricher = StandardMediaEnricher(
-                media_service=self._media_service,
+                audio_service=actual_audio_service,
+                pexels_service=actual_pexels_service,
                 anthropic_service=anthropic_service,
-                translation_service=translation_service,
+                audio_base_path=project_root / "data" / "audio",
+                image_base_path=project_root / "data" / "images",
             )
         else:
             self._media_enricher = None
@@ -299,24 +302,53 @@ class DeckBuilder:
             if generate_media and self._media_enricher:
                 logger.info(f"Generating media for {record_type} records...")
 
-                # Collect all records and domain models for batch enrichment
-                record_dicts = []
-                domain_models: list[None] = []
-                for rec in records:
-                    # Clean Pipeline: Records include type info
-                    record_dicts.append(rec.to_enrichment_dict())
-                    # For media enrichment, pass None as domain model
-                    # since records are self-contained and include type information
-                    domain_models.append(None)
+                # Convert Records to Domain Models for media enrichment
+                from langlearn.services.record_to_model_factory import (
+                    RecordToModelFactory,
+                )
 
-                # Batch enrich all records
-                try:
-                    enriched_list = self._media_enricher.enrich_records(
-                        record_dicts, domain_models
-                    )
-                except Exception as e:
-                    logger.error(f"Batch enrichment failed for {record_type}: {e}")
-                    enriched_list = [{} for _ in records]
+                record_dicts = []
+                domain_models = []
+                skipped_indices = []
+
+                for i, rec in enumerate(records):
+                    try:
+                        domain_model = RecordToModelFactory.create_domain_model(rec)
+                        record_dicts.append(rec.to_dict())
+                        domain_models.append(domain_model)
+                    except ValueError as e:
+                        logger.info(f"No domain model for {type(rec).__name__}: {e}")
+                        # Track records without domain models
+                        skipped_indices.append(i)
+                        continue
+
+                # Batch enrich records that have domain models
+                enriched_list = []
+                if record_dicts and domain_models:
+                    try:
+                        enriched_list = self._media_enricher.enrich_records(
+                            record_dicts, domain_models
+                        )
+                    except Exception as e:
+                        logger.error(f"Batch enrichment failed for {record_type}: {e}")
+                        enriched_list = [{} for _ in record_dicts]
+
+                # Reconstruct enriched data for all records, including skipped ones
+                all_enriched: list[dict[str, Any]] = []
+                enriched_idx = 0
+                for i in range(len(records)):
+                    if i in skipped_indices:
+                        # No domain model - use empty media data
+                        all_enriched.append({})
+                    else:
+                        # Has domain model - use enriched media data
+                        if enriched_idx < len(enriched_list):
+                            all_enriched.append(enriched_list[enriched_idx])
+                        else:
+                            all_enriched.append({})
+                        enriched_idx += 1
+
+                enriched_list = all_enriched
 
                 # Keep only media-related fields to merge into cards
                 media_keys = {
@@ -332,16 +364,13 @@ class DeckBuilder:
                     "wir_audio",
                 }
                 for enriched in enriched_list:
-                    if isinstance(enriched, dict):
-                        # CRITICAL FIX: Don't filter out empty values - let
-                        # CardBuilder handle them
-                        # The `and v` condition was causing data loss when MediaEnricher
-                        # couldn't generate media (e.g., API failures, missing files)
-                        enriched_data_list.append(
-                            {k: v for k, v in enriched.items() if k in media_keys}
-                        )
-                    else:
-                        enriched_data_list.append({})
+                    # CRITICAL FIX: Don't filter out empty values - let
+                    # CardBuilder handle them
+                    # The `and v` condition was causing data loss when MediaEnricher
+                    # couldn't generate media (e.g., API failures, missing files)
+                    enriched_data_list.append(
+                        {k: v for k, v in enriched.items() if k in media_keys}
+                    )
             else:
                 # No media generation - create empty enrichment data
                 enriched_data_list = [{}] * len(records)

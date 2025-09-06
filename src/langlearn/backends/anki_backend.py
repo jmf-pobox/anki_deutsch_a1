@@ -93,9 +93,13 @@ class AnkiBackend(DeckBackend):
         from langlearn.services import get_anthropic_service
 
         anthropic_service = get_anthropic_service()
+        if anthropic_service is None:
+            raise ValueError("AnthropicService is required for media enrichment")
+
         self._media_enricher = StandardMediaEnricher(
-            self._media_service,
-            anthropic_service,
+            audio_service=self._media_service._audio_service,
+            pexels_service=self._media_service._pexels_service,
+            anthropic_service=anthropic_service,
             audio_base_path=self._project_root / "data" / "audio",
             image_base_path=self._project_root / "data" / "images",
         )
@@ -351,12 +355,9 @@ class AnkiBackend(DeckBackend):
                 if audio_field:
                     cloze_record["audio"] = audio_field
 
-                try:
-                    enriched = self._media_enricher.enrich_record(
-                        cloze_record, domain_model=None
-                    )
-                except Exception:
-                    enriched = cloze_record
+                # Legacy media enrichment removed - now handled by deck_builder
+                # through domain model-based MediaEnricher
+                enriched = cloze_record
 
                 return [
                     enriched.get("text", ""),
@@ -377,10 +378,10 @@ class AnkiBackend(DeckBackend):
                         record, record_type
                     )
 
-                    # Enrich record using MediaEnricher
-                    enriched_record_dict = self._media_enricher.enrich_record(
-                        record.to_dict(), domain_model
-                    )
+                    # Enrich record using MediaEnricher with domain model
+                    media_data = self._media_enricher.enrich_with_media(domain_model)
+                    enriched_record_dict = record.to_dict()
+                    enriched_record_dict.update(media_data)
 
                     # Convert back to field list format for backward compatibility
                     # The specific field order depends on the record type
