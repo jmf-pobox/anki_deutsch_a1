@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -155,10 +156,17 @@ class Article(MediaGenerationCapable):
 
         Returns:
             Callable that generates appropriate image search terms for article concepts
+
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
         """
 
         def generate_search_terms() -> str:
-            """Generate image search terms for German article concepts."""
+            """Generate image search terms for German article concepts.
+
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
             logger.debug(
                 f"Generating search terms for article: "
                 f"'{self.nominativ}' ({self.geschlecht})"
@@ -182,15 +190,24 @@ class Article(MediaGenerationCapable):
                 # Request educational/conceptual imagery suitable for language learning
                 search_terms = ai_service.generate_image_query(context)
 
-                logger.debug(f"Generated search terms: {search_terms}")
-                return search_terms
+                if search_terms and search_terms.strip():
+                    logger.debug(f"Generated search terms: {search_terms}")
+                    return search_terms.strip()
 
-            except Exception as e:
-                logger.error(
-                    f"Error generating search terms for article '{self.nominativ}': {e}"
+                # AI service returned empty result - this is a service failure
+                raise MediaGenerationError(
+                    f"AI service returned empty image search query for article "
+                    f"'{self.nominativ}'"
                 )
-                # Fallback to educational German language learning imagery
-                return "German language learning classroom educational grammar"
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
+                raise MediaGenerationError(
+                    f"Failed to generate image search for article "
+                    f"'{self.nominativ}': {e}"
+                ) from e
 
         return generate_search_terms
 

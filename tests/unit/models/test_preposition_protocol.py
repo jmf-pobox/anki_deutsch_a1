@@ -76,7 +76,7 @@ class TestPrepositionProtocolCompliance:
         # Should raise MediaGenerationError when AI service fails (images required)
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for 'in'",
+            match="Failed to generate image search for preposition 'in'",
         ):
             use_media_capable(preposition, mock_service)
 

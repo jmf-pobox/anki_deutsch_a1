@@ -7,6 +7,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.records import BaseRecord, create_record
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService
@@ -390,13 +391,15 @@ class TestCardBuilder:
             )
         )
 
-        # Build cards - should handle error gracefully
+        # Build cards - should fail fast on first error
         # Convert to BaseRecord list for type compatibility
         base_records: list[BaseRecord] = list(records)
-        cards = card_builder.build_cards_from_records(base_records)
 
-        # Should only return the successful card
-        assert len(cards) == 1
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to build card from record 1.*Template error",
+        ):
+            card_builder.build_cards_from_records(base_records)
 
     def test_anki_field_to_record_field_mapping(
         self, card_builder: CardBuilder
@@ -471,7 +474,9 @@ class TestCardBuilderIntegration:
             template_dir.mkdir()
 
             # Create template files with DE_de naming convention
-            (template_dir / "noun_DE_de_front.html").write_text("{{Noun}} ({{Article}})")
+            (template_dir / "noun_DE_de_front.html").write_text(
+                "{{Noun}} ({{Article}})"
+            )
             (template_dir / "noun_DE_de_back.html").write_text("{{English}}")
             (template_dir / "noun_DE_de.css").write_text(".card { color: blue; }")
 

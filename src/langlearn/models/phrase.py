@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -119,7 +120,9 @@ class Phrase(MediaGenerationCapable):
 
         Returns:
             Callable that when invoked returns image search terms as string.
-            Falls back to direct English translation if service fails.
+
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
 
         Example:
             >>> phrase = Phrase(phrase="Guten Morgen!", english="Good morning!",
@@ -129,7 +132,11 @@ class Phrase(MediaGenerationCapable):
         """
 
         def generate_search_terms() -> str:
-            """Execute search term generation strategy with phrase context."""
+            """Execute search term generation strategy with phrase context.
+
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
             logger.debug(f"Generating search terms for phrase: '{self.phrase}'")
 
             try:
@@ -140,14 +147,20 @@ class Phrase(MediaGenerationCapable):
                     ai_generated_terms = result.strip()
                     logger.info(f"AI terms for '{self.phrase}': '{ai_generated_terms}'")
                     return ai_generated_terms
-            except Exception as e:
-                logger.warning(f"AI generation failed for '{self.phrase}': {e}")
-                # Service failed, use fallback
-                pass
 
-            # Fallback to direct English translation
-            logger.info(f"Fallback terms for '{self.phrase}': '{self.english}'")
-            return self.english
+                # AI service returned empty result - this is a service failure
+                raise MediaGenerationError(
+                    f"AI service returned empty image search query for phrase "
+                    f"'{self.phrase}'"
+                )
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
+                raise MediaGenerationError(
+                    f"Failed to generate image search for phrase '{self.phrase}': {e}"
+                ) from e
 
         return generate_search_terms
 

@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.services.pexels_service import PexelsService, Photo, PhotoSize
 from tests.test_utils import mock_env
 
@@ -287,11 +288,13 @@ class TestPexelsService:
 
     def test_search_photos_exception(self, service: PexelsService) -> None:
         """Test search_photos exception handling."""
-        with patch.object(service, "_make_request", side_effect=Exception("API Error")):
-            photos = service.search_photos("test query")
-
-            # Should return empty list on exception
-            assert photos == []
+        with (
+            patch.object(service, "_make_request", side_effect=Exception("API Error")),
+            pytest.raises(
+                MediaGenerationError, match="Failed to search Pexels for 'test query'"
+            ),
+        ):
+            service.search_photos("test query")
 
     def test_download_image_success(
         self, service: PexelsService, sample_photo: Photo
@@ -324,21 +327,28 @@ class TestPexelsService:
 
     def test_download_image_no_photos_found(self, service: PexelsService) -> None:
         """Test download_image when no photos are found."""
-        with patch.object(service, "search_photos", return_value=[]):
-            result = service.download_image("nonexistent query", "test.jpg")
-
-            assert result is False
+        with (
+            patch.object(service, "search_photos", return_value=[]),
+            pytest.raises(
+                MediaGenerationError,
+                match="No photos found for query: 'nonexistent query'",
+            ),
+        ):
+            service.download_image("nonexistent query", "test.jpg")
 
     def test_download_image_exception(
         self, service: PexelsService, sample_photo: Photo
     ) -> None:
         """Test download_image exception handling."""
-        with patch.object(
-            service, "search_photos", side_effect=Exception("Search error")
+        with (
+            patch.object(
+                service, "search_photos", side_effect=Exception("Search error")
+            ),
+            pytest.raises(
+                MediaGenerationError, match="Failed to download image for 'test query'"
+            ),
         ):
-            result = service.download_image("test query", "test.jpg")
-
-            assert result is False
+            service.download_image("test query", "test.jpg")
 
     def test_download_image_download_exception(
         self, service: PexelsService, sample_photo: Photo
@@ -348,10 +358,11 @@ class TestPexelsService:
             patch.object(service, "search_photos", return_value=[sample_photo]),
             patch("requests.get", side_effect=HTTPError("Download failed")),
             patch("random.choice", return_value=sample_photo),
+            pytest.raises(
+                MediaGenerationError, match="Failed to download image for 'test query'"
+            ),
         ):
-            result = service.download_image("test query", "test.jpg")
-
-            assert result is False
+            service.download_image("test query", "test.jpg")
 
     def test_download_image_file_write_exception(
         self, service: PexelsService, sample_photo: Photo
@@ -366,10 +377,12 @@ class TestPexelsService:
             patch("requests.get", return_value=mock_download_response),
             patch("random.choice", return_value=sample_photo),
             patch("builtins.open", side_effect=OSError("Permission denied")),
+            pytest.raises(
+                MediaGenerationError,
+                match="Failed to download image for 'test query'.*Permission denied",
+            ),
         ):
-            result = service.download_image("test query", "test.jpg")
-
-            assert result is False
+            service.download_image("test query", "test.jpg")
 
     def test_get_image_url_success(
         self, service: PexelsService, sample_photo: Photo
@@ -382,19 +395,27 @@ class TestPexelsService:
 
     def test_get_image_url_no_photos_found(self, service: PexelsService) -> None:
         """Test get_image_url when no photos are found."""
-        with patch.object(service, "search_photos", return_value=[]):
-            url = service.get_image_url("nonexistent query")
-
-            assert url is None
+        with (
+            patch.object(service, "search_photos", return_value=[]),
+            pytest.raises(
+                MediaGenerationError,
+                match="No photos found for query: 'nonexistent query'",
+            ),
+        ):
+            service.get_image_url("nonexistent query")
 
     def test_get_image_url_exception(self, service: PexelsService) -> None:
         """Test get_image_url exception handling."""
-        with patch.object(
-            service, "search_photos", side_effect=Exception("Search error")
+        with (
+            patch.object(
+                service, "search_photos", side_effect=Exception("Search error")
+            ),
+            pytest.raises(
+                MediaGenerationError,
+                match="Failed to get image URL for 'test query'.*Search error",
+            ),
         ):
-            url = service.get_image_url("test query")
-
-            assert url is None
+            service.get_image_url("test query")
 
     def test_get_image_url_different_sizes(
         self, service: PexelsService, sample_photo: Photo

@@ -120,6 +120,9 @@ class CardBuilder:
 
         Returns:
             List of (field_values, note_type) tuples ready for backend
+
+        Raises:
+            MediaGenerationError: If any card building fails
         """
         logger.debug("Building cards from %d records", len(records))
 
@@ -136,7 +139,11 @@ class CardBuilder:
                 cards.append(card)
             except Exception as e:
                 logger.error("Failed to build card from record %d: %s", i, e)
-                continue
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(
+                    f"Failed to build card from record {i}: {e}"
+                ) from e
 
         logger.debug("Successfully built %d/%d cards", len(cards), len(records))
         return cards

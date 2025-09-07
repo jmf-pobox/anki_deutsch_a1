@@ -84,35 +84,38 @@ class Preposition(MediaGenerationCapable):
 
         Returns:
             Callable that when invoked returns image search terms as string.
-            Falls back to direct English translation if service fails.
+
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
         """
 
         def generate_search_terms() -> str:
-            """Execute search term generation strategy with preposition context."""
+            """Execute search term generation strategy with preposition context.
+
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
             try:
                 # Use domain expertise to build rich context for the service
                 context = self._build_search_context()
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except ValueError as e:
-                logger.error(
-                    f"AI service configuration error for '{self.preposition}': {e}"
-                )
-                raise MediaGenerationError(
-                    f"AI service configuration error for '{self.preposition}': {e}"
-                ) from e
-            except Exception as e:
-                logger.error(
-                    f"Unexpected error in AI image search for '{self.preposition}': {e}"
-                )
-                raise MediaGenerationError(
-                    f"Failed to generate image search for '{self.preposition}': {e}"
-                ) from e
 
-            # This should never be reached due to exceptions above,
-            # but required for type checking
-            return self.english
+                # AI service returned empty result - this is a service failure
+                raise MediaGenerationError(
+                    f"AI service returned empty image search query for preposition "
+                    f"'{self.preposition}'"
+                )
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
+                raise MediaGenerationError(
+                    f"Failed to generate image search for preposition "
+                    f"'{self.preposition}': {e}"
+                ) from e
 
         return generate_search_terms
 

@@ -2,6 +2,9 @@
 
 from unittest.mock import Mock
 
+import pytest
+
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.noun import Noun
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
@@ -66,17 +69,20 @@ class TestNounProtocolCompliance:
             example="Das Haus ist sehr schön.",
         )
 
-        # Create mock service that fails to simulate fallback
+        # Test audio text works independently
+        audio_text = noun.get_combined_audio_text()
+        assert audio_text == "das Haus, die Häuser"
+
+        # Create mock service that fails
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
-        # Should work through protocol interface with fallback when service fails
-        search_terms, audio = use_media_capable(noun, mock_service)
-
-        assert isinstance(search_terms, str)
-        assert isinstance(audio, str)
-        assert search_terms == "house"  # Direct English fallback for concrete noun
-        assert audio == "das Haus, die Häuser"
+        # Should raise MediaGenerationError when service fails (no more fallbacks)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Haus'",
+        ):
+            use_media_capable(noun, mock_service)
 
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""
@@ -143,8 +149,8 @@ class TestNounProtocolCompliance:
         assert "metaphorical representations" in context
         assert "Abstract" in context
 
-    def test_fallback_handling_for_concrete_noun(self) -> None:
-        """Test fallback behavior for concrete nouns when service fails."""
+    def test_service_failure_raises_exception_for_concrete_noun(self) -> None:
+        """Test exception behavior for concrete nouns when service fails."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -157,13 +163,16 @@ class TestNounProtocolCompliance:
         )
 
         strategy = noun.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to direct English translation for concrete nouns
-        assert result == "dog"
+        # Should raise MediaGenerationError when AI service fails (no fallbacks)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Hund'",
+        ):
+            strategy()
 
-    def test_fallback_handling_for_abstract_noun(self) -> None:
-        """Test fallback behavior for abstract nouns when service fails."""
+    def test_service_failure_raises_exception_for_abstract_noun(self) -> None:
+        """Test exception behavior for abstract nouns when service fails."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -176,10 +185,13 @@ class TestNounProtocolCompliance:
         )
 
         strategy = noun.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to simple English translation
-        assert result == "love"
+        # Should raise MediaGenerationError when AI service fails (no fallbacks)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Liebe'",
+        ):
+            strategy()
 
     def test_gender_context_in_search_terms(self) -> None:
         """Test that gender context is included in search context."""

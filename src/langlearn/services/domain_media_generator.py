@@ -39,6 +39,9 @@ class DomainMediaGenerator:
 
         Returns:
             Path to generated audio file, or None if generation failed
+
+        Raises:
+            MediaGenerationError: If audio generation fails
         """
         if not text or not text.strip():
             logger.debug("Skipping audio generation for empty text")
@@ -47,8 +50,12 @@ class DomainMediaGenerator:
         try:
             return self._media_service.generate_audio(text)
         except Exception as e:
-            logger.warning(f"Audio generation failed for '{text[:50]}...': {e}")
-            return None
+            logger.error(f"Audio generation failed for '{text[:50]}...': {e}")
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to generate audio for '{text[:50]}...': {e}"
+            ) from e
 
     def generate_image(self, query: str, backup_query: str | None = None) -> str | None:
         """Generate/download image for the given search query.
@@ -59,6 +66,9 @@ class DomainMediaGenerator:
 
         Returns:
             Path to generated/downloaded image, or None if generation failed
+
+        Raises:
+            MediaGenerationError: If image generation fails
         """
         if not query or not query.strip():
             logger.debug("Skipping image generation for empty query")
@@ -77,10 +87,19 @@ class DomainMediaGenerator:
                 )
                 return self._media_service.generate_image(backup_query)
 
-            return None
+            # Both primary and backup failed - raise exception
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"No photos found for query '{query}' and backup query '{backup_query}'"
+            )
         except Exception as e:
-            logger.warning(f"Image generation failed for '{query}': {e}")
-            return None
+            logger.error(f"Image generation failed for '{query}': {e}")
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to generate image for '{query}': {e}"
+            ) from e
 
     def get_context_enhanced_query(self, word: str, english: str, example: str) -> str:
         """Get context-enhanced search query from German sentence analysis.
@@ -135,6 +154,9 @@ class DomainMediaGenerator:
 
         Returns:
             Dictionary containing media generation statistics
+
+        Raises:
+            MediaGenerationError: If stats collection fails
         """
         try:
             if hasattr(self._media_service, "get_stats"):
@@ -145,17 +167,28 @@ class DomainMediaGenerator:
                 return {"stats": str(stats)}
             return {"media_service_stats": "unavailable"}
         except Exception as e:
-            logger.warning(f"Could not get media service stats: {e}")
-            return {"error": str(e)}
+            logger.error(f"Could not get media service stats: {e}")
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(f"Failed to get media service stats: {e}") from e
 
     def clear_cache(self) -> None:
-        """Clear any caches in the underlying media service."""
+        """Clear any caches in the underlying media service.
+
+        Raises:
+            MediaGenerationError: If cache clearing fails
+        """
         try:
             if hasattr(self._media_service, "clear_cache"):
                 self._media_service.clear_cache()
                 logger.info("Media service cache cleared")
         except Exception as e:
-            logger.warning(f"Could not clear media service cache: {e}")
+            logger.error(f"Could not clear media service cache: {e}")
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to clear media service cache: {e}"
+            ) from e
 
 
 class MockDomainMediaGenerator:

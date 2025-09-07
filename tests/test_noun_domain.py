@@ -2,6 +2,7 @@
 
 import pytest
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.noun import Noun
 
 
@@ -111,12 +112,16 @@ class TestNounDomainBehavior:
             example="Die Katze schläft.",
             related="",
         )
-        # Test strategy fallback when AI service fails
+        # Test strategy fails fast when AI service fails
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("AI failed")
         strategy = noun.get_image_search_strategy(mock_service)
-        result = strategy()
-        assert result == "cat"
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Katze'.*AI failed",
+        ):
+            strategy()
 
     def test_fallback_search_terms_abstract(self) -> None:
         """Test fallback search terms for abstract concepts use direct translation."""
@@ -134,8 +139,12 @@ class TestNounDomainBehavior:
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("AI failed")
         strategy = love_noun.get_image_search_strategy(mock_service)
-        result = strategy()
-        assert result == "love"
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Liebe'.*AI failed",
+        ):
+            strategy()
 
         freedom_noun = Noun(
             noun="Freiheit",
@@ -146,10 +155,14 @@ class TestNounDomainBehavior:
             related="",
         )
         strategy = freedom_noun.get_image_search_strategy(mock_service)
-        result = strategy()
-        assert result == "freedom"
 
-        # Test fallback for any abstract concept
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Freiheit'.*AI failed",
+        ):
+            strategy()
+
+        # Test fail-fast for any abstract concept
         abstract_noun = Noun(
             noun="Weisheit",
             article="die",
@@ -159,8 +172,12 @@ class TestNounDomainBehavior:
             related="",
         )
         strategy = abstract_noun.get_image_search_strategy(mock_service)
-        result = strategy()
-        assert result == "wisdom"
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Weisheit'.*AI failed",
+        ):
+            strategy()
 
     def test_domain_methods_integration(self) -> None:
         """Test that domain methods work together correctly."""
@@ -177,14 +194,18 @@ class TestNounDomainBehavior:
         # All methods should work
         assert concrete_noun.is_concrete() is True
         assert concrete_noun.get_combined_audio_text() == "der Hund, die Hunde"
-        # Test fallback behavior when AI service fails
+        # Test fail-fast behavior when AI service fails
         from unittest.mock import Mock
 
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("AI failed")
         strategy = concrete_noun.get_image_search_strategy(mock_service)
-        fallback_result = strategy()
-        assert fallback_result == "dog"
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Hund'.*AI failed",
+        ):
+            strategy()
 
         # Test an abstract noun
         abstract_noun = Noun(
@@ -198,10 +219,14 @@ class TestNounDomainBehavior:
 
         assert abstract_noun.is_concrete() is False
         assert abstract_noun.get_combined_audio_text() == "die Hoffnung, die "
-        # Test abstract noun fallback
+        # Test abstract noun also fails fast
         strategy = abstract_noun.get_image_search_strategy(mock_service)
-        fallback_result = strategy()
-        assert fallback_result == "hope"
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Hoffnung'.*AI failed",
+        ):
+            strategy()
 
     @pytest.mark.parametrize(
         "noun,article,english,plural,expected_audio",

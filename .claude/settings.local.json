@@ -56,7 +56,8 @@
       "Bash(for file in tests/test_backend_interface.py tests/test_media_integration.py)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

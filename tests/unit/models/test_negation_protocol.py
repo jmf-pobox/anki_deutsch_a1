@@ -285,6 +285,6 @@ class TestNegationProtocolCompliance:
         # Should raise MediaGenerationError for empty result
         with pytest.raises(
             MediaGenerationError,
-            match="Unexpected fallback execution for negation 'nicht'",
+            match="AI service returned empty image search query for negation 'nicht'",
         ):
             strategy()

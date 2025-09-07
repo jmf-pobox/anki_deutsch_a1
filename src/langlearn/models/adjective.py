@@ -269,7 +269,9 @@ class Adjective(MediaGenerationCapable):
 
         Returns:
             Callable that when invoked returns image search terms as string.
-            Falls back to concept mappings if service fails.
+
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
 
         Example:
             >>> adjective = Adjective(word="schön", english="beautiful",
@@ -280,93 +282,33 @@ class Adjective(MediaGenerationCapable):
         """
 
         def generate_search_terms() -> str:
-            """Execute search term generation strategy with adjective context."""
+            """Execute search term generation strategy with adjective context.
+
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
             try:
                 # Use domain expertise to build rich context for the service
                 context = self._build_search_context()
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except ValueError as e:
-                logger.error(f"AI service configuration error for '{self.word}': {e}")
+
+                # AI service returned empty result - this is a service failure
                 raise MediaGenerationError(
-                    f"AI service configuration error for '{self.word}': {e}"
-                ) from e
-            except Exception as e:
-                logger.error(
-                    f"Unexpected error in AI image search for '{self.word}': {e}"
+                    f"AI service returned empty image search query for adjective "
+                    f"'{self.word}'"
                 )
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
                 raise MediaGenerationError(
                     f"Failed to generate image search for adjective '{self.word}': {e}"
                 ) from e
 
-            # This should never be reached due to exceptions above,
-            # but required for type checking
-            return self._get_fallback_search_terms()
-
         return generate_search_terms
-
-    def _get_fallback_search_terms(self) -> str:
-        """Get fallback search terms using concept mappings."""
-
-        # Enhanced concept mappings for difficult-to-visualize adjectives
-        concept_mappings = {
-            "impolite": "rude behavior angry person frown",
-            "polite": "courteous person handshake smile greeting",
-            "honest": "trustworthy person handshake truth",
-            "dishonest": "lying person finger crossed deception",
-            "patient": "calm waiting person meditation zen",
-            "impatient": "frustrated waiting person clock time",
-            "responsible": "reliable person checklist tasks organization",
-            "irresponsible": "careless person mess chaos disorganized",
-            "mature": "adult professional person business suit",
-            "immature": "childish person tantrum emotional",
-            "independent": "self-reliant person solo achievement success",
-            "dependent": "needy person help support assistance",
-            "confident": "assured person podium presentation speaking",
-            "insecure": "uncertain person hiding shy timid",
-            "generous": "giving person donation charity sharing",
-            "selfish": "greedy person hoarding money grabbing",
-            "humble": "modest person bowing respectful gesture",
-            "arrogant": "proud person nose up superior attitude",
-            "optimistic": "positive person sunrise thumbs up smile",
-            "pessimistic": "negative person storm clouds frown down",
-            "creative": "artistic person paintbrush palette art",
-            "boring": "dull person yawn sleep monotone gray",
-            "interesting": "engaging person books light bulb discovery",
-            "lazy": "inactive person couch sleep procrastination",
-            "hardworking": "diligent person desk work computer busy",
-            "organized": "neat person files folders clean desk",
-            "messy": "cluttered person chaos scattered papers disorder",
-            "punctual": "timely person clock watch schedule calendar",
-            "late": "delayed person running clock time pressure",
-            "friendly": "welcoming person handshake smile greeting",
-            "unfriendly": "cold person crossed arms rejection distance",
-            "helpful": "supportive person assistance helping hand",
-            "unhelpful": "uncooperative person refusal blocking gesture",
-            "kind": "compassionate person heart care gentle touch",
-            "cruel": "harsh person anger aggression violence",
-            "fair": "just person scales balance equality justice",
-            "unfair": "biased person unequal scales discrimination",
-            "logical": "rational person brain thinking analysis charts",
-            "illogical": "irrational person confusion question marks chaos",
-            "practical": "useful person tools hammer work utility",
-            "impractical": "useless person broken tools waste inefficient",
-        }
-
-        english_lower = self.english.lower().strip()
-
-        # Check for exact matches first
-        if english_lower in concept_mappings:
-            return concept_mappings[english_lower]
-
-        # Check for partial matches (for compound words)
-        for key, mapping in concept_mappings.items():
-            if key in english_lower or english_lower in key:
-                return mapping
-
-        # Default: use the English translation
-        return self.english
 
     def _build_search_context(self) -> str:
         """Build rich context for image search using German adjective expertise.

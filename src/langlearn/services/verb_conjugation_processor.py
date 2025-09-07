@@ -55,6 +55,9 @@ class VerbConjugationProcessor:
 
         Returns:
             List of (field_values, note_type) tuples ready for Anki backend
+
+        Raises:
+            MediaGenerationError: If verb card generation fails
         """
         logger.info(
             "Processing %d verb records for multi-card generation", len(records)
@@ -80,7 +83,11 @@ class VerbConjugationProcessor:
                 )
             except Exception as e:
                 logger.error("Failed to create cards for verb '%s': %s", infinitive, e)
-                continue
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(
+                    f"Failed to create cards for verb '{infinitive}': {e}"
+                ) from e
 
         logger.info(
             "Successfully generated %d total cards from %d verbs",
@@ -207,7 +214,11 @@ class VerbConjugationProcessor:
                 logger.error(
                     "Failed to create %s card for %s: %s", record.tense, infinitive, e
                 )
-                continue
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(
+                    f"Failed to create {record.tense} card for {infinitive}: {e}"
+                ) from e
 
         return cards
 
@@ -258,6 +269,9 @@ class VerbConjugationProcessor:
 
         Returns:
             Formatted card tuple or None if creation failed
+
+        Raises:
+            MediaGenerationError: If card creation fails
         """
         # Map tense to specific record type for template selection
         tense_to_record_type = {
@@ -287,7 +301,11 @@ class VerbConjugationProcessor:
                 record.infinitive,
                 e,
             )
-            return None
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to create {record.tense} card for {record.infinitive}: {e}"
+            ) from e
 
     def _create_conjugation_card(
         self, record: VerbConjugationRecord, enriched_data: dict[str, Any] | None

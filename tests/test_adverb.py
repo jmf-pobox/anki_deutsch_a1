@@ -288,8 +288,8 @@ class TestImageSearchStrategy:
         ):
             strategy()
 
-    def test_image_search_strategy_empty_result_fallback(self) -> None:
-        """Test fallback when service returns empty result."""
+    def test_image_search_strategy_empty_result_raises_error(self) -> None:
+        """Test exception when service returns empty result."""
         mock_service = Mock()
         mock_service.generate_image_query.return_value = ""  # Empty result
 
@@ -301,10 +301,13 @@ class TestImageSearchStrategy:
         )
 
         strategy = adverb.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to example sentence
-        assert result == "Ich bin nie müde."
+        # Should raise MediaGenerationError when service returns empty result
+        with pytest.raises(
+            MediaGenerationError,
+            match="AI service returned empty image search query for adverb 'nie'",
+        ):
+            strategy()
 
 
 class TestEdgeCases:

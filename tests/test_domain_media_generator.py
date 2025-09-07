@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.services.domain_media_generator import DomainMediaGenerator
 
 
@@ -61,14 +62,10 @@ class TestDomainMediaGenerator:
         """Test audio generation when service raises exception."""
         mock_media_service.generate_audio.side_effect = Exception("Service error")
 
-        with patch(
-            "langlearn.services.domain_media_generator.logger.warning"
-        ) as mock_logger:
-            result = generator.generate_audio("test text")
-
-            assert result is None
-            mock_logger.assert_called_once()
-            assert "Audio generation failed" in mock_logger.call_args[0][0]
+        with pytest.raises(
+            MediaGenerationError, match="Failed to generate audio for 'test text...'"
+        ):
+            generator.generate_audio("test text")
 
     def test_generate_image_success(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
@@ -136,30 +133,24 @@ class TestDomainMediaGenerator:
         """Test image generation when service raises exception."""
         mock_media_service.generate_image.side_effect = Exception("Service error")
 
-        with patch(
-            "langlearn.services.domain_media_generator.logger.warning"
-        ) as mock_logger:
-            result = generator.generate_image("test query")
+        with pytest.raises(
+            MediaGenerationError, match="Failed to generate image for 'test query'"
+        ):
+            generator.generate_image("test query")
 
-            assert result is None
-            mock_logger.assert_called_once()
-            assert "Image generation failed" in mock_logger.call_args[0][0]
-
-    def test_generate_image_exception_returns_none(
+    def test_generate_image_exception_raises_error(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
     ) -> None:
-        """Test image generation when service throws exception returns None."""
+        """Test image generation when service throws exception raises
+        MediaGenerationError."""
         mock_media_service.generate_image.side_effect = Exception("Service error")
 
-        with patch(
-            "langlearn.services.domain_media_generator.logger.warning"
-        ) as mock_logger:
-            result = generator.generate_image("query")
+        with pytest.raises(
+            MediaGenerationError, match="Failed to generate image for 'query'"
+        ):
+            generator.generate_image("query")
 
-            assert result is None
-            mock_media_service.generate_image.assert_called_once_with("query")
-            mock_logger.assert_called_once()
-            assert "Image generation failed" in mock_logger.call_args[0][0]
+        mock_media_service.generate_image.assert_called_once_with("query")
 
     def test_get_context_enhanced_query_all_params(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
@@ -283,14 +274,10 @@ class TestDomainMediaGenerator:
         """Test get_stats when service raises exception."""
         mock_media_service.get_stats.side_effect = Exception("Stats error")
 
-        with patch(
-            "langlearn.services.domain_media_generator.logger.warning"
-        ) as mock_logger:
-            result = generator.get_stats()
-
-            assert result == {"error": "Stats error"}
-            mock_logger.assert_called_once()
-            assert "Could not get media service stats" in mock_logger.call_args[0][0]
+        with pytest.raises(
+            MediaGenerationError, match="Failed to get media service stats"
+        ):
+            generator.get_stats()
 
     def test_clear_cache_service_has_method(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
@@ -322,13 +309,10 @@ class TestDomainMediaGenerator:
         """Test clear_cache when service raises exception."""
         mock_media_service.clear_cache.side_effect = Exception("Cache error")
 
-        with patch(
-            "langlearn.services.domain_media_generator.logger.warning"
-        ) as mock_logger:
+        with pytest.raises(
+            MediaGenerationError, match="Failed to clear media service cache"
+        ):
             generator.clear_cache()
-
-            mock_logger.assert_called_once()
-            assert "Could not clear media service cache" in mock_logger.call_args[0][0]
 
 
 if __name__ == "__main__":

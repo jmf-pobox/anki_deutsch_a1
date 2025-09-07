@@ -233,7 +233,9 @@ class Negation(MediaGenerationCapable):
 
         Returns:
             Callable that when invoked returns image search terms as string.
-            Falls back to type-specific concept mappings if service fails.
+
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
 
         Example:
             >>> negation = Negation(word="nicht", english="not",
@@ -244,31 +246,31 @@ class Negation(MediaGenerationCapable):
         """
 
         def generate_search_terms() -> str:
-            """Execute search term generation strategy with negation context."""
+            """Execute search term generation strategy with negation context.
+
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
             try:
                 # Use domain expertise to build rich context for the service
                 context = self._build_search_context()
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except ValueError as e:
-                logger.error(f"AI service configuration error for '{self.word}': {e}")
+
+                # AI service returned empty result - this is a service failure
                 raise MediaGenerationError(
-                    f"AI service configuration error for '{self.word}': {e}"
-                ) from e
-            except Exception as e:
-                logger.error(
-                    f"Unexpected error in AI image search for '{self.word}': {e}"
+                    f"AI service returned empty image search query for negation "
+                    f"'{self.word}'"
                 )
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
                 raise MediaGenerationError(
                     f"Failed to generate image search for negation '{self.word}': {e}"
                 ) from e
-
-            # This should never be reached due to exceptions above,
-            # but required for type checking
-            raise MediaGenerationError(
-                f"Unexpected fallback execution for negation '{self.word}'"
-            )  # pragma: no cover
 
         return generate_search_terms
 
