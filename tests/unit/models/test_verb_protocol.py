@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.models.verb import Verb
+from langlearn.languages.german.models.verb import Verb
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 

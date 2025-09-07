@@ -3,7 +3,7 @@
 import pytest
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.adverb import Adverb, AdverbType
+from langlearn.languages.german.models.adverb import Adverb, AdverbType
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
     ImageQueryGenerationProtocol,

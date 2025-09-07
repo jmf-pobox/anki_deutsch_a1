@@ -13,7 +13,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.adverb import (
+from langlearn.languages.german.models.adverb import (
     GERMAN_ADVERB_TYPES,
     GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP,
     Adverb,

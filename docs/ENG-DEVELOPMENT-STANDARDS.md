@@ -125,6 +125,7 @@ class TestCardBuilder:
 ### **🔴 MANDATORY - Code Quality Standards**
 
 #### **Import Organization**
+
 ```python
 # ✅ CORRECT: Clean import structure  
 from langlearn.models import BaseRecord, NounRecord, create_record
@@ -132,8 +133,10 @@ from langlearn.services import CardBuilder, TemplateService
 from langlearn.backends import AnkiBackend
 
 # ❌ INCORRECT: Mixing layers
-from langlearn.models.noun import Noun  # Skip - use records instead
-from langlearn.services.card_builder import _private_method  # Never import private
+from langlearn.languages.german.models.noun import
+    Noun  # Skip - use records instead
+from langlearn.services.card_builder import
+    _private_method  # Never import private
 ```
 
 #### **Error Handling Standards**

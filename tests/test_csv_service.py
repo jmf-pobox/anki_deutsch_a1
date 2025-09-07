@@ -9,7 +9,7 @@ from unittest.mock import mock_open, patch
 import pytest
 from pydantic import BaseModel, ValidationError, field_validator
 
-from langlearn.models.records import AdjectiveRecord, NounRecord
+from langlearn.languages.german.records.records import AdjectiveRecord, NounRecord
 from langlearn.services.csv_service import CSVService
 
 
@@ -278,7 +278,7 @@ class TestCSVServiceRecords:
         self, csv_service: CSVService, temp_noun_csv: Path
     ) -> None:
         """Test reading noun CSV as records."""
-        from langlearn.models.records import NounRecord
+        from langlearn.languages.german.records.records import NounRecord
 
         records = csv_service.read_csv_as_records(temp_noun_csv, "noun")
 
@@ -350,7 +350,7 @@ class TestCSVServiceRecords:
         self, csv_service: CSVService, temp_noun_csv: Path
     ) -> None:
         """Test convenience method for reading noun records."""
-        from langlearn.models.records import NounRecord
+        from langlearn.languages.german.records.records import NounRecord
 
         records = csv_service.read_noun_records(temp_noun_csv)
 

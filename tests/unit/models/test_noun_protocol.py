@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.noun import Noun
+from langlearn.languages.german.models.noun import Noun
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
     ImageQueryGenerationProtocol,

@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from langlearn.models.records import BaseRecord, create_record
+from langlearn.languages.german.records.records import BaseRecord, create_record
 
 logger = logging.getLogger(__name__)
 
@@ -278,7 +278,7 @@ class RecordMapper:
             raise ValueError(f"Unsupported record type: {record_type}")
 
         # Use the record classes' field name methods
-        from langlearn.models.records import RECORD_TYPE_REGISTRY
+        from langlearn.languages.german.records.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
         return record_class.get_field_names()
@@ -299,7 +299,7 @@ class RecordMapper:
             raise ValueError(f"Unsupported record type: {record_type}")
 
         # Use the record classes' field count methods
-        from langlearn.models.records import RECORD_TYPE_REGISTRY
+        from langlearn.languages.german.records.records import RECORD_TYPE_REGISTRY
 
         record_class = RECORD_TYPE_REGISTRY[record_type]
         return record_class.get_expected_field_count()

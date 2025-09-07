@@ -3,7 +3,7 @@
 import pytest
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.noun import Noun
+from langlearn.languages.german.models.noun import Noun
 
 
 class TestNounDomainBehavior:

@@ -8,7 +8,7 @@ import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.records import BaseRecord, create_record
+from langlearn.languages.german.records.records import BaseRecord, create_record
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService
 

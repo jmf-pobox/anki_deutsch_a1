@@ -32,7 +32,7 @@ from .services.service_container import (
 from .services.template_service import TemplateService
 
 if TYPE_CHECKING:
-    from .models.records import BaseRecord
+    from langlearn.languages.german.records.records import BaseRecord
 
 logger = logging.getLogger(__name__)
 
@@ -389,7 +389,7 @@ class DeckBuilder:
 
             # Special handling for verb conjugation records - use multi-card generation
             if record_type == "verbconjugation":
-                from .models.records import VerbConjugationRecord
+                from langlearn.languages.german.records.records import VerbConjugationRecord
 
                 # Cast records to the proper type for verb conjugation processing
                 verb_records = [
@@ -406,7 +406,7 @@ class DeckBuilder:
 
             # Special handling for unified articles (MediaEnricher + specialized cards)
             elif record_type == "unified_article":
-                from .models.records import (
+                from langlearn.languages.german.records.records import (
                     ArticleRecord,
                     IndefiniteArticleRecord,
                     NegativeArticleRecord,

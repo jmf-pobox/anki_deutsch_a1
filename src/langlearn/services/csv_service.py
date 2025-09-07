@@ -1,12 +1,11 @@
 """Generic CSV data provider service for German language learning."""
 
 import csv
-import logging
 import logging.handlers
 from pathlib import Path
 from typing import TypeVar
 
-from langlearn.models.records import BaseRecord
+from langlearn.languages.german.records.records import BaseRecord
 from langlearn.services.record_mapper import RecordMapper
 
 # Set up logging

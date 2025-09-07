@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-from langlearn.models.adjective import Adjective
-from langlearn.models.noun import Noun
-from langlearn.models.preposition import Preposition
-from langlearn.models.verb import Verb
+from langlearn.languages.german.models.adjective import Adjective
+from langlearn.languages.german.models.noun import Noun
+from langlearn.languages.german.models.preposition import Preposition
+from langlearn.languages.german.models.verb import Verb
 from langlearn.services.csv_service import CSVService
 
 

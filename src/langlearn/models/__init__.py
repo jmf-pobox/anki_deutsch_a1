@@ -1,7 +1,7 @@
 """Models for German language learning data."""
 
 # Clean Pipeline Architecture - Record system
-from .records import (
+from langlearn.languages.german.records.records import (
     AdjectiveRecord,
     AdverbRecord,
     BaseRecord,

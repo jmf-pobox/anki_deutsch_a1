@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock
 
-from langlearn.models.records import VerbConjugationRecord
+from langlearn.languages.german.records.records import VerbConjugationRecord
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.verb_conjugation_processor import VerbConjugationProcessor
 

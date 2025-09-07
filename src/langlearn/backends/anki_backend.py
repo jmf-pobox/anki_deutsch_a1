@@ -20,14 +20,14 @@ from langlearn.exceptions import (
     DataProcessingError,
     MediaGenerationError,
 )
-from langlearn.models.adjective import Adjective
-from langlearn.models.adverb import Adverb, AdverbType
-from langlearn.models.negation import Negation, NegationType
-from langlearn.models.noun import Noun
-from langlearn.models.phrase import Phrase
-from langlearn.models.preposition import Preposition
-from langlearn.models.records import create_record
-from langlearn.models.verb import Verb
+from langlearn.languages.german.models.adjective import Adjective
+from langlearn.languages.german.models.adverb import Adverb, AdverbType
+from langlearn.languages.german.models.negation import Negation, NegationType
+from langlearn.languages.german.models.noun import Noun
+from langlearn.languages.german.models.phrase import Phrase
+from langlearn.languages.german.models.preposition import Preposition
+from langlearn.languages.german.records.records import create_record
+from langlearn.languages.german.models.verb import Verb
 
 # Removed unused MediaServiceProtocol import - using concrete MediaService
 from langlearn.services.audio import AudioService
@@ -362,7 +362,7 @@ class AnkiBackend(DeckBackend):
 
                 # Create Article domain model from cloze data to enable media generation
                 try:
-                    from langlearn.models.article import Article
+                    from langlearn.languages.german.models.article import Article
 
                     # Create Article domain model with cloze data
                     # The Article model contains the German linguistic logic
