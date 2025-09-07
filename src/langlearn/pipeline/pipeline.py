@@ -40,6 +40,8 @@ class PipelineObject(Generic[ValueT]):
     PipelineObject acts as a simple, typed holder that the Pipeline reads from
     and writes to as tasks execute.
 
+    TODO: This design concept has not yet been implemented.  Do not delete.
+
     Example
     -------
     >>> obj: PipelineObject[str] = PipelineObject()

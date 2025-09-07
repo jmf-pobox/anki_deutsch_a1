@@ -16,7 +16,7 @@ The Anki German Language Deck Generator transforms CSV vocabulary data into prod
 
 ### Data Flow Pipeline
 ```
-CSV File → RecordMapper → Records → MediaEnricher → CardBuilder → AnkiBackend → .apkg File
+CSV File → Domain Models → MediaEnricher → AnkiBackend → .apkg File
 ```
 
 ### Architecture Principles
@@ -48,89 +48,100 @@ Mann,der,Maskulinum,Männer,man,Der Mann arbeitet.,Familie & Beziehungen,
 
 ---
 
-### 2. RecordMapper Service
-**Responsibility**: Transform CSV rows into strongly-typed Record objects
+### 2. Domain Model Creation
+**Responsibility**: Transform CSV rows into rich domain model instances
 
-**Location**: `src/langlearn/services/record_mapper.py`
+**Location**: `src/langlearn/models/` (noun.py, adjective.py, etc.)
 
 **Process**:
 ```python
-def create_record(record_type: str, csv_row: list[str]) -> BaseRecord:
-    """Map CSV data to appropriate Record type."""
-    if record_type == "noun":
-        return NounRecord(
-            noun=csv_row[0],
-            article=csv_row[1],
-            gender=csv_row[2],
-            plural=csv_row[3],
-            english=csv_row[4],
-            example=csv_row[5]
-        )
+# Direct domain model instantiation from CSV
+def create_noun_from_csv(csv_row: list[str]) -> Noun:
+    """Create Noun domain model from CSV data."""
+    return Noun(
+        noun=csv_row[0],
+        article=csv_row[1], 
+        english=csv_row[4],
+        plural=csv_row[3],
+        example=csv_row[5]
+        # Validation occurs in __post_init__
+    )
 ```
 
 **Key Points**:
-- Validates CSV data against Record schemas
-- Handles type conversion and defaults
-- Provides error messages for invalid data
-- Currently supports 7 word types (noun, adjective, adverb, negation, verb, preposition, phrase)
+- Direct instantiation of dataclass domain models
+- Automatic validation in `__post_init__` methods
+- MediaGenerationCapable protocol compliance
+- Currently supports all 7 word types with uniform architecture
 
 ---
 
-### 3. Record Models
-**Responsibility**: Lightweight data transfer objects (DTOs) for vocabulary data
+### 3. Domain Models
+**Responsibility**: Rich German language models with MediaGenerationCapable protocol
 
-**Location**: `src/langlearn/models/records.py`
+**Location**: `src/langlearn/models/` (individual files per word type)
 
 **Example Structure**:
 ```python
-class NounRecord(BaseRecord):
-    """Record for German noun data."""
-    noun: str = Field(..., description="German noun")
-    article: str = Field(..., description="der/die/das")
-    gender: str = Field(..., description="Maskulinum/Femininum/Neutrum")
-    plural: str = Field(..., description="Plural form")
-    english: str = Field(..., description="English translation")
-    example: str = Field(..., description="Example sentence")
+@dataclass
+class Noun(MediaGenerationCapable):
+    """Modern dataclass model for German nouns."""
+    noun: str
+    article: str
+    english: str
+    plural: str
+    example: str
+    related: str = field(default="")
     
-    def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary for processing."""
-        return {
-            "noun": self.noun,
-            "article": self.article,
-            "gender": self.gender,
-            "plural": self.plural,
-            "english": self.english,
-            "example": self.example
-        }
+    def __post_init__(self) -> None:
+        """Validate noun data after initialization."""
+        required_fields = ["noun", "article", "english", "example"]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
+    
+    def get_combined_audio_text(self) -> str:
+        """Get text for audio generation."""
+        return f"{self.article} {self.noun}. {self.example}"
+    
+    def get_image_search_strategy(self) -> str:
+        """Get search strategy for image generation."""
+        return f"{self.english} concrete object"
 ```
 
 **Key Points**:
-- Pure data containers with validation
-- No business logic or external dependencies
-- Pydantic models for automatic validation
-- `to_dict()` method for serialization
+- Modern Python dataclass architecture
+- Inline validation in `__post_init__` methods
+- MediaGenerationCapable protocol implementation
+- German language expertise built into models
+- Zero external dependencies (no Pydantic)
 
 ---
 
 ### 4. MediaEnricher Service
-**Responsibility**: Generate and attach media files (audio/images) to vocabulary items
+**Responsibility**: Generate and attach media files using MediaGenerationCapable protocol
 
 **Location**: `src/langlearn/services/media_enricher.py`
 
 **Process**:
 ```python
-def enrich_record(record: BaseRecord) -> dict[str, str]:
-    """Generate media for record."""
+def enrich_model(model: MediaGenerationCapable) -> dict[str, str]:
+    """Generate media for any MediaGenerationCapable model."""
     enriched_data = {}
     
+    # Use protocol methods for intelligent generation
+    audio_text = model.get_combined_audio_text()
+    image_strategy = model.get_image_search_strategy()
+    
     # Generate audio if needed
-    if not self._audio_exists(word):
-        audio_path = self._generate_audio(word)
+    if not self._audio_exists(audio_text):
+        audio_path = self._generate_audio(audio_text)
         enriched_data["word_audio"] = audio_path
     
     # Generate image if needed
-    if not self._image_exists(query):
-        image_path = self._generate_image(query)
+    if not self._image_exists(image_strategy):
+        image_path = self._generate_image(image_strategy)
         enriched_data["image"] = image_path
     
     return enriched_data
@@ -145,42 +156,46 @@ def enrich_record(record: BaseRecord) -> dict[str, str]:
 
 ---
 
-### 5. CardBuilder Service
-**Responsibility**: Transform enriched records into formatted Anki card data
+### 5. AnkiBackend Direct Processing
+**Responsibility**: Create Anki cards directly from domain models
 
-**Location**: `src/langlearn/services/card_builder.py`
+**Location**: `src/langlearn/backends/anki_backend.py`
 
 **Process**:
 ```python
-def build_card_from_record(
-    record: BaseRecord, 
-    enriched_data: dict[str, str]
-) -> tuple[list[str], NoteType]:
-    """Build Anki card from record and media."""
+def process_noun(self, noun_data: list[str]) -> tuple[list[str], NoteType]:
+    """Process noun using domain model."""
     
-    # Get field mapping for record type
-    field_names = self._get_field_names_for_record_type(record_type)
+    # Create domain model (validation in __post_init__)
+    noun = Noun(
+        noun=noun_data[0],
+        article=noun_data[1],
+        english=noun_data[4],
+        plural=noun_data[3],
+        example=noun_data[5]
+    )
     
-    # Extract values from record
-    record_dict = record.to_dict()
+    # Generate media using protocol methods
+    enriched_data = self._media_enricher.enrich_model(noun)
     
-    # Combine with enriched media data
-    complete_data = {**record_dict, **enriched_data}
+    # Format card fields directly from model
+    field_values = [
+        f"{noun.article} {noun.noun}",
+        noun.english,
+        noun.example,
+        enriched_data.get("word_audio", ""),
+        enriched_data.get("image", "")
+        # ... additional fields
+    ]
     
-    # Map to Anki field values
-    field_values = [complete_data.get(field, "") for field in field_names]
-    
-    # Get appropriate note type
-    note_type = self._get_note_type(record_type)
-    
-    return field_values, note_type
+    return field_values, self._get_noun_note_type()
 ```
 
 **Key Points**:
-- Maps record fields to Anki note fields
-- Combines vocabulary data with media paths
-- Returns formatted data ready for Anki
-- Maintains field order for templates
+- Direct domain model processing (no intermediate DTOs)
+- MediaGenerationCapable protocol for intelligent media generation
+- Built-in German language expertise in models
+- Validation occurs at model creation time
 
 ---
 

@@ -18,12 +18,13 @@ from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
 
 # Legacy domain model imports removed - using Clean Pipeline Records
-from .protocols import AudioServiceProtocol, MediaServiceProtocol, PexelsServiceProtocol
+# Removed unused protocol imports - services are used directly
 from .services.article_application_service import ArticleApplicationService
+from .services.audio import AudioService
 from .services.card_builder import CardBuilder
-from .services.csv_service import CSVService
 from .services.media_file_registrar import MediaFileRegistrar
-from .services.media_service import MediaService
+from .services.media_service import MediaGenerationConfig, MediaService
+from .services.pexels_service import PexelsService
 from .services.record_mapper import RecordMapper
 from .services.service_container import (
     get_translation_service as _get_translation_service,
@@ -75,27 +76,19 @@ class DeckBuilder:
         self,
         deck_name: str,
         backend_type: str = "anki",
-        enable_media_generation: bool = True,
-        audio_service: AudioServiceProtocol | None = None,
-        pexels_service: PexelsServiceProtocol | None = None,
-        media_service: MediaServiceProtocol | None = None,
+        audio_service: AudioService | None = None,
+        pexels_service: PexelsService | None = None,
     ) -> None:
         """Initialize the deck builder.
 
         Args:
             deck_name: Name of the Anki deck to create
             backend_type: Backend to use ("anki")
-            enable_media_generation: Whether to enable media generation services
-            audio_service: Optional AudioServiceProtocol for dependency injection
-            pexels_service: Optional PexelsServiceProtocol for dependency injection
-            media_service: Optional MediaServiceProtocol for dependency injection
+            audio_service: Optional AudioService for dependency injection
+            pexels_service: Optional PexelsService for dependency injection
         """
         self.deck_name = deck_name
         self.backend_type = backend_type
-        self.enable_media_generation = enable_media_generation
-
-        # Initialize services
-        self._csv_service = CSVService()
 
         # Initialize Clean Pipeline services
         self._record_mapper = RecordMapper()
@@ -113,64 +106,51 @@ class DeckBuilder:
         # Initialize StandardMediaEnricher (type annotation)
         self._media_enricher: Any = None  # Will be properly initialized later
 
-        # Initialize media service with dependency injection
-        self._media_service: MediaServiceProtocol | None = None
-        if media_service is not None:
-            # Use provided media service (for dependency injection)
-            self._media_service = media_service
-        elif enable_media_generation:
-            from .services.audio import AudioService
-            from .services.media_service import MediaGenerationConfig
-            from .services.pexels_service import PexelsService
+        # Initialize dependencies for media service
+        project_root = Path(__file__).parent.parent.parent  # Go up to project root
 
-            # Initialize dependencies for media service with dependency injection
-            project_root = Path(__file__).parent.parent.parent  # Go up to project root
+        # Use provided services or create defaults
+        actual_audio_service = audio_service or AudioService(
+            output_dir=str(project_root / "data" / "audio")
+        )
+        actual_pexels_service = pexels_service or PexelsService()
+        media_config = MediaGenerationConfig()
 
-            # Use provided services or create defaults
-            actual_audio_service = audio_service or AudioService(
-                output_dir=str(project_root / "data" / "audio")
-            )
-            actual_pexels_service = pexels_service or PexelsService()
-            media_config = MediaGenerationConfig()
-
-            # Cast to concrete types since MediaService requires concrete types
-            from typing import cast
-
-            self._media_service = cast(
-                "MediaServiceProtocol",
-                MediaService(
-                    audio_service=cast("AudioService", actual_audio_service),
-                    pexels_service=cast("PexelsService", actual_pexels_service),
-                    config=media_config,
-                    project_root=project_root,
-                ),
-            )
+        # Always create media service - no optional media
+        self._media_service = MediaService(
+            audio_service=actual_audio_service,
+            pexels_service=actual_pexels_service,
+            config=media_config,
+            project_root=project_root,
+        )
 
         # Initialize backend
         self._backend = self._create_backend(deck_name, backend_type)
 
         # Initialize managers with dependency injection
         self._deck_manager = DeckManager(self._backend)
-        # Cast MediaServiceProtocol to MediaService for MediaManager
-        media_service_for_manager = (
-            cast("MediaService", self._media_service) if self._media_service else None
-        )
-        self._media_manager = MediaManager(self._backend, media_service_for_manager)
+        self._media_manager = MediaManager(self._backend, self._media_service)
 
         # Initialize MediaFileRegistrar for Clean Pipeline
         self._media_file_registrar = MediaFileRegistrar()
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
-            from .services import get_translation_service
+            from .services import get_anthropic_service
             from .services.media_enricher import StandardMediaEnricher
 
-            # Get translation service for improved image search
-            translation_service = get_translation_service()
+            # Translation service not needed for domain-model MediaEnricher
+            # Get anthropic service for AI-powered search term generation
+            anthropic_service = get_anthropic_service()
+            if anthropic_service is None:
+                raise ValueError("AnthropicService is required for media enrichment")
 
             self._media_enricher = StandardMediaEnricher(
-                media_service=self._media_service,
-                translation_service=translation_service,
+                audio_service=actual_audio_service,
+                pexels_service=actual_pexels_service,
+                anthropic_service=anthropic_service,
+                audio_base_path=project_root / "data" / "audio",
+                image_base_path=project_root / "data" / "images",
             )
         else:
             self._media_enricher = None
@@ -231,9 +211,6 @@ class DeckBuilder:
             "verbs.csv": "verb",
             # Modern multi-tense verb system - same subdeck as basic verbs
             "verbs_unified.csv": "verb_conjugation",  # Multi-tense verb system
-            # "regular_verbs.csv": "verb",
-            # "irregular_verbs.csv": "verb",
-            # "separable_verbs.csv": "verb",
         }
 
         for filename, record_type in csv_to_record_type.items():
@@ -271,9 +248,6 @@ class DeckBuilder:
         logger.info("Reset to main deck")
 
     # Card Generation Methods (Clean Pipeline only)
-
-    # Legacy individual card generation methods removed - use generate_all_cards()
-    # with Clean Pipeline
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
         """Generate all cards using Clean Pipeline.
@@ -328,24 +302,56 @@ class DeckBuilder:
             if generate_media and self._media_enricher:
                 logger.info(f"Generating media for {record_type} records...")
 
-                # Collect all records and domain models for batch enrichment
-                record_dicts = []
-                domain_models: list[None] = []
-                for rec in records:
-                    # Clean Pipeline: Records are already in proper format
-                    record_dicts.append(rec.to_dict())
-                    # For media enrichment, pass None as domain model
-                    # since records are self-contained
-                    domain_models.append(None)
+                # Convert Records to Domain Models for media enrichment
+                from langlearn.services.record_to_model_factory import (
+                    RecordToModelFactory,
+                )
 
-                # Batch enrich all records
-                try:
-                    enriched_list = self._media_enricher.enrich_records(
-                        record_dicts, domain_models
-                    )
-                except Exception as e:
-                    logger.error(f"Batch enrichment failed for {record_type}: {e}")
-                    enriched_list = [{} for _ in records]
+                record_dicts = []
+                domain_models = []
+                skipped_indices = []
+
+                for i, rec in enumerate(records):
+                    try:
+                        domain_model = RecordToModelFactory.create_domain_model(rec)
+                        record_dicts.append(rec.to_dict())
+                        domain_models.append(domain_model)
+                    except ValueError as e:
+                        logger.warning(f"No domain model for {type(rec).__name__}: {e}")
+                        logger.warning(
+                            "CRITICAL: This record will have NO MEDIA generated!"
+                        )
+                        # Track records without domain models
+                        skipped_indices.append(i)
+                        continue
+
+                # Batch enrich records that have domain models
+                enriched_list = []
+                if record_dicts and domain_models:
+                    try:
+                        enriched_list = self._media_enricher.enrich_records(
+                            record_dicts, domain_models
+                        )
+                    except Exception as e:
+                        logger.error(f"Batch enrichment failed for {record_type}: {e}")
+                        enriched_list = [{} for _ in record_dicts]
+
+                # Reconstruct enriched data for all records, including skipped ones
+                all_enriched: list[dict[str, Any]] = []
+                enriched_idx = 0
+                for i in range(len(records)):
+                    if i in skipped_indices:
+                        # No domain model - use empty media data
+                        all_enriched.append({})
+                    else:
+                        # Has domain model - use enriched media data
+                        if enriched_idx < len(enriched_list):
+                            all_enriched.append(enriched_list[enriched_idx])
+                        else:
+                            all_enriched.append({})
+                        enriched_idx += 1
+
+                enriched_list = all_enriched
 
                 # Keep only media-related fields to merge into cards
                 media_keys = {
@@ -359,18 +365,21 @@ class DeckBuilder:
                     "ihr_audio",
                     "sie_audio",
                     "wir_audio",
+                    # Article-specific audio fields (CRITICAL FIX)
+                    "pattern_audio",
+                    "example_nom_audio",
+                    "example_akk_audio",
+                    "example_dat_audio",
+                    "example_gen_audio",
                 }
                 for enriched in enriched_list:
-                    if isinstance(enriched, dict):
-                        # CRITICAL FIX: Don't filter out empty values - let
-                        # CardBuilder handle them
-                        # The `and v` condition was causing data loss when MediaEnricher
-                        # couldn't generate media (e.g., API failures, missing files)
-                        enriched_data_list.append(
-                            {k: v for k, v in enriched.items() if k in media_keys}
-                        )
-                    else:
-                        enriched_data_list.append({})
+                    # CRITICAL FIX: Don't filter out empty values - let
+                    # CardBuilder handle them
+                    # The `and v` condition was causing data loss when MediaEnricher
+                    # couldn't generate media (e.g., API failures, missing files)
+                    enriched_data_list.append(
+                        {k: v for k, v in enriched.items() if k in media_keys}
+                    )
             else:
                 # No media generation - create empty enrichment data
                 enriched_data_list = [{}] * len(records)
@@ -395,69 +404,32 @@ class DeckBuilder:
                     verb_records, enriched_data_list
                 )
 
-            # Special handling for unified article records with noun integration
+            # Special handling for unified articles (MediaEnricher + specialized cards)
             elif record_type == "unified_article":
                 from .models.records import (
                     ArticleRecord,
                     IndefiniteArticleRecord,
                     NegativeArticleRecord,
-                    NounRecord,
                     UnifiedArticleRecord,
                 )
 
-                # Filter unified article records
-                unified_article_records = [
-                    r for r in records if isinstance(r, UnifiedArticleRecord)
-                ]
-                logger.info(
-                    f"Processing unified article system with "
-                    f"{len(unified_article_records)} article pattern records"
-                )
-
-                # Generate article pattern cards (same as before)
-                from typing import cast
-
-                article_records_for_pattern = cast(
-                    "list[ArticleRecord | IndefiniteArticleRecord | "
-                    "NegativeArticleRecord | UnifiedArticleRecord]",
-                    unified_article_records,
-                )
-                pattern_cards = self._card_builder.build_article_pattern_cards(
-                    article_records_for_pattern, enriched_data_list
-                )
-
-                # Get noun records for noun-article practice cards
-                noun_records = [
+                # Filter unified article records (supporting all article types)
+                article_records = [
                     r
-                    for r_type, record_list in records_by_type.items()
-                    if r_type == "noun"
-                    for r in record_list
-                    if isinstance(r, NounRecord)
+                    for r in records
+                    if isinstance(
+                        r,
+                        ArticleRecord
+                        | IndefiniteArticleRecord
+                        | NegativeArticleRecord
+                        | UnifiedArticleRecord,
+                    )
                 ]
 
-                if noun_records:
-                    logger.info(
-                        f"Skipping noun-article practice cards for "
-                        f"{len(noun_records)} noun records "
-                        f"(temporarily disabled for cloze testing)"
-                    )
-                    # TEMPORARY: Disable noun-article cards to focus on testing
-                    # cloze deletion system
-                    # TODO: Update ArticleApplicationService to use cloze deletion
-                    # instead of templates
-                    # noun_enriched_data: list[dict[str, Any]] = [{}] * len(
-                    #     noun_records
-                    # )
-                    # noun_article_cards = (
-                    #     self._article_service.generate_noun_article_cards(
-                    #         noun_records, noun_enriched_data
-                    #     )
-                    # )
-                    # For now, only use pattern cards (cloze deletion)
-                    cards = pattern_cards
-                else:
-                    logger.info("No noun records found for noun-article integration")
-                    cards = pattern_cards
+                # Use specialized article card building WITH enriched media data
+                cards = self._card_builder.build_article_pattern_cards(
+                    article_records, enriched_data_list
+                )
             else:
                 # Standard single-card generation for other record types
                 cards = self._card_builder.build_cards_from_records(
@@ -520,25 +492,6 @@ class DeckBuilder:
 
         return results
 
-    # Legacy fallback method removed - Clean Pipeline only
-
-    # Media Generation Methods
-
-    def generate_all_media(self) -> dict[str, Any]:
-        """Generate all media for loaded data.
-
-        Returns:
-            Statistics about media generation
-        """
-        if not self._media_service:
-            logger.warning("Media generation disabled")
-            return {}
-
-        # Media generation happens during card creation
-        # This method provides a way to pre-generate media if needed
-        logger.info("Media will be generated during card creation")
-        return self._media_manager.get_detailed_stats()
-
     # Export and Statistics Methods
 
     def export_deck(self, output_path: str | Path) -> None:
@@ -571,7 +524,7 @@ class DeckBuilder:
             "deck_info": {
                 "name": self.deck_name,
                 "backend_type": self.backend_type,
-                "media_enabled": self.enable_media_generation,
+                "media_enabled": True,
             },
             "loaded_data": {
                 # Clean Pipeline data (unified architecture)

@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Any
+from unittest.mock import Mock
 
 import pytest
 
@@ -11,14 +12,13 @@ class StubEnricher:
         self.image_name = image_name
         self.audio_name = audio_name
 
-    def enrich_record(
-        self, record: dict[str, Any], domain_model: Any
-    ) -> dict[str, Any]:
-        # Return the same record with non-empty media to prove wiring
-        enriched = dict(record)
-        enriched.setdefault("image", f'<img src="{self.image_name}">')
-        enriched.setdefault("audio", f"[sound:{self.audio_name}]")
-        return enriched
+    def enrich_with_media(self, domain_model: Any) -> dict[str, Any]:
+        # Return media data to prove wiring works
+        return {
+            "image": self.image_name,
+            "word_audio": self.audio_name,
+            "phrase_audio": self.audio_name,  # For articles treated as phrases
+        }
 
 
 @pytest.mark.parametrize(
@@ -29,9 +29,9 @@ class StubEnricher:
     ],
 )
 def test_cloze_article_backend_mapping_returns_media(
-    tmp_path: Path, note_type_name: str
+    tmp_path: Path, note_type_name: str, mock_media_service: Mock
 ) -> None:
-    backend = AnkiBackend("Test Deck")
+    backend = AnkiBackend("Test Deck", mock_media_service)
 
     # Inject stub enricher and an in-memory media service to avoid side effects
     # Monkeypatch the backend's media enricher with a stub that supplies media

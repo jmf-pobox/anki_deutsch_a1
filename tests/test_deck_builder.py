@@ -140,12 +140,9 @@ class TestGermanDeckBuilder:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
-            builder = DeckBuilder(
-                "Test Deck", backend_type="anki", enable_media_generation=False
-            )
+            builder = DeckBuilder("Test Deck", backend_type="anki")
 
-            assert builder._media_service is None
-            assert builder.enable_media_generation is False
+            assert builder._media_service is not None
 
     # Legacy CSV loading tests removed - use load_data_from_directory
 
@@ -281,56 +278,6 @@ class TestGermanDeckBuilder:
         with DeckBuilder("Test Deck", backend_type="anki") as builder:
             assert isinstance(builder, DeckBuilder)
             assert builder.deck_name == "Test Deck"
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_all_media_no_service(self, mock_anki: Mock) -> None:
-        """Test generate_all_media when media service is disabled."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder(
-            "Test Deck", backend_type="anki", enable_media_generation=False
-        )
-
-        result = builder.generate_all_media()
-        assert result == {}
-
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_generate_all_media_with_service(self, mock_anki: Mock) -> None:
-        """Test generate_all_media when media service is enabled."""
-        mock_backend = Mock(spec=DeckBackend)
-        mock_anki.return_value = mock_backend
-
-        builder = DeckBuilder("Test Deck", backend_type="anki")
-
-        mock_stats = {"files_added": 10}
-        with patch.object(
-            builder._media_manager, "get_detailed_stats"
-        ) as mock_get_stats:
-            mock_get_stats.return_value = mock_stats
-
-            result = builder.generate_all_media()
-            assert result == mock_stats
-
-    # Legacy CSV loading tests for adverbs and negations removed
-
-    # Legacy test removed: test_generate_adverb_cards_no_data
-    # - tested functionality removed from DeckBuilder
-
-    # Legacy test removed: test_generate_adverb_cards_with_data
-    # - tested functionality removed from DeckBuilder
-
-    # Legacy test removed: test_generate_negation_cards_no_data
-    # - tested functionality removed from DeckBuilder
-
-    # Legacy test removed: test_generate_negation_cards_with_data
-    # - tested functionality removed from DeckBuilder
-
-    # Legacy test removed: test_generate_adverb_cards_with_existing_media
-    # - tested functionality removed from DeckBuilder
-
-    # Legacy test removed: test_generate_negation_cards_with_media_generation
-    # - tested functionality removed from DeckBuilder
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:

@@ -89,6 +89,23 @@ Comprehensive documentation for the **Anki German Language Deck Generator** - a 
 
 ---
 
+## Technical Standards
+
+### [ENG-EXCEPTIONS.md](./ENG-EXCEPTIONS.md)
+**Purpose**: Mandatory exception handling standards  
+**Audience**: All engineers  
+**Content**:
+- Fail-fast principles aligned with Johnson's Law
+- Custom exception hierarchy and categories
+- Service availability patterns
+- Migration guidelines for eliminating fallback anti-patterns
+
+### [ENG-TECHNICAL-DEBT-AUDIT.md](./ENG-TECHNICAL-DEBT-AUDIT.md)
+**Purpose**: Comprehensive technical debt analysis  
+**Content**: Identified anti-patterns, fallback logic, remediation priority
+
+---
+
 ## Legacy Documentation
 
 **Note**: The following documents are maintained for reference but may contain outdated information. Always defer to the core documentation above for current standards.

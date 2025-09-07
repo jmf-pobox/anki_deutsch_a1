@@ -1,39 +1,176 @@
-"""Model for German nouns."""
+from __future__ import annotations
 
+import logging
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
+from langlearn.exceptions import MediaGenerationError
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-# Removed field_processor import - now pure domain model
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
+
+logger = logging.getLogger(__name__)
+
+"""German Noun Domain Model.
+
+This module contains the domain model for German nouns with specialized
+logic for German language learning applications. The module is responsible
+for:
+
+CORE RESPONSIBILITIES:
+    - Modeling German noun data (noun, article, English translation,
+    plural, example)
+    - Implementing MediaGenerationCapable protocol for media enrichment
+    - Providing German-specific linguistic validation and gender
+    classification
+    - Contributing domain expertise for image search term generation
+    - Supporting audio generation with proper article and plural pronunciation
+
+DESIGN PRINCIPLES:
+    - Domain model is SMART: Contains German noun expertise and linguistic
+    knowledge
+    - Services are DUMB: External services receive rich context, no domain
+    logic
+    - Single Responsibility: Noun logic stays in Noun model, not in services
+    - Dependency Injection: Protocol-based design for loose coupling
+
+GERMAN LINGUISTIC FEATURES:
+    - Gender system with definite articles (der/die/das)
+    - Plural formation patterns and irregular plurals
+    - Concrete vs abstract noun classification for visualization strategies
+    - Context-aware search term generation using linguistic domain knowledge
+    - Audio generation combining singular and plural forms with articles
+
+INTEGRATION POINTS:
+    - MediaGenerationCapable protocol for image/audio media enrichment
+    - ImageQueryGenerationProtocol for AI-powered search term generation
+    - MediaEnricher service for coordinated media asset generation
+
+Usage:
+    Basic usage:
+        >>> noun = Noun(
+        ...     noun="Katze",
+        ...     article="die",
+        ...     english="cat",
+        ...     plural="Katzen",
+        ...     example="Die Katze schläft auf dem Sofa."
+        ... )
+
+    Media generation with dependency injection:
+        >>> strategy = noun.get_image_search_strategy(anthropic_service)
+        >>> search_terms = strategy()  # Returns context-aware search terms
+        >>> audio_text = noun.get_combined_audio_text()  # Article + noun
+        forms
+"""
 
 
-class Noun(BaseModel):
-    """Model representing a German noun with its properties and business logic."""
+@dataclass
+class Noun(MediaGenerationCapable):
+    """German noun domain model with linguistic expertise and media
+    generation.
 
-    noun: str = Field(..., description="The German noun")
-    article: str = Field(..., description="The definite article (der/die/das)")
-    english: str = Field(..., description="English translation")
-    plural: str = Field(..., description="Plural form of the noun")
-    example: str = Field(..., description="Example sentence using the noun")
-    related: str = Field(default="", description="Related words or phrases")
+    Represents a German noun with its properties, German linguistic knowledge,
+    and specialized logic for media enrichment. German nouns are characterized
+    by their grammatical gender (reflected in articles), plural formation
+    patterns, and case declension system.
+
+    This model implements MediaGenerationCapable protocol to contribute domain
+    expertise for image and audio generation, using concrete/abstract
+    classification strategies for appropriate visual representation.
+
+    Attributes:
+        noun: The German noun (e.g., "Katze", "Haus")
+        article: Definite article indicating gender ("der", "die", "das")
+        english: English translation (e.g., "cat", "house")
+        plural: Plural form (e.g., "Katzen", "Häuser")
+        example: German example sentence demonstrating usage
+        related: Related words or phrases (optional)
+
+    Note:
+        This model follows the design principle that domain models are SMART
+        (contain expertise) while services are DUMB (execute instructions).
+    """
+
+    noun: str
+    article: str
+    english: str
+    plural: str
+    example: str
+    related: str = field(default="")
+
+    def __post_init__(self) -> None:
+        """Validate the noun data after initialization."""
+        # Validate core required fields - 'plural' and 'related' can be empty
+        required_fields = ["noun", "article", "english", "example"]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
+
+        # Validate German article (only when non-empty)
+        if (
+            self.article
+            and self.article.strip()
+            and self.article not in {"der", "die", "das"}
+        ):
+            raise ValueError(
+                f"Invalid German article: {self.article}. Must be 'der', "
+                f"'die', or 'das'"
+            )
 
     def get_combined_audio_text(self) -> str:
-        """Generate combined German noun audio text.
+        """Get combined text for German noun audio generation.
 
-        Returns audio text for: article + singular, article + plural
-        Example: "die Katze, die Katzen"
+        Combines the noun with its article in both singular and plural forms
+        to provide proper pronunciation context for German language learners.
+        This helps learners associate nouns with their grammatical gender and
+        plural formation patterns.
 
         Returns:
-            Combined text for audio generation
+            Formatted string: "{article} {noun}, {plural_with_article}" for
+            audio.
+
+        Example:
+            >>> noun = Noun(noun="Katze", article="die", english="cat",
+            ...             plural="Katzen", example="Die Katze schläft.")
+            >>> noun.get_combined_audio_text()
+            'die Katze, die Katzen'
         """
         # Check if plural already includes article
         if self.plural.startswith(("der ", "die ", "das ")):
             return f"{self.article} {self.noun}, {self.plural}"
         else:
             return f"{self.article} {self.noun}, die {self.plural}"
+
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for noun cards.
+
+        Nouns require two audio segments:
+        - word_audio: The noun with its article and plural form
+        - example_audio: The example sentence demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
+        }
+
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German noun that identifies this domain model.
+
+        Returns:
+            The German noun (e.g., "Haus", "Katze")
+        """
+        return self.noun
 
     def is_concrete(self) -> bool:
         """Determine if this noun represents a concrete concept.
@@ -67,28 +204,6 @@ class Noun(BaseModel):
             "ie",
             "ur",
             "anz",
-        ]
-
-        # Check for abstract suffixes
-        for suffix in abstract_suffixes:
-            if noun_lower.endswith(suffix):
-                return False
-
-        # Common concrete noun patterns (more likely to be concrete)
-        concrete_indicators = [
-            "chen",
-            "lein",  # Diminutives are usually concrete
-            "zeug",
-            "werk",
-            "gerät",  # Tools and objects
-        ]
-
-        for indicator in concrete_indicators:
-            if indicator in noun_lower:
-                return True
-
-        # Known abstract concept words
-        abstract_words = {
             "freiheit",
             "liebe",
             "glück",
@@ -114,124 +229,144 @@ class Noun(BaseModel):
             "gesundheit",
             "krankheit",
             "erfolg",
-        }
+        ]
 
-        if noun_lower in abstract_words:
-            return False
+        return all(not noun_lower.endswith(suffix) for suffix in abstract_suffixes)
 
-        # Known concrete objects
-        concrete_words = {
-            "hund",
-            "katze",
-            "haus",
-            "auto",
-            "baum",
-            "stuhl",
-            "tisch",
-            "buch",
-            "telefon",
-            "computer",
-            "brot",
-            "wasser",
-            "apfel",
-            "blume",
-            "berg",
-            "fluss",
-            "stadt",
-            "straße",
-            "fenster",
-            "tür",
-            "bett",
-            "küche",
-        }
+    def get_image_search_strategy(
+        self, ai_service: ImageQueryGenerationProtocol
+    ) -> Callable[[], str]:
+        """Get strategy for generating image search terms with domain
+        expertise.
 
-        if noun_lower in concrete_words:
-            return True
+        Creates a callable that uses this noun's domain knowledge to generate
+        context-aware image search terms. The noun contributes German
+        linguistic
+        expertise (concrete vs abstract classification, gender context) while
+        the anthropic service executes the actual AI processing.
 
-        # Default heuristic: assume concrete unless proven abstract
-        # This works better for vocabulary learning where most nouns
-        # taught to beginners are concrete objects
-        return True
+        Design: Domain model is SMART (provides rich context), service is DUMB
+        (processes whatever context it receives).
 
-    def get_image_search_strategy(self) -> "Callable[[], str]":
-        """Get a strategy for generating search terms without executing it immediately.
-
-        This lazy evaluation approach prevents unnecessary Anthropic API calls
-        when images already exist or aren't needed.
+        Args:
+            ai_service: Service implementing ImageQueryGenerationProtocol for
+                AI-powered search term generation.
 
         Returns:
-            A callable that when invoked will generate context-aware search terms,
-            with fallback to concrete/abstract noun handling
+            Callable that when invoked returns image search terms as string.
+
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
+
+        Example:
+            >>> noun = Noun(noun="Katze", article="die", english="cat",
+            ...             plural="Katzen", example="Die Katze schläft.")
+            >>> strategy = noun.get_image_search_strategy(ai_service)
+            >>> search_terms = strategy()  # Returns context-aware search terms
         """
 
         def generate_search_terms() -> str:
-            """Execute the search term generation strategy."""
-            # Handle empty English translation
-            if not self.english.strip():
-                return ""
+            """Execute search term generation strategy with noun context.
 
-            # Try to use Anthropic service for context-aware query generation
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
+            logger.debug(f"Generating search terms for noun: '{self.noun}'")
+
             try:
-                from langlearn.services.service_container import get_anthropic_service
+                # Use domain expertise to build rich context for the service
+                context = self._build_search_context()
+                result = ai_service.generate_image_query(context)
+                if result and result.strip():
+                    ai_generated_terms = result.strip()
+                    logger.info(f"AI terms for '{self.noun}': '{ai_generated_terms}'")
+                    return ai_generated_terms
 
-                service = get_anthropic_service()
-                if service:
-                    context_query = service.generate_pexels_query(self)
-                    if context_query and context_query.strip():
-                        return context_query.strip()
-            except Exception:
-                # Fall back to concrete/abstract handling if Anthropic service fails
-                pass
-
-            # Return fallback search terms
-            return self._get_fallback_search_terms()
+                # AI service returned empty result - this is a service failure
+                raise MediaGenerationError(
+                    f"AI service returned empty image search query for noun "
+                    f"'{self.noun}'"
+                )
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
+                raise MediaGenerationError(
+                    f"Failed to generate image search for noun '{self.noun}': {e}"
+                ) from e
 
         return generate_search_terms
 
-    def get_image_search_terms(self) -> str:
-        """Legacy method for backward compatibility - executes strategy immediately.
+    def _build_search_context(self) -> str:
+        """Build rich context for image search using German noun expertise.
 
-        Note: This method maintains compatibility but should be replaced with
-        get_image_search_strategy() for better performance.
-        """
-        strategy = self.get_image_search_strategy()
-        return strategy()
+        Constructs visualization guidance based on German linguistic
+        knowledge.
+        Considers gender (article), concrete vs abstract classification, and
+        provides type-specific strategies for representing noun concepts
+        visually.
 
-    def _get_fallback_search_terms(self) -> str:
-        """Get fallback search terms based on concrete/abstract noun handling."""
-
-        if not self.is_concrete():
-            return self._get_abstract_concept_terms()
-        return self.english  # Concrete nouns use direct English translation
-
-    def _get_abstract_concept_terms(self) -> str:
-        """Generate search terms for abstract concepts.
+        This method embodies the domain model's expertise about German
+        nouns and
+        their visualization challenges, providing rich context that
+        services can
+        use without needing to understand German linguistic classifications.
 
         Returns:
-            Enhanced search terms for abstract nouns
+            Formatted context string with:
+            - Noun details (German noun, article/gender, English translation)
+            - Concrete/abstract classification with visualization strategy
+            - Example usage and related context
+            - Instructions for generating appropriate search terms
+
+        Example:
+            For concrete noun "Katze":
+                "Focus on the physical object, use direct visual
+                representation"
+            For abstract noun "Freiheit":
+                "Use symbolic imagery, metaphorical representations"
+
+        Note:
+            This is a private method called by get_image_search_strategy() to
+            contribute domain expertise to the search term generation process.
         """
-        # Context-aware search term generation for abstract nouns
-        concept_mappings = {
-            "freedom": "person celebrating independence",
-            "love": "heart symbol family together",
-            "happiness": "smiling person joy celebration",
-            "fear": "worried person anxiety",
-            "hope": "sunrise bright future",
-            "time": "clock calendar schedule",
-            "knowledge": "books learning education",
-            "culture": "art museum heritage",
-            "music": "musical notes instruments",
-            "art": "painting gallery creative",
-            "future": "forward arrow progress",
-            "success": "trophy achievement winner",
-        }
+        # Determine visualization strategy based on concrete/abstract
+        # classification
+        if self.is_concrete():
+            visual_strategy = (
+                "Focus on the physical object, use direct visual "
+                "representation. "
+                "Show the actual item, its typical context, or environment "
+                "where "
+                "it's commonly found."
+            )
+        else:
+            visual_strategy = (
+                "Use symbolic imagery, metaphorical representations, "
+                "or visual "
+                "metaphors. Abstract concepts need creative visual "
+                "interpretation "
+                "through symbols, emotions, or representative scenarios."
+            )
 
-        english_lower = self.english.lower()
-        for key, enhanced_terms in concept_mappings.items():
-            if key in english_lower:
-                return enhanced_terms
+        # Add gender context (German linguistic feature)
+        gender_info = {"der": "masculine", "die": "feminine", "das": "neuter"}.get(
+            self.article, "unknown gender"
+        )
 
-        return f"{self.english} concept symbol"
+        return f"""
+        German noun: {self.noun} ({self.article} - {gender_info})
+        English: {self.english}
+        Plural: {self.plural}
+        Example usage: {self.example}
+        Classification: {"Concrete" if self.is_concrete() else "Abstract"}
+        noun
 
+        Challenge: Generate search terms for finding images that represent
+        this noun.
+        Visual strategy: {visual_strategy}
 
-# Removed field processing methods - now pure domain model with only business logic
+        Generate search terms that photographers would use to tag images of
+        this concept.
+        """

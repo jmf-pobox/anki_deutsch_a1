@@ -45,7 +45,7 @@ class TestServiceContainerTranslation:
     ) -> None:
         """Test translation service creation when Anthropic service fails."""
         # Arrange
-        mock_anthropic_class.side_effect = Exception("API Key not found")
+        mock_anthropic_class.side_effect = ValueError("API Key not found")
 
         container = ServiceContainer()
 
@@ -64,7 +64,7 @@ class TestServiceContainerTranslation:
         # Arrange
         mock_anthropic_instance = Mock()
         mock_anthropic_class.return_value = mock_anthropic_instance
-        mock_translation_class.side_effect = Exception("Translation service error")
+        mock_translation_class.side_effect = ValueError("Translation service error")
 
         container = ServiceContainer()
 

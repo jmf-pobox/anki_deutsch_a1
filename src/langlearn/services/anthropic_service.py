@@ -1,6 +1,5 @@
 """Service for interacting with Anthropic's Claude API."""
 
-import logging
 import logging.handlers
 import os
 from pathlib import Path
@@ -9,10 +8,12 @@ from typing import TYPE_CHECKING, Any
 import keyring
 from anthropic import Anthropic
 
+from langlearn.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
+
 if TYPE_CHECKING:
     from anthropic.types import Message
-
-from langlearn.models.adjective import Adjective
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ console_handler.setFormatter(
 logger.addHandler(console_handler)
 
 
-class AnthropicService:
+class AnthropicService(ImageQueryGenerationProtocol):
     """Service for generating Pexels search queries using Anthropic's Claude API."""
 
     client: Anthropic | None
@@ -120,27 +121,6 @@ class AnthropicService:
             logger.error(f"Error calling Anthropic API: {e}")
             raise
 
-    def _extract_key_data(self, model: Any) -> str:
-        """Extract key data from a model for prompt generation.
-
-        Args:
-            model: The model to extract data from
-
-        Returns:
-            str: Key data from the model
-        """
-        try:
-            if isinstance(model, Adjective):
-                return (
-                    f"Word: {model.word}\n"
-                    f"English: {model.english}\n"
-                    f"Example: {model.example}"
-                )
-            return str(model)
-        except Exception as e:
-            logger.error("Error extracting key data: %s", str(e))
-            return str(model)
-
     def generate_translation(
         self,
         prompt: str,
@@ -171,29 +151,28 @@ class AnthropicService:
             logger.error(f"Error generating translation: {e}")
             raise
 
-    def generate_pexels_query(self, model: Any) -> str:
-        """Generate a Pexels query prioritizing sentence context for relevant images."""
-        prompt = f"""You are a helpful assistant that generates search queries
-for finding relevant images based on sentence context.
+    def generate_image_query(self, context: Any) -> str:
+        """Generate a Pexels query from rich domain expertise context.
 
-German word: '{model.word}' (meaning: '{model.english}')
-Example sentence: '{model.example}'
+        Args:
+            context: Rich context string from domain model's _build_search_context()
+                    method containing German linguistic expertise and visualization
+                    guidance.
 
-Your task is to analyze the EXAMPLE SENTENCE FIRST to understand the visual context
-and situation where this word is used. Generate a Pexels search query that captures
-the scene, action, or visual concept from the example sentence rather than just the
-isolated word meaning.
+        Returns:
+            Search query string suitable for Pexels API.
+        """
+        prompt = f"""You are a helpful assistant that generates search queries for \
+finding relevant images.
 
-Guidelines:
-- PRIORITIZE the visual context from the example sentence over the bare word meaning
-- Extract concrete, visual elements from the sentence
-  (people, objects, actions, settings)
-- Keep the query between 2-5 words
-- Focus on what someone would actually see in the situation described
-- If the sentence shows the word in action/context, capture that action
-- Use specific, searchable terms that photographers would tag their images with
+        {context}
 
-Output only the search query, nothing else."""
+        Based on the rich context provided above, generate a concise Pexels search \
+query (2-5 words) that captures the key visual concept. Follow the visualization \
+strategy guidance provided and focus on terms that photographers would use to tag \
+their images.
+
+        Output only the search query, nothing else."""
 
         try:
             response = self._generate_response(

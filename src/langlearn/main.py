@@ -13,7 +13,7 @@ from langlearn.deck_builder import DeckBuilder
 
 # Set up logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,6 @@ def main() -> None:
         with DeckBuilder(
             deck_name=deck_name,
             backend_type="anki",  # Use AnkiBackend for production
-            enable_media_generation=True,  # Enable media generation
         ) as builder:
             print(f"🚀 Initialized {builder.backend_type} backend")
 
@@ -82,12 +81,6 @@ def main() -> None:
                 print(f"   🗂️  Subdecks: {len(subdeck_info['subdeck_names'])}")
                 for name in subdeck_info["subdeck_names"]:
                     print(f"      - {name}")
-
-            # Show media statistics if available
-            if "media_stats" in final_stats:
-                media_stats = final_stats["media_stats"]
-                print(f"   🎵 Media files: {media_stats['files_added']}")
-                print(f"   💾 Total size: {media_stats['total_size_bytes']:,} bytes")
 
             # Export deck
             output_file = output_dir / f"{deck_name.replace(' ', '_').lower()}.apkg"

@@ -2,6 +2,7 @@
 
 import pytest
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.noun import Noun
 
 
@@ -44,7 +45,7 @@ class TestNounDomainBehavior:
             article="die",
             english="cat",
             plural="Katzen",
-            example="",
+            example="Die Katze schläft.",
             related="",
         )
         assert concrete.is_concrete() is True
@@ -55,7 +56,7 @@ class TestNounDomainBehavior:
             article="die",
             english="freedom",
             plural="",
-            example="",
+            example="Die Freiheit ist wichtig.",
             related="",
         )
         assert abstract_suffix.is_concrete() is False
@@ -66,7 +67,7 @@ class TestNounDomainBehavior:
             article="die",
             english="love",
             plural="",
-            example="",
+            example="Die Liebe ist schön.",
             related="",
         )
         assert abstract_word.is_concrete() is False
@@ -92,61 +93,91 @@ class TestNounDomainBehavior:
                 article="die",
                 english="test",
                 plural="",
-                example="",
+                example="Das ist ein Test.",
                 related="",
             )
             assert noun.is_concrete() == expected, (
                 f"{noun_text} should be {'concrete' if expected else 'abstract'}"
             )
 
-    def test_get_image_search_terms_concrete(self) -> None:
-        """Test image search terms for concrete nouns use direct translation."""
+    def test_fallback_search_terms_concrete(self) -> None:
+        """Test fallback search terms for concrete nouns use direct translation."""
+        from unittest.mock import Mock
+
         noun = Noun(
             noun="Katze",
             article="die",
             english="cat",
             plural="Katzen",
-            example="",
+            example="Die Katze schläft.",
             related="",
         )
-        assert noun.get_image_search_terms() == "cat"
+        # Test strategy fails fast when AI service fails
+        mock_service = Mock()
+        mock_service.generate_image_query.side_effect = Exception("AI failed")
+        strategy = noun.get_image_search_strategy(mock_service)
 
-    def test_get_image_search_terms_abstract(self) -> None:
-        """Test enhanced search terms for abstract concepts."""
-        # Test specific concept mappings
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Katze'.*AI failed",
+        ):
+            strategy()
+
+    def test_fallback_search_terms_abstract(self) -> None:
+        """Test fallback search terms for abstract concepts use direct translation."""
+        from unittest.mock import Mock
+
+        # Test abstract noun fallback when AI service fails
         love_noun = Noun(
             noun="Liebe",
             article="die",
             english="love",
             plural="",
-            example="",
+            example="Die Liebe ist schön.",
             related="",
         )
-        result = love_noun.get_image_search_terms()
-        assert "heart symbol" in result and "family together" in result
+        mock_service = Mock()
+        mock_service.generate_image_query.side_effect = Exception("AI failed")
+        strategy = love_noun.get_image_search_strategy(mock_service)
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Liebe'.*AI failed",
+        ):
+            strategy()
 
         freedom_noun = Noun(
             noun="Freiheit",
             article="die",
             english="freedom",
             plural="",
-            example="",
+            example="Die Freiheit ist wichtig.",
             related="",
         )
-        result = freedom_noun.get_image_search_terms()
-        assert "person celebrating independence" in result
+        strategy = freedom_noun.get_image_search_strategy(mock_service)
 
-        # Test fallback for unmapped abstract concepts
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Freiheit'.*AI failed",
+        ):
+            strategy()
+
+        # Test fail-fast for any abstract concept
         abstract_noun = Noun(
             noun="Weisheit",
             article="die",
             english="wisdom",
             plural="",
-            example="",
+            example="Die Weisheit kommt mit dem Alter.",
             related="",
         )
-        result = abstract_noun.get_image_search_terms()
-        assert result == "wisdom concept symbol"
+        strategy = abstract_noun.get_image_search_strategy(mock_service)
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Weisheit'.*AI failed",
+        ):
+            strategy()
 
     def test_domain_methods_integration(self) -> None:
         """Test that domain methods work together correctly."""
@@ -163,7 +194,18 @@ class TestNounDomainBehavior:
         # All methods should work
         assert concrete_noun.is_concrete() is True
         assert concrete_noun.get_combined_audio_text() == "der Hund, die Hunde"
-        assert concrete_noun.get_image_search_terms() == "dog"
+        # Test fail-fast behavior when AI service fails
+        from unittest.mock import Mock
+
+        mock_service = Mock()
+        mock_service.generate_image_query.side_effect = Exception("AI failed")
+        strategy = concrete_noun.get_image_search_strategy(mock_service)
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Hund'.*AI failed",
+        ):
+            strategy()
 
         # Test an abstract noun
         abstract_noun = Noun(
@@ -177,7 +219,14 @@ class TestNounDomainBehavior:
 
         assert abstract_noun.is_concrete() is False
         assert abstract_noun.get_combined_audio_text() == "die Hoffnung, die "
-        assert "sunrise bright future" in abstract_noun.get_image_search_terms()
+        # Test abstract noun also fails fast
+        strategy = abstract_noun.get_image_search_strategy(mock_service)
+
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for noun 'Hoffnung'.*AI failed",
+        ):
+            strategy()
 
     @pytest.mark.parametrize(
         "noun,article,english,plural,expected_audio",
@@ -197,24 +246,44 @@ class TestNounDomainBehavior:
             article=article,
             english=english,
             plural=plural,
-            example="",
+            example=f"{article.capitalize()} {noun} ist gut.",
             related="",
         )
         assert noun_obj.get_combined_audio_text() == expected_audio
 
     def test_empty_noun_handling(self) -> None:
         """Test edge cases with empty or invalid data."""
-        # Empty noun should be considered concrete by default heuristic
-        empty_noun = Noun(
-            noun="",
-            article="der",
-            english="",
-            plural="",
-            example="",
-            related="",
-        )
-        assert empty_noun.is_concrete() is False  # Empty noun is not concrete
+        # Empty required fields should raise validation error
+        with pytest.raises(ValueError, match="Required field 'noun' cannot be empty"):
+            Noun(
+                noun="",
+                article="der",
+                english="test",
+                plural="",
+                example="Test example",
+                related="",
+            )
 
-        # But other methods should handle gracefully
-        assert empty_noun.get_combined_audio_text() == "der , die "
-        assert empty_noun.get_image_search_terms() == ""  # Direct English translation
+        with pytest.raises(
+            ValueError, match="Required field 'example' cannot be empty"
+        ):
+            Noun(
+                noun="Test",
+                article="der",
+                english="test",
+                plural="",
+                example="",
+                related="",
+            )
+
+        # But plural and related can be empty (valid for collective nouns)
+        valid_noun = Noun(
+            noun="Wasser",
+            article="das",
+            english="water",
+            plural="",  # Collective noun - no plural
+            example="Das Wasser ist kalt.",
+            related="",  # Optional field
+        )
+        assert valid_noun.is_concrete() is True
+        assert valid_noun.get_combined_audio_text() == "das Wasser, die "

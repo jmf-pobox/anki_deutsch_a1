@@ -18,7 +18,7 @@ from langlearn.backends.base import CardTemplate, NoteType
 class TestAnkiBackendBulkPerformance:
     """Test AnkiBackend bulk operations performance."""
 
-    def test_bulk_note_creation_performance(self) -> None:
+    def test_bulk_note_creation_performance(self, mock_media_service: Mock) -> None:
         """Test performance of bulk note creation operations."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -49,7 +49,7 @@ class TestAnkiBackendBulkPerformance:
             mock_collection.new_note.return_value = mock_note
             mock_collection.models.get.return_value = mock_notetype
 
-            backend = AnkiBackend("German A1 Deck")
+            backend = AnkiBackend("German A1 Deck", mock_media_service)
 
             # Create note type
             template = CardTemplate(
@@ -129,7 +129,7 @@ class TestAnkiBackendBulkPerformance:
                 # Verify collection operations were called correctly
                 assert mock_collection.add_note.call_count == 100
 
-    def test_bulk_media_generation_optimization(self) -> None:
+    def test_bulk_media_generation_optimization(self, mock_media_service: Mock) -> None:
         """Test bulk operations with media generation optimization."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -141,7 +141,7 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("German A1 Media Deck")
+            backend = AnkiBackend("German A1 Media Deck", mock_media_service)
 
             # Mock media services for performance testing
             with (
@@ -192,7 +192,9 @@ class TestAnkiBackendBulkPerformance:
                         f"Deduplication too slow: {operations_per_second:.2f} ops/sec"
                     )
 
-    def test_memory_efficiency_with_large_dataset(self) -> None:
+    def test_memory_efficiency_with_large_dataset(
+        self, mock_media_service: Mock
+    ) -> None:
         """Test memory efficiency with large dataset simulation."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -205,7 +207,7 @@ class TestAnkiBackendBulkPerformance:
             )
             mock_collection.db.scalar.return_value = 1000  # 1000 notes
 
-            backend = AnkiBackend("Large German A1 Deck")
+            backend = AnkiBackend("Large German A1 Deck", mock_media_service)
 
             # Simulate large internal state
             backend._note_type_map = {
@@ -244,7 +246,7 @@ class TestAnkiBackendBulkPerformance:
                 f"Stats computation too slow: {elapsed_time:.3f} seconds"
             )
 
-    def test_concurrent_access_simulation(self) -> None:
+    def test_concurrent_access_simulation(self, mock_media_service: Mock) -> None:
         """Test simulated concurrent access patterns for thread safety."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -256,7 +258,7 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("Concurrent Access Test")
+            backend = AnkiBackend("Concurrent Access Test", mock_media_service)
 
             # Mock media generation for concurrent testing
             with (
@@ -327,7 +329,7 @@ class TestAnkiBackendBulkPerformance:
                     f"Mixed operations too slow: {operations_per_second:.2f} ops/second"
                 )
 
-    def test_export_performance_with_large_deck(self) -> None:
+    def test_export_performance_with_large_deck(self, mock_media_service: Mock) -> None:
         """Test deck export performance with large deck simulation."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -339,7 +341,7 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("Large Export Test")
+            backend = AnkiBackend("Large Export Test", mock_media_service)
 
             # Simulate large deck with many media files
             backend._media_files = [
@@ -371,7 +373,7 @@ class TestAnkiBackendBulkPerformance:
                 assert mock_exporter.did == backend._deck_id
                 assert mock_exporter.include_media is True
 
-    def test_csv_data_processing_simulation(self) -> None:
+    def test_csv_data_processing_simulation(self, mock_media_service: Mock) -> None:
         """Test processing simulation with CSV data structure."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -383,7 +385,7 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("CSV Processing Test")
+            backend = AnkiBackend("CSV Processing Test", mock_media_service)
 
             # Simulate processing CSV-like data (typical German A1 vocabulary)
             csv_noun_data = [
@@ -473,7 +475,7 @@ class TestAnkiBackendBulkPerformance:
                     f"CSV processing too slow: {rows_per_second:.2f} rows/second"
                 )
 
-    def test_statistics_calculation_performance(self) -> None:
+    def test_statistics_calculation_performance(self, mock_media_service: Mock) -> None:
         """Test performance of statistics calculation with large datasets."""
         with (
             patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
@@ -486,7 +488,7 @@ class TestAnkiBackendBulkPerformance:
             )
             mock_collection.db.scalar.return_value = 5000  # Large note count
 
-            backend = AnkiBackend("Statistics Performance Test")
+            backend = AnkiBackend("Statistics Performance Test", mock_media_service)
 
             # Simulate large-scale statistics
             backend._note_type_map = {

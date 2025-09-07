@@ -1,54 +1,107 @@
-"""Model for German adverbs."""
+from __future__ import annotations
 
+import logging
+from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Field
+from langlearn.exceptions import MediaGenerationError
+from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-# Removed field_processor import - now pure domain model
+    from langlearn.protocols.image_query_generation_protocol import (
+        ImageQueryGenerationProtocol,
+    )
+
+logger = logging.getLogger(__name__)
+
+"""German Adverb Domain Model.
+
+This module contains the domain model for German adverbs with specialized logic for
+German language learning applications. The module is responsible for:
+
+CORE RESPONSIBILITIES:
+    - Modeling German adverb data (word, English translation, type, example)
+    - Implementing MediaGenerationCapable protocol for media enrichment
+    - Providing German-specific linguistic validation and type classification
+    - Contributing domain expertise for image search term generation
+    - Supporting audio generation with proper pronunciation context
+
+DESIGN PRINCIPLES:
+    - Domain model is SMART: Contains German adverb expertise and linguistic knowledge
+    - Services are DUMB: External services receive rich context, no domain logic
+    - Single Responsibility: Adverb logic stays in Adverb model, not in services
+    - Dependency Injection: Protocol-based design for loose coupling
+
+GERMAN LINGUISTIC FEATURES:
+    - 9 adverb types with German classifications (Ortsadverb, Zeitadverb, etc.)
+    - Type-specific visualization strategies for abstract adverbial concepts
+    - Context-aware search term generation using linguistic domain knowledge
+    - Support for both German and English type naming for compatibility
+
+INTEGRATION POINTS:
+    - MediaGenerationCapable protocol for image/audio media enrichment
+    - AnthropicServiceProtocol for AI-powered search term generation
+    - MediaEnricher service for coordinated media asset generation
+
+Usage:
+    Basic usage:
+        >>> adverb = Adverb(
+        ...     word="heute",
+        ...     english="today",
+        ...     type=AdverbType.TIME,
+        ...     example="Heute ist schönes Wetter."
+        ... )
+
+    Media generation with dependency injection:
+        >>> strategy = adverb.get_image_search_strategy(anthropic_service)
+        >>> search_terms = strategy()  # Returns context-aware search terms
+        >>> audio_text = adverb.get_combined_audio_text()  # Combined text
+"""
 
 
 class AdverbType(str, Enum):
-    """Types of German adverbs."""
+    """German adverb type classifications.
+
+    Represents the nine types of German adverbs with their German linguistic
+    classifications. Each type has specific visualization strategies for
+    image search term generation.
+
+    Attributes:
+        LOCATION: Ortsadverb - spatial adverbs (hier, dort, etc.)
+        TIME: Zeitadverb - temporal adverbs (heute, morgen, etc.)
+        FREQUENCY: Häufigkeitsadverb - frequency adverbs (oft, manchmal, etc.)
+        MANNER: Modaladverb - manner adverbs (schnell, langsam, etc.)
+        INTENSITY: Gradadverb - degree adverbs (sehr, ziemlich, etc.)
+        ADDITION: Modaladverb - additive adverbs (auch)
+        LIMITATION: Modaladverb - limiting adverbs (nur)
+        ATTITUDE: Kommentaradverb - attitudinal adverbs (leider, hoffentlich)
+        PROBABILITY: Modaladverb - probability adverbs (vielleicht, wahrscheinlich)
+    """
 
     LOCATION = "Ortsadverb"  # 8 entries
     TIME = "Zeitadverb"  # 8 entries
     FREQUENCY = "Häufigkeitsadverb"  # 6 entries
     MANNER = "Modaladverb"  # 9 entries
     INTENSITY = "Gradadverb"  # 5 entries
-    ADDITION = "Modaladverb"  # 1 entry - auch
-    LIMITATION = "Modaladverb"  # 1 entry - nur
+    ADDITION = "Modaladverb (Addition)"  # 1 entry - auch
+    LIMITATION = "Modaladverb (Limitation)"  # 1 entry - nur
     ATTITUDE = "Kommentaradverb"  # 2 entries
-    PROBABILITY = "Modaladverb"  # 2 entries - vielleicht, wahrscheinlich
+    PROBABILITY = "Modaladverb (Probability)"  # 2 entries - vielleicht, wahrscheinlich
 
 
-# German adverb type names for recognition in media enrichment
-GERMAN_ADVERB_TYPES = [
-    "Ortsadverb",
-    "Zeitadverb",
-    "Artadverb",
-    "Gradadverb",
-    "Kausaladverb",
-    "Modaladverb",
-    "Lokaladverb",
-    "Temporaladverb",
-]
+GERMAN_ADVERB_TYPES = [adverb_type.value for adverb_type in AdverbType]
 
-# Mapping from German type names to English AdverbType enum values
 GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP = {
-    # German types -> English enum equivalents
-    "Ortsadverb": AdverbType.LOCATION,  # place adverb
-    "Lokaladverb": AdverbType.LOCATION,  # local adverb
-    "Zeitadverb": AdverbType.TIME,  # time adverb
-    "Temporaladverb": AdverbType.TIME,  # temporal adverb
-    "Artadverb": AdverbType.MANNER,  # manner adverb
-    "Modaladverb": AdverbType.MANNER,  # modal adverb
-    "Gradadverb": AdverbType.INTENSITY,  # degree adverb
-    "Kausaladverb": AdverbType.MANNER,  # causal adverb
-    # English types (existing)
+    **{adverb_type.value: adverb_type for adverb_type in AdverbType},
+    # Additional German variants for broader recognition
+    "Lokaladverb": AdverbType.LOCATION,  # alternative for Ortsadverb
+    "Temporaladverb": AdverbType.TIME,  # alternative for Zeitadverb
+    "Artadverb": AdverbType.MANNER,  # alternative for Modaladverb
+    "Kausaladverb": AdverbType.MANNER,  # causal adverbs map to manner
+    # English types for backward compatibility
     "time": AdverbType.TIME,
     "place": AdverbType.LOCATION,
     "location": AdverbType.LOCATION,
@@ -57,191 +110,217 @@ GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP = {
 }
 
 
-class Adverb(BaseModel):
-    """Model representing a German adverb with its properties and business logic.
+@dataclass
+class Adverb(MediaGenerationCapable):
+    """German adverb domain model with linguistic expertise and media generation.
 
-    German adverbs are words that modify verbs, adjectives, or other adverbs.
-    They provide information about time, place, manner, degree, etc.
-    Unlike adjectives, they do not change their form.
+    Represents a German adverb with its properties, German linguistic knowledge,
+    and specialized logic for media enrichment. German adverbs are invariant words
+    that modify verbs, adjectives, or other adverbs, providing information about
+    time, place, manner, degree, etc.
+
+    This model implements MediaGenerationCapable protocol to contribute domain
+    expertise for image and audio generation, using type-specific strategies
+    for abstract adverbial concept visualization.
+
+    Attributes:
+        word: The German adverb (e.g., "heute", "schnell")
+        english: English translation (e.g., "today", "quickly")
+        type: AdverbType classification (TIME, LOCATION, MANNER, etc.)
+        example: German example sentence demonstrating usage
+
+    Note:
+        This model follows the design principle that domain models are SMART
+        (contain expertise) while services are DUMB (execute instructions).
     """
 
-    word: str = Field(..., description="The German adverb")
-    english: str = Field(..., description="English translation")
-    type: AdverbType = Field(..., description="Type of adverb")
-    example: str = Field(..., description="Example sentence using the adverb")
+    word: str
+    english: str
+    type: AdverbType
+    example: str
 
-    def validate_position(self) -> bool:
-        """Validate that the adverb is in a valid position in the example sentence.
+    def __post_init__(self) -> None:
+        """Validate the adverb data after initialization."""
+        # Validate core required fields
+        required_fields = ["word", "english", "example"]
+        for field_name in required_fields:
+            value = getattr(self, field_name)
+            if value is None or (isinstance(value, str) and not value.strip()):
+                raise ValueError(f"Required field '{field_name}' cannot be empty")
 
-        Returns:
-            bool: True if the adverb position is valid
-        """
-        # Split the example into words
-        words = self.example.rstrip(".!?").split()
-        print(f"Words: {words}")
+        # Validate type is an AdverbType enum
+        if not isinstance(self.type, AdverbType):
+            raise ValueError(f"Type must be an AdverbType, got {type(self.type)}")
 
-        # Convert words to lowercase for case-insensitive comparison
-        words_lower = [w.lower() for w in words]
-        word_lower = self.word.lower()
+    def get_image_search_strategy(
+        self, anthropic_service: ImageQueryGenerationProtocol
+    ) -> Callable[[], str]:
+        """Get strategy for generating image search terms with domain expertise.
 
-        # Find the position of the adverb
-        try:
-            adverb_pos = words_lower.index(word_lower)
-            print(f"Found {self.word} at position {adverb_pos}")
-        except ValueError:
-            print(f"Could not find {self.word} in {words}")
-            return False
+        Creates a callable that uses this adverb's domain knowledge to generate
+        context-aware image search terms. The adverb contributes type-specific
+        visualization strategies (e.g., TIME adverbs need temporal symbols) while
+        the anthropic service executes the actual AI processing.
 
-        # Time adverbs can be at the start, after the verb, or at the end
-        if self.type == AdverbType.TIME:
-            print(f"Checking time adverb position: {adverb_pos}")
-            # Can be at the start of the sentence
-            if adverb_pos == 0:
-                print("Time adverb at start - valid")
-                return True
-            # Can be after the verb or at the end
-            if adverb_pos > 0:
-                print("Time adverb after start - valid")
-                return True
+        Design: Domain model is SMART (provides rich context), service is DUMB
+        (processes whatever context it receives).
 
-        # Manner and frequency adverbs typically come after the verb (not at start)
-        if self.type in [AdverbType.MANNER, AdverbType.FREQUENCY] and adverb_pos > 1:
-            return True
-
-        # Location adverbs typically come at the end
-        if self.type == AdverbType.LOCATION and adverb_pos > 0:
-            return True
-
-        # Intensity adverbs come before what they modify
-        if self.type == AdverbType.INTENSITY and adverb_pos < len(words) - 1:
-            return True
-
-        # Modal adverbs (attitude, probability) often come in second position
-        if (
-            self.type in [AdverbType.ATTITUDE, AdverbType.PROBABILITY]
-            and adverb_pos <= 1
-        ):
-            return True
-
-        # Addition and limitation adverbs are more flexible
-        if self.type in [AdverbType.ADDITION, AdverbType.LIMITATION]:
-            return True
-
-        print("No valid position found")
-        return False
-
-    def validate_example(self) -> bool:
-        """Validate that the example contains the adverb and follows basic rules.
+        Args:
+            anthropic_service: Service implementing ImageQueryGenerationProtocol for
+                AI-powered search term generation.
 
         Returns:
-            bool: True if the example is valid
-        """
-        # Example must contain the adverb (case-insensitive)
-        if self.word.lower() not in self.example.lower():
-            print(f"Adverb {self.word} not found in example")
-            return False
+            Callable that when invoked returns image search terms as string.
 
-        # Example must be a complete sentence
-        if not any(self.example.endswith(p) for p in ".!?"):
-            print("Example missing end punctuation")
-            return False
+        Raises:
+            MediaGenerationError: When AI service returns empty result or fails.
 
-        # Example must start with a capital letter
-        if not self.example[0].isupper():
-            print("Example does not start with capital letter")
-            return False
-
-        # Check adverb position
-        return self.validate_position()
-
-    def get_image_search_strategy(self) -> "Callable[[], str]":
-        """Get a strategy for generating search terms without executing it immediately.
-
-        This lazy evaluation approach prevents unnecessary Anthropic API calls
-        when images already exist or aren't needed.
-
-        Returns:
-            A callable that when invoked will generate context-aware search terms,
-            with fallback to adverb concept mappings
+        Example:
+            >>> adverb = Adverb(word="heute", english="today", type=AdverbType.TIME,
+            ...                example="Heute regnet es.")
+            >>> strategy = adverb.get_image_search_strategy(anthropic_service)
+            >>> search_terms = strategy()  # Returns context-aware search terms
         """
 
         def generate_search_terms() -> str:
-            """Execute the search term generation strategy."""
-            if not self.english.strip():
-                return ""
+            """Execute search term generation strategy with adverb context.
 
-            # Try to use Anthropic service for context-aware query generation
+            Raises:
+                MediaGenerationError: When AI service fails or returns empty result.
+            """
             try:
-                from langlearn.services.service_container import get_anthropic_service
+                # Use domain expertise to build rich context for the service
+                context = self._build_search_context()
+                result = anthropic_service.generate_image_query(context)
+                if result and result.strip():
+                    return result.strip()
 
-                service = get_anthropic_service()
-                if service:
-                    context_query = service.generate_pexels_query(self)
-                    if context_query and context_query.strip():
-                        return context_query.strip()
-            except Exception:
-                # Fall back to concept mappings if Anthropic service fails
-                pass
-
-            # Return fallback search terms
-            return self._get_fallback_search_terms()
+                # AI service returned empty result - this is a service failure
+                raise MediaGenerationError(
+                    f"AI service returned empty image search query for adverb "
+                    f"'{self.word}'"
+                )
+            except MediaGenerationError:
+                # Re-raise our own exceptions
+                raise
+            except Exception as e:
+                # Convert any other exception to MediaGenerationError
+                raise MediaGenerationError(
+                    f"Failed to generate image search for adverb '{self.word}': {e}"
+                ) from e
 
         return generate_search_terms
 
-    def get_image_search_terms(self) -> str:
-        """Legacy method for backward compatibility - executes strategy immediately.
+    def get_combined_audio_text(self) -> str:
+        """Get combined text for German adverb audio generation.
 
-        Note: This method maintains compatibility but should be replaced with
-        get_image_search_strategy() for better performance.
+        Combines the adverb word with its example sentence to provide proper
+        pronunciation context for German language learners. The format allows
+        learners to hear both the isolated word and its usage in context.
+
+        Returns:
+            Formatted string: "{word}. {example}" for audio generation.
+
+        Example:
+            >>> adverb = Adverb(word="schnell", english="quickly",
+            ...                type=AdverbType.MANNER,
+            ...                example="Er läuft schnell.")
+            >>> adverb.get_combined_audio_text()
+            'schnell. Er läuft schnell.'
         """
-        strategy = self.get_image_search_strategy()
-        return strategy()
+        return f"{self.word}. {self.example}"
 
-    def _get_fallback_search_terms(self) -> str:
-        """Get fallback search terms using adverb concept mappings."""
+    def get_audio_segments(self) -> dict[str, str]:
+        """Get all audio segments needed for adverb cards.
 
-        # Most adverbs are abstract concepts, so use enhanced search terms
-        concept_mappings = {
-            "here": "location place here",
-            "there": "location place there",
-            "today": "calendar today current day",
-            "tomorrow": "calendar future tomorrow",
-            "yesterday": "calendar past yesterday",
-            "always": "infinity symbol always",
-            "never": "prohibition never symbol",
-            "often": "frequency often regular",
-            "sometimes": "occasionally sometimes",
-            "slowly": "slow motion turtle snail",
-            "quickly": "speed fast motion",
-            "very": "intensity emphasis very",
-            "too": "excessive too much",
-            "inside": "interior indoor inside",
-            "outside": "exterior outdoor outside",
-            "above": "up arrow above over",
-            "below": "down arrow below under",
-            "front": "forward direction front",
-            "behind": "backward direction behind",
+        Adverbs require two audio segments:
+        - word_audio: The adverb word and example sentence
+        - example_audio: The example sentence demonstrating usage
+
+        Returns:
+            Dictionary mapping audio field names to text content
+        """
+        return {
+            "word_audio": self.get_combined_audio_text(),
+            "example_audio": self.example,
         }
 
-        english_lower = self.english.lower()
-        for key, enhanced_terms in concept_mappings.items():
-            if key in english_lower:
-                return enhanced_terms
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
 
-        # For location adverbs, add "location" context
-        if self.type == AdverbType.LOCATION:
-            return f"{self.english} location place"
+        Returns the German adverb that identifies this domain model.
 
-        # For time adverbs, add "time" context
-        if self.type == AdverbType.TIME:
-            return f"{self.english} time clock calendar"
+        Returns:
+            The German adverb (e.g., "heute", "schnell")
+        """
+        return self.word
 
-        # For manner adverbs, add "way" context
-        if self.type == AdverbType.MANNER:
-            return f"{self.english} way method manner"
+    def _build_search_context(self) -> str:
+        """Build rich context for image search using German adverb expertise.
 
-        # Default to the English translation with concept indicator
-        return f"{self.english} concept symbol"
+        Constructs type-specific visualization guidance based on German linguistic
+        knowledge. Each adverb type (TIME, LOCATION, MANNER, etc.) has specialized
+        strategies for representing abstract adverbial concepts visually.
 
+        This method embodies the domain model's expertise about German adverbs and
+        their visualization challenges, providing rich context that services can
+        use without needing to understand German linguistic classifications.
 
-# Removed field processing methods - now pure domain model with only business logic
+        Returns:
+            Formatted context string with:
+            - Adverb details (German word, English translation, type)
+            - Type-specific visualization strategy
+            - Instructions for generating appropriate search terms
+
+        Example:
+            For AdverbType.TIME:
+                "Use temporal symbols like clocks, calendars, or sequential imagery"
+            For AdverbType.LOCATION:
+                "Consider spatial relationships, directional arrows, contexts"
+
+        Note:
+            This is a private method called by get_image_search_strategy() to
+            contribute domain expertise to the search term generation process.
+        """
+        type_guidance = {
+            AdverbType.LOCATION: (
+                "Consider spatial relationships, directional arrows, "
+                "or environmental contexts"
+            ),
+            AdverbType.TIME: (
+                "Use temporal symbols like clocks, calendars, or sequential imagery"
+            ),
+            AdverbType.FREQUENCY: (
+                "Show repetition patterns, cycles, or counting symbols"
+            ),
+            AdverbType.MANNER: (
+                "Focus on how actions are performed, style, or method indicators"
+            ),
+            AdverbType.INTENSITY: (
+                "Use visual emphasis, gradients, or scale representations"
+            ),
+            AdverbType.ADDITION: "Show addition, plus symbols, or accumulation",
+            AdverbType.LIMITATION: (
+                "Use restriction symbols, boundaries, or exclusion imagery"
+            ),
+            AdverbType.ATTITUDE: (
+                "Express emotional tone or perspective through "
+                "facial expressions or mood"
+            ),
+            AdverbType.PROBABILITY: (
+                "Show uncertainty, question marks, or probability indicators"
+            ),
+        }
+
+        guidance = type_guidance.get(self.type, "Use symbolic or conceptual imagery")
+
+        return f"""
+        German adverb: {self.word} (English: {self.english})
+        Type: {self.type.value} ({self.type.name})
+        Example usage: {self.example}
+
+        Challenge: Adverbs are abstract concepts that modify actions or qualities.
+        Visual strategy: {guidance}
+
+        Generate search terms that can find images representing this concept visually.
+        """

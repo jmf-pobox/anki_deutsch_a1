@@ -374,8 +374,8 @@ putzen,to clean,regelmäßig,false,haben,present,putze,putzt,putzt,putzen,putzt,
 putzen,to clean,regelmäßig,false,haben,preterite,putzte,putztest,putzte,putzten,putztet,putzten,Er putzte das Bad.
 putzen,to clean,regelmäßig,false,haben,perfect,habe geputzt,hast geputzt,hat geputzt,haben geputzt,habt geputzt,haben geputzt,Sie hat geputzt.
 putzen,to clean,regelmäßig,false,haben,imperative,,putz,,putzen wir,putzt,putzen Sie,Putz!
-regnen,to rain,regelmäßig,false,haben,present,,,,,,regnet,Es regnet.
-regnen,to rain,regelmäßig,false,haben,preterite,,,,,,regnete,Es regnete gestern.
+regnen,to rain,regelmäßig,false,haben,present,regne,regnest,regnet,regnen,regnet,regnen,Es regnet.
+regnen,to rain,regelmäßig,false,haben,preterite,regnete,regnetest,regnete,regneten,regnetet,regneten,Es regnete gestern.
 regnen,to rain,regelmäßig,false,haben,perfect,habe geregnet,hast geregnet,hat geregnet,haben geregnet,habt geregnet,haben geregnet,Es hat geregnet.
 regnen,to rain,regelmäßig,false,haben,imperative,,regne,,regnen wir,regnt,regnen Sie,Regne!
 reisen,to travel,regelmäßig,false,sein,present,reise,reist,reist,reisen,reist,reisen,Ich reise gerne.
@@ -421,8 +421,8 @@ schließen,to close,unregelmäßig,false,haben,imperative,,schließ,,schließen 
 schmecken,to taste,regelmäßig,false,haben,present,schmecke,schmeckst,schmeckt,schmecken,schmeckt,schmecken,Das schmeckt gut!
 schmecken,to taste,regelmäßig,false,haben,preterite,schmeckte,schmecktest,schmeckte,schmeckten,schmecktet,schmeckten,Es schmeckte lecker.
 schmecken,to taste,regelmäßig,false,haben,perfect,habe geschmeckt,hast geschmeckt,hat geschmeckt,haben geschmeckt,habt geschmeckt,haben geschmeckt,Das Essen hat geschmeckt.
-schneien,to snow,regelmäßig,false,haben,present,,,,,,schneit,Es schneit.
-schneien,to snow,regelmäßig,false,haben,preterite,,,,,,schneite,Es schneite im Winter.
+schneien,to snow,regelmäßig,false,haben,present,schneie,schneist,schneit,schneien,schneit,schneien,Es schneit.
+schneien,to snow,regelmäßig,false,haben,preterite,schneite,schneitest,schneite,schneiten,schneitet,schneiten,Es schneite im Winter.
 schneien,to snow,regelmäßig,false,haben,perfect,habe geschneit,hast geschneit,hat geschneit,haben geschneit,habt geschneit,haben geschneit,Es hat geschneit.
 schneien,to snow,regelmäßig,false,haben,imperative,,schnei,,schneien wir,schneit,schneien Sie,Schnei!
 schreiben,to write,unregelmäßig,false,haben,present,schreibe,schreibst,schreibt,schreiben,schreibt,schreiben,Ich schreibe einen Brief.

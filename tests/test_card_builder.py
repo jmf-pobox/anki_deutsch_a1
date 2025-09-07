@@ -7,6 +7,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.records import BaseRecord, create_record
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService
@@ -390,13 +391,15 @@ class TestCardBuilder:
             )
         )
 
-        # Build cards - should handle error gracefully
+        # Build cards - should fail fast on first error
         # Convert to BaseRecord list for type compatibility
         base_records: list[BaseRecord] = list(records)
-        cards = card_builder.build_cards_from_records(base_records)
 
-        # Should only return the successful card
-        assert len(cards) == 1
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to build card from record 1.*Template error",
+        ):
+            card_builder.build_cards_from_records(base_records)
 
     def test_anki_field_to_record_field_mapping(
         self, card_builder: CardBuilder
@@ -470,10 +473,12 @@ class TestCardBuilderIntegration:
             template_dir = temp_path / "templates"
             template_dir.mkdir()
 
-            # Create template files (TemplateService expects specific naming convention)
-            (template_dir / "noun_front.html").write_text("{{Noun}} ({{Article}})")
-            (template_dir / "noun_back.html").write_text("{{English}}")
-            (template_dir / "noun.css").write_text(".card { color: blue; }")
+            # Create template files with DE_de naming convention
+            (template_dir / "noun_DE_de_front.html").write_text(
+                "{{Noun}} ({{Article}})"
+            )
+            (template_dir / "noun_DE_de_back.html").write_text("{{English}}")
+            (template_dir / "noun_DE_de.css").write_text(".card { color: blue; }")
 
             # Create CardBuilder with real template service
             template_service = TemplateService(template_dir)
@@ -561,16 +566,16 @@ class TestCardBuilderIntegration:
 
         # Verify field count matches new PROD-CARD-SPEC.md structure
         assert len(field_values) == 11  # All verb imperative fields per specification
-        assert field_values[0] == ""  # Image
+        assert field_values[0] == "arbeiten"  # Infinitive (Sort Field)
         assert field_values[1] == "to work"  # English
-        assert field_values[2] == "arbeiten"  # Infinitive
-        assert field_values[3] == "arbeite"  # Du
-        assert field_values[4] == "arbeitet"  # Ihr
-        assert field_values[5] == "arbeiten Sie"  # Sie
-        assert field_values[6] == "arbeiten wir"  # Wir
-        assert field_values[7] == "Arbeite schneller!"  # ExampleDu
-        assert field_values[8] == "Arbeitet zusammen!"  # ExampleIhr
-        assert field_values[9] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[2] == "arbeite"  # Du
+        assert field_values[3] == "arbeitet"  # Ihr
+        assert field_values[4] == "arbeiten Sie"  # Sie
+        assert field_values[5] == "arbeiten wir"  # Wir
+        assert field_values[6] == "Arbeite schneller!"  # ExampleDu
+        assert field_values[7] == "Arbeitet zusammen!"  # ExampleIhr
+        assert field_values[8] == "Arbeiten Sie bitte hier!"  # ExampleSie
+        assert field_values[9] == ""  # Image
         assert field_values[10] == ""  # WordAudio
 
         # Verify note type

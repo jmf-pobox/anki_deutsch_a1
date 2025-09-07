@@ -11,6 +11,8 @@ from typing import Any, Literal, TypedDict, cast
 import requests
 from requests.exceptions import HTTPError
 
+from langlearn.protocols.image_search_protocol import ImageSearchProtocol
+
 # Set up logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -82,7 +84,7 @@ class Photo(TypedDict):
     alt: str
 
 
-class PexelsService:
+class PexelsService(ImageSearchProtocol):
     """Service for interacting with the Pexels API."""
 
     def __init__(self) -> None:
@@ -224,6 +226,9 @@ class PexelsService:
 
         Returns:
             List of photo results
+
+        Raises:
+            MediaGenerationError: If the search request fails
         """
         try:
             response = self._make_request(
@@ -233,7 +238,12 @@ class PexelsService:
             return cast("list[Photo]", response.json()["photos"])
         except Exception as e:
             logger.error("Error searching Pexels: %s", str(e))
-            return []
+            # Re-raise with appropriate specific exception type
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to search Pexels for '{query}': {e}"
+            ) from e
 
     def download_image(
         self, query: str, output_path: str, size: PhotoSize = "medium"
@@ -247,14 +257,19 @@ class PexelsService:
                 quality/size balance)
 
         Returns:
-            bool: True if successful, False otherwise
+            bool: True if successful
+
+        Raises:
+            MediaGenerationError: If the download fails or no photos are found
         """
         try:
             # Search for photos
             photos = self.search_photos(query)
             if not photos:
                 logger.error("No photos found for query: %s", query)
-                return False
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(f"No photos found for query: '{query}'")
 
             # Randomly select one of the top results
             selected_photo = random.choice(photos)
@@ -280,7 +295,12 @@ class PexelsService:
 
         except Exception as e:
             logger.error("Error downloading image: %s", str(e))
-            return False
+            # Re-raise with appropriate specific exception type
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to download image for '{query}': {e}"
+            ) from e
 
     def get_image_url(self, query: str, size: PhotoSize = "medium") -> str | None:
         """Get the URL of an image from Pexels.
@@ -290,17 +310,27 @@ class PexelsService:
             size: Desired image size (small, medium, large, original)
 
         Returns:
-            str: URL of the image, or None if not found
+            str: URL of the image
+
+        Raises:
+            MediaGenerationError: If the request fails or no photos are found
         """
         try:
             photos: list[Photo] = self.search_photos(query, per_page=1)
             if not photos:
                 logger.error("No photos found for query: %s", query)
-                return None
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(f"No photos found for query: '{query}'")
 
             photo: Photo = photos[0]
             url: str = photo["src"][size]
             return url
         except Exception as e:
             logger.error("Error getting image URL: %s", str(e))
-            return None
+            # Re-raise with appropriate specific exception type
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to get image URL for '{query}': {e}"
+            ) from e

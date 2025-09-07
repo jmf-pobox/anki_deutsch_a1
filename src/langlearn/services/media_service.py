@@ -94,6 +94,9 @@ class MediaService:
 
         Returns:
             Path to audio file or None if generation failed
+
+        Raises:
+            MediaGenerationError: If audio generation fails
         """
         try:
             # Generate MD5 hash for consistent filename
@@ -116,12 +119,20 @@ class MediaService:
             else:
                 self._stats["generation_errors"] += 1
                 logger.error(f"Failed to generate audio for: {text}")
-                return None
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(
+                    f"Audio service returned None for text: '{text}'"
+                )
 
         except Exception as e:
             logger.error(f"Error generating audio for '{text}': {e}")
             self._stats["generation_errors"] += 1
-            return None
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to generate audio for '{text}': {e}"
+            ) from e
 
     def generate_or_get_audio(self, text: str) -> str | None:
         """Generate audio for text or return existing audio file path.
@@ -133,6 +144,9 @@ class MediaService:
 
         Returns:
             Path to audio file or None if generation failed
+
+        Raises:
+            MediaGenerationError: If audio generation fails
         """
         return self.generate_audio(text)
 
@@ -151,6 +165,9 @@ class MediaService:
 
         Returns:
             Path to image file or None if generation failed
+
+        Raises:
+            MediaGenerationError: If image generation fails
         """
         try:
             # Generate descriptive filename using German word
@@ -183,12 +200,20 @@ class MediaService:
             else:
                 self._stats["generation_errors"] += 1
                 logger.error(f"Failed to download image for query: {query}")
-                return None
+                from langlearn.exceptions import MediaGenerationError
+
+                raise MediaGenerationError(
+                    f"Pexels service failed to download image for query: '{query}'"
+                )
 
         except Exception as e:
             logger.error(f"Error generating image for '{word}': {e}")
             self._stats["generation_errors"] += 1
-            return None
+            from langlearn.exceptions import MediaGenerationError
+
+            raise MediaGenerationError(
+                f"Failed to generate image for '{word}': {e}"
+            ) from e
 
     def generate_or_get_image(
         self, word: str, search_query: str | None = None, example_sentence: str = ""
@@ -204,6 +229,9 @@ class MediaService:
 
         Returns:
             Path to image file or None if generation failed
+
+        Raises:
+            MediaGenerationError: If image generation fails
         """
         return self.generate_image(word, search_query, example_sentence)
 
