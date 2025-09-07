@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -250,12 +251,24 @@ class Negation(MediaGenerationCapable):
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except Exception:
-                # Service failed, use fallback
-                pass
+            except ValueError as e:
+                logger.error(f"AI service configuration error for '{self.word}': {e}")
+                raise MediaGenerationError(
+                    f"AI service configuration error for '{self.word}': {e}"
+                ) from e
+            except Exception as e:
+                logger.error(
+                    f"Unexpected error in AI image search for '{self.word}': {e}"
+                )
+                raise MediaGenerationError(
+                    f"Failed to generate image search for negation '{self.word}': {e}"
+                ) from e
 
-            # Fallback to domain-specific handling
-            return self._get_fallback_search_terms()
+            # This should never be reached due to exceptions above,
+            # but required for type checking
+            raise MediaGenerationError(
+                f"Unexpected fallback execution for negation '{self.word}'"
+            )  # pragma: no cover
 
         return generate_search_terms
 
@@ -292,6 +305,16 @@ class Negation(MediaGenerationCapable):
             "word_audio": self.get_combined_audio_text(),
             "example_audio": self.example,
         }
+
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German negation word that identifies this domain model.
+
+        Returns:
+            The German negation word (e.g., "nicht", "kein")
+        """
+        return self.word
 
     def _get_fallback_search_terms(self) -> str:
         """Get fallback search terms using negation concept mappings."""

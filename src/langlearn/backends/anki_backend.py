@@ -15,6 +15,11 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
+from langlearn.exceptions import (
+    CardGenerationError,
+    DataProcessingError,
+    MediaGenerationError,
+)
 from langlearn.models.adjective import Adjective
 from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.models.negation import Negation, NegationType
@@ -403,13 +408,10 @@ class AnkiBackend(DeckBackend):
                         formatted_audio,
                     ]
                 except Exception as e:
-                    logger.warning(f"Media enrichment failed for cloze article: {e}")
-                    return [
-                        cloze_record.get("text", ""),
-                        cloze_record.get("explanation", ""),
-                        cloze_record.get("image", ""),
-                        cloze_record.get("audio", ""),
-                    ]
+                    logger.error(f"Media enrichment failed for cloze article: {e}")
+                    raise MediaGenerationError(
+                        f"Failed to enrich cloze article media: {e}"
+                    ) from e
 
             if record_type is not None:
                 # Use Clean Pipeline Architecture
@@ -450,8 +452,18 @@ class AnkiBackend(DeckBackend):
                                             enriched_record_dict["example"]
                                         )
                                     )
-                            except Exception:
+                            except (OSError, ValueError) as e:
+                                logger.warning(
+                                    f"Audio generation failed for example sentence: {e}"
+                                )
                                 audio_path = None
+                            except Exception as e:
+                                logger.error(
+                                    f"Unexpected error during audio generation: {e}"
+                                )
+                                raise MediaGenerationError(
+                                    f"Failed to generate audio for example: {e}"
+                                ) from e
 
                             # Use the example audio basename per test expectation
                             if audio_path:
@@ -462,8 +474,16 @@ class AnkiBackend(DeckBackend):
                                 enriched_record_dict["example_audio"] = (
                                     f"[sound:{audio_name}]"
                                 )
-                        except Exception:
-                            pass
+                        except KeyError as e:
+                            logger.warning(
+                                f"Missing required field in noun record: {e}"
+                            )
+                            # Continue with partial data
+                        except Exception as e:
+                            logger.error(f"Unexpected error processing noun media: {e}")
+                            raise MediaGenerationError(
+                                f"Failed to process noun media: {e}"
+                            ) from e
                         return [
                             enriched_record_dict["noun"],
                             enriched_record_dict["article"],
@@ -502,7 +522,10 @@ class AnkiBackend(DeckBackend):
                         f"Clean Pipeline Architecture failed for {note_type_name}: "
                         f"{record_error}"
                     )
-                    return fields
+                    raise DataProcessingError(
+                        f"Clean Pipeline Architecture failed for {note_type_name}: "
+                        f"{record_error}"
+                    ) from record_error
 
             # No processing available - unsupported note type
             logger.warning(
@@ -511,9 +534,14 @@ class AnkiBackend(DeckBackend):
             )
             return fields
 
+        except DataProcessingError:
+            # Re-raise DataProcessingError without modification
+            raise
         except Exception as e:
             logger.error(f"Error processing media for {note_type_input}: {e}")
-            return fields
+            raise DataProcessingError(
+                f"Media processing failed for note type {note_type_input}: {e}"
+            ) from e
 
     def _create_domain_model_from_record(self, record: Any, record_type: str) -> Any:
         """Create domain model instance from record data."""
@@ -576,12 +604,12 @@ class AnkiBackend(DeckBackend):
         else:
             raise ValueError(f"Unsupported record type: {record_type}")
 
-    def _generate_or_get_audio(self, text: str) -> str | None:
+    def _generate_or_get_audio(self, text: str) -> str:
         """Generate audio for text or return existing audio file path."""
         try:
             result = self._media_service.generate_or_get_audio(text)
 
-            # Update stats
+            # Update stats and validate result
             if result is not None:
                 filename = f"{hashlib.md5(text.encode()).hexdigest()}.mp3"
                 audio_path = self._audio_dir / filename
@@ -589,39 +617,49 @@ class AnkiBackend(DeckBackend):
                     self._media_generation_stats["audio_reused"] += 1
                 else:
                     self._media_generation_stats["audio_generated"] += 1
+                return result
             else:
                 self._media_generation_stats["generation_errors"] += 1
-
-            return result
+                raise MediaGenerationError(f"Audio generation failed for '{text}'")
+        except MediaGenerationError:
+            # Re-raise MediaGenerationError without double-counting stats
+            raise
         except Exception as e:
             logger.error(f"Error generating audio for '{text}': {e}")
             self._media_generation_stats["generation_errors"] += 1
-            return None
+            raise MediaGenerationError(
+                f"Failed to generate audio for '{text}': {e}"
+            ) from e
 
     def _generate_or_get_image(
         self, word: str, search_query: str | None = None, example_sentence: str = ""
-    ) -> str | None:
+    ) -> str:
         """Generate/download image for word or return existing image file path."""
         try:
             result = self._media_service.generate_or_get_image(
                 word, search_query, example_sentence
             )
 
-            # Update stats
+            # Update stats and validate result
             if result is not None:
                 image_path = self._images_dir / f"{word}.jpg"
                 if image_path.exists():
                     self._media_generation_stats["images_reused"] += 1
                 else:
                     self._media_generation_stats["images_downloaded"] += 1
+                return result
             else:
                 self._media_generation_stats["generation_errors"] += 1
-
-            return result
+                raise MediaGenerationError(f"Image generation failed for '{word}'")
+        except MediaGenerationError:
+            # Re-raise MediaGenerationError without double-counting stats
+            raise
         except Exception as e:
             logger.error(f"Error downloading image for '{word}': {e}")
             self._media_generation_stats["generation_errors"] += 1
-            return None
+            raise MediaGenerationError(
+                f"Failed to generate image for '{word}': {e}"
+            ) from e
 
     def add_media_file(self, file_path: str, media_type: str = "") -> MediaFile:
         """Add a media file to the deck."""
@@ -753,12 +791,16 @@ class AnkiBackend(DeckBackend):
             elif hasattr(exporter, "exportInto"):
                 exporter.exportInto(output_path)
             else:
-                # Fallback: copy the collection file directly
-                shutil.copy2(self._collection_path, output_path)
+                # No supported export method found
+                raise CardGenerationError(
+                    "No supported export method found on AnkiPackageExporter"
+                )
+        except CardGenerationError:
+            # Re-raise CardGenerationError
+            raise
         except Exception as e:
             logger.error(f"Export failed with error: {e}")
-            # As a last resort, create a simple export
-            shutil.copy2(self._collection_path, output_path)
+            raise CardGenerationError(f"Failed to export deck: {e}") from e
 
     def get_stats(self) -> dict[str, Any]:
         """Get deck statistics."""
@@ -785,7 +827,12 @@ class AnkiBackend(DeckBackend):
                 stats["notes_count"] = self._collection.db.scalar(
                     "SELECT count() FROM notes"
                 )
-        except Exception:
-            pass
+        except OSError as e:
+            logger.warning(f"Database file access error when counting notes: {e}")
+            stats["notes_count"] = 0
+        except Exception as e:
+            logger.error(f"Database query failed when counting notes: {e}")
+            # Don't raise here - stats collection is non-critical
+            stats["notes_count"] = 0
 
         return stats

@@ -47,18 +47,21 @@ class TestBackendAbstraction:
         assert note_type_id is not None
         assert isinstance(note_type_id, str)
 
-        # Test adding notes
-        backend.add_note(note_type_id, ["gut", "good", "Das Wetter ist gut."])
-        backend.add_note(note_type_id, ["schlecht", "bad", "Das Wetter ist schlecht."])
+        # Test adding notes - should raise DataProcessingError for insufficient fields
+        from langlearn.exceptions import DataProcessingError
 
-        # Test statistics
+        with pytest.raises(
+            DataProcessingError, match="AdjectiveRecord requires at least 4 fields"
+        ):
+            backend.add_note(note_type_id, ["gut", "good", "Das Wetter ist gut."])
+
+        # Test statistics after creating note type (no notes due to validation)
         stats = backend.get_stats()
         assert stats["deck_name"] == "Test Deck"
         assert stats["note_types_count"] == 1
-        assert stats["notes_count"] == 2
-        # Media files count is 0 because the note type has insufficient fields
-        # (3) for media generation
-        # which requires at least 5 fields for adjective cards
+        assert (
+            stats["notes_count"] == 0
+        )  # No notes were successfully added due to validation error
         assert stats["media_files_count"] == 0
 
     def test_media_file_handling(
@@ -83,7 +86,13 @@ class TestBackendAbstraction:
         # Test Anki backend export (Phase 2: .apkg files)
         anki_backend = AnkiBackend("Export Test", mock_media_service)
         note_type_id = anki_backend.create_note_type(sample_note_type)
-        anki_backend.add_note(note_type_id, ["test", "test", "Test sentence"])
+        # Should raise DataProcessingError for insufficient fields
+        from langlearn.exceptions import DataProcessingError
+
+        with pytest.raises(
+            DataProcessingError, match="AdjectiveRecord requires at least 4 fields"
+        ):
+            anki_backend.add_note(note_type_id, ["test", "test", "Test sentence"])
 
         anki_output = tmp_path / "anki_test.apkg"
         anki_backend.export_deck(str(anki_output))
@@ -122,6 +131,12 @@ class TestBackendAbstraction:
 
         # Test basic workflow
         note_type_id = backend.create_note_type(sample_note_type)
-        backend.add_note(note_type_id, ["word", "translation", "example"])
+        # Should raise DataProcessingError for insufficient fields
+        from langlearn.exceptions import DataProcessingError
+
+        with pytest.raises(
+            DataProcessingError, match="AdjectiveRecord requires at least 4 fields"
+        ):
+            backend.add_note(note_type_id, ["word", "translation", "example"])
         media_files = backend.get_media_files()
         assert len(media_files) == 0  # No media files added yet

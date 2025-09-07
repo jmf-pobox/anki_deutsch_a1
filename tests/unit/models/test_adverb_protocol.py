@@ -1,5 +1,8 @@
 """Tests for Adverb model MediaGenerationCapable protocol compliance."""
 
+import pytest
+
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.adverb import Adverb, AdverbType
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
@@ -64,17 +67,16 @@ class TestAdverbProtocolCompliance:
             example="Das Buch liegt hier auf dem Tisch.",
         )
 
-        # Create mock service that fails to simulate fallback
+        # Create mock service that fails - should raise exception
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
-        # Should work through protocol interface with fallback when service fails
-        search_terms, audio = use_media_capable(adverb, mock_service)
-
-        assert isinstance(search_terms, str)
-        assert isinstance(audio, str)
-        assert search_terms == "Das Buch liegt hier auf dem Tisch."  # Example fallback
-        assert audio == "hier. Das Buch liegt hier auf dem Tisch."
+        # Should raise MediaGenerationError when service fails (images required)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for adverb 'hier'",
+        ):
+            use_media_capable(adverb, mock_service)
 
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""

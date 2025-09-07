@@ -281,6 +281,16 @@ class Verb(MediaGenerationCapable):
 
         return audio_segments
 
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German verb infinitive that identifies this domain model.
+
+        Returns:
+            The German verb infinitive (e.g., "laufen", "gehen")
+        """
+        return self.verb
+
     def _build_search_context(self) -> str:
         """Build rich context for image search using German verb expertise.
 

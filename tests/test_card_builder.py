@@ -470,10 +470,10 @@ class TestCardBuilderIntegration:
             template_dir = temp_path / "templates"
             template_dir.mkdir()
 
-            # Create template files (TemplateService expects specific naming convention)
-            (template_dir / "noun_front.html").write_text("{{Noun}} ({{Article}})")
-            (template_dir / "noun_back.html").write_text("{{English}}")
-            (template_dir / "noun.css").write_text(".card { color: blue; }")
+            # Create template files with DE_de naming convention
+            (template_dir / "noun_DE_de_front.html").write_text("{{Noun}} ({{Article}})")
+            (template_dir / "noun_DE_de_back.html").write_text("{{English}}")
+            (template_dir / "noun_DE_de.css").write_text(".card { color: blue; }")
 
             # Create CardBuilder with real template service
             template_service = TemplateService(template_dir)

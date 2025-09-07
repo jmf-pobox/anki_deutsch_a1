@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.exceptions import TemplateError
 
 logger = logging.getLogger(__name__)
 
@@ -96,16 +97,18 @@ class TemplateService:
         Returns:
             TemplateFiles with loaded content
         """
-        # Try modern file naming first (preferred)
-        front_file = self._template_dir / f"{card_type}_front.html"
-        back_file = self._template_dir / f"{card_type}_back.html"
-        css_file = self._template_dir / f"{card_type}.css"
+        # Try actual template naming convention with DE_de suffix
+        front_file = self._template_dir / f"{card_type}_DE_de_front.html"
+        back_file = self._template_dir / f"{card_type}_DE_de_back.html"
+        css_file = self._template_dir / f"{card_type}_DE_de.css"
 
-        # Fallback to original naming convention
+        # Validate that all required template files exist
         if not front_file.exists():
-            front_file = self._template_dir / f"{card_type}_DE_de_front.html"
-            back_file = self._template_dir / f"{card_type}_DE_de_back.html"
-            css_file = self._template_dir / f"{card_type}_DE_de.css"
+            raise TemplateError(f"Front template not found: {front_file}")
+        if not back_file.exists():
+            raise TemplateError(f"Back template not found: {back_file}")
+        if not css_file.exists():
+            raise TemplateError(f"CSS template not found: {css_file}")
 
         # Load files
         front_html = self._read_template_file(front_file)
@@ -178,11 +181,11 @@ class TemplateService:
         for file_path in self._template_dir.glob("*front.html"):
             # Extract card type from filename
             name = file_path.stem
-            if name.endswith("_front"):
-                card_type = name[:-6]  # Remove "_front"
-                card_types.add(card_type)
-            elif name.endswith("_DE_de_front"):
+            if name.endswith("_DE_de_front"):
                 card_type = name[:-12]  # Remove "_DE_de_front"
+                card_types.add(card_type)
+            elif name.endswith("_front"):
+                card_type = name[:-6]  # Remove "_front"
                 card_types.add(card_type)
 
         return sorted(card_types)

@@ -2,6 +2,9 @@
 
 from unittest.mock import Mock
 
+import pytest
+
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.negation import Negation, NegationType
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
@@ -63,19 +66,16 @@ class TestNegationProtocolCompliance:
             example="Niemand ist hier.",
         )
 
-        # Create mock service that fails to simulate fallback
+        # Create mock service that fails - should raise exception
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
-        # Should work through protocol interface with fallback when service fails
-        search_terms, audio = use_media_capable(negation, mock_service)
-
-        assert isinstance(search_terms, str)
-        assert isinstance(audio, str)
-        assert (
-            "empty person silhouette nobody" in search_terms
-        )  # Concept mapping fallback
-        assert audio == "niemand. Niemand ist hier."
+        # Should raise MediaGenerationError when service fails (images required)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for negation 'niemand'",
+        ):
+            use_media_capable(negation, mock_service)
 
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""
@@ -159,19 +159,19 @@ class TestNegationProtocolCompliance:
         assert "silhouettes" in context
         assert "empty chairs" in context
 
-    def test_fallback_handling_with_concept_mappings(self) -> None:
-        """Test fallback behavior uses negation-specific concept mappings."""
+    def test_service_failure_raises_error_for_all_types(self) -> None:
+        """Test service failure raises error for all negation types."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
         test_cases = [
-            ("nothing", "nichts", "empty void blank nothing"),
-            ("nobody", "niemand", "empty person silhouette nobody"),
-            ("never", "nie", "infinity crossed out never"),
-            ("nowhere", "nirgends", "empty space void location"),
+            ("nothing", "nichts"),
+            ("nobody", "niemand"),
+            ("never", "nie"),
+            ("nowhere", "nirgends"),
         ]
 
-        for english, german, expected_terms in test_cases:
+        for english, german in test_cases:
             negation = Negation(
                 word=german,
                 english=english,
@@ -180,12 +180,16 @@ class TestNegationProtocolCompliance:
             )
 
             strategy = negation.get_image_search_strategy(mock_service)
-            result = strategy()
 
-            assert expected_terms in result
+            # Should raise MediaGenerationError when service fails
+            with pytest.raises(
+                MediaGenerationError,
+                match=f"Failed to generate image search for negation '{german}'",
+            ):
+                strategy()
 
-    def test_fallback_handling_with_type_mappings(self) -> None:
-        """Test fallback behavior uses type-specific mappings when no concept match."""
+    def test_service_exception_raises_error(self) -> None:
+        """Test exception when service fails."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -198,10 +202,13 @@ class TestNegationProtocolCompliance:
         )
 
         strategy = negation.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to type mapping
-        assert "at all emphasis prohibition strong" in result
+        # Should raise MediaGenerationError when service fails
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for negation 'überhaupt'",
+        ):
+            strategy()
 
     def test_negation_type_strategies(self) -> None:
         """Test that different negation types get appropriate strategies."""
@@ -261,8 +268,8 @@ class TestNegationProtocolCompliance:
         assert "symbolic or metaphorical representation" in context
         assert "prohibition, absence, or negation concepts" in context
 
-    def test_empty_service_result_fallback(self) -> None:
-        """Test fallback when service returns empty result."""
+    def test_empty_service_result_raises_error(self) -> None:
+        """Test exception when service returns empty result."""
         mock_service = Mock()
         mock_service.generate_image_query.return_value = ""  # Empty result
 
@@ -274,7 +281,10 @@ class TestNegationProtocolCompliance:
         )
 
         strategy = negation.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to concept mapping
-        assert "prohibition stop sign red x" in result
+        # Should raise MediaGenerationError for empty result
+        with pytest.raises(
+            MediaGenerationError,
+            match="Unexpected fallback execution for negation 'nicht'",
+        ):
+            strategy()

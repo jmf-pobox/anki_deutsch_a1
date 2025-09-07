@@ -34,7 +34,7 @@ class TestServiceContainer:
         with patch(
             "langlearn.services.service_container.AnthropicService"
         ) as mock_service:
-            mock_service.side_effect = Exception("Service unavailable")
+            mock_service.side_effect = ValueError("API key not found")
 
             result = get_anthropic_service()
             assert result is None
@@ -53,7 +53,7 @@ class TestServiceContainer:
     def test_get_audio_service_returns_none_on_exception(self) -> None:
         """Test that get_audio_service returns None when service unavailable."""
         with patch("langlearn.services.audio.AudioService") as mock_service:
-            mock_service.side_effect = Exception("AWS credentials not available")
+            mock_service.side_effect = ValueError("AWS credentials not available")
 
             result = get_audio_service()
             assert result is None
@@ -74,7 +74,7 @@ class TestServiceContainer:
     def test_get_pexels_service_returns_none_on_exception(self) -> None:
         """Test that get_pexels_service returns None when service unavailable."""
         with patch("langlearn.services.pexels_service.PexelsService") as mock_service:
-            mock_service.side_effect = Exception("API key not available")
+            mock_service.side_effect = ValueError("API key not available")
 
             result = get_pexels_service()
             assert result is None

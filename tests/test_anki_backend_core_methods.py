@@ -340,16 +340,20 @@ class TestAnkiBackendCoreMethodsCoverage:
             ):
                 mock_exporter = Mock()
                 mock_exporter_cls.return_value = mock_exporter
-                # Remove both methods to trigger shutil.copy2 fallback
+                # Remove both methods to trigger exception
                 del mock_exporter.export_to_file
                 del mock_exporter.exportInto
 
-                backend.export_deck("/output/collection.apkg")
+                # Should raise CardGenerationError instead of falling back
+                from langlearn.exceptions import CardGenerationError
 
-                # Should fallback to shutil.copy2
-                mock_copy.assert_called_once_with(
-                    backend._collection_path, "/output/collection.apkg"
-                )
+                with pytest.raises(
+                    CardGenerationError, match="No supported export method found"
+                ):
+                    backend.export_deck("/output/collection.apkg")
+
+                # Should not fallback to shutil.copy2
+                mock_copy.assert_not_called()
 
     def test_export_deck_logging_functionality(self, mock_media_service: Mock) -> None:
         """Test export deck logging functionality."""

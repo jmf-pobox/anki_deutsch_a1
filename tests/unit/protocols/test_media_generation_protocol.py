@@ -35,6 +35,10 @@ class MockMediaGenerationCapable:
             "example_audio": "test example audio",
         }
 
+    def get_primary_word(self) -> str:
+        """Return mock primary word."""
+        return "test_word"
+
 
 class TestMediaGenerationCapable:
     """Test MediaGenerationCapable protocol compliance."""

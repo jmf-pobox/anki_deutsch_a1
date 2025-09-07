@@ -2,6 +2,9 @@
 
 from unittest.mock import Mock
 
+import pytest
+
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.preposition import Preposition
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
@@ -66,17 +69,16 @@ class TestPrepositionProtocolCompliance:
             example2="Ich bin in der Schule.",
         )
 
-        # Create mock service that fails to simulate fallback
+        # Create mock service that fails - should raise exception (images required)
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
-        # Should work through protocol interface with fallback when service fails
-        search_terms, audio = use_media_capable(preposition, mock_service)
-
-        assert isinstance(search_terms, str)
-        assert isinstance(audio, str)
-        assert search_terms == "in/into"  # English fallback
-        assert audio == "in. Ich gehe in die Schule.. Ich bin in der Schule."
+        # Should raise MediaGenerationError when AI service fails (images required)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for 'in'",
+        ):
+            use_media_capable(preposition, mock_service)
 
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""

@@ -161,6 +161,16 @@ class Noun(MediaGenerationCapable):
             "example_audio": self.example,
         }
 
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German noun that identifies this domain model.
+
+        Returns:
+            The German noun (e.g., "Haus", "Katze")
+        """
+        return self.noun
+
     def is_concrete(self) -> bool:
         """Determine if this noun represents a concrete concept.
 

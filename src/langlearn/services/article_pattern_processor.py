@@ -9,6 +9,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from langlearn.backends.base import NoteType
+from langlearn.exceptions import ArticlePatternError
 from langlearn.models.records import (
     ArticleRecord,
     IndefiniteArticleRecord,
@@ -363,7 +364,6 @@ class ArticlePatternProcessor:
             "hier",
             "ich",
             "sehe",
-            "auto",
         }
 
         for word in words:
@@ -373,13 +373,14 @@ class ArticlePatternProcessor:
                 # Return the first significant word (likely the noun)
                 return clean_word.capitalize()
 
-        # Fallback - return first word that's not an article
+        # Second pass - return first word that's not an article
         for word in words:
             clean_word = re.sub(r"[^\w]", "", word)
             if clean_word and not clean_word.lower().startswith(("der", "die", "das")):
                 return clean_word.capitalize()
 
-        return "Wort"  # Fallback
+        # No extractable word found - raise error instead of hard-coded fallback
+        raise ArticlePatternError(f"Could not extract noun from sentence: '{sentence}'")
 
     # New cloze deletion methods
 
@@ -426,8 +427,11 @@ class ArticlePatternProcessor:
                 original_article, f"{{{{c1::{original_article}}}}}", 1
             )
         else:
-            # Fallback if article not found - create a simple cloze
-            cloze_text = f"{{{{c1::{article.title()}}}}} ist hier"
+            # Article not found in example sentence
+            raise ArticlePatternError(
+                f"Article '{article}' not found in example sentence: "
+                f"'{example_sentence}'"
+            )
 
         # Generate German explanation
         explanation = self._explanation_factory.create_gender_recognition_explanation(
@@ -526,8 +530,11 @@ class ArticlePatternProcessor:
                 original_article, f"{{{{c1::{original_article}}}}}", 1
             )
         else:
-            # Fallback if article not found - create a simple cloze
-            cloze_text = f"{{{{c1::{article.title()}}}}} Wort"
+            # Article not found in example sentence
+            raise ArticlePatternError(
+                f"Article '{article}' not found in case example sentence: "
+                f"'{example_sentence}'"
+            )
 
         # Generate German case explanation
         explanation = self._explanation_factory.create_case_explanation(

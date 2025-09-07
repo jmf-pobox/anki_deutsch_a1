@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -143,6 +144,16 @@ class Adjective(MediaGenerationCapable):
             "example_audio": self.example,
         }
 
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German adjective that identifies this domain model.
+
+        Returns:
+            The German adjective (e.g., "schön", "gut")
+        """
+        return self.word
+
     def validate_comparative(self) -> bool:
         """Validate that the comparative form follows German grammar rules.
 
@@ -276,11 +287,21 @@ class Adjective(MediaGenerationCapable):
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except Exception:
-                # Service failed, use fallback
-                pass
+            except ValueError as e:
+                logger.error(f"AI service configuration error for '{self.word}': {e}")
+                raise MediaGenerationError(
+                    f"AI service configuration error for '{self.word}': {e}"
+                ) from e
+            except Exception as e:
+                logger.error(
+                    f"Unexpected error in AI image search for '{self.word}': {e}"
+                )
+                raise MediaGenerationError(
+                    f"Failed to generate image search for adjective '{self.word}': {e}"
+                ) from e
 
-            # Fallback to domain-specific handling
+            # This should never be reached due to exceptions above,
+            # but required for type checking
             return self._get_fallback_search_terms()
 
         return generate_search_terms

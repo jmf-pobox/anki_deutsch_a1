@@ -245,10 +245,12 @@ class TestAnkiBackendErrorHandling:
                 "generate_or_get_audio",
                 side_effect=Exception("Audio service failed"),
             ):
-                result = backend._generate_or_get_audio("test text")
+                # Should raise MediaGenerationError and increment error count
+                from langlearn.exceptions import MediaGenerationError
 
-                # Should return None and increment error count
-                assert result is None
+                with pytest.raises(MediaGenerationError):
+                    backend._generate_or_get_audio("test text")
+
                 assert backend._media_generation_stats["generation_errors"] == 1
 
             # Test image service failure recovery
@@ -257,10 +259,12 @@ class TestAnkiBackendErrorHandling:
                 "generate_or_get_image",
                 side_effect=Exception("Image service failed"),
             ):
-                result = backend._generate_or_get_image("test word", "test query")
+                # Should raise MediaGenerationError and increment error count
+                from langlearn.exceptions import MediaGenerationError
 
-                # Should return None and increment error count
-                assert result is None
+                with pytest.raises(MediaGenerationError):
+                    backend._generate_or_get_image("test word", "test query")
+
                 assert backend._media_generation_stats["generation_errors"] == 2
 
     def test_media_file_not_found_error(self, mock_media_service: Mock) -> None:
@@ -328,14 +332,13 @@ class TestAnkiBackendErrorHandling:
                 del mock_exporter.export_to_file
                 del mock_exporter.exportInto
 
-                # Mock shutil.copy2 for final fallback
-                with patch("shutil.copy2") as mock_copy:
-                    backend.export_deck("/tmp/test_export.apkg")
+                # Should raise CardGenerationError instead of falling back
+                from langlearn.exceptions import CardGenerationError
 
-                    # Should fall back to shutil.copy2 as last resort
-                    mock_copy.assert_called_once_with(
-                        backend._collection_path, "/tmp/test_export.apkg"
-                    )
+                with pytest.raises(
+                    CardGenerationError, match="No supported export method found"
+                ):
+                    backend.export_deck("/tmp/test_export.apkg")
 
     def test_database_query_failure_in_stats(self, mock_media_service: Mock) -> None:
         """Test handling of database query failure in statistics."""
@@ -416,9 +419,11 @@ class TestAnkiBackendErrorHandling:
                 media_service=mock_media_service,
             )
 
-            # Audio should fail gracefully
-            audio_result = backend._generate_or_get_audio("test text")
-            assert audio_result is None
+            # Audio should raise MediaGenerationError
+            from langlearn.exceptions import MediaGenerationError
+
+            with pytest.raises(MediaGenerationError):
+                backend._generate_or_get_audio("test text")
             assert backend._media_generation_stats["generation_errors"] == 1
 
             # Image should work

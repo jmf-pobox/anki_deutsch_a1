@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 import logging
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.services.anthropic_service import AnthropicService
@@ -181,23 +181,5 @@ class StandardMediaEnricher(MediaEnricher):
 
     def _extract_primary_word(self, domain_model: MediaGenerationCapable) -> str:
         """Extract the primary word from domain model for filename generation."""
-        # Use domain model's primary identifier for filename
-        if hasattr(domain_model, "noun"):
-            return cast("str", domain_model.noun)
-        elif hasattr(domain_model, "word"):
-            return cast("str", domain_model.word)
-        elif hasattr(domain_model, "phrase"):
-            # Use first word of phrase for filename
-            phrase = cast("str", domain_model.phrase)
-            return phrase.split()[0] if phrase else "phrase"
-        elif hasattr(domain_model, "verb"):
-            return cast("str", domain_model.verb)
-        elif hasattr(domain_model, "preposition"):
-            return cast("str", domain_model.preposition)
-        elif hasattr(domain_model, "nominativ"):
-            # Article domain model - use gender and type for unique filename
-            article = cast("Any", domain_model)  # Article type
-            return f"{article.geschlecht}_{article.artikel_typ}"
-        else:
-            # Fallback to class name
-            return type(domain_model).__name__.lower()
+        # Use the protocol method to get the primary word directly
+        return domain_model.get_primary_word()

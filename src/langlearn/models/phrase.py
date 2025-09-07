@@ -180,6 +180,17 @@ class Phrase(MediaGenerationCapable):
             "phrase_audio": self.phrase,
         }
 
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the first word of the German phrase for identification.
+
+        Returns:
+            The first word of the German phrase (e.g., "Guten" from "Guten Morgen")
+        """
+        # Use first word of phrase for filename, consistent with original logic
+        return self.phrase.split()[0] if self.phrase else "phrase"
+
     def _build_search_context(self) -> str:
         """Build rich context for image search using German phrase expertise.
 

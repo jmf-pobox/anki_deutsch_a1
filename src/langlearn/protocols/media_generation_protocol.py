@@ -67,3 +67,15 @@ class MediaGenerationCapable(Protocol):
             E.g., {"word_audio": "das Haus", "example_audio": "Das ist mein Haus"}
         """
         ...
+
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the main German word/term that identifies this domain model.
+        This is used for generating unique filenames for media assets and
+        for identifying the model in logs and debugging.
+
+        Returns:
+            The primary German word/term (e.g., "Haus", "schön", "laufen")
+        """
+        ...

@@ -2,6 +2,9 @@
 
 from unittest.mock import Mock
 
+import pytest
+
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.adjective import Adjective
 from langlearn.protocols import MediaGenerationCapable
 from langlearn.protocols.image_query_generation_protocol import (
@@ -66,17 +69,16 @@ class TestAdjectiveProtocolCompliance:
             superlative="am schnellsten",
         )
 
-        # Create mock service that fails to simulate fallback
+        # Create mock service that fails - should raise exception
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
-        # Should work through protocol interface with fallback when service fails
-        search_terms, audio = use_media_capable(adjective, mock_service)
-
-        assert isinstance(search_terms, str)
-        assert isinstance(audio, str)
-        assert search_terms == "fast"  # English fallback
-        assert audio == "schnell, schneller, am schnellsten"
+        # Should raise MediaGenerationError when service fails (images required)
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for adjective 'schnell'",
+        ):
+            use_media_capable(adjective, mock_service)
 
     def test_protocol_with_mock_anthropic_service(self) -> None:
         """Test protocol works with mock Anthropic service injection."""
@@ -142,8 +144,8 @@ class TestAdjectiveProtocolCompliance:
         assert "behavioral representations" in context
         assert "Abstract/Conceptual" in context
 
-    def test_fallback_handling_for_concrete_adjective(self) -> None:
-        """Test fallback behavior for concrete adjectives when service fails."""
+    def test_service_failure_raises_error(self) -> None:
+        """Test exception when service fails for adjectives."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -156,13 +158,16 @@ class TestAdjectiveProtocolCompliance:
         )
 
         strategy = adjective.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to direct English translation
-        assert result == "blue"
+        # Should raise MediaGenerationError when service fails
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for adjective 'blau'",
+        ):
+            strategy()
 
-    def test_fallback_handling_for_abstract_adjective_with_mapping(self) -> None:
-        """Test fallback behavior for abstract adjectives with concept mapping."""
+    def test_service_failure_for_abstract_adjective_raises_error(self) -> None:
+        """Test exception when service fails for abstract adjectives."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -175,13 +180,16 @@ class TestAdjectiveProtocolCompliance:
         )
 
         strategy = adjective.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to concept mapping for "honest"
-        assert "trustworthy person handshake truth" in result
+        # Should raise MediaGenerationError when service fails
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for adjective 'ehrlich'",
+        ):
+            strategy()
 
-    def test_fallback_handling_for_unmapped_adjective(self) -> None:
-        """Test fallback behavior for adjectives without concept mapping."""
+    def test_service_failure_for_unmapped_adjective_raises_error(self) -> None:
+        """Test exception when service fails for adjectives without concept mapping."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -194,10 +202,13 @@ class TestAdjectiveProtocolCompliance:
         )
 
         strategy = adjective.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to direct English translation
-        assert result == "unusual"
+        # Should raise MediaGenerationError when service fails
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for adjective 'ungewöhnlich'",
+        ):
+            strategy()
 
     def test_comparison_forms_in_context(self) -> None:
         """Test that comparison forms are properly included in search context."""

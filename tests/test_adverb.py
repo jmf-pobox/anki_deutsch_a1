@@ -12,6 +12,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.models.adverb import (
     GERMAN_ADVERB_TYPES,
     GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP,
@@ -266,8 +267,8 @@ class TestImageSearchStrategy:
 
         assert result == "generated terms"
 
-    def test_image_search_strategy_service_failure_fallback(self) -> None:
-        """Test fallback when service fails."""
+    def test_image_search_strategy_service_failure_raises_error(self) -> None:
+        """Test exception when service fails."""
         mock_service = Mock()
         mock_service.generate_image_query.side_effect = Exception("Service failed")
 
@@ -279,10 +280,13 @@ class TestImageSearchStrategy:
         )
 
         strategy = adverb.get_image_search_strategy(mock_service)
-        result = strategy()
 
-        # Should fall back to example sentence
-        assert result == "Gestern war Sonntag."
+        # Should raise MediaGenerationError when service fails
+        with pytest.raises(
+            MediaGenerationError,
+            match="Failed to generate image search for adverb 'gestern'",
+        ):
+            strategy()
 
     def test_image_search_strategy_empty_result_fallback(self) -> None:
         """Test fallback when service returns empty result."""

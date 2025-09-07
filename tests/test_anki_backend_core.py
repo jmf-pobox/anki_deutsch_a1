@@ -74,10 +74,14 @@ class TestAnkiBackendCore:
                 "generate_or_get_audio",
                 side_effect=Exception("API Error"),
             ):
-                result = backend._generate_or_get_audio("test text")
+                # Should raise MediaGenerationError on error and increment error count
+                from langlearn.exceptions import MediaGenerationError
 
-                # Should return None on error and increment error count
-                assert result is None
+                with pytest.raises(
+                    MediaGenerationError, match="Failed to generate audio"
+                ):
+                    backend._generate_or_get_audio("test text")
+
                 assert backend._media_generation_stats["generation_errors"] == 1
 
     def test_generate_or_get_image_success(self, mock_media_service: Mock) -> None:
@@ -119,9 +123,14 @@ class TestAnkiBackendCore:
                 "generate_or_get_image",
                 side_effect=Exception("Network Error"),
             ):
-                result = backend._generate_or_get_image("word", "search")
+                # Should raise MediaGenerationError on error and increment error count
+                from langlearn.exceptions import MediaGenerationError
 
-                assert result is None
+                with pytest.raises(
+                    MediaGenerationError, match="Failed to generate image"
+                ):
+                    backend._generate_or_get_image("word", "search")
+
                 assert backend._media_generation_stats["generation_errors"] == 1
 
     def test_backward_compatibility_properties(self, mock_media_service: Mock) -> None:

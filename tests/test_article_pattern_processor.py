@@ -329,7 +329,7 @@ class TestArticlePatternProcessor:
             ("Die Frau kommt", "Frau"),
             ("Das Kind spielt", "Kind"),
             ("Ich sehe den Mann", "Mann"),
-            ("mit dem Auto", "Mit"),  # Current bug: "auto" is incorrectly in skip_words
+            ("mit dem Auto", "Auto"),  # Fixed: "auto" removed from skip_words
         ]
 
         for sentence, expected_noun in test_cases:
@@ -341,12 +341,15 @@ class TestArticlePatternProcessor:
     ) -> None:
         """Test noun extraction from complex sentences - documents current behavior."""
         test_cases = [
-            ("das Auto des Mannes", "Mannes"),  # Current: returns last noun, not first
-            ("Ich sehe das große Haus", "Große"),  # Current: treats adjective as noun
+            ("das Auto des Mannes", "Auto"),  # Corrected: returns first noun now
+            (
+                "Ich sehe das große Haus",
+                "Große",
+            ),  # Behavior unchanged: treats adjective as noun
             (
                 "mit der schönen Frau hier",
                 "Schönen",
-            ),  # Current: treats adjective as noun
+            ),  # Behavior unchanged: treats adjective as noun
         ]
 
         for sentence, expected_noun in test_cases:
@@ -357,9 +360,17 @@ class TestArticlePatternProcessor:
         self, processor: ArticlePatternProcessor
     ) -> None:
         """Test noun extraction edge cases."""
-        # Empty or invalid inputs
-        assert processor._extract_noun_from_sentence("") == "Wort"
-        assert processor._extract_noun_from_sentence("der die das") == "Wort"
+        # Empty or invalid inputs should raise ArticlePatternError
+        from langlearn.exceptions import ArticlePatternError
+
+        with pytest.raises(
+            ArticlePatternError, match="Could not extract noun from sentence"
+        ):
+            processor._extract_noun_from_sentence("")
+        with pytest.raises(
+            ArticlePatternError, match="Could not extract noun from sentence"
+        ):
+            processor._extract_noun_from_sentence("der die das")
         # "mit ist hier" - all words in skip_words, falls back to first non-article word
         assert processor._extract_noun_from_sentence("mit ist hier") == "Mit"
 
@@ -464,9 +475,13 @@ class TestArticlePatternProcessor:
             example_gen="",
         )
 
-        # Should still generate cards without crashing
-        result = processor._generate_cards_for_record(incomplete_record)
-        assert len(result) == 5
+        # Should raise ArticlePatternError for invalid data instead of generating cards
+        from langlearn.exceptions import ArticlePatternError
+
+        with pytest.raises(
+            ArticlePatternError, match="Article .* not found in example sentence"
+        ):
+            processor._generate_cards_for_record(incomplete_record)
 
     def test_get_expected_card_count(
         self,

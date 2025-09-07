@@ -260,10 +260,13 @@ class TestAnkiBackendDeduplication:
                 ),
                 patch.object(Path, "exists", return_value=False),
             ):
-                result = backend._generate_or_get_audio("test text")
+                # Should raise MediaGenerationError on failure
+                from langlearn.exceptions import MediaGenerationError
+
+                with pytest.raises(MediaGenerationError):
+                    backend._generate_or_get_audio("test text")
 
                 # Verify error handling doesn't interfere with deduplication tracking
-                assert result is None
                 assert backend._media_generation_stats["generation_errors"] == 1
                 assert backend._media_generation_stats["audio_generated"] == 0
                 assert backend._media_generation_stats["audio_reused"] == 0

@@ -1,9 +1,13 @@
 """German Preposition Domain Model."""
 
+import logging
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -91,11 +95,23 @@ class Preposition(MediaGenerationCapable):
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except Exception:
-                # Service failed, use fallback
-                pass
+            except ValueError as e:
+                logger.error(
+                    f"AI service configuration error for '{self.preposition}': {e}"
+                )
+                raise MediaGenerationError(
+                    f"AI service configuration error for '{self.preposition}': {e}"
+                ) from e
+            except Exception as e:
+                logger.error(
+                    f"Unexpected error in AI image search for '{self.preposition}': {e}"
+                )
+                raise MediaGenerationError(
+                    f"Failed to generate image search for '{self.preposition}': {e}"
+                ) from e
 
-            # Fallback to direct English translation
+            # This should never be reached due to exceptions above,
+            # but required for type checking
             return self.english
 
         return generate_search_terms
@@ -134,6 +150,16 @@ class Preposition(MediaGenerationCapable):
             audio_segments["example2_audio"] = self.example2
 
         return audio_segments
+
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German preposition that identifies this domain model.
+
+        Returns:
+            The German preposition (e.g., "auf", "in", "mit")
+        """
+        return self.preposition
 
     def _build_search_context(self) -> str:
         """Build rich context for image search using German preposition expertise."""

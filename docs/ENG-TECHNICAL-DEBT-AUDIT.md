@@ -14,10 +14,16 @@ This audit identifies technical debt across the codebase that impacts maintainab
 **Critical Findings**:
 - **40+ instances of fallback logic** that silently mask failures
 - **15+ hasattr/duck typing instances** violating type safety principles  
-- **25+ try/except blocks** with silent failure (pass or generic Exception)
+- **25+ try/except blocks** with silent failure (pass or generic Exception) 
 - **Multiple TODO comments** indicating incomplete implementations
 - **Extensive debug logging** left in production code
 - **Legacy compatibility layers** still present despite migration claims
+
+**Progress Update** (2025-09-06):
+- ✅ **Exception Standards**: Created comprehensive standards (`docs/ENG-EXCEPTIONS.md`) and module (`src/langlearn/exceptions.py`)
+- ✅ **Service Container (3.1)**: Fixed 5+ silent exception handlers with specific exception types and logging
+- ✅ **AnkiBackend Media (3.2)**: Fixed 2+ silent exception handlers with specific exception handling
+- 🔄 **23+ remaining silent exception handlers** in domain models and other services
 
 ---
 
@@ -151,37 +157,15 @@ elif hasattr(exporter, "exportInto"):
 
 ### Impact: **BLOCKING** - Prevents error detection
 
-### 3.1 Service Container Initialization
+### ✅ 3.1 Service Container Initialization - RESOLVED
 
-**Location**: `services/service_container.py`  
-**Pattern**: Catch all exceptions, return None
+**Status**: **COMPLETED** (2025-09-06)  
+**Resolution**: Replaced generic `Exception` handling with specific exceptions (`ValueError`, `ImportError`) and proper logging in `services/service_container.py`. All affected methods now use appropriate exception types with contextual log messages.
 
-```python
-# Lines 40-44, 74-78, 90-94, 106-110
-try:
-    self._anthropic_service = AnthropicService()
-except Exception:
-    # Service not available (e.g., no API key)
-    return None
-```
+### ✅ 3.2 AnkiBackend Media Processing - RESOLVED
 
-**Affected Methods**:
-- `anthropic_service` property
-- `translation_service` property  
-- `audio_service` property
-- `pexels_service` property
-
-### 3.2 AnkiBackend Media Processing
-
-**Location**: `backends/anki_backend.py:453-466,786-790`
-
-```python
-except Exception:
-    audio_path = None
-    
-except Exception:
-    pass
-```
+**Status**: **COMPLETED** (2025-09-06)  
+**Resolution**: Replaced silent exception handlers in `backends/anki_backend.py` with specific exception handling (`OSError`, `ValueError`, `KeyError`) and proper logging. Audio generation failures now log appropriately, and database query failures gracefully degrade with error visibility.
 
 ---
 
@@ -322,12 +306,12 @@ if not front_file.exists():
 ### Quantitative Impact
 - **40+ fallback points** = 40+ places where errors are hidden
 - **15+ duck typing instances** = 15+ runtime type checks
-- **25+ generic exception handlers** = 25+ error masking points
+- **23+ generic exception handlers** = 23+ error masking points (2 resolved)
 - **10+ debug log setters** = Excessive production logging
 
 ### Code Quality Impact
 - **Type Safety**: POOR - Extensive duck typing and hasattr usage
-- **Error Handling**: POOR - Silent failures throughout
+- **Error Handling**: MODERATE - Core service containers fixed, domain models still need work
 - **Maintainability**: MODERATE - Legacy code mixed with new
 - **Performance**: MODERATE - Unnecessary fallback attempts and logging
 

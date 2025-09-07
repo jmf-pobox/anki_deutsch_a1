@@ -130,6 +130,17 @@ class Article(MediaGenerationCapable):
 
         return audio_segments
 
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns a unique identifier combining gender and article type for articles.
+
+        Returns:
+            Combination of gender and article type (e.g., "maskulin_definit")
+        """
+        # Use gender and type for unique filename, consistent with original logic
+        return f"{self.geschlecht}_{self.artikel_typ}"
+
     def get_image_search_strategy(
         self, ai_service: ImageQueryGenerationProtocol
     ) -> Callable[[], str]:

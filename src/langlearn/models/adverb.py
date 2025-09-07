@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
 
+from langlearn.exceptions import MediaGenerationError
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -187,11 +188,21 @@ class Adverb(MediaGenerationCapable):
                 result = anthropic_service.generate_image_query(context)
                 if result and result.strip():
                     return result.strip()
-            except Exception:
-                # Service failed, use fallback
-                pass
+            except ValueError as e:
+                logger.error(f"AI service configuration error for '{self.word}': {e}")
+                raise MediaGenerationError(
+                    f"AI service configuration error for '{self.word}': {e}"
+                ) from e
+            except Exception as e:
+                logger.error(
+                    f"Unexpected error in AI image search for '{self.word}': {e}"
+                )
+                raise MediaGenerationError(
+                    f"Failed to generate image search for adverb '{self.word}': {e}"
+                ) from e
 
-            # Simple fallback: use the example sentence
+            # This should never be reached due to exceptions above,
+            # but required for type checking
             return self.example
 
         return generate_search_terms
@@ -229,6 +240,16 @@ class Adverb(MediaGenerationCapable):
             "word_audio": self.get_combined_audio_text(),
             "example_audio": self.example,
         }
+
+    def get_primary_word(self) -> str:
+        """Get the primary word for filename generation and identification.
+
+        Returns the German adverb that identifies this domain model.
+
+        Returns:
+            The German adverb (e.g., "heute", "schnell")
+        """
+        return self.word
 
     def _build_search_context(self) -> str:
         """Build rich context for image search using German adverb expertise.
