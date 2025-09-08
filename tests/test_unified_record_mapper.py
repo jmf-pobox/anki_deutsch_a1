@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from langlearn.languages.german.records.records import UnifiedArticleRecord
+from langlearn.languages.german.records.factory import UnifiedArticleRecord
 from langlearn.services.record_mapper import RecordMapper
 
 

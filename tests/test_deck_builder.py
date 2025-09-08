@@ -165,7 +165,7 @@ class TestGermanDeckBuilder:
             with patch.object(
                 builder._record_mapper, "load_records_from_csv"
             ) as mock_load:
-                from langlearn.languages.german.records.records import NounRecord
+                from langlearn.languages.german.records.factory import NounRecord
 
                 # Return mock records when CSV loading is called
                 mock_load.return_value = [
@@ -299,7 +299,7 @@ class TestGermanDeckBuilder:
             with patch.object(
                 builder._record_mapper, "load_records_from_csv"
             ) as mock_load:
-                from langlearn.languages.german.records.records import (
+                from langlearn.languages.german.records.factory import (
                     AdjectiveRecord,
                     AdverbRecord,
                     NegationRecord,

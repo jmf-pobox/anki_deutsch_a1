@@ -14,7 +14,7 @@ language-specific packages.
 """
 
 # Backward compatibility imports - these will be deprecated in future versions
-from langlearn.languages.german.records.records import (
+from langlearn.languages.german.records.factory import (
     AdjectiveRecord,
     AdverbRecord,
     BaseRecord,

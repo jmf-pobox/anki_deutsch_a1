@@ -8,7 +8,7 @@ import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import MediaGenerationError
-from langlearn.languages.german.records.records import (
+from langlearn.languages.german.records.factory import (
     AdjectiveRecord,
     BaseRecord,
     NounRecord,

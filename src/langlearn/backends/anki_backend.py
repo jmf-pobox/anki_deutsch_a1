@@ -27,7 +27,7 @@ from langlearn.languages.german.models.noun import Noun
 from langlearn.languages.german.models.phrase import Phrase
 from langlearn.languages.german.models.preposition import Preposition
 from langlearn.languages.german.models.verb import Verb
-from langlearn.languages.german.records.records import create_record
+from langlearn.languages.german.records.factory import create_record
 
 # Removed unused MediaServiceProtocol import - using concrete MediaService
 from langlearn.services.audio import AudioService

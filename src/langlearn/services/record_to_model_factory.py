@@ -7,7 +7,7 @@ media enrichment purposes.
 
 from __future__ import annotations
 
-from langlearn.languages.german.records.records import BaseRecord
+from langlearn.languages.german.records.factory import BaseRecord
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 
@@ -27,7 +27,7 @@ class RecordToModelFactory:
         Raises:
             ValueError: If record type cannot be converted to domain model
         """
-        from langlearn.languages.german.records.records import RecordType
+        from langlearn.languages.german.records.factory import RecordType
 
         record_type = record.get_record_type()
 

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from langlearn.languages.german.records.records import (
+from langlearn.languages.german.records.factory import (
     AdjectiveRecord,
     AdverbRecord,
     NegationRecord,

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from langlearn.backends.base import CardTemplate, NoteType
-from langlearn.languages.german.records.records import (
+from langlearn.languages.german.records.factory import (
     ArticleRecord,
     BaseRecord,
     IndefiniteArticleRecord,

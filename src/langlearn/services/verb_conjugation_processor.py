@@ -11,7 +11,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
 from langlearn.backends.base import NoteType
-from langlearn.languages.german.records.records import VerbConjugationRecord
+from langlearn.languages.german.records.factory import VerbConjugationRecord
 
 if TYPE_CHECKING:
     from langlearn.services.card_builder import CardBuilder

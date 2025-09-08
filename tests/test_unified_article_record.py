@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from langlearn.languages.german.records.records import UnifiedArticleRecord
+from langlearn.languages.german.records.factory import UnifiedArticleRecord
 
 
 class TestUnifiedArticleRecord:

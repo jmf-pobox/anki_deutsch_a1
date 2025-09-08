@@ -481,7 +481,7 @@ The migration follows a phased approach that minimizes disruption while systemat
 
 3. **Create Base Record Types**:
    ```bash
-   # Extract common base from existing records.py
+   # Extract common base from existing factory.py
    # Move to src/langlearn/core/records/base_record.py
    ```
 
@@ -532,14 +532,14 @@ hatch run format        # Code formatted
 
 3. **Extract German Records from models/records.py**:
    ```bash
-   # ✅ COMPLETED: Split src/langlearn/models/records.py into individual German record files
+   # ✅ COMPLETED: Split src/langlearn/models/factory.py into individual German record files
    # Created src/langlearn/languages/german/records/ with 13 individual record files:
    # - base.py (shared BaseRecord, RecordType, RecordClassProtocol)
    # - adverb_record.py, negation_record.py, phrase_record.py, preposition_record.py
    # - noun_record.py, adjective_record.py (simple records with field validation)
    # - verb_record.py, verb_conjugation_record.py, verb_imperative_record.py (complex verb records)
    # - article_record.py, indefinite_article_record.py, negative_article_record.py, unified_article_record.py
-   # - Updated src/langlearn/languages/german/records/records.py to factory-only module
+   # - Updated src/langlearn/languages/german/records/factory.py to factory-only module
    # All 648 tests pass, Pydantic deprecation warning fixed with ConfigDict
    ```
 

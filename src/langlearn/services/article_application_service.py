@@ -8,7 +8,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from langlearn.backends.base import NoteType
-from langlearn.languages.german.records.records import NounRecord
+from langlearn.languages.german.records.factory import NounRecord
 
 if TYPE_CHECKING:
     from langlearn.services.card_builder import CardBuilder

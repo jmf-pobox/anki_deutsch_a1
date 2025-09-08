@@ -6,7 +6,7 @@ This module tests the pure data container records that represent structured CSV 
 
 import pytest
 
-from langlearn.languages.german.records.records import (
+from langlearn.languages.german.records.factory import (
     RECORD_TYPE_REGISTRY,
     AdjectiveRecord,
     AdverbRecord,
@@ -357,7 +357,7 @@ class TestRecordTypeRegistry:
         assert RECORD_TYPE_REGISTRY["negative_article"] == NegativeArticleRecord
 
         # Import at the function level to avoid circular imports
-        from langlearn.languages.german.records.records import UnifiedArticleRecord
+        from langlearn.languages.german.records.factory import UnifiedArticleRecord
 
         assert RECORD_TYPE_REGISTRY["unified_article"] == UnifiedArticleRecord
 
