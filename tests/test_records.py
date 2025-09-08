@@ -506,6 +506,7 @@ class TestRecordDataIntegrity:
         """Test that records can be modified after creation (they're not frozen)."""
         fields = ["Katze", "die", "cat", "Katzen", "Example", "Related"]
         record = create_record("noun", fields)
+        assert isinstance(record, NounRecord)  # Type narrowing for MyPy
 
         # Should be able to modify media fields after creation
         record.image = "<img src='test.jpg'>"
@@ -518,6 +519,7 @@ class TestRecordDataIntegrity:
         """Test that records can be serialized to JSON."""
         fields = ["schön", "beautiful", "Example", "schöner", "am schönsten"]
         record = create_record("adjective", fields)
+        assert isinstance(record, AdjectiveRecord)  # Type narrowing for MyPy
 
         # Should be serializable
         json_data = record.model_dump()

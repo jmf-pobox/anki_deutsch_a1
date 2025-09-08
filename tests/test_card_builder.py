@@ -8,7 +8,13 @@ import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import MediaGenerationError
-from langlearn.languages.german.records.records import BaseRecord, create_record
+from langlearn.languages.german.records.records import (
+    AdjectiveRecord,
+    BaseRecord,
+    NounRecord,
+    VerbConjugationRecord,
+    create_record,
+)
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService
 
@@ -334,6 +340,7 @@ class TestCardBuilder:
         noun_record = create_record(
             "noun", ["Katze", "die", "cat", "Katzen", "Example", "Tier"]
         )
+        assert isinstance(noun_record, NounRecord)  # Type narrowing for MyPy
         # Add media fields that MediaEnricher would have added
         noun_record.image = "<img src='cat.jpg'>"
         noun_record.word_audio = "[sound:katze.mp3]"
@@ -345,6 +352,7 @@ class TestCardBuilder:
         adj_record = create_record(
             "adjective", ["schön", "beautiful", "Example", "schöner", "am schönsten"]
         )
+        assert isinstance(adj_record, AdjectiveRecord)  # Type narrowing for MyPy
         # Add media fields that MediaEnricher would have added
         adj_record.image = "<img src='beautiful.jpg'>"
         adj_record.word_audio = "[sound:schoen.mp3]"
@@ -697,6 +705,9 @@ class TestCardBuilderIntegration:
                 "Ich arbeite.",
             ],
         )
+        assert isinstance(
+            valid_record, VerbConjugationRecord
+        )  # Type narrowing for MyPy
         # Add media fields that MediaEnricher would have added
         valid_record.image = "<img src='work.jpg'>"
         valid_record.word_audio = "[sound:arbeiten.mp3]"
