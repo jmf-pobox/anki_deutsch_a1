@@ -94,7 +94,7 @@ class DeckBuilder:
         self._record_mapper = RecordMapper()
 
         # Initialize template service with templates directory
-        template_dir = Path(__file__).parent / "templates"
+        template_dir = Path(__file__).parent / "languages/german/templates"
         self._template_service = TemplateService(template_dir)
 
         # Initialize CardBuilder service for Clean Pipeline
