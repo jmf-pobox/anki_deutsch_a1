@@ -137,6 +137,20 @@ hatch run test-cov                # 5. Coverage maintained (ABSOLUTE REQUIREMENT
 - **ALL development** must use feature branches - NO direct commits to main
 - **Branch naming**: `feature/`, `fix/`, `refactor/`, `docs/`, `test/`
 - **Micro-commits**: 1-2 files, <50 lines preferred, <100 lines max
+
+### Refactoring Best Practices (PROVEN EFFECTIVE):
+
+**Use IDE Refactoring Tools When Available**:
+- **PyCharm rename operations** are significantly more reliable than manual find/replace
+- **Automatic import updates** catch edge cases that manual changes miss
+- **Git history preservation** better maintained by IDE tools
+- **Speed advantage** - PyCharm completed 22-file rename instantly vs manual process
+
+**Incremental Approach for Complex Extractions**:
+- **One record at a time** - Extract single class, test, then continue
+- **Quality gates between steps** - Run full test suite after each extraction  
+- **Type narrowing for MyPy** - Use `isinstance()` assertions for type safety
+- **Preserve backward compatibility** - Maintain legacy interfaces during migration
 - **Push frequency**: Every 3-5 commits OR every 30 minutes
 - **Create draft PR early** for continuous CI feedback
 
@@ -348,35 +362,42 @@ hatch run type           # Verify type safety
 - **`docs/ENG-QUALITY-METRICS.md`** - Current quality metrics and technical debt analysis
 - **`docs/ENG-DEVELOPMENT-STANDARDS.md`** - Architectural principles and development standards
 
-### Core Components - System Architecture
+### Core Components - Multi-Language Architecture (UPDATED 2025-01-08)
 
-The project uses a hybrid architecture for data processing:
+The project is transitioning to a language-first architecture with Phase 2 partially complete:
 
 **Data Flow**: CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → AnkiBackend
 
-1. **Models** (`src/langlearn/models/`): 
-   - **Records**: Pydantic data transport objects (NounRecord, AdjectiveRecord, etc.) with validation
-   - **Domain Models**: Objects with German language business logic methods (Noun, Adjective, etc.)
-   - **Factory**: ModelFactory creates domain model instances for fallback processing
+#### **Current Architecture State**:
 
-2. **Services** (`src/langlearn/services/`): 
-   - **RecordMapper**: CSV → Records conversion
-   - **MediaEnricher**: Converts Records → Domain Models, calls business logic methods, returns enriched Records
-   - **CardBuilder**: Enriched Records → formatted card templates
-   - **External APIs**: AWS Polly, Pexels, Anthropic integration
+1. **German Language Package** (`src/langlearn/languages/german/`): ✅ **PARTIALLY COMPLETE**
+   - **Records** (`records/`): ✅ 13 individual record classes + GermanRecordFactory
+   - **Templates** (`templates/`): ✅ 54 German templates moved from generic location
+   - **Models** (`models/`): 🚧 Still in `src/langlearn/models/` (migration pending)
+   - **Services** (`services/`): 🚧 Still in `src/langlearn/services/` (migration pending)  
+   - **Data** (`data/`): 🚧 Still in project root `data/` (migration pending)
 
-3. **Backends** (`src/langlearn/backends/`): 
+2. **Core Infrastructure** (`src/langlearn/core/`): 🚧 **NOT YET CREATED**
+   - Language-agnostic services (AWS Polly, Pexels, Anthropic)
+   - Pipeline orchestration
+   - Base record types
+
+3. **Legacy Services** (`src/langlearn/services/`): 🚧 **MIXED LANGUAGE-SPECIFIC + INFRASTRUCTURE**
+   - **RecordMapper**: CSV → Records conversion (German-specific, needs move)
+   - **MediaEnricher**: Records → Domain Models conversion (German-specific, needs move)
+   - **CardBuilder**: Records → card templates (German-specific, needs move)
+   - **External APIs**: AWS Polly, Pexels, Anthropic (infrastructure, needs move to core/)
+
+4. **Backends** (`src/langlearn/backends/`): 
    - **DeckBackend**: Abstract interface for deck generation
-   - **AnkiBackend**: Uses enriched Records for card creation, falls back to ModelFactory when Records processing fails
+   - **AnkiBackend**: Uses enriched Records for card creation
 
-4. **Utils** (`src/langlearn/utils/`): API key management, audio/image utilities
-
-5. **Main Application** (`deck_builder.py`): High-level orchestrator
+5. **Main Application** (`deck_builder.py`): High-level orchestrator, templates path updated
 
 ### Data Architecture
-- **CSV Files** (`data/`): Source data for all parts of speech
-- **Audio** (`data/audio/`): AWS Polly-generated pronunciation files
-- **Images** (`data/images/`): Pexels-sourced images with automatic backup
+- **CSV Files** (`data/`): Source data for all parts of speech 🚧 **PENDING MOVE TO GERMAN PACKAGE**
+- **Audio** (`data/audio/`): AWS Polly-generated pronunciation files 🚧 **PENDING MOVE TO GERMAN PACKAGE**
+- **Images** (`data/images/`): Pexels-sourced images with automatic backup 🚧 **PENDING MOVE TO GERMAN PACKAGE**
 - **Backups** (`data/backups/`): Automatic CSV backups during enrichment
 
 ### Key Design Patterns
@@ -451,6 +472,12 @@ This project addresses unique aspects of German language learning:
 
 
 ## Current Status
+
+### Multi-Language Architecture Migration Progress
+- **Phase 2 Partially Complete**: German records and templates successfully migrated
+- **Record System**: ✅ 13 German record classes + GermanRecordFactory implemented
+- **Template System**: ✅ 54 German templates moved to language-specific package
+- **Next Steps**: Domain models, services, and data migration to complete German package
 
 ### Supported Word Types
 - **Fully Supported**: noun, adjective, adverb, negation, verb (via Records + CardBuilder)
