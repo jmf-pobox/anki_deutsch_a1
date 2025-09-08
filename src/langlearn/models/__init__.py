@@ -26,7 +26,7 @@ from langlearn.languages.german.records.records import (
 __all__ = [
     # Backward compatibility - prefer language-specific imports
     "AdjectiveRecord",
-    "AdverbRecord", 
+    "AdverbRecord",
     "BaseRecord",
     "NegationRecord",
     "NounRecord",

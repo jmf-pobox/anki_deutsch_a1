@@ -389,7 +389,9 @@ class DeckBuilder:
 
             # Special handling for verb conjugation records - use multi-card generation
             if record_type == "verbconjugation":
-                from langlearn.languages.german.records.records import VerbConjugationRecord
+                from langlearn.languages.german.records.records import (
+                    VerbConjugationRecord,
+                )
 
                 # Cast records to the proper type for verb conjugation processing
                 verb_records = [
