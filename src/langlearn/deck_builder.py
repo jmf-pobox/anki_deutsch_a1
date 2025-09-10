@@ -76,6 +76,8 @@ class DeckBuilder:
         self,
         deck_name: str,
         backend_type: str = "anki",
+        language: str = "german",
+        deck_type: str = "default",
         audio_service: AudioService | None = None,
         pexels_service: PexelsService | None = None,
     ) -> None:
@@ -84,17 +86,21 @@ class DeckBuilder:
         Args:
             deck_name: Name of the Anki deck to create
             backend_type: Backend to use ("anki")
+            language: Language for the deck (e.g., "german", "russian")
+            deck_type: Deck type within the language (e.g., "default", "business")
             audio_service: Optional AudioService for dependency injection
             pexels_service: Optional PexelsService for dependency injection
         """
         self.deck_name = deck_name
         self.backend_type = backend_type
+        self.language = language
+        self.deck_type = deck_type
 
         # Initialize Clean Pipeline services
         self._record_mapper = RecordMapper()
 
-        # Initialize template service with templates directory
-        template_dir = Path(__file__).parent / "languages/german/templates"
+        # Initialize template service with language-specific templates directory
+        template_dir = Path(__file__).parent / "languages" / language / "templates"
         self._template_service = TemplateService(template_dir)
 
         # Initialize CardBuilder service for Clean Pipeline
@@ -106,12 +112,13 @@ class DeckBuilder:
         # Initialize StandardMediaEnricher (type annotation)
         self._media_enricher: Any = None  # Will be properly initialized later
 
-        # Initialize dependencies for media service
+        # Initialize dependencies for media service with language/deck specific paths
         project_root = Path(__file__).parent.parent.parent  # Go up to project root
+        language_deck_data_dir = project_root / "data" / language / deck_type
 
-        # Use provided services or create defaults
+        # Use provided services or create defaults with language/deck specific paths
         actual_audio_service = audio_service or AudioService(
-            output_dir=str(project_root / "data" / "audio")
+            output_dir=str(language_deck_data_dir / "audio")
         )
         actual_pexels_service = pexels_service or PexelsService()
         media_config = MediaGenerationConfig()
@@ -149,8 +156,8 @@ class DeckBuilder:
                 audio_service=actual_audio_service,
                 pexels_service=actual_pexels_service,
                 anthropic_service=anthropic_service,
-                audio_base_path=project_root / "data" / "audio",
-                image_base_path=project_root / "data" / "images",
+                audio_base_path=language_deck_data_dir / "audio",
+                image_base_path=language_deck_data_dir / "images",
             )
         else:
             self._media_enricher = None

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Main application entry point using GermanDeckBuilder.
+"""Main application entry point for multi-language deck generation.
 
 This provides the modern implementation for deck generation
-using the GermanDeckBuilder orchestrator.
+supporting multiple languages and decks per language.
 """
 
+import argparse
 import logging
 import sys
 from pathlib import Path
@@ -18,28 +19,63 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Generate language learning Anki decks"
+    )
+    parser.add_argument(
+        "--language",
+        default="german",
+        help="Language to generate deck for (default: german)",
+    )
+    parser.add_argument(
+        "--deck",
+        default="default",
+        help="Deck name within the language (default: default)",
+    )
+    parser.add_argument(
+        "--output", help="Output file path (auto-generated if not specified)"
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
     """Main application entry point."""
-    print("=== German A1 Deck Generator ===")
-    print("Creating deck with automatic audio and image generation...")
+    args = parse_args()
 
-    # Configuration
-    deck_name = "German A1 Vocabulary"
-    data_dir = Path(__file__).parent.parent.parent / "data"
-    output_dir = Path(__file__).parent.parent.parent / "output"
+    print(f"=== {args.language.title()} Deck Generator ===")
+    print(f"Creating {args.deck} deck with automatic audio and image generation...")
+
+    # Configuration based on CLI parameters
+    deck_name = f"{args.language.title()} {args.deck.title()} Vocabulary"
+    project_root = Path(__file__).parent.parent.parent
+    data_dir = project_root / "data" / args.language / args.deck
+    output_dir = project_root / "output"
 
     print(f"📂 Data directory: {data_dir}")
     print(f"💾 Output directory: {output_dir}")
 
     if not data_dir.exists():
         print(f"❌ Error: Data directory not found: {data_dir}")
+        print("Available languages/decks:")
+        data_root = project_root / "data"
+        if data_root.exists():
+            for lang_dir in data_root.iterdir():
+                if lang_dir.is_dir() and not lang_dir.name.startswith("."):
+                    print(f"  Language: {lang_dir.name}")
+                    for deck_dir in lang_dir.iterdir():
+                        if deck_dir.is_dir() and not deck_dir.name.startswith("."):
+                            print(f"    Deck: {deck_dir.name}")
         sys.exit(1)
 
     try:
-        # Create the deck using GermanDeckBuilder
+        # Create the deck using DeckBuilder with language/deck configuration
         with DeckBuilder(
             deck_name=deck_name,
             backend_type="anki",  # Use AnkiBackend for production
+            language=args.language,
+            deck_type=args.deck,
         ) as builder:
             print(f"🚀 Initialized {builder.backend_type} backend")
 
@@ -83,7 +119,11 @@ def main() -> None:
                     print(f"      - {name}")
 
             # Export deck
-            output_file = output_dir / f"{deck_name.replace(' ', '_').lower()}.apkg"
+            if args.output:
+                output_file = Path(args.output)
+            else:
+                filename = f"{args.language}_{args.deck}.apkg"
+                output_file = output_dir / filename
             print(f"\n💾 Exporting deck to {output_file}...")
 
             builder.export_deck(output_file)
