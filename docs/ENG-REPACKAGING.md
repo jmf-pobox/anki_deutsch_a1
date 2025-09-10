@@ -477,11 +477,11 @@ src/langlearn/languages/german/records/
 The multi-deck per language functionality has been successfully implemented and tested:
 
 #### ✅ Implementation Details:
-- **Data Structure**: `data/{language}/{deck}/` supports arbitrary deck names per language
+- **Data Structure**: `languages/{language}/{deck}/` supports arbitrary deck names per language
 - **CLI Interface**: `--language=<lang> --deck=<deck>` parameters with helpful error messages
 - **DeckBuilder Integration**: Language/deck-aware path resolution for audio, images, and templates  
 - **Media Organization**: Each deck maintains its own `audio/` and `images/` directories
-- **Backward Compatibility**: Original German content moved to `data/german/default/`
+- **Backward Compatibility**: Original German content moved to `languages/german/default/`
 
 #### ✅ Verified Examples:
 ```bash
@@ -497,7 +497,7 @@ hatch run python -m langlearn.main --language=korean --deck=hanja
 
 #### ✅ Error Handling:
 ```
-❌ Error: Data directory not found: /path/to/data/spanish/basic
+❌ Error: Data directory not found: /path/to/languages/spanish/basic
 Available languages/decks:
   Language: german
     Deck: business  
@@ -667,18 +667,18 @@ hatch run format        # Code formatted
 6. **Reorganize Data Architecture for Multi-Language/Multi-Deck Support**:
    ```bash
    # ✅ COMPLETED 2025-01-08: Data reorganized for multi-language/multi-deck support
-   mkdir -p data/german/default
-   mv data/*.csv data/german/default/
-   mv data/audio data/german/default/
-   mv data/images data/german/default/
-   mv data/backups data/german/default/
+   mkdir -p languages/german/default
+   mv data/*.csv languages/german/default/
+   mv data/audio languages/german/default/
+   mv data/images languages/german/default/
+   mv data/backups languages/german/default/
    
    # ✅ IMPLEMENTED: Multi-deck structure now supports arbitrary decks per language:
-   # data/german/default/    - German default deck (original A1 content)
-   # data/german/business/   - German business vocabulary deck
-   # data/german/beginner/   - German beginner deck
-   # data/russian/basic/     - Russian basic level deck (sample)
-   # data/korean/hanja/      - Korean hanja deck (sample)
+   # languages/german/default/    - German default deck (original A1 content)
+   # languages/german/business/   - German business vocabulary deck
+   # languages/german/beginner/   - German beginner deck
+   # languages/russian/basic/     - Russian basic level deck (sample)
+   # languages/korean/hanja/      - Korean hanja deck (sample)
    ```
 
 7. **Implement GermanLanguage Class**:

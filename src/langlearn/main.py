@@ -50,7 +50,7 @@ def main() -> None:
     # Configuration based on CLI parameters
     deck_name = f"{args.language.title()} {args.deck.title()} Vocabulary"
     project_root = Path(__file__).parent.parent.parent
-    data_dir = project_root / "data" / args.language / args.deck
+    data_dir = project_root / "languages" / args.language / args.deck
     output_dir = project_root / "output"
 
     print(f"📂 Data directory: {data_dir}")
@@ -59,7 +59,7 @@ def main() -> None:
     if not data_dir.exists():
         print(f"❌ Error: Data directory not found: {data_dir}")
         print("Available languages/decks:")
-        data_root = project_root / "data"
+        data_root = project_root / "languages"
         if data_root.exists():
             for lang_dir in data_root.iterdir():
                 if lang_dir.is_dir() and not lang_dir.name.startswith("."):

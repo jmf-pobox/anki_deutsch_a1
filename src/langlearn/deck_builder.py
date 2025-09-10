@@ -61,8 +61,8 @@ class DeckBuilder:
         builder = DeckBuilder("A1 German Vocabulary")
 
         # Load data and create deck
-        builder.load_nouns_from_csv("data/nouns.csv")
-        builder.load_adjectives_from_csv("data/adjectives.csv")
+        builder.load_nouns_from_csv("languages/nouns.csv")
+        builder.load_adjectives_from_csv("languages/adjectives.csv")
 
         # Generate with media
         builder.generate_all_media()
@@ -114,7 +114,7 @@ class DeckBuilder:
 
         # Initialize dependencies for media service with language/deck specific paths
         project_root = Path(__file__).parent.parent.parent  # Go up to project root
-        language_deck_data_dir = project_root / "data" / language / deck_type
+        language_deck_data_dir = project_root / "languages" / language / deck_type
 
         # Use provided services or create defaults with language/deck specific paths
         actual_audio_service = audio_service or AudioService(

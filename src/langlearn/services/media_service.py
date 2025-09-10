@@ -19,8 +19,8 @@ class MediaGenerationConfig:
 
     audio_sample_rate: int = 16000
     image_size: PhotoSize = "medium"
-    audio_dir: str = "data/audio"
-    images_dir: str = "data/images"
+    audio_dir: str = "languages/audio"
+    images_dir: str = "languages/images"
 
 
 class MediaAssets(NamedTuple):

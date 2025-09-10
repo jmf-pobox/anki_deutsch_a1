@@ -27,8 +27,8 @@ class MediaFileRegistrar:
 
     def __init__(
         self,
-        audio_base_path: Path = Path("data/audio"),
-        image_base_path: Path = Path("data/images"),
+        audio_base_path: Path = Path("languages/audio"),
+        image_base_path: Path = Path("languages/images"),
     ) -> None:
         """Initialize MediaFileRegistrar.
 

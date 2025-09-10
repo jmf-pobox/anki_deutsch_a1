@@ -60,8 +60,8 @@ class TestMediaFileRegistrar:
         """Test MediaFileRegistrar initialization with default paths."""
         registrar = MediaFileRegistrar()
 
-        assert registrar._audio_base_path == Path("data/audio")
-        assert registrar._image_base_path == Path("data/images")
+        assert registrar._audio_base_path == Path("languages/audio")
+        assert registrar._image_base_path == Path("languages/images")
         assert registrar._registered_files == set()
 
     def test_extract_audio_references(

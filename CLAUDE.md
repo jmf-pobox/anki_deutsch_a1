@@ -395,10 +395,10 @@ The project is transitioning to a language-first architecture with Phase 2 parti
 5. **Main Application** (`deck_builder.py`): High-level orchestrator, templates path updated
 
 ### Data Architecture
-- **CSV Files** (`data/`): Source data for all parts of speech 🚧 **PENDING MOVE TO GERMAN PACKAGE**
-- **Audio** (`data/audio/`): AWS Polly-generated pronunciation files 🚧 **PENDING MOVE TO GERMAN PACKAGE**
-- **Images** (`data/images/`): Pexels-sourced images with automatic backup 🚧 **PENDING MOVE TO GERMAN PACKAGE**
-- **Backups** (`data/backups/`): Automatic CSV backups during enrichment
+- **CSV Files** (`languages/{language}/{deck}/`): Source data organized by language and deck
+- **Audio** (`languages/{language}/{deck}/audio/`): AWS Polly-generated pronunciation files
+- **Images** (`languages/{language}/{deck}/images/`): Pexels-sourced images with automatic backup
+- **Backups** (`languages/{language}/{deck}/backups/`): Automatic CSV backups during enrichment
 
 ### Key Design Patterns
 
