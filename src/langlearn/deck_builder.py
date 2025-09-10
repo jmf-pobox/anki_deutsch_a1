@@ -138,8 +138,11 @@ class DeckBuilder:
         self._deck_manager = DeckManager(self._backend)
         self._media_manager = MediaManager(self._backend, self._media_service)
 
-        # Initialize MediaFileRegistrar for Clean Pipeline
-        self._media_file_registrar = MediaFileRegistrar()
+        # Initialize MediaFileRegistrar for Clean Pipeline with language/deck paths
+        self._media_file_registrar = MediaFileRegistrar(
+            audio_base_path=language_deck_data_dir / "audio",
+            image_base_path=language_deck_data_dir / "images",
+        )
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:

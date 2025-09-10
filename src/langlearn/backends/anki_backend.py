@@ -253,10 +253,13 @@ class AnkiBackend(DeckBackend):
 
         for i, field_value in enumerate(processed_fields):
             if i < len(note.fields):
-                # Extract and add media files from HTML content before setting field
-                processed_field_value = self._extract_and_add_media_from_html(
-                    field_value
-                )
+                # Extract and add media files (only if not already processed)
+                if not skip_media_processing:
+                    processed_field_value = self._extract_and_add_media_from_html(
+                        field_value
+                    )
+                else:
+                    processed_field_value = field_value
                 note.fields[i] = processed_field_value
 
                 # LOG EXACT FIELD ASSIGNMENT FOR MEDIA FIELDS
