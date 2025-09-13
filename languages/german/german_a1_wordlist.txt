@@ -1,0 +1,796 @@
+German Word,Word Group,Part of Speech
+ab,Alphabetische Wortliste,Preposition
+aber,Alphabetische Wortliste,Conjunction
+abfahren,Alphabetische Wortliste,Verb
+Abfahrt,Alphabetische Wortliste,Noun
+abgeben,Alphabetische Wortliste,Verb
+abholen,Alphabetische Wortliste,Verb
+Absender,Alphabetische Wortliste,Noun
+Achtung,Alphabetische Wortliste,Interjection
+Adresse,Alphabetische Wortliste,Noun
+all-,Alphabetische Wortliste,Pronoun
+allein,Alphabetische Wortliste,Adverb
+also,Alphabetische Wortliste,Adverb
+alt,Alphabetische Wortliste,Adjective
+Alter,Alphabetische Wortliste,Noun
+an,Alphabetische Wortliste,Preposition
+anbieten,Alphabetische Wortliste,Verb
+Angebot,Alphabetische Wortliste,Noun
+ander-,Alphabetische Wortliste,Pronoun
+anfangen,Alphabetische Wortliste,Verb
+Anfang,Alphabetische Wortliste,Noun
+anklicken,Alphabetische Wortliste,Verb
+ankommen,Alphabetische Wortliste,Verb
+Ankunft,Alphabetische Wortliste,Noun
+ankreuzen,Alphabetische Wortliste,Verb
+anmachen,Alphabetische Wortliste,Verb
+anmelden,Alphabetische Wortliste,Verb
+Anmeldung,Alphabetische Wortliste,Noun
+Anrede,Alphabetische Wortliste,Noun
+anrufen,Alphabetische Wortliste,Verb
+Anruf,Alphabetische Wortliste,Noun
+Anrufbeantworter,Alphabetische Wortliste,Noun
+Ansage,Alphabetische Wortliste,Noun
+Anschluss,Alphabetische Wortliste,Noun
+an sein,Alphabetische Wortliste,Verb
+antworten,Alphabetische Wortliste,Verb
+Antwort,Alphabetische Wortliste,Noun
+Anzeige,Alphabetische Wortliste,Noun
+anziehen,Alphabetische Wortliste,Verb
+Apartment,Alphabetische Wortliste,Noun
+Apfel,Alphabetische Wortliste,Noun
+Appetit,Alphabetische Wortliste,Noun
+arbeiten,Alphabetische Wortliste,Verb
+Arbeit,Alphabetische Wortliste,Noun
+arbeitslos,Alphabetische Wortliste,Adjective
+Arbeitsplatz,Alphabetische Wortliste,Noun
+Arm,Alphabetische Wortliste,Noun
+Arzt,Alphabetische Wortliste,Noun
+auch,Alphabetische Wortliste,Adverb
+auf,Alphabetische Wortliste,Preposition
+Aufgabe,Alphabetische Wortliste,Noun
+aufhören,Alphabetische Wortliste,Verb
+auf sein,Alphabetische Wortliste,Verb
+aufstehen,Alphabetische Wortliste,Verb
+Aufzug,Alphabetische Wortliste,Noun
+Auge,Alphabetische Wortliste,Noun
+aus,Alphabetische Wortliste,Preposition
+Ausflug,Alphabetische Wortliste,Noun
+ausfüllen,Alphabetische Wortliste,Verb
+Ausgang,Alphabetische Wortliste,Noun
+Auskunft,Alphabetische Wortliste,Noun
+Ausland,Alphabetische Wortliste,Noun
+Ausländer,Alphabetische Wortliste,Noun
+ausländisch,Alphabetische Wortliste,Adjective
+ausmachen,Alphabetische Wortliste,Verb
+Aussage,Alphabetische Wortliste,Noun
+aussehen,Alphabetische Wortliste,Verb
+aus sein,Alphabetische Wortliste,Verb
+aussteigen,Alphabetische Wortliste,Verb
+Ausweis,Alphabetische Wortliste,Noun
+ausziehen,Alphabetische Wortliste,Verb
+Auto,Alphabetische Wortliste,Noun
+Autobahn,Alphabetische Wortliste,Noun
+Automat,Alphabetische Wortliste,Noun
+automatisch,Alphabetische Wortliste,Adjective
+Baby,Alphabetische Wortliste,Noun
+Bäckerei,Alphabetische Wortliste,Noun
+Bad,Alphabetische Wortliste,Noun
+baden,Alphabetische Wortliste,Verb
+Bahn,Alphabetische Wortliste,Noun
+Bahnhof,Alphabetische Wortliste,Noun
+Bahnsteig,Alphabetische Wortliste,Noun
+bald,Alphabetische Wortliste,Adverb
+Balkon,Alphabetische Wortliste,Noun
+Banane,Alphabetische Wortliste,Noun
+Bank,Alphabetische Wortliste,Noun
+bar,Alphabetische Wortliste,Adjective
+Bauch,Alphabetische Wortliste,Noun
+Baum,Alphabetische Wortliste,Noun
+Beamte,Alphabetische Wortliste,Noun
+bedeuten,Alphabetische Wortliste,Verb
+beginnen,Alphabetische Wortliste,Verb
+bei,Alphabetische Wortliste,Preposition
+beide,Alphabetische Wortliste,Pronoun
+Bein,Alphabetische Wortliste,Noun
+Beispiel,Alphabetische Wortliste,Noun
+bekannt,Alphabetische Wortliste,Adjective
+Bekannte,Alphabetische Wortliste,Noun
+bekommen,Alphabetische Wortliste,Verb
+benutzen,Alphabetische Wortliste,Verb
+Beruf,Alphabetische Wortliste,Noun
+besetzt,Alphabetische Wortliste,Adjective
+besichtigen,Alphabetische Wortliste,Verb
+besser,Alphabetische Wortliste,Adjective
+best-,Alphabetische Wortliste,Adjective
+bestellen,Alphabetische Wortliste,Verb
+besuchen,Alphabetische Wortliste,Verb
+Bett,Alphabetische Wortliste,Noun
+bezahlen,Alphabetische Wortliste,Verb
+Bier,Alphabetische Wortliste,Noun
+Bild,Alphabetische Wortliste,Noun
+billig,Alphabetische Wortliste,Adjective
+Birne,Alphabetische Wortliste,Noun
+bis,Alphabetische Wortliste,Preposition
+bisschen,Alphabetische Wortliste,Adverb
+bitte,Alphabetische Wortliste,Interjection
+Bitte,Alphabetische Wortliste,Noun
+bitten,Alphabetische Wortliste,Verb
+bitter,Alphabetische Wortliste,Adjective
+bleiben,Alphabetische Wortliste,Verb
+Bleistift,Alphabetische Wortliste,Noun
+Blick,Alphabetische Wortliste,Noun
+Blume,Alphabetische Wortliste,Noun
+Bogen,Alphabetische Wortliste,Noun
+böse,Alphabetische Wortliste,Adjective
+brauchen,Alphabetische Wortliste,Verb
+breit,Alphabetische Wortliste,Adjective
+Brief,Alphabetische Wortliste,Noun
+Briefmarke,Alphabetische Wortliste,Noun
+bringen,Alphabetische Wortliste,Verb
+Brot,Alphabetische Wortliste,Noun
+Brötchen,Alphabetische Wortliste,Noun
+Bruder,Alphabetische Wortliste,Noun
+Buch,Alphabetische Wortliste,Noun
+Buchstabe,Alphabetische Wortliste,Noun
+buchstabieren,Alphabetische Wortliste,Verb
+Bus,Alphabetische Wortliste,Noun
+Butter,Alphabetische Wortliste,Noun
+Café,Alphabetische Wortliste,Noun
+CD,Alphabetische Wortliste,Noun
+Chef,Alphabetische Wortliste,Noun
+circa,Alphabetische Wortliste,Adverb
+Computer,Alphabetische Wortliste,Noun
+da,Alphabetische Wortliste,Adverb
+Dame,Alphabetische Wortliste,Noun
+daneben,Alphabetische Wortliste,Adverb
+danken,Alphabetische Wortliste,Verb
+Dank,Alphabetische Wortliste,Noun
+danke,Alphabetische Wortliste,Interjection
+dann,Alphabetische Wortliste,Adverb
+Datum,Alphabetische Wortliste,Noun
+dauern,Alphabetische Wortliste,Verb
+dein-,Alphabetische Wortliste,Pronoun
+denn,Alphabetische Wortliste,Conjunction
+der,Alphabetische Wortliste,Article
+die,Alphabetische Wortliste,Article
+das,Alphabetische Wortliste,Article
+dich,Alphabetische Wortliste,Pronoun
+dies-,Alphabetische Wortliste,Pronoun
+dir,Alphabetische Wortliste,Pronoun
+Disco,Alphabetische Wortliste,Noun
+Doktor,Alphabetische Wortliste,Noun
+Doppelzimmer,Alphabetische Wortliste,Noun
+Dorf,Alphabetische Wortliste,Noun
+dort,Alphabetische Wortliste,Adverb
+draußen,Alphabetische Wortliste,Adverb
+drucken,Alphabetische Wortliste,Verb
+Drucker,Alphabetische Wortliste,Noun
+drücken,Alphabetische Wortliste,Verb
+durch,Alphabetische Wortliste,Preposition
+Durchsage,Alphabetische Wortliste,Noun
+dürfen,Alphabetische Wortliste,Verb
+Durst,Alphabetische Wortliste,Noun
+duschen,Alphabetische Wortliste,Verb
+Dusche,Alphabetische Wortliste,Noun
+Ecke,Alphabetische Wortliste,Noun
+Ehefrau,Alphabetische Wortliste,Noun
+Ehemann,Alphabetische Wortliste,Noun
+Ei,Alphabetische Wortliste,Noun
+eilig,Alphabetische Wortliste,Adjective
+ein-,Alphabetische Wortliste,Article
+einfach,Alphabetische Wortliste,Adjective
+Eingang,Alphabetische Wortliste,Noun
+einkaufen,Alphabetische Wortliste,Verb
+einladen,Alphabetische Wortliste,Verb
+Einladung,Alphabetische Wortliste,Noun
+einmal,Alphabetische Wortliste,Adverb
+einsteigen,Alphabetische Wortliste,Verb
+Eintritt,Alphabetische Wortliste,Noun
+Einzelzimmer,Alphabetische Wortliste,Noun
+Eltern,Alphabetische Wortliste,Noun
+E-Mail,Alphabetische Wortliste,Noun
+Empfänger,Alphabetische Wortliste,Noun
+empfehlen,Alphabetische Wortliste,Verb
+enden,Alphabetische Wortliste,Verb
+Ende,Alphabetische Wortliste,Noun
+entschuldigen,Alphabetische Wortliste,Verb
+Entschuldigung,Alphabetische Wortliste,Noun
+er,Alphabetische Wortliste,Pronoun
+Ergebnis,Alphabetische Wortliste,Noun
+erklären,Alphabetische Wortliste,Verb
+erlauben,Alphabetische Wortliste,Verb
+Erwachsene,Alphabetische Wortliste,Noun
+erzählen,Alphabetische Wortliste,Verb
+es,Alphabetische Wortliste,Pronoun
+essen,Alphabetische Wortliste,Verb
+Essen,Alphabetische Wortliste,Noun
+euer,Alphabetische Wortliste,Pronoun
+fahren,Alphabetische Wortliste,Verb
+Fahrer,Alphabetische Wortliste,Noun
+Fahrkarte,Alphabetische Wortliste,Noun
+Fahrrad,Alphabetische Wortliste,Noun
+falsch,Alphabetische Wortliste,Adjective
+Familie,Alphabetische Wortliste,Noun
+Familienname,Alphabetische Wortliste,Noun
+Familienstand,Alphabetische Wortliste,Noun
+Farbe,Alphabetische Wortliste,Noun
+Fax,Alphabetische Wortliste,Noun
+Feier-,Alphabetische Wortliste,Prefix
+feiern,Alphabetische Wortliste,Verb
+fehlen,Alphabetische Wortliste,Verb
+Fehler,Alphabetische Wortliste,Noun
+fernsehen,Alphabetische Wortliste,Verb
+fertig,Alphabetische Wortliste,Adjective
+Feuer,Alphabetische Wortliste,Noun
+Fieber,Alphabetische Wortliste,Noun
+Film,Alphabetische Wortliste,Noun
+finden,Alphabetische Wortliste,Verb
+Firma,Alphabetische Wortliste,Noun
+Fisch,Alphabetische Wortliste,Noun
+Flasche,Alphabetische Wortliste,Noun
+Fleisch,Alphabetische Wortliste,Noun
+fliegen,Alphabetische Wortliste,Verb
+abfliegen,Alphabetische Wortliste,Verb
+Abflug,Alphabetische Wortliste,Noun
+Flughafen,Alphabetische Wortliste,Noun
+Flugzeug,Alphabetische Wortliste,Noun
+Formular,Alphabetische Wortliste,Noun
+Foto,Alphabetische Wortliste,Noun
+fragen,Alphabetische Wortliste,Verb
+Frage,Alphabetische Wortliste,Noun
+Frau,Alphabetische Wortliste,Noun
+frei,Alphabetische Wortliste,Adjective
+Freizeit,Alphabetische Wortliste,Noun
+fremd,Alphabetische Wortliste,Adjective
+freuen,Alphabetische Wortliste,Verb
+Freund,Alphabetische Wortliste,Noun
+früher,Alphabetische Wortliste,Adverb
+frühstücken,Alphabetische Wortliste,Verb
+Frühstück,Alphabetische Wortliste,Noun
+Führung,Alphabetische Wortliste,Noun
+für,Alphabetische Wortliste,Preposition
+Fuß,Alphabetische Wortliste,Noun
+Fußball,Alphabetische Wortliste,Noun
+Garten,Alphabetische Wortliste,Noun
+Gast,Alphabetische Wortliste,Noun
+geben,Alphabetische Wortliste,Verb
+geboren,Alphabetische Wortliste,Adjective
+Geburtsjahr,Alphabetische Wortliste,Noun
+Geburtsort,Alphabetische Wortliste,Noun
+Geburtstag,Alphabetische Wortliste,Noun
+gefallen,Alphabetische Wortliste,Verb
+gegen,Alphabetische Wortliste,Preposition
+gehen,Alphabetische Wortliste,Verb
+gehören,Alphabetische Wortliste,Verb
+Geld,Alphabetische Wortliste,Noun
+Gemüse,Alphabetische Wortliste,Noun
+Gepäck,Alphabetische Wortliste,Noun
+gerade,Alphabetische Wortliste,Adverb
+geradeaus,Alphabetische Wortliste,Adverb
+gern,Alphabetische Wortliste,Adverb
+Geschäft,Alphabetische Wortliste,Noun
+Geschenk,Alphabetische Wortliste,Noun
+Geschwister,Alphabetische Wortliste,Noun
+Gespräch,Alphabetische Wortliste,Noun
+gestern,Alphabetische Wortliste,Adverb
+gestorben,Alphabetische Wortliste,Adjective
+Getränk,Alphabetische Wortliste,Noun
+Gewicht,Alphabetische Wortliste,Noun
+gewinnen,Alphabetische Wortliste,Verb
+Glas,Alphabetische Wortliste,Noun
+glauben,Alphabetische Wortliste,Verb
+gleich,Alphabetische Wortliste,Adjective
+Gleis,Alphabetische Wortliste,Noun
+Glück,Alphabetische Wortliste,Noun
+glücklich,Alphabetische Wortliste,Adjective
+Glückwunsch,Alphabetische Wortliste,Noun
+Grad,Alphabetische Wortliste,Noun
+gratulieren,Alphabetische Wortliste,Verb
+grillen,Alphabetische Wortliste,Verb
+groß,Alphabetische Wortliste,Adjective
+Größe,Alphabetische Wortliste,Noun
+Großeltern,Alphabetische Wortliste,Noun
+Großmutter,Alphabetische Wortliste,Noun
+Großvater,Alphabetische Wortliste,Noun
+Gruppe,Alphabetische Wortliste,Noun
+Gruß,Alphabetische Wortliste,Noun
+gültig,Alphabetische Wortliste,Adjective
+günstig,Alphabetische Wortliste,Adjective
+gut,Alphabetische Wortliste,Adjective
+Haar,Alphabetische Wortliste,Noun
+haben,Alphabetische Wortliste,Verb
+Hähnchen,Alphabetische Wortliste,Noun
+Halbpension,Alphabetische Wortliste,Noun
+Halle,Alphabetische Wortliste,Noun
+hallo,Alphabetische Wortliste,Interjection
+halten,Alphabetische Wortliste,Verb
+Haltestelle,Alphabetische Wortliste,Noun
+Hand,Alphabetische Wortliste,Noun
+Handy,Alphabetische Wortliste,Noun
+Haus,Alphabetische Wortliste,Noun
+Hausaufgabe,Alphabetische Wortliste,Noun
+Hausfrau,Alphabetische Wortliste,Noun
+Hausmann,Alphabetische Wortliste,Noun
+Heimat,Alphabetische Wortliste,Noun
+heiraten,Alphabetische Wortliste,Verb
+heißen,Alphabetische Wortliste,Verb
+helfen,Alphabetische Wortliste,Verb
+hell,Alphabetische Wortliste,Adjective
+Herd,Alphabetische Wortliste,Noun
+Herr,Alphabetische Wortliste,Noun
+herzlich,Alphabetische Wortliste,Adjective
+heute,Alphabetische Wortliste,Adverb
+hier,Alphabetische Wortliste,Adverb
+Hilfe,Alphabetische Wortliste,Noun
+hinten,Alphabetische Wortliste,Adverb
+Hobby,Alphabetische Wortliste,Noun
+hoch,Alphabetische Wortliste,Adjective
+Hochzeit,Alphabetische Wortliste,Noun
+holen,Alphabetische Wortliste,Verb
+hören,Alphabetische Wortliste,Verb
+Hotel,Alphabetische Wortliste,Noun
+Hund,Alphabetische Wortliste,Noun
+Hunger,Alphabetische Wortliste,Noun
+ich,Alphabetische Wortliste,Pronoun
+ihr,Alphabetische Wortliste,Pronoun
+ihm,Alphabetische Wortliste,Pronoun
+ihn,Alphabetische Wortliste,Pronoun
+immer,Alphabetische Wortliste,Adverb
+in,Alphabetische Wortliste,Preposition
+Information,Alphabetische Wortliste,Noun
+international,Alphabetische Wortliste,Adjective
+Internet,Alphabetische Wortliste,Noun
+ja,Alphabetische Wortliste,Adverb
+Jacke,Alphabetische Wortliste,Noun
+jed-,Alphabetische Wortliste,Pronoun
+jetzt,Alphabetische Wortliste,Adverb
+Job,Alphabetische Wortliste,Noun
+Jugendliche,Alphabetische Wortliste,Noun
+jung,Alphabetische Wortliste,Adjective
+Junge,Alphabetische Wortliste,Noun
+Kaffee,Alphabetische Wortliste,Noun
+kaputt,Alphabetische Wortliste,Adjective
+Karte,Alphabetische Wortliste,Noun
+Kartoffel,Alphabetische Wortliste,Noun
+Kasse,Alphabetische Wortliste,Noun
+kaufen,Alphabetische Wortliste,Verb
+kein,Alphabetische Wortliste,Pronoun
+kennen,Alphabetische Wortliste,Verb
+kennenlernen,Alphabetische Wortliste,Verb
+Kind,Alphabetische Wortliste,Noun
+Kindergarten,Alphabetische Wortliste,Noun
+Kino,Alphabetische Wortliste,Noun
+Kiosk,Alphabetische Wortliste,Noun
+klar,Alphabetische Wortliste,Adjective
+Klasse,Alphabetische Wortliste,Noun
+Kleidung,Alphabetische Wortliste,Noun
+klein,Alphabetische Wortliste,Adjective
+kochen,Alphabetische Wortliste,Verb
+Koffer,Alphabetische Wortliste,Noun
+Kollege,Alphabetische Wortliste,Noun
+kommen,Alphabetische Wortliste,Verb
+können,Alphabetische Wortliste,Verb
+Konto,Alphabetische Wortliste,Noun
+Kopf,Alphabetische Wortliste,Noun
+kosten,Alphabetische Wortliste,Verb
+krank,Alphabetische Wortliste,Adjective
+kriegen,Alphabetische Wortliste,Verb
+Küche,Alphabetische Wortliste,Noun
+Kuchen,Alphabetische Wortliste,Noun
+Kugelschreiber,Alphabetische Wortliste,Noun
+Kühlschrank,Alphabetische Wortliste,Noun
+kulturell,Alphabetische Wortliste,Adjective
+kümmern,Alphabetische Wortliste,Verb
+Kunde,Alphabetische Wortliste,Noun
+Kurs,Alphabetische Wortliste,Noun
+kurz,Alphabetische Wortliste,Adjective
+lachen,Alphabetische Wortliste,Verb
+Laden,Alphabetische Wortliste,Noun
+Land,Alphabetische Wortliste,Noun
+lang,Alphabetische Wortliste,Adjective
+lange,Alphabetische Wortliste,Adverb
+langsam,Alphabetische Wortliste,Adjective
+laufen,Alphabetische Wortliste,Verb
+laut,Alphabetische Wortliste,Adjective
+leben,Alphabetische Wortliste,Verb
+Leben,Alphabetische Wortliste,Noun
+Lebensmittel,Alphabetische Wortliste,Noun
+ledig,Alphabetische Wortliste,Adjective
+legen,Alphabetische Wortliste,Verb
+Lehrer,Alphabetische Wortliste,Noun
+leicht,Alphabetische Wortliste,Adjective
+leider,Alphabetische Wortliste,Adverb
+leise,Alphabetische Wortliste,Adjective
+lernen,Alphabetische Wortliste,Verb
+lesen,Alphabetische Wortliste,Verb
+letzt-,Alphabetische Wortliste,Adjective
+Leute,Alphabetische Wortliste,Noun
+Licht,Alphabetische Wortliste,Noun
+lieb-,Alphabetische Wortliste,Adjective
+lieben,Alphabetische Wortliste,Verb
+lieber,Alphabetische Wortliste,Adverb
+Lieblings-,Alphabetische Wortliste,Prefix
+Lied,Alphabetische Wortliste,Noun
+liegen,Alphabetische Wortliste,Verb
+links,Alphabetische Wortliste,Adverb
+Lkw,Alphabetische Wortliste,Noun
+Lokal,Alphabetische Wortliste,Noun
+Lösung,Alphabetische Wortliste,Noun
+lustig,Alphabetische Wortliste,Adjective
+machen,Alphabetische Wortliste,Verb
+Mädchen,Alphabetische Wortliste,Noun
+man,Alphabetische Wortliste,Pronoun
+Mann,Alphabetische Wortliste,Noun
+männlich,Alphabetische Wortliste,Adjective
+Maschine,Alphabetische Wortliste,Noun
+Meer,Alphabetische Wortliste,Noun
+mehr,Alphabetische Wortliste,Adverb
+mein,Alphabetische Wortliste,Pronoun
+meist-,Alphabetische Wortliste,Adjective
+Mensch,Alphabetische Wortliste,Noun
+mieten,Alphabetische Wortliste,Verb
+Miete,Alphabetische Wortliste,Noun
+Milch,Alphabetische Wortliste,Noun
+mit,Alphabetische Wortliste,Preposition
+mitbringen,Alphabetische Wortliste,Verb
+mitkommen,Alphabetische Wortliste,Verb
+mitmachen,Alphabetische Wortliste,Verb
+mitnehmen,Alphabetische Wortliste,Verb
+Mitte,Alphabetische Wortliste,Noun
+Möbel,Alphabetische Wortliste,Noun
+möchten,Alphabetische Wortliste,Verb
+mögen,Alphabetische Wortliste,Verb
+möglich,Alphabetische Wortliste,Adjective
+Moment,Alphabetische Wortliste,Noun
+morgen,Alphabetische Wortliste,Adverb
+müde,Alphabetische Wortliste,Adjective
+Mund,Alphabetische Wortliste,Noun
+müssen,Alphabetische Wortliste,Verb
+Mutter,Alphabetische Wortliste,Noun
+nach,Alphabetische Wortliste,Preposition
+nächst-,Alphabetische Wortliste,Adjective
+Name,Alphabetische Wortliste,Noun
+nehmen,Alphabetische Wortliste,Verb
+nein,Alphabetische Wortliste,Adverb
+neu,Alphabetische Wortliste,Adjective
+nicht,Alphabetische Wortliste,Adverb
+nichts,Alphabetische Wortliste,Pronoun
+nie,Alphabetische Wortliste,Adverb
+noch,Alphabetische Wortliste,Adverb
+normal,Alphabetische Wortliste,Adjective
+Nummer,Alphabetische Wortliste,Noun
+nur,Alphabetische Wortliste,Adverb
+oben,Alphabetische Wortliste,Adverb
+Obst,Alphabetische Wortliste,Noun
+oder,Alphabetische Wortliste,Conjunction
+öffnen,Alphabetische Wortliste,Verb
+geöffnet,Alphabetische Wortliste,Adjective
+oft,Alphabetische Wortliste,Adverb
+ohne,Alphabetische Wortliste,Preposition
+Öl,Alphabetische Wortliste,Noun
+Oma,Alphabetische Wortliste,Noun
+Opa,Alphabetische Wortliste,Noun
+Ordnung,Alphabetische Wortliste,Noun
+Ort,Alphabetische Wortliste,Noun
+Papier,Alphabetische Wortliste,Noun
+Papiere,Alphabetische Wortliste,Noun
+Partner,Alphabetische Wortliste,Noun
+Partnerin,Alphabetische Wortliste,Noun
+Party,Alphabetische Wortliste,Noun
+Pass,Alphabetische Wortliste,Noun
+Pause,Alphabetische Wortliste,Noun
+Plan,Alphabetische Wortliste,Noun
+Platz,Alphabetische Wortliste,Noun
+Polizei,Alphabetische Wortliste,Noun
+Pommes frites,Alphabetische Wortliste,Noun
+Post,Alphabetische Wortliste,Noun
+Postleitzahl,Alphabetische Wortliste,Noun
+Praktikum,Alphabetische Wortliste,Noun
+Praxis,Alphabetische Wortliste,Noun
+Preis,Alphabetische Wortliste,Noun
+Problem,Alphabetische Wortliste,Noun
+Prospekt,Alphabetische Wortliste,Noun
+Prüfung,Alphabetische Wortliste,Noun
+pünktlich,Alphabetische Wortliste,Adjective
+Rad fahren,Alphabetische Wortliste,Verb
+rauchen,Alphabetische Wortliste,Verb
+Raum,Alphabetische Wortliste,Noun
+Rechnung,Alphabetische Wortliste,Noun
+rechts,Alphabetische Wortliste,Adverb
+regnen,Alphabetische Wortliste,Verb
+Regen,Alphabetische Wortliste,Noun
+Reis,Alphabetische Wortliste,Noun
+reisen,Alphabetische Wortliste,Verb
+Reise,Alphabetische Wortliste,Noun
+Reisebüro,Alphabetische Wortliste,Noun
+Reiseführer,Alphabetische Wortliste,Noun
+reparieren,Alphabetische Wortliste,Verb
+Reparatur,Alphabetische Wortliste,Noun
+Restaurant,Alphabetische Wortliste,Noun
+Rezeption,Alphabetische Wortliste,Noun
+richtig,Alphabetische Wortliste,Adjective
+riechen,Alphabetische Wortliste,Verb
+ruhig,Alphabetische Wortliste,Adjective
+Saft,Alphabetische Wortliste,Noun
+sagen,Alphabetische Wortliste,Verb
+Salat,Alphabetische Wortliste,Noun
+Salz,Alphabetische Wortliste,Noun
+Satz,Alphabetische Wortliste,Noun
+S-Bahn,Alphabetische Wortliste,Noun
+Schalter,Alphabetische Wortliste,Noun
+scheinen,Alphabetische Wortliste,Verb
+schicken,Alphabetische Wortliste,Verb
+Schild,Alphabetische Wortliste,Noun
+Schinken,Alphabetische Wortliste,Noun
+schlafen,Alphabetische Wortliste,Verb
+schlecht,Alphabetische Wortliste,Adjective
+schließen,Alphabetische Wortliste,Verb
+geschlossen,Alphabetische Wortliste,Adjective
+Schluss,Alphabetische Wortliste,Noun
+Schlüssel,Alphabetische Wortliste,Noun
+schmecken,Alphabetische Wortliste,Verb
+schnell,Alphabetische Wortliste,Adjective
+schon,Alphabetische Wortliste,Adverb
+schön,Alphabetische Wortliste,Adjective
+Schrank,Alphabetische Wortliste,Noun
+schreiben,Alphabetische Wortliste,Verb
+Schuh,Alphabetische Wortliste,Noun
+Schule,Alphabetische Wortliste,Noun
+Schüler,Alphabetische Wortliste,Noun
+schwer,Alphabetische Wortliste,Adjective
+Schwester,Alphabetische Wortliste,Noun
+schwimmen,Alphabetische Wortliste,Verb
+Schwimmbad,Alphabetische Wortliste,Noun
+See,Alphabetische Wortliste,Noun
+sehen,Alphabetische Wortliste,Verb
+Sehenswürdigkeit,Alphabetische Wortliste,Noun
+sehr,Alphabetische Wortliste,Adverb
+sein,Alphabetische Wortliste,Verb
+seit,Alphabetische Wortliste,Preposition
+selbstständig,Alphabetische Wortliste,Adjective
+sich,Alphabetische Wortliste,Pronoun
+sie,Alphabetische Wortliste,Pronoun
+Sie,Alphabetische Wortliste,Pronoun
+sitzen,Alphabetische Wortliste,Verb
+so,Alphabetische Wortliste,Adverb
+Sofa,Alphabetische Wortliste,Noun
+sofort,Alphabetische Wortliste,Adverb
+Sohn,Alphabetische Wortliste,Noun
+sollen,Alphabetische Wortliste,Verb
+Sonne,Alphabetische Wortliste,Noun
+spät,Alphabetische Wortliste,Adjective
+später,Alphabetische Wortliste,Adverb
+Speisekarte,Alphabetische Wortliste,Noun
+spielen,Alphabetische Wortliste,Verb
+Sport,Alphabetische Wortliste,Noun
+Sprache,Alphabetische Wortliste,Noun
+sprechen,Alphabetische Wortliste,Verb
+Stadt,Alphabetische Wortliste,Noun
+stehen,Alphabetische Wortliste,Verb
+Stelle,Alphabetische Wortliste,Noun
+stellen,Alphabetische Wortliste,Verb
+Stock,Alphabetische Wortliste,Noun
+Straße,Alphabetische Wortliste,Noun
+Straßenbahn,Alphabetische Wortliste,Noun
+studieren,Alphabetische Wortliste,Verb
+Studium,Alphabetische Wortliste,Noun
+Student,Alphabetische Wortliste,Noun
+Stunde,Alphabetische Wortliste,Noun
+suchen,Alphabetische Wortliste,Verb
+tanzen,Alphabetische Wortliste,Verb
+Tasche,Alphabetische Wortliste,Noun
+Taxi,Alphabetische Wortliste,Noun
+Tee,Alphabetische Wortliste,Noun
+Teil,Alphabetische Wortliste,Noun
+telefonieren,Alphabetische Wortliste,Verb
+Telefon,Alphabetische Wortliste,Noun
+Termin,Alphabetische Wortliste,Noun
+Test,Alphabetische Wortliste,Noun
+teuer,Alphabetische Wortliste,Adjective
+Text,Alphabetische Wortliste,Noun
+Thema,Alphabetische Wortliste,Noun
+Ticket,Alphabetische Wortliste,Noun
+Tisch,Alphabetische Wortliste,Noun
+Tochter,Alphabetische Wortliste,Noun
+Toilette,Alphabetische Wortliste,Noun
+Tomate,Alphabetische Wortliste,Noun
+tot,Alphabetische Wortliste,Adjective
+treffen,Alphabetische Wortliste,Verb
+Treppe,Alphabetische Wortliste,Noun
+trinken,Alphabetische Wortliste,Verb
+tschüss,Alphabetische Wortliste,Interjection
+tun,Alphabetische Wortliste,Verb
+über,Alphabetische Wortliste,Preposition
+übernachten,Alphabetische Wortliste,Verb
+überweisen,Alphabetische Wortliste,Verb
+Uhr,Alphabetische Wortliste,Noun
+um,Alphabetische Wortliste,Preposition
+umziehen,Alphabetische Wortliste,Verb
+und,Alphabetische Wortliste,Conjunction
+unser-,Alphabetische Wortliste,Pronoun
+unten,Alphabetische Wortliste,Adverb
+unter,Alphabetische Wortliste,Preposition
+Unterricht,Alphabetische Wortliste,Noun
+unterschreiben,Alphabetische Wortliste,Verb
+Unterschrift,Alphabetische Wortliste,Noun
+Urlaub,Alphabetische Wortliste,Noun
+Vater,Alphabetische Wortliste,Noun
+verboten,Alphabetische Wortliste,Adjective
+verdienen,Alphabetische Wortliste,Verb
+Verein,Alphabetische Wortliste,Noun
+verheiratet,Alphabetische Wortliste,Adjective
+verkaufen,Alphabetische Wortliste,Verb
+Verkäufer,Alphabetische Wortliste,Noun
+vermieten,Alphabetische Wortliste,Verb
+Vermieter,Alphabetische Wortliste,Noun
+verstehen,Alphabetische Wortliste,Verb
+Verwandte,Alphabetische Wortliste,Noun
+viel,Alphabetische Wortliste,Adverb
+vielleicht,Alphabetische Wortliste,Adverb
+von,Alphabetische Wortliste,Preposition
+vor,Alphabetische Wortliste,Preposition
+Vorname,Alphabetische Wortliste,Noun
+Vorsicht,Alphabetische Wortliste,Noun
+vorstellen,Alphabetische Wortliste,Verb
+Vorwahl,Alphabetische Wortliste,Noun
+wandern,Alphabetische Wortliste,Verb
+wann,Alphabetische Wortliste,Adverb
+warten,Alphabetische Wortliste,Verb
+warum,Alphabetische Wortliste,Adverb
+was,Alphabetische Wortliste,Pronoun
+was für ein,Alphabetische Wortliste,Pronoun
+waschen,Alphabetische Wortliste,Verb
+Wasser,Alphabetische Wortliste,Noun
+weh tun,Alphabetische Wortliste,Verb
+weiblich,Alphabetische Wortliste,Adjective
+Wein,Alphabetische Wortliste,Noun
+weit,Alphabetische Wortliste,Adjective
+weiter,Alphabetische Wortliste,Adverb
+welch-,Alphabetische Wortliste,Pronoun
+Welt,Alphabetische Wortliste,Noun
+wenig,Alphabetische Wortliste,Adverb
+wer,Alphabetische Wortliste,Pronoun
+werden,Alphabetische Wortliste,Verb
+Wetter,Alphabetische Wortliste,Noun
+wichtig,Alphabetische Wortliste,Adjective
+wie,Alphabetische Wortliste,Adverb
+wiederholen,Alphabetische Wortliste,Verb
+Wiederhören,Alphabetische Wortliste,Noun
+Wiedersehen,Alphabetische Wortliste,Noun
+wie viel,Alphabetische Wortliste,Adverb
+willkommen,Alphabetische Wortliste,Adjective
+Wind,Alphabetische Wortliste,Noun
+wir,Alphabetische Wortliste,Pronoun
+wissen,Alphabetische Wortliste,Verb
+wo,Alphabetische Wortliste,Adverb
+woher,Alphabetische Wortliste,Adverb
+wohin,Alphabetische Wortliste,Adverb
+wohnen,Alphabetische Wortliste,Verb
+Wohnung,Alphabetische Wortliste,Noun
+wollen,Alphabetische Wortliste,Verb
+Wort,Alphabetische Wortliste,Noun
+wunderbar,Alphabetische Wortliste,Adjective
+zahlen,Alphabetische Wortliste,Verb
+Zeit,Alphabetische Wortliste,Noun
+zurzeit,Alphabetische Wortliste,Adverb
+Zeitung,Alphabetische Wortliste,Noun
+Zigarette,Alphabetische Wortliste,Noun
+Zimmer,Alphabetische Wortliste,Noun
+Zoll,Alphabetische Wortliste,Noun
+zu,Alphabetische Wortliste,Preposition
+zufrieden,Alphabetische Wortliste,Adjective
+Zug,Alphabetische Wortliste,Noun
+zurück,Alphabetische Wortliste,Adverb
+zusammen,Alphabetische Wortliste,Adverb
+zwischen,Alphabetische Wortliste,Preposition
+eins,Zahlen,Number
+zwei,Zahlen,Number
+drei,Zahlen,Number
+vier,Zahlen,Number
+fünf,Zahlen,Number
+sechs,Zahlen,Number
+sieben,Zahlen,Number
+acht,Zahlen,Number
+neun,Zahlen,Number
+zehn,Zahlen,Number
+elf,Zahlen,Number
+zwölf,Zahlen,Number
+dreizehn,Zahlen,Number
+vierzehn,Zahlen,Number
+fünfzehn,Zahlen,Number
+sechzehn,Zahlen,Number
+siebzehn,Zahlen,Number
+achtzehn,Zahlen,Number
+neunzehn,Zahlen,Number
+zwanzig,Zahlen,Number
+einundzwanzig,Zahlen,Number
+dreißig,Zahlen,Number
+vierzig,Zahlen,Number
+fünfzig,Zahlen,Number
+sechzig,Zahlen,Number
+siebzig,Zahlen,Number
+achtzig,Zahlen,Number
+neunzig,Zahlen,Number
+hundert,Zahlen,Number
+hunderteins,Zahlen,Number
+zweihundert,Zahlen,Number
+tausend,Zahlen,Number
+Million,Zahlen,Number
+Milliarde,Zahlen,Number
+erste,Zahlen,Ordinal Number
+zweite,Zahlen,Ordinal Number
+dritte,Zahlen,Ordinal Number
+vierte,Zahlen,Ordinal Number
+halb,Zahlen,Fraction
+Viertel,Zahlen,Fraction
+Sekunde,Zeitmaße,Noun
+Minute,Zeitmaße,Noun
+Stunde,Zeitmaße,Noun
+Tag,Zeitmaße,Noun
+Woche,Zeitmaße,Noun
+Jahr,Zeitmaße,Noun
+Wochentag,Woche/Wochentage,Noun
+Sonntag,Woche/Wochentage,Noun
+Montag,Woche/Wochentage,Noun
+Dienstag,Woche/Wochentage,Noun
+Mittwoch,Woche/Wochentage,Noun
+Donnerstag,Woche/Wochentage,Noun
+Freitag,Woche/Wochentage,Noun
+Samstag,Woche/Wochentage,Noun
+Sonnabend,Woche/Wochentage,Noun
+Wochenende,Woche/Wochentage,Noun
+Morgen,Tag/Tageszeiten,Noun
+Vormittag,Tag/Tageszeiten,Noun
+Mittag,Tag/Tageszeiten,Noun
+Nachmittag,Tag/Tageszeiten,Noun
+Abend,Tag/Tageszeiten,Noun
+Nacht,Tag/Tageszeiten,Noun
+Januar,Monat/Monatsnamen,Noun
+Februar,Monat/Monatsnamen,Noun
+März,Monat/Monatsnamen,Noun
+April,Monat/Monatsnamen,Noun
+Mai,Monat/Monatsnamen,Noun
+Juni,Monat/Monatsnamen,Noun
+Juli,Monat/Monatsnamen,Noun
+August,Monat/Monatsnamen,Noun
+September,Monat/Monatsnamen,Noun
+Oktober,Monat/Monatsnamen,Noun
+November,Monat/Monatsnamen,Noun
+Dezember,Monat/Monatsnamen,Noun
+Frühling,Jahr/Jahreszeiten,Noun
+Frühjahr,Jahr/Jahreszeiten,Noun
+Sommer,Jahr/Jahreszeiten,Noun
+Herbst,Jahr/Jahreszeiten,Noun
+Winter,Jahr/Jahreszeiten,Noun
+Euro,Währungen,Noun
+Cent,Währungen,Noun
+Meter,Maße und Gewichte,Noun
+Zentimeter,Maße und Gewichte,Noun
+Kilometer,Maße und Gewichte,Noun
+Quadratmeter,Maße und Gewichte,Noun
+Grad,Maße und Gewichte,Noun
+Prozent,Maße und Gewichte,Noun
+Liter,Maße und Gewichte,Noun
+Gramm,Maße und Gewichte,Noun
+Pfund,Maße und Gewichte,Noun
+Kilogramm,Maße und Gewichte,Noun
+Kilo,Maße und Gewichte,Noun
+Deutschland,Länder/Ländernamen,Noun
+Deutsche,Länder/Ländernamen,Noun
+deutsch,Länder/Ländernamen,Adjective
+Europa,Länder/Ländernamen,Noun
+Europäer,Länder/Ländernamen,Noun
+europäisch,Länder/Ländernamen,Adjective
+schwarz,Farben,Adjective
+grau,Farben,Adjective
+blau,Farben,Adjective
+grün,Farben,Adjective
+weiß,Farben,Adjective
+rot,Farben,Adjective
+gelb,Farben,Adjective
+braun,Farben,Adjective
+Norden,Himmelsrichtungen,Noun
+Süden,Himmelsrichtungen,Noun
+Westen,Himmelsrichtungen,Noun
+Osten,Himmelsrichtungen,Noun

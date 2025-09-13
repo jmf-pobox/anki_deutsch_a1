@@ -64,8 +64,8 @@ dependencies = [
  check-integration = ["lint", "type", "test-integration"]
  check-cov = ["lint", "type", "test-cov"]
  # Application scripts
- app = "PYTHONPATH=src python src/langlearn/main.py"
- app-cov = "PYTHONPATH=src coverage run --source=src/langlearn src/langlearn/main.py && coverage report --show-missing && coverage html"
+ app = "PYTHONPATH=src python src/langlearn/main.py {args}"
+ app-cov = "PYTHONPATH=src coverage run --source=src/langlearn src/langlearn/main.py {args} && coverage report --show-missing && coverage html"
  run-sample = "python examples/deck_builder_demo.py"
  run-all = "PYTHONPATH=src python src/langlearn/main.py"
  # Environment validation

@@ -1,8 +1,23 @@
 # Production CSV Specification
 
-## Version 1.0 - German Language Learning System
+This document defines the canonical CSV format specifications for the Anki German Language Deck Generator project. All CSV files must conform to these standards to ensure consistency, maintainability, and extensibility to future languages and multiple decks per language.
 
-This document defines the canonical CSV format specifications for the Anki German Language Deck Generator project. All CSV files must conform to these standards to ensure consistency, maintainability, and extensibility to future languages.
+## Directory Structure
+
+CSV files are organized by language and deck:
+```
+languages/
+├── german/
+│   ├── default/          # Complete A1 content (15 CSV files)
+│   ├── business/         # Business vocabulary (1 CSV file)
+│   └── beginner/         # Beginner content (1 CSV file)
+├── russian/
+│   └── basic/           # Sample structure
+└── korean/
+    └── hanja/           # Sample structure
+```
+
+**File Locations**: All CSV files are located at `languages/{language}/{deck}/filename.csv`
 
 Important DRY note: Field-level column definitions and constraints are maintained authoritatively in DATA-DICTIONARY.md. Any detailed column tables in this file are informational and may be trimmed; if discrepancies exist, DATA-DICTIONARY.md is the source of truth.
 
@@ -249,29 +264,23 @@ Authoritative field-level definitions and constraints are maintained in DATA-DIC
 - All case forms must be valid German articles
 - Examples should demonstrate proper case usage
 
-## Legacy CSV Files (Deprecated)
-
-The following CSV files are maintained for backward compatibility but should not be used for new development:
-
-- **regular_verbs.csv**: Replaced by verbs_unified.csv
-- **irregular_verbs.csv**: Replaced by verbs_unified.csv
-- **separable_verbs.csv**: Replaced by verbs_unified.csv
-
-These files follow the same structure as verbs.csv but with additional type-specific columns.
-
-## Migration Guidelines
+## Guidelines
 
 ### Adding New Languages
-1. Add translation columns with language prefix: `spanish`, `french`, etc.
-2. Add example columns: `spanish_example`, `french_example`
-3. Maintain all existing German and English columns
-4. Update RecordMapper to handle new language columns
+1. Create language directory: `languages/{language}/`
+2. Add default deck directory: `languages/{language}/default/`
+3. Copy/adapt CSV files from `languages/german/default/` template
+4. Add translation columns with language prefix: `spanish`, `french`, etc.
+5. Add example columns: `spanish_example`, `french_example`
+6. Maintain all existing German and English columns
+7. Update RecordMapper to handle new language columns
 
-### Converting Legacy Data
-1. Use verbs_unified.csv for all verb data
-2. Migrate type-specific verb CSVs to unified format
-3. Ensure `english` column naming (not `meaning`)
-4. Validate all required fields are present
+### Adding New Decks
+1. Create deck directory: `languages/{language}/{deck}/`
+2. Copy relevant CSV files from `languages/{language}/default/`
+3. Modify content for specific deck purpose (business, beginner, etc.)
+4. Ensure all CSV files maintain same format/column structure
+5. Test with: `hatch run app --language {language} --deck {deck}`
 
 ## Quality Checklist
 
@@ -288,10 +297,3 @@ Before committing CSV changes:
 - [ ] Commas in text are quoted
 - [ ] Special characters (ä,ö,ü,ß) display correctly
 
-## Version History
-
-- **1.0** (2024-01): Initial specification
-  - Standardized column naming conventions
-  - Established english/target language separation
-  - Defined validation rules for all word types
-  - Marked legacy files as deprecated

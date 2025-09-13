@@ -1,0 +1,12 @@
+artikel_typ,geschlecht,nominativ,akkusativ,dativ,genitiv,beispiel_nom,beispiel_akk,beispiel_dat,beispiel_gen
+bestimmt,maskulin,der,den,dem,des,Der Mann ist hier.,Ich sehe den Mann.,Ich spreche mit dem Mann.,Das Auto des Mannes ist rot.
+bestimmt,feminin,die,die,der,der,Die Frau arbeitet.,Ich kenne die Frau.,Ich helfe der Frau.,Das Haus der Frau ist groß.
+bestimmt,neutral,das,das,dem,des,Das Kind spielt.,Ich sehe das Kind.,Ich gebe dem Kind ein Buch.,Die Mutter des Kindes kommt.
+bestimmt,plural,die,die,den,der,Die Kinder spielen.,Ich sehe die Kinder.,Ich spiele mit den Kindern.,Die Eltern der Kinder sind hier.
+unbestimmt,maskulin,ein,einen,einem,eines,Ein Mann kommt.,Ich sehe einen Mann.,Ich spreche mit einem Mann.,Das Auto eines Mannes.
+unbestimmt,feminin,eine,eine,einer,einer,Eine Frau liest.,Ich sehe eine Frau.,Ich helfe einer Frau.,Das Buch einer Frau.
+unbestimmt,neutral,ein,ein,einem,eines,Ein Kind weint.,Ich höre ein Kind.,Ich spiele mit einem Kind.,Die Mutter eines Kindes.
+verneinend,maskulin,kein,keinen,keinem,keines,Kein Mann ist da.,Ich sehe keinen Mann.,Ich spreche mit keinem Mann.,Das Auto keines Mannes.
+verneinend,feminin,keine,keine,keiner,keiner,Keine Frau arbeitet.,Ich sehe keine Frau.,Ich helfe keiner Frau.,Das Haus keiner Frau.
+verneinend,neutral,kein,kein,keinem,keines,Kein Kind spielt.,Ich sehe kein Kind.,Ich gebe keinem Kind ein Buch.,Die Mutter keines Kindes.
+verneinend,plural,keine,keine,keinen,keiner,Keine Kinder sind hier.,Ich sehe keine Kinder.,Ich spiele mit keinen Kindern.,Die Eltern keiner Kinder.

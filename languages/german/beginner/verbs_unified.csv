@@ -1,0 +1,21 @@
+infinitive,english,classification,separable,auxiliary,tense,ich,du,er,wir,ihr,sie,example
+sein,to be,unregelmäßig,false,sein,present,bin,bist,ist,sind,seid,sind,Ich bin müde.
+haben,to have,unregelmäßig,false,haben,present,habe,hast,hat,haben,habt,haben,Wir haben Zeit.
+machen,to make/do,regelmäßig,false,haben,present,mache,machst,macht,machen,macht,machen,Sie macht Sport.
+gehen,to go,unregelmäßig,false,sein,present,gehe,gehst,geht,gehen,geht,gehen,Wir gehen ins Kino.
+kommen,to come,unregelmäßig,false,sein,present,komme,kommst,kommt,kommen,kommt,kommen,Er kommt morgen.
+wohnen,to live,regelmäßig,false,haben,present,wohne,wohnst,wohnt,wohnen,wohnt,wohnen,Ich wohne hier.
+heißen,to be called,unregelmäßig,false,haben,present,heiße,heißt,heißt,heißen,heißt,heißen,Sie heißt Maria.
+lernen,to learn,regelmäßig,false,haben,present,lerne,lernst,lernt,lernen,lernt,lernen,Wir lernen Deutsch.
+arbeiten,to work,regelmäßig,false,haben,present,arbeite,arbeitest,arbeitet,arbeiten,arbeitet,arbeiten,Er arbeitet viel.
+sprechen,to speak,unregelmäßig,false,haben,present,spreche,sprichst,spricht,sprechen,sprecht,sprechen,Du sprichst gut Deutsch.
+essen,to eat,unregelmäßig,false,haben,present,esse,isst,isst,essen,esst,essen,Er isst einen Apfel.
+trinken,to drink,unregelmäßig,false,haben,present,trinke,trinkst,trinkt,trinken,trinkt,trinken,Ich trinke Wasser.
+schlafen,to sleep,unregelmäßig,false,haben,present,schlafe,schläfst,schläft,schlafen,schlaft,schlafen,Das Kind schläft gut.
+sehen,to see,unregelmäßig,false,haben,present,sehe,siehst,sieht,sehen,seht,sehen,Ich sehe dich.
+hören,to hear,regelmäßig,false,haben,present,höre,hörst,hört,hören,hört,hören,Wir hören Musik.
+lesen,to read,unregelmäßig,false,haben,present,lese,liest,liest,lesen,lest,lesen,Sie liest gern.
+schreiben,to write,unregelmäßig,false,haben,present,schreibe,schreibst,schreibt,schreiben,schreibt,schreiben,Ich schreibe eine E-Mail.
+spielen,to play,regelmäßig,false,haben,present,spiele,spielst,spielt,spielen,spielt,spielen,Die Kinder spielen.
+kaufen,to buy,regelmäßig,false,haben,present,kaufe,kaufst,kauft,kaufen,kauft,kaufen,Wir kaufen Brot.
+verstehen,to understand,unregelmäßig,false,haben,present,verstehe,verstehst,versteht,verstehen,versteht,verstehen,Ich verstehe das nicht.
