@@ -27,17 +27,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--language",
         default="german",
-        help="Language to generate deck for (default: german)",
+        help="Language to generate deck for (case-insensitive, default: german)",
     )
     parser.add_argument(
         "--deck",
         default="default",
-        help="Deck name within the language (default: default)",
+        help="Deck name within the language (case-insensitive, default: default)",
     )
     parser.add_argument(
         "--output", help="Output file path (auto-generated if not specified)"
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # Normalize language and deck to lowercase for consistent filesystem paths
+    args.language = args.language.lower()
+    args.deck = args.deck.lower()
+
+    return args
 
 
 def main() -> None:
@@ -122,7 +128,7 @@ def main() -> None:
             if args.output:
                 output_file = Path(args.output)
             else:
-                filename = f"{args.language}_{args.deck}.apkg"
+                filename = f"LangLearn_{args.language.capitalize()}_{args.deck}.apkg"
                 output_file = output_dir / filename
             print(f"\n💾 Exporting deck to {output_file}...")
 

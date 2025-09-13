@@ -1,156 +1,86 @@
 # German Anki Card Type Specifications
 
 This document provides comprehensive specifications for all German language card types in the system.
-Generated automatically by CardSpecificationGenerator to ensure accuracy and completeness.
-
-This specification describes the accurate active/inactive state of
-sub-decks and cards. This specification states requirements for each card
-type and sub-deck; however, those requirements may not be reflected in the
-current code.  There should be gh issues for each area of difference
-between the specification and the code.  Differences tend to me whether
-fields exist or not and whether they are mandatory or not.  Also, there is
-an overall gh issue related to the templating system.
 
 **Total Card Types**: 15
 
-## System Architecture Status
-
-### Overview
-The project has **completed the migration** from legacy Pydantic-based models to modern **dataclass architecture with MediaGenerationCapable protocol**. All domain models now use consistent, modern Python patterns.
+## System Architecture
 
 **Current Architecture**: CSV → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → AnkiBackend → .apkg
 
-**Key Changes Completed**:
-- ✅ All domain models migrated from Pydantic BaseModel to dataclass
-- ✅ MediaGenerationCapable protocol formally implemented across all 7 word types
-- ✅ FieldProcessor interface completely eliminated
-- ✅ ModelFactory pattern removed in favor of direct domain model usage
+**Key Features**:
+- Domain models use dataclass with MediaGenerationCapable protocol
+- All word types support intelligent media generation
+- Clean Pipeline architecture with RecordMapper → MediaEnricher → CardBuilder
 
 ### Implementation Status by Card Type
 
-| Card Type | Sub-deck | System | Status | Media Support | Known Issues |
-|-----------|----------|--------|--------|---------------|--------------|
-| **Noun** | Nouns | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Adjective** | Adjectives | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Adverb** | Adverbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Negation** | Negations | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Verb** | Verbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | Currently disabled in favor of verb_conjugation |
-| **Verb_Conjugation** | Verbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Verb_Imperative** | Verbs | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Preposition** | Prepositions | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Phrase** | Phrases | ✅ Clean Pipeline | **Fully Migrated** | ✅ Full (Image + Audio) | None |
-| **Artikel_Context_Cloze** | Articles | ✅ Clean Pipeline | **Active** | ⚠️ Partial | Media fields exist but may not populate |
-| **Artikel_Gender_Cloze** | Articles | ✅ Clean Pipeline | **Active** | ⚠️ Partial | Media fields exist but may not populate |
-| **Artikel_Context** | Articles | 🔄 Hybrid | **Inactive** | ❌ None | Code exists but not called |
-| **Artikel_Gender** | Articles | 🔄 Hybrid | **Inactive** | ❌ None | Code exists but not called |
-| **Noun_Article_Recognition** | Articles | ❌ Disabled | **Disabled** | ❌ None | ArticleApplicationService commented out |
-| **Noun_Case_Context** | Articles | ❌ Disabled | **Disabled** | ❌ None | ArticleApplicationService commented out |
+| Card Type | Sub-deck | Status | Media Support | Notes |
+|-----------|----------|--------|---------------|-------|
+| **Noun** | Nouns | ✅ Active | ✅ Full (Image + Audio) | Complete vocabulary cards |
+| **Adjective** | Adjectives | ✅ Active | ✅ Full (Image + Audio) | Comparative/superlative forms |
+| **Adverb** | Adverbs | ✅ Active | ✅ Full (Image + Audio) | Type classification |
+| **Negation** | Negations | ✅ Active | ✅ Full (Image + Audio) | Negation patterns |
+| **Verb** | Verbs | ⚠️ Available | ✅ Full (Image + Audio) | Single-tense conjugations |
+| **Verb_Conjugation** | Verbs | ✅ Active | ✅ Full (Image + Audio) | Multi-tense conjugations |
+| **Verb_Imperative** | Verbs | ✅ Active | ✅ Full (Image + Audio) | Imperative forms |
+| **Preposition** | Prepositions | ✅ Active | ✅ Full (Image + Audio) | Case requirements |
+| **Phrase** | Phrases | ✅ Active | ✅ Full (Image + Audio) | Common expressions |
+| **Artikel_Context_Cloze** | Articles | ✅ Active | ⚠️ Partial | Cloze deletion for case practice |
+| **Artikel_Gender_Cloze** | Articles | ✅ Active | ⚠️ Partial | Cloze deletion for gender practice |
+| **Artikel_Context** | Articles | ❌ Inactive | ❌ None | Non-cloze version available but unused |
+| **Artikel_Gender** | Articles | ❌ Inactive | ❌ None | Non-cloze version available but unused |
+| **Noun_Article_Recognition** | Articles | ❌ Disabled | ❌ None | Requires ArticleApplicationService |
+| **Noun_Case_Context** | Articles | ❌ Disabled | ❌ None | Requires ArticleApplicationService |
 
 ### Architecture Details
 
-#### ✅ **Clean Pipeline (New System)**
 **Implementation**: `deck_builder.py:generate_all_cards()` → `RecordMapper` → `MediaEnricher` → `CardBuilder`
 
 **Components**:
-- **Domain Models**: Modern dataclass models with MediaGenerationCapable protocol and built-in German expertise
+- **Domain Models**: Dataclass models with MediaGenerationCapable protocol and German language expertise
 - **MediaEnricher**: Batch processes media generation (images via Pexels, audio via AWS Polly)
 - **CardBuilder**: Assembles final cards with templates and formatting
 - **MediaFileRegistrar**: Registers media files with AnkiBackend
 
-**Supported Record Types** (via `RecordMapper`):
-- noun, adjective, adverb, negation (fully working)
-- verb, verb_conjugation, verb_imperative (fully working)
-- preposition, phrase (fully working)
-- unified_article (partial - cloze cards only)
+**Supported Record Types**:
+- noun, adjective, adverb, negation, verb, verb_conjugation, verb_imperative
+- preposition, phrase
+- unified_article (cloze cards only)
 
-#### 📅 **Legacy System (Old System)**
-**Implementation**: `deck_builder.py:_generate_all_cards_legacy()` → Domain Models → Card Generators
+### Current Issues
 
-**Components**:
-- **Domain Models**: Rich models with German validation (Noun, Adjective, Adverb, Negation)
-- **Card Generators**: Individual generators per type (NounCardGenerator, etc.)
-- **CardGeneratorFactory**: Creates configured generators
+#### 1. **Article Media Generation** 
+**Issue**: Article cards (Artikel_Context_Cloze, Artikel_Gender_Cloze) have limited media support
 
-**Status**: Only used as fallback when no records are loaded via Clean Pipeline
+**Impact**: Article cards may display without visual/audio aids
 
-### Critical Issues
-
-#### 1. **Article Media Generation Problem** 🚨
-**Issue**: Article cards (Artikel_Context_Cloze, Artikel_Gender_Cloze) have empty Image/Audio fields
-
-**Root Cause Analysis**:
-- ArticlePatternProcessor creates cards but media enrichment may fail
-- Debug logs show enriched_data is processed but media fields aren't populated
-- MediaEnricher may not have proper handlers for UnifiedArticleRecord types
-
-**Impact**: Article cards display without visual/audio aids, reducing learning effectiveness
-
-#### 2. **Disabled Noun-Article Integration** ⚠️
-**Issue**: ArticleApplicationService is commented out (deck_builder.py lines 790-803)
-
-**Code Comment**: "TEMPORARY: Disable noun-article cards to focus on testing cloze deletion system"
+#### 2. **Disabled Noun-Article Integration**
+**Issue**: ArticleApplicationService is commented out, preventing noun-specific article practice
 
 **Impact**: 
-- Learners cannot practice noun-article associations ("das Haus", "der Mann")
+- Learners cannot practice noun-article associations ("das Haus", "der Mann")  
 - Only abstract pattern recognition available, not concrete noun learning
-- Does not meet CEFR A1 requirements for article usage
-
-### ✅ Migration Completed (2025-09-02)
-
-**All architectural migration goals have been achieved:**
-
-#### ✅ **Domain Model Migration - COMPLETED**
-- ✅ **All domain models migrated** from Pydantic BaseModel to dataclass + MediaGenerationCapable
-- ✅ **FieldProcessor eliminated** - Complete removal of legacy interface
-- ✅ **ModelFactory eliminated** - Direct domain model instantiation
-- ✅ **Protocol compliance achieved** - Formal MediaGenerationCapable implementation across all 7 word types
-- ✅ **Validation modernized** - Inline `__post_init__` validation replacing Pydantic
-
-#### ✅ **Architecture Cleanup - COMPLETED** 
-- ✅ **Legacy components removed** - No more dual architecture patterns
-- ✅ **Backwards compatibility eliminated** - Clean, modern codebase
-- ✅ **Type safety maintained** - 0 MyPy errors across all models
-- ✅ **Test coverage preserved** - All tests updated and passing
-
-#### 🎯 **Future Enhancement Opportunities**
-1. **Article System Enhancement**
-   - Re-enable ArticleApplicationService for noun-article practice cards
-   - Enhance media generation for article-specific cards
-
-2. **Performance Optimization**
-   - Implement parallel media generation
-   - Add progress indicators for large vocabularies
-
-3. **Extended Language Support**
-   - Leverage MediaGenerationCapable protocol for other languages
-   - Implement language-specific domain expertise patterns
 
 ### Developer Notes
 
 **When Adding New Card Types**:
-1. Create dataclass model in `src/langlearn/models/` (e.g., `new_word_type.py`)
-2. Implement MediaGenerationCapable protocol methods:
-   - `get_combined_audio_text()` for intelligent audio generation
-   - `get_image_search_strategy()` for AI-enhanced image search
-3. Add inline validation in `__post_init__()` method
-4. Add processing logic in `AnkiBackend` class
-5. Create templates in `templates/` directory if needed
+1. Create dataclass model in `src/langlearn/models/`
+2. Implement MediaGenerationCapable protocol methods
+3. Add processing logic in `AnkiBackend` class
+4. Create templates in `templates/` directory if needed
 
 **Current Data Flow**:
 ```
-CSV Files → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → AnkiBackend → .apkg Files
-                                ↓
-                    Built-in German Language Expertise
-                                ↓
-                    Intelligent Media Generation
+CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
 ```
 
-**Testing Current Implementation**:
-- All models use modern dataclass + MediaGenerationCapable architecture
-- Verify media files are created in `data/audio/` and `data/images/`
-- Check that MediaGenerationCapable protocol methods provide intelligent media generation
-- Confirm all expected fields are populated in generated .apkg file
-- Validate that domain model `__post_init__` validation catches data errors
+**Multi-Deck Architecture Support**:
+- **CLI Usage**: `hatch run app --language german --deck business` for specific deck generation (case-insensitive)
+- **Data Isolation**: Each deck maintains separate media files in its own directory structure
+- **Path Resolution**: MediaFileRegistrar automatically configures paths based on language/deck parameters (normalized to lowercase)
+- **Output Naming**: Generated `.apkg` files follow `LangLearn_{Language}_{deck}.apkg` naming convention (language is capitalized in filename)
+- **CSV Data Sources**: All CSV files are located at `languages/{language}/{deck}/filename.csv` (lowercase paths)
 
 ## Table of Contents - Organized by Sub-deck
 
@@ -294,60 +224,17 @@ CSV Files → Domain Models (dataclass + MediaGenerationCapable) → MediaEnrich
 - **Missing Cards**: Noun-specific article practice ("das Haus", "der Mann", etc.)
 - **Impact**: Learners cannot practice article-noun associations in context
 
-### Summary Box: What This Means for Learners
-
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│ CURRENT STATE: Pattern Practice Only (Insufficient for A1)                 │
-├────────────────────────────────────────────────────────────────────────────┤
-│ What Works:                                                                │
-│ ✅ Learners practice filling in articles in sentences                      │
-│ ✅ Case recognition exercises (nom/acc/dat/gen)                            │
-│ ✅ Gender pattern recognition in context                                   │
-│                                                                            │
-│ What's Missing (CRITICAL):                                                 │
-│ ❌ Cannot learn "das Haus", "die Frau", "der Mann"                         │
-│ ❌ No noun-to-article memory building                                      │
-│ ❌ Missing 85% of required article knowledge                               │
-│                                                                            │
-│ A1 Requirement Status: ❌ DOES NOT MEET CEFR STANDARDS                     │
-└────────────────────────────────────────────────────────────────────────────┘
-```
-
-## Pedagogical Assessment
-
-### Current System Limitations for A1 Learners
-
-**Critical Gap**: The disabled noun-article integration creates a significant pedagogical deficit for A1 learners:
-
-1. **Abstract vs. Concrete Learning**: A1 learners need concrete noun-article pairings ("das Haus", "die Frau") before abstract pattern recognition. The current cloze-only system reverses the natural acquisition order.
-
-2. **Memorization Requirements**: German article assignment is largely arbitrary and must be memorized with each noun. Without noun-specific practice, learners lack the essential foundation for German grammar.
-
-3. **CEFR A1 Requirements**: The Common European Framework explicitly requires A1 learners to "use basic articles with familiar nouns." The current system does not adequately support this competency.
-
-### Recommendation Priority: HIGH
-**The ArticleApplicationService should be re-enabled as soon as possible**. Article-noun association is fundamental to German language acquisition and cannot be effectively learned through pattern cards alone.
-
 ## Data Source and Processing Architecture
 
 **CSV Data Source**: `articles_unified.csv`
-- **Format**: Unified article database with German terminology
-- **Fields**: `artikel_typ`, `geschlecht`, `nominativ`, `akkusativ`, `dativ`, `genitiv`, `beispiel_nom`, `beispiel_akk`, `beispiel_dat`, `beispiel_gen`
+- **Format**: Unified article database with German terminology  
+- **Fields**: `artikel_typ`, `geschlecht`, `nominativ`, `akkusativ`, `dativ`, `genitiv`, example sentences
 - **Article Types**: `bestimmt` (definite), `unbestimmt` (indefinite), `verneinend` (negative)
 - **Genders**: `maskulin`, `feminin`, `neutral`, `plural`
 
 **Processing Services**:
-1. **ArticlePatternProcessor** (`article_pattern_processor.py`): **[ACTIVE]**
-   - Generates cloze deletion cards for pattern recognition
-   - Currently produces 5 cloze cards per record (1 gender + 4 cases)
-   - Uses GermanExplanationFactory for German-language explanations
-   
-2. **ArticleApplicationService** (`article_application_service.py`): **[DISABLED]**
-   - Would create 5 cards per noun for article association
-   - Would integrate noun data with article patterns
-   - Would provide practical application of article knowledge
-   - **Status**: Commented out pending cloze deletion system testing
+1. **ArticlePatternProcessor**: Active - generates cloze deletion cards for pattern recognition
+2. **ArticleApplicationService**: Disabled - would create noun-specific article practice cards
 
 ## Artikel_Context [INACTIVE - Non-Cloze Version]
 
@@ -606,116 +493,15 @@ The `_generate_case_examples()` method creates contextually appropriate sentence
 
 ## Implementation Notes
 
-### Current Active Pipeline (Cloze-Only)
+**Current Pipeline**: 
 1. **CSV Loading**: `articles_unified.csv` → `UnifiedArticleRecord` via `RecordMapper`
-2. **Pattern Processing**: Each record generates **5 cloze cards**:
-   - 1 Gender Recognition Cloze card (`_create_gender_cloze_card`)
-   - 4 Case Context Cloze cards (`_create_case_cloze_card` for nom/acc/dat/gen)
-   - **Note**: Non-cloze methods exist but are never called
-3. **Noun Integration**: **DISABLED** - ArticleApplicationService is commented out
+2. **Pattern Processing**: Each record generates 5 cloze cards (1 gender + 4 cases)  
+3. **Noun Integration**: Disabled - ArticleApplicationService is commented out
 4. **Media Enrichment**: Images and audio added via `MediaEnricher` service
 5. **Card Assembly**: Final formatting via `CardBuilder` service
 
-### Pedagogical Impact of Current Implementation
+**Current Limitation**: System only teaches abstract patterns without concrete noun associations
 
-**Critical Deficiency**: The current system only teaches abstract patterns without concrete noun associations:
-- ❌ Learners see: "{{c1::Der}} Mann ist hier" (pattern practice)
-- ❌ Missing: "Haus" → "das Haus" (noun-article memorization)
-- ❌ Result: A1 learners lack the fundamental noun-article pairings required by CEFR standards
-
-## Pedagogical Recommendations for Article Learning System
-
-### 1. Immediate Priority: Re-enable ArticleApplicationService
-**Timeline**: URGENT - Should be completed before any user testing
-
-**Rationale**: German article assignment is **85% arbitrary memorization** and only 15% pattern-based. The current cloze-only system addresses the 15% while ignoring the critical 85%.
-
-**Required Actions**:
-1. Uncomment ArticleApplicationService integration in deck_builder.py (lines 790-803)
-2. Convert ArticleApplicationService to use cloze deletion format if template issues persist
-3. Ensure noun CSV data includes sufficient A1-level nouns (minimum 100 high-frequency nouns)
-
-### 2. Learning Sequence Optimization
-
-**Current Problem**: Abstract pattern learning before concrete examples violates natural acquisition order.
-
-**Recommended Card Presentation Order**:
-1. **First**: Noun-Article Recognition ("Haus" → "das Haus")
-2. **Second**: Gender Pattern Recognition (neuter nouns often end in -chen, -lein)
-3. **Third**: Case Context Practice (applying known articles in sentences)
-
-**Implementation**: Add a "difficulty" or "order" field to control Anki's initial presentation sequence.
-
-### 3. Cognitive Load Management
-
-**Current Issue**: 5 cards per article pattern + potential noun cards = overwhelming repetition
-
-**Recommended Reduction**:
-- **Keep**: Gender cloze (1 card) + Nominative case cloze (1 card) = 2 cards per pattern
-- **Defer**: Accusative, Dative, Genitive cloze cards to A2 level
-- **Prioritize**: Noun-article cards (when re-enabled) over pattern cards
-
-**Rationale**: A1 learners primarily encounter nominative and accusative cases. Dative and genitive are less frequent and can overwhelm beginners.
-
-### 4. Concrete Learning Materials
-
-**Missing Elements**:
-1. **Visual Associations**: Images should show the noun with its article ("das Haus" with house image)
-2. **Mnemonic Hints**: Gender patterns and rules (e.g., "-ung always feminine")
-3. **High-Frequency First**: Focus on the 100 most common German nouns at A1
-
-### 5. Success Metrics for Article Learning
-
-**Minimum Viable Competency at A1**:
-- Correctly recall articles for 50 high-frequency nouns
-- Recognize gender patterns for 70% of new nouns
-- Apply correct articles in nominative case 80% of the time
-- Apply correct articles in accusative case 60% of the time
-
-**Current System Achievement**: ~30% of target (pattern recognition only, no noun-specific knowledge)
-
-### 6. Technical Implementation Priorities
-
-**Phase 1 (Immediate)**:
-1. Re-enable ArticleApplicationService
-2. Verify noun-article cards generate correctly
-3. Test with 10-20 high-frequency nouns
-
-**Phase 2 (Next Sprint)**:
-1. Convert ArticleApplicationService to cloze format if needed
-2. Add visual article indicators to images
-3. Implement card ordering system
-
-**Phase 3 (Future Enhancement)**:
-1. Add gender pattern hint cards
-2. Create article rules reference cards
-3. Implement spaced repetition optimization for article-noun pairs
-
-### 7. Warning: Current System Pedagogical Risk
-
-**🚨 Without noun-article cards, learners will**:
-1. Guess articles randomly in real communication
-2. Develop incorrect pattern assumptions
-3. Struggle with basic German sentence construction
-4. Fail A1 certification requirements for article usage
-
-**Recommendation**: Do not release to learners until ArticleApplicationService is re-enabled and tested.
-
-### Noun Extraction Algorithm
-The `_extract_noun_from_sentence()` method:
-1. Splits sentence into words
-2. Filters out articles, prepositions, and common words
-3. Returns first capitalized word (likely the noun)
-4. Fallback to "Wort" if extraction fails
-
-### Translation Dictionary
-Basic noun translations are hardcoded for common A1-level nouns:
-- Mann → man, Frau → woman, Kind → child
-- Auto → car, Haus → house, Buch → book
-- Tisch → table, Stuhl → chair
-
-### Field Mapping in CardBuilder
-The `_extract_field_values()` method maps record fields to Anki fields using predefined mappings for each card type, ensuring correct field order for Anki import.
 
 ---
 

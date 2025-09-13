@@ -1,0 +1,12 @@
+artikel_typ,geschlecht,nominativ,akkusativ,dativ,genitiv,beispiel_nom,beispiel_akk,beispiel_dat,beispiel_gen
+bestimmt,maskulin,der,den,dem,des,Der Mann ist groß.,Ich sehe den Mann.,Ich spreche mit dem Mann.,Das ist das Auto des Mannes.
+bestimmt,feminin,die,die,der,der,Die Frau arbeitet hier.,Ich kenne die Frau.,Ich helfe der Frau.,Das ist die Tasche der Frau.
+bestimmt,neutral,das,das,dem,des,Das Kind spielt.,Ich sehe das Kind.,Ich gebe dem Kind ein Buch.,Das ist das Spielzeug des Kindes.
+bestimmt,plural,die,die,den,der,Die Kinder spielen.,Ich sehe die Kinder.,Ich helfe den Kindern.,Das sind die Bücher der Kinder.
+unbestimmt,maskulin,ein,einen,einem,eines,Ein Mann wartet.,Ich suche einen Mann.,Ich spreche mit einem Mann.,Das ist das Auto eines Mannes.
+unbestimmt,feminin,eine,eine,einer,einer,Eine Frau kommt.,Ich suche eine Frau.,Ich helfe einer Frau.,Das ist die Tasche einer Frau.
+unbestimmt,neutral,ein,ein,einem,eines,Ein Kind lacht.,Ich sehe ein Kind.,Ich gebe einem Kind ein Geschenk.,Das ist das Buch eines Kindes.
+verneinend,maskulin,kein,keinen,keinem,keines,Kein Mann ist hier.,Ich sehe keinen Mann.,Ich spreche mit keinem Mann.,Das ist das Auto keines Mannes.
+verneinend,feminin,keine,keine,keiner,keiner,Keine Frau arbeitet heute.,Ich kenne keine Frau hier.,Ich helfe keiner Frau.,Das ist die Tasche keiner Frau.
+verneinend,neutral,kein,kein,keinem,keines,Kein Kind weint.,Ich sehe kein Kind.,Ich gebe keinem Kind Süßigkeiten.,Das ist das Buch keines Kindes.
+verneinend,plural,keine,keine,keinen,keiner,Keine Kinder sind da.,Ich sehe keine Kinder.,Ich helfe keinen Kindern.,Das sind die Bücher keiner Kinder.

@@ -1,0 +1,135 @@
+word,english,example,comparative,superlative
+groß,big/tall,Das Haus ist groß.,größer,am größten
+klein,small/little,Das Kind ist klein.,kleiner,am kleinsten
+alt,old,Der Mann ist alt.,älter,am ältesten
+jung,young,Die Frau ist jung.,jünger,am jüngsten
+neu,new,Das Auto ist neu.,neuer,am neuesten
+gut,good,Das Essen ist gut.,besser,am besten
+schlecht,bad,Das Wetter ist schlecht.,schlechter,am schlechtesten
+schön,beautiful/nice,Die Blume ist schön.,schöner,am schönsten
+hässlich,ugly,Das Bild ist hässlich.,hässlicher,am hässlichsten
+lang,long,Der Weg ist lang.,länger,am längsten
+kurz,short,Die Hose ist kurz.,kürzer,am kürzesten
+hoch,high/tall,Der Berg ist hoch.,höher,am höchsten
+niedrig,low,Der Tisch ist niedrig.,niedriger,am niedrigsten
+breit,wide,Die Straße ist breit.,breiter,am breitesten
+schmal,narrow,Der Gang ist schmal.,schmaler/schmäler,am schmalsten/schmälsten
+dick,thick/fat,Das Buch ist dick.,dicker,am dicksten
+dünn,thin,Das Papier ist dünn.,dünner,am dünnsten
+schwer,heavy/difficult,Die Tasche ist schwer.,schwerer,am schwersten
+leicht,light/easy,Die Aufgabe ist leicht.,leichter,am leichtesten
+schnell,fast,Das Auto ist schnell.,schneller,am schnellsten
+langsam,slow,Die Schnecke ist langsam.,langsamer,am langsamsten
+teuer,expensive,Das Hotel ist teuer.,teurer,am teuersten
+billig,cheap,Das Essen ist billig.,billiger,am billigsten
+reich,rich,Der Mann ist reich.,reicher,am reichsten
+arm,poor,Die Familie ist arm.,ärmer,am ärmsten
+voll,full,Das Glas ist voll.,voller,am vollsten
+leer,empty,Die Flasche ist leer.,leerer,am leersten
+warm,warm,Das Wasser ist warm.,wärmer,am wärmsten
+kalt,cold,Der Winter ist kalt.,kälter,am kältesten
+heiß,hot,Der Sommer ist heiß.,heißer,am heißesten
+kühl,cool,Der Abend ist kühl.,kühler,am kühlsten
+trocken,dry,Das Handtuch ist trocken.,trockener,am trockensten
+nass,wet,Die Straße ist nass.,nasser/nässer,am nassesten/nässesten
+sauber,clean,Das Zimmer ist sauber.,sauberer,am saubersten
+schmutzig,dirty,Die Schuhe sind schmutzig.,schmutziger,am schmutzigsten
+hell,bright/light,Das Zimmer ist hell.,heller,am hellsten
+dunkel,dark,Die Nacht ist dunkel.,dunkler,am dunkelsten
+laut,loud,Die Musik ist laut.,lauter,am lautesten
+leise,quiet,Das Baby ist leise.,leiser,am leisesten
+stark,strong,Der Kaffee ist stark.,stärker,am stärksten
+schwach,weak,Der Tee ist schwach.,schwächer,am schwächsten
+gesund,healthy,Das Kind ist gesund.,gesünder,am gesündesten
+krank,sick/ill,Der Mann ist krank.,kränker,am kränksten
+müde,tired,Ich bin müde.,müder,am müdesten
+wach,awake,Das Baby ist wach.,wacher,am wachsten
+froh,glad/happy,Die Kinder sind froh.,froher,am frohesten
+traurig,sad,Das Mädchen ist traurig.,trauriger,am traurigsten
+glücklich,happy,Die Familie ist glücklich.,glücklicher,am glücklichsten
+zufrieden,satisfied/content,Der Kunde ist zufrieden.,zufriedener,am zufriedensten
+freundlich,friendly,Die Verkäuferin ist freundlich.,freundlicher,am freundlichsten
+nett,nice/kind,Der Nachbar ist nett.,netter,am nettesten
+höflich,polite,Der Kellner ist höflich.,höflicher,am höflichsten
+ruhig,calm/quiet,Der Park ist ruhig.,ruhiger,am ruhigsten
+lustig,funny,Der Film ist lustig.,lustiger,am lustigsten
+langweilig,boring,Das Buch ist langweilig.,langweiliger,am langweiligsten
+interessant,interesting,Das Museum ist interessant.,interessanter,am interessantesten
+wichtig,important,Das Dokument ist wichtig.,wichtiger,am wichtigsten
+richtig,right/correct,Die Antwort ist richtig.,richtiger,am richtigsten
+falsch,wrong/false,Die Information ist falsch.,falscher,am falschesten
+einfach,simple/easy,Die Frage ist einfach.,einfacher,am einfachsten
+schwierig,difficult,Die Prüfung ist schwierig.,schwieriger,am schwierigsten
+möglich,possible,Das ist möglich.,möglicher,am möglichsten
+unmöglich,impossible,Das ist unmöglich.,unmöglicher,am unmöglichsten
+sicher,safe/certain,Der Weg ist sicher.,sicherer,am sichersten
+gefährlich,dangerous,Die Straße ist gefährlich.,gefährlicher,am gefährlichsten
+frei,free,Der Platz ist frei.,freier,am freiesten
+besetzt,occupied,Der Stuhl ist besetzt.,besetzter,am besetztesten
+offen,open,Die Tür ist offen.,offener,am offensten
+geschlossen,closed,Das Geschäft ist geschlossen.,geschlossener,am geschlossensten
+fertig,ready/finished,Das Essen ist fertig.,fertiger,am fertigsten
+bereit,ready,Ich bin bereit.,bereiter,am bereitesten
+früh,early,Der Morgen ist früh.,früher,am frühesten
+spät,late,Es ist spät.,später,am spätesten
+pünktlich,punctual,Der Zug ist pünktlich.,pünktlicher,am pünktlichsten
+modern,modern,Die Wohnung ist modern.,moderner,am modernsten
+praktisch,practical,Das ist praktisch.,praktischer,am praktischsten
+bequem,comfortable,Der Stuhl ist bequem.,bequemer,am bequemsten
+gemütlich,cozy,Das Café ist gemütlich.,gemütlicher,am gemütlichsten
+scharf,sharp/spicy,Das Messer ist scharf.,schärfer,am schärfsten
+süß,sweet,Der Kuchen ist süß.,süßer,am süßesten
+sauer,sour,Die Zitrone ist sauer.,saurer,am sauersten
+bitter,bitter,Der Kaffee ist bitter.,bitterer,am bittersten
+salzig,salty,Die Suppe ist salzig.,salziger,am salzigsten
+frisch,fresh,Das Brot ist frisch.,frischer,am frischesten
+rot,red,Die Rose ist rot.,,
+blau,blue,Der Himmel ist blau.,,
+grün,green,Das Gras ist grün.,,
+gelb,yellow,Die Sonne ist gelb.,,
+schwarz,black,Die Nacht ist schwarz.,,
+weiß,white,Der Schnee ist weiß.,,
+grau,gray,Der Himmel ist grau.,,
+braun,brown,Der Baum ist braun.,,
+rosa,pink,Die Blume ist rosa.,,
+orange,orange,Die Orange ist orange.,,
+lila,purple,Die Blume ist lila.,,
+bunt,colorful,Der Garten ist bunt.,bunter,am buntesten
+klar,clear,Das Wasser ist klar.,klarer,am klarsten
+deutsch,German,Das ist ein deutsches Buch.,,
+englisch,English,Er spricht englisch.,,
+amerikanisch,American,Das ist ein amerikanisches Auto.,,
+französisch,French,Der französische Wein ist gut.,,
+italienisch,Italian,Die italienische Pizza ist lecker.,,
+spanisch,Spanish,Die spanische Musik ist schön.,,
+chinesisch,Chinese,Das chinesische Essen schmeckt gut.,,
+japanisch,Japanese,Das japanische Restaurant ist teuer.,,
+russisch,Russian,Der russische Winter ist kalt.,,
+türkisch,Turkish,Der türkische Tee ist stark.,,
+privat,private,Das ist privat.,privater,am privatesten
+öffentlich,public,Der Park ist öffentlich.,öffentlicher,am öffentlichsten
+persönlich,personal,Das ist persönlich.,persönlicher,am persönlichsten
+allgemein,general,Das ist allgemein bekannt.,allgemeiner,am allgemeinsten
+besonders,special,Das ist besonders schön.,besonderer,am besondersten
+normal,normal,Das ist normal.,normaler,am normalsten
+typisch,typical,Das ist typisch deutsch.,typischer,am typischsten
+ähnlich,similar,Die Brüder sind ähnlich.,ähnlicher,am ähnlichsten
+verschieden,different,Die Meinungen sind verschieden.,verschiedener,am verschiedensten
+gleich,same/equal,Die Schuhe sind gleich.,gleicher,am gleichsten
+ganz,whole/entire,Die ganze Familie kommt.,,
+halb,half,Das Glas ist halb voll.,,
+viel,much/many,Er hat viel Geld.,mehr,am meisten
+wenig,little/few,Sie hat wenig Zeit.,weniger,am wenigsten
+genug,enough,Das ist genug.,,
+toll,great,Das ist toll!,toller,am tollsten
+super,super,Das ist super!,,
+prima,great,Das ist prima!,,
+schlimm,bad/terrible,Das ist schlimm.,schlimmer,am schlimmsten
+schrecklich,terrible,Das Wetter ist schrecklich.,schrecklicher,am schrecklichsten
+wunderbar,wonderful,Das Essen ist wunderbar.,wunderbarer,am wunderbarsten
+herrlich,magnificent,Das Wetter ist herrlich.,herrlicher,am herrlichsten
+perfekt,perfect,Das ist perfekt.,perfekter,am perfektesten
+ausgezeichnet,excellent,Das Essen ist ausgezeichnet.,ausgezeichneter,am ausgezeichnetsten
+bekannt,known/famous,Der Schauspieler ist bekannt.,bekannter,am bekanntesten
+berühmt,famous,Die Stadt ist berühmt.,berühmter,am berühmtesten
+beliebt,popular,Der Lehrer ist beliebt.,beliebter,am beliebtesten

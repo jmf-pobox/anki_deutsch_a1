@@ -1,0 +1,37 @@
+pronoun,english,case,form,example
+ich,I,nominative,ich,Ich bin Student.
+ich,I,accusative,mich,Er sieht mich.
+ich,I,dative,mir,Sie gibt mir das Buch.
+ich,I,genitive,meiner,Er erinnert sich meiner.
+du,you (informal),nominative,du,Du bist mein Freund.
+du,you (informal),accusative,dich,Ich sehe dich.
+du,you (informal),dative,dir,Ich gebe dir das Geschenk.
+du,you (informal),genitive,deiner,Ich erinnere mich deiner.
+er,he,nominative,er,Er ist Lehrer.
+er,he,accusative,ihn,Ich kenne ihn.
+er,he,dative,ihm,Ich helfe ihm.
+er,he,genitive,seiner,Wir gedenken seiner.
+sie,she,nominative,sie,Sie ist Ärztin.
+sie,she,accusative,sie,Ich liebe sie.
+sie,she,dative,ihr,Ich gebe ihr die Blumen.
+sie,she,genitive,ihrer,Wir erinnern uns ihrer.
+es,it,nominative,es,Es ist kalt.
+es,it,accusative,es,Ich sehe es.
+es,it,dative,ihm,Ich gebe ihm Wasser. (dem Tier)
+es,it,genitive,seiner,Ich erinnere mich seiner. (des Ereignisses)
+wir,we,nominative,wir,Wir sind Freunde.
+wir,we,accusative,uns,Er besucht uns.
+wir,we,dative,uns,Sie hilft uns.
+wir,we,genitive,unser,Er gedenkt unser.
+ihr,you (plural informal),nominative,ihr,Ihr seid willkommen.
+ihr,you (plural informal),accusative,euch,Ich sehe euch.
+ihr,you (plural informal),dative,euch,Ich gebe euch die Bücher.
+ihr,you (plural informal),genitive,euer,Wir gedenken euer.
+sie,they,nominative,sie,Sie sind glücklich.
+sie,they,accusative,sie,Ich kenne sie alle.
+sie,they,dative,ihnen,Ich helfe ihnen.
+sie,they,genitive,ihrer,Wir erinnern uns ihrer.
+Sie,you (formal),nominative,Sie,Sie sind sehr freundlich.
+Sie,you (formal),accusative,Sie,Ich verstehe Sie.
+Sie,you (formal),dative,Ihnen,Ich danke Ihnen.
+Sie,you (formal),genitive,Ihrer,Wir gedenken Ihrer.
