@@ -21,10 +21,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python 3.10
+    - name: Set up Python 3.13
       uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: "3.13"
     
     - name: Install Hatch
       run: pip install hatch
@@ -42,6 +42,11 @@ jobs:
     - name: Ruff Linting (ZERO violations allowed)
       run: |
         echo "🔍 Running Ruff linting checks..."
+        echo "Python version: $(python --version)"
+        echo "Hatch version: $(hatch --version)"
+        echo "Current directory: $(pwd)"
+        echo "Files in directory: $(ls -la)"
+        echo "Running hatch run lint..."
         hatch run lint
     
     - name: Code Formatting Check
@@ -114,10 +119,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python 3.10
+    - name: Set up Python 3.13
       uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: "3.13"
     
     - name: Install Hatch
       run: pip install hatch
