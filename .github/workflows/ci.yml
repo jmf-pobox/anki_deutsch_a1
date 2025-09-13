@@ -42,7 +42,7 @@ jobs:
     - name: Ruff Linting (ZERO violations allowed)
       run: |
         echo "🔍 Running Ruff linting checks..."
-        hatch run ruff check --fix
+        hatch run ruff check .
         if [ $? -ne 0 ]; then
           echo "❌ FAILED: Ruff violations detected. NO MERGE ALLOWED."
           exit 1
