@@ -19,7 +19,7 @@ class TestAudioService:
     """Test AudioService functionality."""
 
     @pytest.fixture
-    def temp_dir(self) -> Generator[Path, None, None]:
+    def temp_dir(self) -> Generator[Path]:
         """Create a temporary directory for testing."""
         with tempfile.TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)

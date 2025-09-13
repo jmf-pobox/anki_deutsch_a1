@@ -47,7 +47,7 @@ def check_rate_limit_in_logs(caplog: pytest.LogCaptureFixture) -> bool:
 
 # Common test utilities
 @contextlib.contextmanager
-def mock_env(var_name: str, value: str | None) -> Generator[None, None, None]:
+def mock_env(var_name: str, value: str | None) -> Generator[None]:
     """Context manager for temporarily setting environment variables."""
     import os
 
@@ -80,7 +80,7 @@ def mock_requests_and_sleep() -> Any:
     from unittest.mock import Mock, patch
 
     @contextlib.contextmanager
-    def _mock_requests_sleep(**kwargs: Any) -> Generator[tuple[Mock, Mock], None, None]:
+    def _mock_requests_sleep(**kwargs: Any) -> Generator[tuple[Mock, Mock]]:
         """Context manager that mocks both requests.get and time.sleep.
 
         Args:
@@ -112,7 +112,7 @@ def mock_requests_and_sleep() -> Any:
 @contextlib.contextmanager
 def temp_directory_with_nested_path(
     nested_path: str = "nested/path",
-) -> Generator[tuple[str, Any], None, None]:
+) -> Generator[tuple[str, Any]]:
     """Create a temporary directory and yield a nested path within it."""
     import tempfile
     from pathlib import Path
@@ -184,7 +184,7 @@ def mock_media_service(mock_audio_service: Any, mock_pexels_service: Any) -> Mag
 @pytest.fixture
 def anki_backend_with_mocks(
     mock_media_service: Any,
-) -> Generator[AnkiBackend, None, None]:
+) -> Generator[AnkiBackend]:
     """Create an AnkiBackend instance with mocked services via dependency injection."""
     backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
     yield backend
@@ -195,7 +195,7 @@ def anki_backend_with_mocks(
 @pytest.fixture
 def deck_builder_with_mocks(
     mock_audio_service: Any, mock_pexels_service: Any, mock_media_service: Any
-) -> Generator[DeckBuilder, None, None]:
+) -> Generator[DeckBuilder]:
     """Create a DeckBuilder instance with mocked services via dependency injection."""
     builder = DeckBuilder(
         "Test Deck",
@@ -209,7 +209,7 @@ def deck_builder_with_mocks(
 def anki_backend_no_aws(
     mock_external_services: Any,
     mock_media_service: Any,
-) -> Generator[AnkiBackend, None, None]:
+) -> Generator[AnkiBackend]:
     """Create an AnkiBackend instance with mocked external services."""
     backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
     yield backend

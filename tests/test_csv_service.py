@@ -43,7 +43,7 @@ class TestCSVService:
         return CSVService()
 
     @pytest.fixture
-    def temp_csv_file(self) -> Generator[Path, None, None]:
+    def temp_csv_file(self) -> Generator[Path]:
         """Create a temporary CSV file for testing."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             f.write("name,value\n")
@@ -245,7 +245,7 @@ class TestCSVServiceRecords:
         return CSVService()
 
     @pytest.fixture
-    def temp_noun_csv(self) -> Generator[Path, None, None]:
+    def temp_noun_csv(self) -> Generator[Path]:
         """Create temporary noun CSV file for testing."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             f.write("noun,article,english,plural,example,related\n")
@@ -260,7 +260,7 @@ class TestCSVServiceRecords:
                 temp_path.unlink()
 
     @pytest.fixture
-    def temp_adjective_csv(self) -> Generator[Path, None, None]:
+    def temp_adjective_csv(self) -> Generator[Path]:
         """Create temporary adjective CSV file for testing."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             f.write("word,english,example,comparative,superlative\n")

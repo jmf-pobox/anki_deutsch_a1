@@ -15,7 +15,7 @@ import pytest
 @pytest.fixture(autouse=True)
 def mock_external_services(
     request: pytest.FixtureRequest,
-) -> Generator[dict[str, Any] | None, None, None]:
+) -> Generator[dict[str, Any] | None]:
     """Automatically mock external services for unit tests only.
 
     This fixture runs before every test to ensure that:

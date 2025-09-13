@@ -22,7 +22,7 @@ class TestMediaFileRegistrar:
         return backend
 
     @pytest.fixture
-    def temp_audio_dir(self) -> Generator[Path, None, None]:
+    def temp_audio_dir(self) -> Generator[Path]:
         """Create temporary audio directory with test files."""
         with tempfile.TemporaryDirectory() as temp_dir:
             audio_dir = Path(temp_dir) / "audio"
@@ -36,7 +36,7 @@ class TestMediaFileRegistrar:
             yield audio_dir
 
     @pytest.fixture
-    def temp_image_dir(self) -> Generator[Path, None, None]:
+    def temp_image_dir(self) -> Generator[Path]:
         """Create temporary image directory with test files."""
         with tempfile.TemporaryDirectory() as temp_dir:
             image_dir = Path(temp_dir) / "images"

@@ -34,7 +34,7 @@ InT = TypeVar("InT")
 OutT = TypeVar("OutT")
 
 
-class PipelineObject(Generic[ValueT]):
+class PipelineObject[ValueT]:
     """Container for the current value being transformed in a pipeline run.
 
     PipelineObject acts as a simple, typed holder that the Pipeline reads from
@@ -255,7 +255,7 @@ class ToUpperCaseTask(PipelineTask[str, str]):
         self.output = str(self.input).upper()
 
 
-class Pipeline(Generic[ValueT]):
+class Pipeline[ValueT]:
     """A pipeline is a sequence of tasks executed in order.
 
     The pipeline receives a PipelineObject[T] on construction and exposes a
