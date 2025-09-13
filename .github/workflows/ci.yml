@@ -43,11 +43,6 @@ jobs:
       run: |
         echo "🔍 Running Ruff linting checks..."
         hatch run lint
-        if [ $? -ne 0 ]; then
-          echo "❌ FAILED: Ruff violations detected. NO MERGE ALLOWED."
-          exit 1
-        fi
-        echo "✅ SUCCESS: Ruff linting passed - zero violations found"
     
     - name: Code Formatting Check
       run: |
