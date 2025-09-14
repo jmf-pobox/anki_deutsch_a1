@@ -119,7 +119,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Katze'.*AI failed",
+            match=r"Failed to generate image search for noun 'Katze'.*AI failed",
         ):
             strategy()
 
@@ -142,7 +142,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Liebe'.*AI failed",
+            match=r"Failed to generate image search for noun 'Liebe'.*AI failed",
         ):
             strategy()
 
@@ -158,7 +158,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Freiheit'.*AI failed",
+            match=r"Failed to generate image search for noun 'Freiheit'.*AI failed",
         ):
             strategy()
 
