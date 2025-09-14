@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict
 
 import boto3
-from botocore.exceptions import (  # type: ignore[import-untyped]  # External
+from botocore.exceptions import (
     ClientError,
     NoCredentialsError,
 )
