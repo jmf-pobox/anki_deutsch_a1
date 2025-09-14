@@ -144,7 +144,7 @@ class TestCardBuilder:
         }
 
         # Build card
-        field_values, note_type = card_builder.build_card_from_record(
+        field_values, _note_type = card_builder.build_card_from_record(
             record, enriched_data
         )
 
@@ -405,7 +405,7 @@ class TestCardBuilder:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to build card from record 1.*Template error",
+            match=r"Failed to build card from record 1.*Template error",
         ):
             card_builder.build_cards_from_records(base_records)
 

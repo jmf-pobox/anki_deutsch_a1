@@ -192,7 +192,7 @@ class TestDeckBackendInterface:
     def test_error_handling(self, backend: DeckBackend) -> None:
         """Test that AnkiBackend handles errors correctly."""
         # Test adding note with invalid note type ID
-        with pytest.raises(ValueError, match="Note type ID .* not found"):
+        with pytest.raises(ValueError, match=r"Note type ID .* not found"):
             backend.add_note("nonexistent_id", ["field1", "field2"])
 
         # Test adding media file that doesn't exist
