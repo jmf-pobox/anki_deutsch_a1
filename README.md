@@ -31,10 +31,19 @@ pip install hatch
 hatch env create
 ```
 
-### 2. Generate Language Deck (Basic)
+### 2. Generate German Decks
 ```bash
-# Generate default German deck (current implementation - 1000+ cards)
+# Generate default German deck (A2/B1 level - 1000+ cards)
 hatch run app
+
+# Generate specific German decks by level
+hatch run app -- --language german --deck a1.1    # Beginner (A1.1)
+hatch run app -- --language german --deck a1      # Elementary (A1)
+hatch run app -- --language german --deck default # Intermediate (A2/B1)
+hatch run app -- --language german --deck business # Business German
+
+# Custom output file
+hatch run app -- --language german --deck a1 --output my-german-a1.apkg
 ```
 
 ### 3. Generate with Media (Advanced)
@@ -58,19 +67,34 @@ hatch run test-env
 3. Select the `.apkg` file from `output/` folder
 4. Start studying with intelligent, language-specific flashcards!
 
-## 📚 Current Implementation: German A1 Vocabulary
+## 📚 Current Implementation: German Vocabulary Decks
 
-The system currently includes several German decks of various levels: 
-beginner, A1, and a default which is closer to A2/B1. 
+The system includes comprehensive German decks organized by CEFR levels:
 
-### Word Types Supported:
+- **A1.1 (Beginner)**: Basic vocabulary for absolute beginners
+- **A1 (Elementary)**: Complete A1 level vocabulary  
+- **Default (A2/B1)**: Intermediate vocabulary for advanced learners
+- **Business**: German business and professional vocabulary 
+
+### Available German Decks:
+
+```bash
+# Check what decks are available
+hatch run app -- --help
+
+# List available German decks
+hatch run app -- --language german --deck nonexistent
+# (Will show available deck options)
 ```
-data/
-├── nouns.csv           # 200+ German nouns with articles and cases
-├── verbs.csv           # 100+ verbs with conjugations and perfect tense
+
+**Deck Structure** - Each deck contains:
+```
+languages/german/{deck}/
+├── nouns.csv           # German nouns with articles and cases
+├── verbs.csv           # Verbs with conjugations and perfect tense
 ├── adjectives.csv      # Comparative and superlative forms
 ├── adverbs.csv         # Common German adverbs with examples
-├── prepositions.csv    # Case-dependent prepositions
+├── prepositions.csv    # Case-dependent prepositions  
 ├── phrases.csv         # Essential German phrases
 └── negations.csv       # German negation patterns
 ```
@@ -173,7 +197,10 @@ hatch run format               # Code formatting
 hatch run ruff check --fix     # Linting compliance
 
 # Application usage
-hatch run app                  # Generate default German deck
+hatch run app                  # Generate default German deck (A2/B1)
+hatch run app -- --deck a1.1  # Generate A1.1 beginner deck  
+hatch run app -- --deck a1    # Generate A1 elementary deck
+hatch run app -- --deck business # Generate business German deck
 ```
 
 ## 🔄 Roadmap: Multi-Language Vision
