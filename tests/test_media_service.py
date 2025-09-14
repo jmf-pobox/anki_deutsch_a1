@@ -20,7 +20,7 @@ class TestMediaService:
     def mock_audio_service(self) -> Mock:
         """Mock AudioService for testing."""
         service = Mock(spec=AudioService)
-        service.generate_audio.return_value = "data/audio/test.mp3"
+        service.generate_audio.return_value = "test_audio/test.mp3"
         return service
 
     @pytest.fixture
@@ -73,7 +73,7 @@ class TestMediaService:
         result = media_service.generate_audio("test text")
 
         mock_audio_service.generate_audio.assert_called_once_with("test text")
-        assert result == "data/audio/test.mp3"
+        assert result == "test_audio/test.mp3"
 
     def test_generate_image_calls_service(
         self, media_service: MediaService, mock_pexels_service: Mock
@@ -101,7 +101,7 @@ class TestMediaService:
         mock_audio_service.generate_audio.assert_called_once_with("audio text")
         mock_pexels_service.download_image.assert_called_once()
 
-        assert result.audio_path == "data/audio/test.mp3"
+        assert result.audio_path == "test_audio/test.mp3"
         assert result.image_path is not None
 
     def test_stats_tracking(self, media_service: MediaService) -> None:

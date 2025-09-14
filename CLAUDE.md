@@ -585,3 +585,4 @@ When you see an error like "Field 'DuForm' not found":
 - do not code hacks, defensive coding, fallbacks. 
 - the goal is to write well-typed code with low conditional complexity 
   that fails (e.g., throws and exception) when validation fails.
+- stop adding 🤖 Generated with [Claude Code](https://claude.ai/code) Co-Authored-By: Claude <noreply@anthropic.com> to every commit.  It is a bit obnoxious.

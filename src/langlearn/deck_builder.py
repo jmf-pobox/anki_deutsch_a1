@@ -121,7 +121,10 @@ class DeckBuilder:
             output_dir=str(language_deck_data_dir / "audio")
         )
         actual_pexels_service = pexels_service or PexelsService()
-        media_config = MediaGenerationConfig()
+        media_config = MediaGenerationConfig(
+            audio_dir=str(language_deck_data_dir / "audio"),
+            images_dir=str(language_deck_data_dir / "images"),
+        )
 
         # Always create media service - no optional media
         self._media_service = MediaService(

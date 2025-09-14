@@ -254,7 +254,7 @@ class TestVerbConjugationProcessor:
         mock_card_builder = Mock(spec=CardBuilder)
         processor = VerbConjugationProcessor(mock_card_builder)
 
-        # Test known mappings per PROD-CARD-SPEC.md
+        # Test known mappings per PM-CARD-SPEC.md
         assert processor._map_imperative_field_to_data_key("Infinitive") == "infinitive"
         assert processor._map_imperative_field_to_data_key("English") == "english"
         assert processor._map_imperative_field_to_data_key("Du") == "du"

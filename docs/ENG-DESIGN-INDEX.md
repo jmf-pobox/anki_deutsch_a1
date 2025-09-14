@@ -22,7 +22,7 @@ Comprehensive documentation for the **Anki German Language Deck Generator** - a 
 - **How does it work?** → [ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)  
 - **What are the components?** → [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
 - **Current metrics?** → Run `hatch run test-cov` for live data
-- **Data formats?** → [PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)
+- **Data formats?** → [PROD-CSV-SPEC.md](PM-CSV-SPEC.md)
 
 ---
 
@@ -75,15 +75,15 @@ Comprehensive documentation for the **Anki German Language Deck Generator** - a 
 
 ## Data Specifications
 
-### [PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)
+### [PROD-CSV-SPEC.md](PM-CSV-SPEC.md)
 **Purpose**: CSV format specifications for vocabulary data  
 **Content**: Column definitions, validation rules, encoding standards
 
-### [DATA-DICTIONARY.md](./DATA-DICTIONARY.md)
+### [DATA-DICTIONARY.md](ENG-DATA-DICTIONARY.md)
 **Purpose**: Authoritative field definitions for all card types  
 **Content**: Field names, types, validation rules, examples
 
-### [PROD-CARD-SPEC.md](./PROD-CARD-SPEC.md)
+### [PROD-CARD-SPEC.md](PM-CARD-SPEC.md)
 **Purpose**: Anki card type specifications  
 **Content**: Card templates, field mappings, styling guidelines
 

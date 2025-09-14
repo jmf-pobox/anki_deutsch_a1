@@ -97,8 +97,17 @@ class ServiceContainer:
         if self._audio_service is None:
             try:
                 from langlearn.services.audio import AudioService
+                import tempfile
+                import os
 
-                self._audio_service = AudioService()
+                # Use temporary directory for tests, proper directory structure otherwise
+                if "pytest" in os.environ.get("_", "") or "PYTEST_CURRENT_TEST" in os.environ:
+                    # In test environment - use temporary directory
+                    temp_dir = tempfile.mkdtemp()
+                    self._audio_service = AudioService(output_dir=temp_dir)
+                else:
+                    # In production environment - use default audio directory
+                    self._audio_service = AudioService()
             except ValueError as e:
                 # Expected error: Missing AWS credentials or configuration
                 logger.info(f"AudioService not available: {e}")

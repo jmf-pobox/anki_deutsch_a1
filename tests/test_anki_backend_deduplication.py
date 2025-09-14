@@ -279,11 +279,11 @@ class TestAnkiBackendDeduplication:
         ):
             backend = AnkiBackend("Test Deck", mock_media_service)
 
-            # Verify directories are set up for optimization
+            # Verify directories are set up for optimization (now using MediaService directories)
             assert backend._audio_dir is not None
             assert backend._images_dir is not None
-            assert str(backend._audio_dir).endswith("data/audio")
-            assert str(backend._images_dir).endswith("data/images")
+            assert backend._audio_dir == mock_media_service._audio_dir
+            assert backend._images_dir == mock_media_service._images_dir
 
     def test_concurrent_deduplication_safety(self, mock_media_service: Mock) -> None:
         """Test deduplication is safe under concurrent access patterns."""

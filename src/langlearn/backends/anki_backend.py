@@ -91,6 +91,10 @@ class AnkiBackend(DeckBackend):
         # Store required media service
         self._media_service = media_service
 
+        # Use MediaService's directories instead of legacy data/ paths
+        self._audio_dir: Path = media_service._audio_dir
+        self._images_dir: Path = media_service._images_dir
+
         # Create domain media generator for field processing delegation
         self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
@@ -105,8 +109,8 @@ class AnkiBackend(DeckBackend):
             audio_service=self._media_service._audio_service,
             pexels_service=self._media_service._pexels_service,
             anthropic_service=anthropic_service,
-            audio_base_path=self._project_root / "data" / "audio",
-            image_base_path=self._project_root / "data" / "images",
+            audio_base_path=self._audio_dir,
+            image_base_path=self._images_dir,
         )
 
         # Media generation statistics (kept for backward compatibility)
@@ -117,12 +121,6 @@ class AnkiBackend(DeckBackend):
             "images_reused": 0,
             "generation_errors": 0,
         }
-
-        # Set up media directories
-        self._audio_dir = self._project_root / "data" / "audio"
-        self._images_dir = self._project_root / "data" / "images"
-        self._audio_dir.mkdir(parents=True, exist_ok=True)
-        self._images_dir.mkdir(parents=True, exist_ok=True)
 
     @property
     def _audio_service(self) -> AudioService:
