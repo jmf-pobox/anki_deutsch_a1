@@ -57,7 +57,12 @@
       "Bash(git push:*)",
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(gh pr:*)",
+      "Bash(git stash:*)",
+      "Bash(gh api:*)",
+      "Bash(pip index versions:*)",
+      "Bash(hatch env:*)"
     ],
     "deny": [],
     "ask": []

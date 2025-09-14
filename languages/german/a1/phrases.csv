@@ -1,0 +1,105 @@
+phrase,english,context,related
+Guten Morgen!,Good morning!,Morning greeting (until about 10am),Guten Tag! Guten Abend!
+Guten Tag!,Good day!/Hello!,General daytime greeting (10am-6pm),Hallo! Guten Morgen!
+Guten Abend!,Good evening!,Evening greeting (after 6pm),Gute Nacht! Guten Tag!
+Gute Nacht!,Good night!,Said before going to bed,Guten Abend! Schlaf gut!
+Hallo!,Hello!,Informal greeting,Hi! Hey! Grüß dich!
+Tschüss!,Bye!,Informal goodbye,Bis bald! Auf Wiedersehen!
+Auf Wiedersehen!,Goodbye!,Formal goodbye,Tschüss! Bis später!
+Bis bald!,See you soon!,Temporary goodbye,Bis später! Tschüss!
+Bis später!,See you later!,Goodbye until later today,Bis bald! Bis morgen!
+Bis morgen!,See you tomorrow!,Goodbye until tomorrow,Bis bald! Bis später!
+Wie geht es Ihnen?,How are you? (formal),Polite inquiry about wellbeing,Wie geht's? Wie geht es dir?
+Wie geht es dir?,How are you? (informal),Casual inquiry about wellbeing,Wie geht's? Was machst du?
+Wie geht's?,How's it going?,Very casual greeting,Wie geht es dir? Alles klar?
+Danke gut!,Fine thanks!,Response to 'how are you',Gut danke! Sehr gut!
+Sehr gut danke!,Very well thanks!,Positive response to 'how are you',Gut danke! Es geht mir gut!
+Es geht.,It's okay./So-so.,Neutral response to 'how are you',Nicht schlecht. Geht so.
+Nicht so gut.,Not so good.,Negative response to 'how are you',Schlecht. Es geht.
+Und Ihnen?,And you? (formal),Returning the question politely,Und dir? Und selbst?
+Und dir?,And you? (informal),Returning the question casually,Und Ihnen? Und selbst?
+Bitte,Please,Making polite requests,Bitte schön. Bitte sehr.
+Danke,Thank you,Expressing gratitude,Danke schön. Vielen Dank.
+Danke schön!,Thank you very much!,Expressing strong gratitude,Vielen Dank! Danke sehr!
+Vielen Dank!,Many thanks!,Expressing deep gratitude,Danke schön! Herzlichen Dank!
+Bitte schön!,You're welcome!,Response to thanks,Gern geschehen! Nichts zu danken!
+Gern geschehen!,My pleasure!,Friendly response to thanks,Bitte schön! Keine Ursache!
+Entschuldigung!,Excuse me!/Sorry!,Getting attention or apologizing,Verzeihung! Tut mir leid!
+Verzeihung!,Pardon!,Formal apology or excuse,Entschuldigung! Pardon!
+Tut mir leid!,I'm sorry!,Expressing regret,Es tut mir leid! Entschuldigung!
+Kein Problem!,No problem!,Response to apology,Macht nichts! Schon gut!
+Macht nichts!,It doesn't matter!,Dismissing an apology,Kein Problem! Ist schon okay!
+Wie heißen Sie?,What's your name? (formal),Asking someone's name politely,Wie heißt du? Wer sind Sie?
+Wie heißt du?,What's your name? (informal),Asking someone's name casually,Wie heißen Sie? Wer bist du?
+Ich heiße...,My name is...,Introducing yourself,Mein Name ist... Ich bin...
+Mein Name ist...,My name is...,Formal self-introduction,Ich heiße... Ich bin...
+Freut mich!,Nice to meet you!,Response to introduction,Sehr erfreut! Schön Sie kennenzulernen!
+Sehr erfreut!,Very pleased!,Formal response to introduction,Freut mich! Es freut mich!
+Woher kommen Sie?,Where are you from? (formal),Asking about origin politely,Woher kommst du? Wo wohnen Sie?
+Woher kommst du?,Where are you from? (informal),Asking about origin casually,Woher kommen Sie? Wo wohnst du?
+Ich komme aus...,I come from...,Stating your origin,Ich bin aus... Ich wohne in...
+Wo wohnen Sie?,Where do you live? (formal),Asking about residence politely,Wo wohnst du? Woher kommen Sie?
+Wo wohnst du?,Where do you live? (informal),Asking about residence casually,Wo wohnen Sie? Woher kommst du?
+Ich wohne in...,I live in...,Stating your residence,Ich lebe in... Ich bin in...
+Sprechen Sie Deutsch?,Do you speak German? (formal),Asking about language ability,Sprichst du Deutsch? Können Sie Deutsch?
+Sprichst du Deutsch?,Do you speak German? (informal),Asking about language ability,Sprechen Sie Deutsch? Kannst du Deutsch?
+Ich spreche ein bisschen Deutsch.,I speak a little German.,Describing limited language ability,Ich spreche wenig Deutsch. Mein Deutsch ist nicht gut.
+Ich verstehe nicht.,I don't understand.,Expressing lack of comprehension,Ich verstehe das nicht. Was bedeutet das?
+Können Sie das wiederholen?,Can you repeat that? (formal),Requesting repetition politely,Kannst du das wiederholen? Noch einmal bitte.
+Kannst du das wiederholen?,Can you repeat that? (informal),Requesting repetition casually,Können Sie das wiederholen? Noch einmal bitte.
+Langsamer bitte!,Slower please!,Requesting slower speech,Bitte langsam! Nicht so schnell!
+Was bedeutet das?,What does that mean?,Asking for meaning,Was heißt das? Ich verstehe nicht.
+Wie sagt man...?,How do you say...?,Asking for translation,Was heißt... auf Deutsch? Wie heißt das?
+Hilfe!,Help!,Emergency call for assistance,Helfen Sie mir! Ich brauche Hilfe!
+Achtung!,Attention!/Watch out!,Warning of danger,Vorsicht! Pass auf!
+Vorsicht!,Careful!,Warning of caution,Achtung! Sei vorsichtig!
+Stopp!,Stop!,Command to halt,Halt! Warte!
+Ich habe eine Frage.,I have a question.,Introducing a question,Darf ich fragen? Eine Frage bitte.
+Darf ich...?,May I...?,Asking permission politely,Kann ich...? Ist es möglich...?
+Natürlich!,Of course!,Emphatic agreement,Selbstverständlich! Sicher!
+Selbstverständlich!,Of course!/Naturally!,Formal emphatic agreement,Natürlich! Gewiss!
+Ja bitte!,Yes please!,Accepting an offer,Gerne! Ja danke!
+Nein danke!,No thank you!,Declining an offer politely,Danke nein! Nicht nötig!
+Vielleicht,Maybe,Expressing uncertainty,Eventuell. Möglicherweise.
+Ich weiß nicht.,I don't know.,Expressing lack of knowledge,Keine Ahnung. Ich bin nicht sicher.
+Ich glaube...,I think/believe...,Expressing opinion,Ich denke... Meiner Meinung nach...
+Ich möchte...,I would like...,Expressing desire politely,Ich hätte gern... Ich will...
+Ich hätte gern...,I would like to have...,Polite request in shops/restaurants,Ich möchte... Kann ich... haben?
+Wie viel kostet das?,How much does that cost?,Asking about price,Was kostet das? Wie teuer ist das?
+Das ist zu teuer!,That's too expensive!,Expressing price objection,Zu viel! Das ist sehr teuer!
+Gibt es...?,Is there.../Are there...?,Asking about availability,Haben Sie...? Ist... da?
+Wo ist...?,Where is...?,Asking for location,Wo finde ich...? Wo gibt es...?
+Wann...?,When...?,Asking about time,Um wie viel Uhr...? Zu welcher Zeit...?
+Wie spät ist es?,What time is it?,Asking for the time,Wie viel Uhr ist es? Haben Sie die Uhrzeit?
+Es ist... Uhr.,It's... o'clock.,Stating the time,Um... Uhr. Punkt... Uhr.
+Ich habe Hunger.,I'm hungry.,Expressing hunger,Ich bin hungrig. Ich möchte essen.
+Ich habe Durst.,I'm thirsty.,Expressing thirst,Ich bin durstig. Ich möchte trinken.
+Ich bin müde.,I'm tired.,Expressing tiredness,Ich bin erschöpft. Ich brauche Ruhe.
+Mir ist kalt.,I'm cold.,Expressing feeling cold,Es ist kalt. Ich friere.
+Mir ist warm.,I'm warm.,Expressing feeling warm,Es ist heiß. Mir ist heiß.
+Alles klar?,Everything okay?,Checking if all is well,Alles gut? Ist alles in Ordnung?
+Alles klar!,Everything's clear!/All good!,Confirming understanding,Verstanden! Okay!
+Genau!,Exactly!,Strong agreement,Richtig! Stimmt!
+Stimmt!,That's right!,Agreement,Genau! Richtig!
+Das stimmt nicht.,That's not right.,Disagreement,Das ist falsch. Nicht richtig.
+Keine Ahnung!,No idea!,Expressing complete ignorance,Ich weiß nicht. Ich habe keine Idee.
+Moment mal!,Just a moment!,Asking for patience,Einen Moment! Warte kurz!
+Einen Moment bitte!,One moment please!,Polite request for patience,Moment mal! Einen Augenblick!
+Komm!,Come!,Informal command,Komm her! Komm mit!
+Gehen wir!,Let's go!,Suggestion to leave,Los geht's! Lass uns gehen!
+Los geht's!,Let's go!/Here we go!,Starting an activity,Gehen wir! Fangen wir an!
+Warte!,Wait!,Informal command to stop,Warte mal! Einen Moment!
+Beeil dich!,Hurry up!,Urging speed (informal),Schnell! Mach schnell!
+Beeilen Sie sich!,Hurry up!,Urging speed (formal),Schnell bitte! Machen Sie schnell!
+Viel Glück!,Good luck!,Wishing luck,Alles Gute! Ich drücke die Daumen!
+Viel Spaß!,Have fun!,Wishing enjoyment,Viel Vergnügen! Genieß es!
+Gute Reise!,Have a good trip!,Travel wishes,Komm gut an! Schöne Reise!
+Guten Appetit!,Enjoy your meal!,Before eating,Mahlzeit! Lass es dir schmecken!
+Prost!,Cheers!,Toast when drinking,Zum Wohl! Prosit!
+Zum Wohl!,To your health!,Formal toast,Prost! Auf dein Wohl!
+Gesundheit!,Bless you!,After someone sneezes,Zum Wohl! Alles Gute!
+Herzlichen Glückwunsch!,Congratulations!,Offering congratulations,Gratulation! Glückwunsch!
+Alles Gute zum Geburtstag!,Happy birthday!,Birthday wishes,Herzlichen Glückwunsch zum Geburtstag! Happy Birthday!
+Frohe Weihnachten!,Merry Christmas!,Christmas greeting,Fröhliche Weihnachten! Schöne Weihnachten!
+Frohes neues Jahr!,Happy New Year!,New Year greeting,Gutes neues Jahr! Prosit Neujahr!
+Schönes Wochenende!,Have a nice weekend!,Weekend wishes,Schönes Wochenende! Erholsames Wochenende!

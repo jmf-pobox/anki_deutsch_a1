@@ -2,7 +2,7 @@
 
 import pytest
 
-from langlearn.models.negation import Negation, NegationType
+from langlearn.languages.german.models.negation import Negation, NegationType
 
 
 def test_negation_initialization() -> None:

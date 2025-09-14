@@ -7,7 +7,7 @@ media enrichment purposes.
 
 from __future__ import annotations
 
-from langlearn.models.records import BaseRecord
+from langlearn.languages.german.records.factory import BaseRecord
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 
@@ -27,7 +27,7 @@ class RecordToModelFactory:
         Raises:
             ValueError: If record type cannot be converted to domain model
         """
-        from langlearn.models.records import RecordType
+        from langlearn.languages.german.records.factory import RecordType
 
         record_type = record.get_record_type()
 
@@ -60,7 +60,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_noun_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Noun domain model from NounRecord."""
-        from langlearn.models.noun import Noun
+        from langlearn.languages.german.models.noun import Noun
 
         record_dict = record.to_dict()
         return Noun(
@@ -75,7 +75,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_adjective_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Adjective domain model from AdjectiveRecord."""
-        from langlearn.models.adjective import Adjective
+        from langlearn.languages.german.models.adjective import Adjective
 
         record_dict = record.to_dict()
         return Adjective(
@@ -89,7 +89,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_adverb_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Adverb domain model from AdverbRecord."""
-        from langlearn.models.adverb import (
+        from langlearn.languages.german.models.adverb import (
             GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP,
             Adverb,
             AdverbType,
@@ -111,7 +111,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_negation_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Negation domain model from NegationRecord."""
-        from langlearn.models.negation import Negation, NegationType
+        from langlearn.languages.german.models.negation import Negation, NegationType
 
         record_dict = record.to_dict()
         type_str = record_dict.get("type", "")
@@ -133,7 +133,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_phrase_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Phrase domain model from PhraseRecord."""
-        from langlearn.models.phrase import Phrase
+        from langlearn.languages.german.models.phrase import Phrase
 
         record_dict = record.to_dict()
         return Phrase(
@@ -146,7 +146,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_preposition_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Preposition domain model from PrepositionRecord."""
-        from langlearn.models.preposition import Preposition
+        from langlearn.languages.german.models.preposition import Preposition
 
         record_dict = record.to_dict()
         return Preposition(
@@ -160,7 +160,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_verb_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Verb domain model from VerbRecord."""
-        from langlearn.models.verb import Verb
+        from langlearn.languages.german.models.verb import Verb
 
         record_dict = record.to_dict()
         return Verb(
@@ -176,7 +176,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_verb_conjugation_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Verb domain model from VerbConjugationRecord."""
-        from langlearn.models.verb import Verb
+        from langlearn.languages.german.models.verb import Verb
 
         record_dict = record.to_dict()
         # VerbConjugationRecord has infinitive, not verb field
@@ -222,7 +222,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_verb_imperative_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Verb domain model from VerbImperativeRecord."""
-        from langlearn.models.verb import Verb
+        from langlearn.languages.german.models.verb import Verb
 
         record_dict = record.to_dict()
         # VerbImperativeRecord has infinitive field
@@ -243,7 +243,7 @@ class RecordToModelFactory:
     @staticmethod
     def _create_unified_article_model(record: BaseRecord) -> MediaGenerationCapable:
         """Create Article domain model from UnifiedArticleRecord."""
-        from langlearn.models.article import Article
+        from langlearn.languages.german.models.article import Article
 
         record_dict = record.to_dict()
 

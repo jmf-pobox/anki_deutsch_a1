@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from langlearn.models.records import UnifiedArticleRecord
+from langlearn.languages.german.records.factory import UnifiedArticleRecord
 from langlearn.services.record_mapper import RecordMapper
 
 
@@ -39,7 +39,7 @@ class TestRecordMapperUnifiedArticles:
     @pytest.fixture
     def unified_article_csv_file(
         self, unified_article_csv_content: str
-    ) -> Generator[Path, None, None]:
+    ) -> Generator[Path]:
         """Temporary unified article CSV file."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             f.write(unified_article_csv_content)

@@ -8,10 +8,10 @@ import pytest
 
 from langlearn.backends.base import DeckBackend, MediaFile
 from langlearn.deck_builder import DeckBuilder
-from langlearn.models.adjective import Adjective
-from langlearn.models.adverb import Adverb, AdverbType
-from langlearn.models.negation import Negation, NegationType
-from langlearn.models.noun import Noun
+from langlearn.languages.german.models.adjective import Adjective
+from langlearn.languages.german.models.adverb import Adverb, AdverbType
+from langlearn.languages.german.models.negation import Negation, NegationType
+from langlearn.languages.german.models.noun import Noun
 
 
 class TestGermanDeckBuilder:
@@ -165,7 +165,7 @@ class TestGermanDeckBuilder:
             with patch.object(
                 builder._record_mapper, "load_records_from_csv"
             ) as mock_load:
-                from langlearn.models.records import NounRecord
+                from langlearn.languages.german.records.factory import NounRecord
 
                 # Return mock records when CSV loading is called
                 mock_load.return_value = [
@@ -299,7 +299,7 @@ class TestGermanDeckBuilder:
             with patch.object(
                 builder._record_mapper, "load_records_from_csv"
             ) as mock_load:
-                from langlearn.models.records import (
+                from langlearn.languages.german.records.factory import (
                     AdjectiveRecord,
                     AdverbRecord,
                     NegationRecord,

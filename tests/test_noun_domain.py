@@ -3,7 +3,7 @@
 import pytest
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.noun import Noun
+from langlearn.languages.german.models.noun import Noun
 
 
 class TestNounDomainBehavior:
@@ -119,7 +119,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Katze'.*AI failed",
+            match=r"Failed to generate image search for noun 'Katze'.*AI failed",
         ):
             strategy()
 
@@ -142,7 +142,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Liebe'.*AI failed",
+            match=r"Failed to generate image search for noun 'Liebe'.*AI failed",
         ):
             strategy()
 
@@ -158,7 +158,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Freiheit'.*AI failed",
+            match=r"Failed to generate image search for noun 'Freiheit'.*AI failed",
         ):
             strategy()
 
@@ -175,7 +175,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Weisheit'.*AI failed",
+            match=r"Failed to generate image search for noun 'Weisheit'.*AI failed",
         ):
             strategy()
 
@@ -203,7 +203,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Hund'.*AI failed",
+            match=r"Failed to generate image search for noun 'Hund'.*AI failed",
         ):
             strategy()
 
@@ -224,7 +224,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Hoffnung'.*AI failed",
+            match=r"Failed to generate image search for noun 'Hoffnung'.*AI failed",
         ):
             strategy()
 

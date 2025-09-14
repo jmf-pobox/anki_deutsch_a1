@@ -18,7 +18,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
-from langlearn.models.records import (
+from langlearn.languages.german.records.factory import (
     ArticleRecord,
     IndefiniteArticleRecord,
     NegativeArticleRecord,
@@ -450,7 +450,7 @@ class TestArticlePatternProcessor:
         sample_indefinite_record: IndefiniteArticleRecord,
     ) -> None:
         """Test artikel_typ conditional field setting."""
-        field_values, note_type = processor._create_gender_recognition_card(
+        field_values, _note_type = processor._create_gender_recognition_card(
             sample_indefinite_record
         )
 
@@ -479,7 +479,7 @@ class TestArticlePatternProcessor:
         from langlearn.exceptions import ArticlePatternError
 
         with pytest.raises(
-            ArticlePatternError, match="Article .* not found in example sentence"
+            ArticlePatternError, match=r"Article .* not found in example sentence"
         ):
             processor._generate_cards_for_record(incomplete_record)
 
@@ -511,7 +511,7 @@ class TestArticlePatternProcessor:
     ) -> None:
         """Test English noun translation mapping."""
         # Test with record that has "Mann" in example
-        field_values, note_type = processor._create_gender_recognition_card(
+        _field_values, note_type = processor._create_gender_recognition_card(
             sample_article_record
         )
 

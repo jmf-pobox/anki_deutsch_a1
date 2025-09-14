@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.models.records import NounRecord
+from langlearn.languages.german.records.factory import NounRecord
 from langlearn.services.article_application_service import ArticleApplicationService
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService

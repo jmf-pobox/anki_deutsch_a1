@@ -1,0 +1,102 @@
+number,word,english,example
+0,null,zero,Null Grad Celsius ist kalt.
+1,eins,one,Ich habe nur einen Euro.
+2,zwei,two,Es gibt zwei Äpfel auf dem Tisch.
+3,drei,three,Ich habe drei Kinder.
+4,vier,four,Es ist vier Uhr nachmittags.
+5,fünf,five,Ich arbeite fünf Tage pro Woche.
+6,sechs,six,Das Haus hat sechs Zimmer.
+7,sieben,seven,Die Woche hat sieben Tage.
+8,acht,eight,Der Bus kommt um acht Uhr.
+9,neun,nine,Ich wohne in Hausnummer neun.
+10,zehn,ten,Ich habe zehn Finger.
+11,elf,eleven,Das Geschäft öffnet um elf Uhr.
+12,zwölf,twelve,Es ist zwölf Uhr mittags.
+13,dreizehn,thirteen,Meine Tochter ist dreizehn Jahre alt.
+14,vierzehn,fourteen,Der Zug fährt um vierzehn Uhr ab.
+15,fünfzehn,fifteen,Ich mache fünfzehn Minuten Pause.
+16,sechzehn,sixteen,Mein Sohn wird sechzehn.
+17,siebzehn,seventeen,Das kostet siebzehn Euro.
+18,achtzehn,eighteen,Sie ist achtzehn Jahre alt.
+19,neunzehn,nineteen,Ich bin neunzehn Jahre alt.
+20,zwanzig,twenty,Das Buch kostet zwanzig Euro.
+21,einundzwanzig,twenty-one,Ich bin einundzwanzig Jahre alt.
+22,zweiundzwanzig,twenty-two,Der Bus Nummer zweiundzwanzig kommt gleich.
+23,dreiundzwanzig,twenty-three,Es ist dreiundzwanzig Uhr.
+24,vierundzwanzig,twenty-four,Ein Tag hat vierundzwanzig Stunden.
+25,fünfundzwanzig,twenty-five,Ich bezahle fünfundzwanzig Euro.
+26,sechsundzwanzig,twenty-six,Die Temperatur ist sechsundzwanzig Grad.
+27,siebenundzwanzig,twenty-seven,Ich wohne in Hausnummer siebenundzwanzig.
+28,achtundzwanzig,twenty-eight,Februar hat achtundzwanzig Tage.
+29,neunundzwanzig,twenty-nine,Morgen ist der neunundzwanzigste.
+30,dreißig,thirty,Ich bin dreißig Jahre alt.
+31,einunddreißig,thirty-one,Januar hat einunddreißig Tage.
+32,zweiunddreißig,thirty-two,Die Temperatur ist zweiunddreißig Grad.
+33,dreiunddreißig,thirty-three,Er ist dreiunddreißig Jahre alt.
+34,vierunddreißig,thirty-four,Das kostet vierunddreißig Euro.
+35,fünfunddreißig,thirty-five,Die Fahrt dauert fünfunddreißig Minuten.
+36,sechsunddreißig,thirty-six,Sie ist sechsunddreißig Jahre alt.
+37,siebenunddreißig,thirty-seven,Das Haus hat die Nummer siebenunddreißig.
+38,achtunddreißig,thirty-eight,Die Schuhe kosten achtunddreißig Euro.
+39,neununddreißig,thirty-nine,Er arbeitet neununddreißig Stunden pro Woche.
+40,vierzig,forty,Ich bin vierzig Jahre alt.
+41,einundvierzig,forty-one,Die Temperatur ist einundvierzig Grad.
+42,zweiundvierzig,forty-two,Die Antwort ist zweiundvierzig.
+43,dreiundvierzig,forty-three,Das kostet dreiundvierzig Euro.
+44,vierundvierzig,forty-four,Sie ist vierundvierzig Jahre alt.
+45,fünfundvierzig,forty-five,Die Pause dauert fünfundvierzig Minuten.
+46,sechsundvierzig,forty-six,Er wiegt sechsundvierzig Kilo.
+47,siebenundvierzig,forty-seven,Das Buch hat siebenundvierzig Seiten.
+48,achtundvierzig,forty-eight,Die Arbeitszeit beträgt achtundvierzig Stunden.
+49,neunundvierzig,forty-nine,Das kostet neunundvierzig Euro.
+50,fünfzig,fifty,Die Fahrt dauert fünfzig Minuten.
+51,einundfünfzig,fifty-one,Sie ist einundfünfzig Jahre alt.
+52,zweiundfünfzig,fifty-two,Ein Jahr hat zweiundfünfzig Wochen.
+53,dreiundfünfzig,fifty-three,Das kostet dreiundfünfzig Euro.
+54,vierundfünfzig,fifty-four,Er ist vierundfünfzig Jahre alt.
+55,fünfundfünfzig,fifty-five,Die Geschwindigkeit ist fünfundfünfzig km/h.
+56,sechsundfünfzig,fifty-six,Sie wiegt sechsundfünfzig Kilo.
+57,siebenundfünfzig,fifty-seven,Das Haus hat die Nummer siebenundfünfzig.
+58,achtundfünfzig,fifty-eight,Der Preis ist achtundfünfzig Euro.
+59,neunundfünfzig,fifty-nine,Es sind neunundfünfzig Minuten vergangen.
+60,sechzig,sixty,Eine Stunde hat sechzig Minuten.
+61,einundsechzig,sixty-one,Er ist einundsechzig Jahre alt.
+62,zweiundsechzig,sixty-two,Das kostet zweiundsechzig Euro.
+63,dreiundsechzig,sixty-three,Sie ist dreiundsechzig Jahre alt.
+64,vierundsechzig,sixty-four,Die Packung enthält vierundsechzig Stück.
+65,fünfundsechzig,sixty-five,Das Rentenalter ist fünfundsechzig.
+66,sechsundsechzig,sixty-six,Die Route sechsundsechzig ist berühmt.
+67,siebenundsechzig,sixty-seven,Er wird siebenundsechzig Jahre alt.
+68,achtundsechzig,sixty-eight,Das Jahr neunzehnhundertachtundsechzig war wichtig.
+69,neunundsechzig,sixty-nine,Das kostet neunundsechzig Euro.
+70,siebzig,seventy,Meine Großmutter ist siebzig Jahre alt.
+71,einundsiebzig,seventy-one,Das Thermometer zeigt einundsiebzig Grad Fahrenheit.
+72,zweiundsiebzig,seventy-two,Er ist zweiundsiebzig Jahre alt.
+73,dreiundsiebzig,seventy-three,Das kostet dreiundsiebzig Euro.
+74,vierundsiebzig,seventy-four,Sie wird vierundsiebzig Jahre alt.
+75,fünfundsiebzig,seventy-five,Das sind fünfundsiebzig Prozent.
+76,sechsundsiebzig,seventy-six,Er wiegt sechsundsiebzig Kilo.
+77,siebenundsiebzig,seventy-seven,Die Glückszahl ist siebenundsiebzig.
+78,achtundsiebzig,seventy-eight,Das kostet achtundsiebzig Euro.
+79,neunundsiebzig,seventy-nine,Sie ist neunundsiebzig Jahre alt.
+80,achtzig,eighty,Mein Großvater wird achtzig.
+81,einundachtzig,eighty-one,Das Gebäude ist einundachtzig Meter hoch.
+82,zweiundachtzig,eighty-two,Er ist zweiundachtzig Jahre alt.
+83,dreiundachtzig,eighty-three,Das kostet dreiundachtzig Euro.
+84,vierundachtzig,eighty-four,Sie wird vierundachtzig Jahre alt.
+85,fünfundachtzig,eighty-five,Die Geschwindigkeit ist fünfundachtzig km/h.
+86,sechsundachtzig,eighty-six,Er wiegt sechsundachtzig Kilo.
+87,siebenundachtzig,eighty-seven,Das Haus hat die Nummer siebenundachtzig.
+88,achtundachtzig,eighty-eight,Das kostet achtundachtzig Euro.
+89,neunundachtzig,eighty-nine,Sie ist neunundachtzig Jahre alt.
+90,neunzig,ninety,Das sind neunzig Prozent.
+91,einundneunzig,ninety-one,Er ist einundneunzig Jahre alt.
+92,zweiundneunzig,ninety-two,Das kostet zweiundneunzig Euro.
+93,dreiundneunzig,ninety-three,Sie wird dreiundneunzig Jahre alt.
+94,vierundneunzig,ninety-four,Die Temperatur ist vierundneunzig Grad Fahrenheit.
+95,fünfundneunzig,ninety-five,Das sind fünfundneunzig Prozent.
+96,sechsundneunzig,ninety-six,Er wiegt sechsundneunzig Kilo.
+97,siebenundneunzig,ninety-seven,Das Haus hat die Nummer siebenundneunzig.
+98,achtundneunzig,ninety-eight,Das kostet achtundneunzig Euro.
+99,neunundneunzig,ninety-nine,Sie ist neunundneunzig Jahre alt.
+100,hundert,one hundred,Das kostet genau hundert Euro.

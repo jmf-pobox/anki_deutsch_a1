@@ -39,7 +39,7 @@ class ErrorResponse(TypedDict, total=False):
 
 
 @pytest.fixture
-def cleanup_audio_dir() -> Generator[None, None, None]:
+def cleanup_audio_dir() -> Generator[None]:
     """Clean up test audio directories after tests."""
     yield
     # Clean up any leftover test audio directories

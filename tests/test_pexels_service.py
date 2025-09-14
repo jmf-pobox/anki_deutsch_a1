@@ -379,7 +379,7 @@ class TestPexelsService:
             patch("builtins.open", side_effect=OSError("Permission denied")),
             pytest.raises(
                 MediaGenerationError,
-                match="Failed to download image for 'test query'.*Permission denied",
+                match=r"Failed to download image for 'test query'.*Permission denied",
             ),
         ):
             service.download_image("test query", "test.jpg")
@@ -412,7 +412,7 @@ class TestPexelsService:
             ),
             pytest.raises(
                 MediaGenerationError,
-                match="Failed to get image URL for 'test query'.*Search error",
+                match=r"Failed to get image URL for 'test query'.*Search error",
             ),
         ):
             service.get_image_url("test query")

@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from langlearn.backends.base import NoteType
 from langlearn.exceptions import ArticlePatternError
-from langlearn.models.records import (
+from langlearn.languages.german.records.factory import (
     ArticleRecord,
     IndefiniteArticleRecord,
     NegativeArticleRecord,

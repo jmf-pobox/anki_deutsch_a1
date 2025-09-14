@@ -2,7 +2,7 @@
 
 import pytest
 
-from langlearn.models.adjective import Adjective
+from langlearn.languages.german.models.adjective import Adjective
 
 
 class TestAdjectiveDomainBehavior:

@@ -63,7 +63,7 @@ class TestDomainMediaGenerator:
         mock_media_service.generate_audio.side_effect = Exception("Service error")
 
         with pytest.raises(
-            MediaGenerationError, match="Failed to generate audio for 'test text...'"
+            MediaGenerationError, match=r"Failed to generate audio for 'test text...'"
         ):
             generator.generate_audio("test text")
 

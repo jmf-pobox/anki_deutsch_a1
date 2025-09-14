@@ -14,7 +14,7 @@ class TestTemplateService:
     """Test TemplateService functionality."""
 
     @pytest.fixture
-    def temp_template_dir(self) -> Generator[Path, None, None]:
+    def temp_template_dir(self) -> Generator[Path]:
         """Create temporary template directory with test files."""
         with tempfile.TemporaryDirectory() as temp_dir:
             template_dir = Path(temp_dir)

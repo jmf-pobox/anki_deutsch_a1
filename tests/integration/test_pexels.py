@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @pytest.fixture
-def cleanup_test_images() -> Generator[None, None, None]:
+def cleanup_test_images() -> Generator[None]:
     """Clean up test image directories after tests."""
     yield
     if os.path.exists("test_images"):

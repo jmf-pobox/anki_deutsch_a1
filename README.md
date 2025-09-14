@@ -31,13 +31,19 @@ pip install hatch
 hatch env create
 ```
 
-### 2. Generate Language Deck (Basic)
+### 2. Generate German Decks
 ```bash
-# Generate German A1 deck (current implementation - 1000+ cards)
+# Generate default German deck (A2/B1 level - 1000+ cards)
 hatch run app
 
-# Generate sample deck for testing
-hatch run run-sample
+# Generate specific German decks by level
+hatch run app -- --language german --deck a1.1    # Beginner (A1.1)
+hatch run app -- --language german --deck a1      # Elementary (A1)
+hatch run app -- --language german --deck default # Intermediate (A2/B1)
+hatch run app -- --language german --deck business # Business German
+
+# Custom output file
+hatch run app -- --language german --deck a1 --output my-german-a1.apkg
 ```
 
 ### 3. Generate with Media (Advanced)
@@ -53,9 +59,6 @@ python scripts/api_keyring.py add PEXELS_API_KEY your_key
 
 # Test your API key setup (tests both Anthropic and Pexels APIs)
 hatch run test-env
-
-# Generate with full media integration
-hatch run app --generate-media
 ```
 
 ### 4. Import to Anki
@@ -64,18 +67,34 @@ hatch run app --generate-media
 3. Select the `.apkg` file from `output/` folder
 4. Start studying with intelligent, language-specific flashcards!
 
-## 📚 Current Implementation: German A1 Vocabulary
+## 📚 Current Implementation: German Vocabulary Decks
 
-The system currently includes comprehensive German A1 vocabulary as the first language implementation:
+The system includes comprehensive German decks organized by CEFR levels:
 
-### Word Types Supported:
+- **A1.1 (Beginner)**: Basic vocabulary for absolute beginners
+- **A1 (Elementary)**: Complete A1 level vocabulary  
+- **Default (A2/B1)**: Intermediate vocabulary for advanced learners
+- **Business**: German business and professional vocabulary 
+
+### Available German Decks:
+
+```bash
+# Check what decks are available
+hatch run app -- --help
+
+# List available German decks
+hatch run app -- --language german --deck nonexistent
+# (Will show available deck options)
 ```
-data/
-├── nouns.csv           # 200+ German nouns with articles and cases
-├── verbs.csv           # 100+ verbs with conjugations and perfect tense
+
+**Deck Structure** - Each deck contains:
+```
+languages/german/{deck}/
+├── nouns.csv           # German nouns with articles and cases
+├── verbs.csv           # Verbs with conjugations and perfect tense
 ├── adjectives.csv      # Comparative and superlative forms
 ├── adverbs.csv         # Common German adverbs with examples
-├── prepositions.csv    # Case-dependent prepositions
+├── prepositions.csv    # Case-dependent prepositions  
 ├── phrases.csv         # Essential German phrases
 └── negations.csv       # German negation patterns
 ```
@@ -124,8 +143,9 @@ sprechen,to speak,spreche,sprichst,spricht,habe gesprochen,Ich spreche Deutsch
 
 ## 🏗️ System Architecture
 
-### Hybrid Architecture
-The system uses a hybrid architecture for data processing:
+### Architecture
+
+The system turns CSV data into Anki cards using the following flow:
 
 ```
 CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → AnkiBackend
@@ -162,12 +182,10 @@ python scripts/api_keyring.py add PEXELS_API_KEY your_key
 
 ## 📊 Quality & Development
 
-### Production-Grade Quality Standards
-- ✅ **686 Tests Passing:** 665 unit + 21 integration tests
+### Quality Standards
+- ✅ **>70% Test Coverage:** Comprehensive edge case and error handling
 - ✅ **Zero MyPy Errors:** Strict type checking across 116 source files
-- ✅ **73%+ Test Coverage:** Comprehensive edge case and error handling
-- ✅ **Zero Linting Violations:** Perfect code quality standards
-- ✅ **Security Hardened:** Input validation and sanitization throughout
+- ✅ **Zero Linting Violations:** Ruff and black compliance
 
 ### Development Commands
 ```bash
@@ -179,30 +197,21 @@ hatch run format               # Code formatting
 hatch run ruff check --fix     # Linting compliance
 
 # Application usage
-hatch run app                  # Generate full German A1 deck
-hatch run run-sample           # Generate sample deck
-hatch run run-adjectives       # Generate adjectives-only deck
+hatch run app                  # Generate default German deck (A2/B1)
+hatch run app -- --deck a1.1  # Generate A1.1 beginner deck  
+hatch run app -- --deck a1    # Generate A1 elementary deck
+hatch run app -- --deck business # Generate business German deck
 ```
 
 ## 🔄 Roadmap: Multi-Language Vision
 
-### **Phase 1: German Enhancement** ✅ **Current**
-- ✅ Complete German A1 implementation (1000+ cards, 7 word types)
-- ✅ Hybrid architecture foundation
-- 🔄 Enhanced processing architecture for all word types
-
-### **Phase 2: Multi-Deck Support** 🎯 **Next**
-- Multiple deck generation (beginner, intermediate, advanced)
-- Topic-based decks (business, travel, academic)
-- Custom deck creation workflows
-
-### **Phase 3: Multi-Language Expansion** 🚀 **Future**
+### **Phase 1: Multi-Language Expansion** 🚀 **Future**
 - **Russian**: Cyrillic script, case system, aspect pairs
 - **Korean**: Hangul, honorifics, complex verb conjugations  
 - **Additional Languages**: Spanish, French, Italian, Japanese
 - Language-specific grammar intelligence for each
 
-### **Phase 4: Advanced Features**
+### **Phase 2: Advanced Features**
 - Voice recording comparison
 - Progress tracking analytics
 - Spaced repetition optimization
@@ -233,28 +242,6 @@ hatch run run-adjectives       # Generate adjectives-only deck
 - 🏗️ **Architecture:** `docs/ENG-DEVELOPMENT-STANDARDS.md` for development standards
 - 💡 **Contributing:** Review `CLAUDE.md` and `docs/ENG-PYTHON-STANDARDS.md` for guidelines
 
-## 🎓 Language-Specific Intelligence
-
-### German (Current)
-The system demonstrates language-specific intelligence with German as the first implementation:
-
-**German Grammar Challenges Solved:**
-- **Noun Gender System (der/die/das):** Separate cards test article recall vs. meaning
-- **Complex Verb System:** Separable verb handling (aufstehen → ich stehe auf), perfect tense
-- **Case-Dependent Grammar:** Preposition cards show required cases (mit + Dativ)
-- **Context-Aware Learning:** Grammar-specific validation and templates
-
-### Multi-Language Architecture Foundation
-The hybrid architecture provides a proven foundation for language expansion:
-
-**Designed for Language Diversity:**
-- **Russian Readiness:** Case system handling, Cyrillic script support
-- **Korean Readiness:** Complex honorific systems, agglutinative grammar patterns  
-- **Romance Language Ready:** Verb conjugation complexity, gendered nouns
-- **Extensible Framework:** Each language gets custom grammar intelligence
-
----
-
 ## 🏗️ For Developers
 
 ### Enterprise-Grade Development Environment
@@ -262,18 +249,13 @@ The hybrid architecture provides a proven foundation for language expansion:
 # Complete development setup
 hatch env create
 hatch run type          # MyPy strict type checking (0 errors required)
-hatch run test          # 686 tests (100% pass rate required)
+hatch run test          # All tests (unit + integration)
+hatch run test-unit     # Unit tests only (686+ tests, 100% pass rate required)
 hatch run test-cov      # Coverage analysis (73%+ maintained)
 hatch run format        # Code formatting (PEP 8 compliance)
-hatch run ruff check    # Linting (zero violations required)
+hatch run lint          # Linting (zero violations required)
+hatch run check         # Complete quality verification
 ```
-
-### Hybrid Architecture
-- **Dual Processing:** Records for validation + Domain Models for business logic
-- **High Testability:** Comprehensive test coverage with mocking and integration tests
-- **Type Safety:** MyPy strict mode compliance across entire codebase
-- **Multi-Language Ready:** Language-agnostic Records with language-specific Domain Models
-- **Production Ready:** Security hardening and performance optimization
 
 ### Contributing Guidelines
 1. **Read Required Docs:** `CLAUDE.md`, `docs/ENG-PYTHON-STANDARDS.md`, and `docs/ENG-DESIGN-INDEX.md`
@@ -288,7 +270,3 @@ hatch run ruff check    # Linting (zero violations required)
 - **Records System:** Pydantic objects for data validation and transport
 - **Domain Models:** Objects with German language business logic methods
 - **Backend Integration:** `src/langlearn/backends/` (Anki library abstraction)
-
----
-
-**🏆 Multi-language flashcard generation system with hybrid architecture. Currently supporting German A1 with roadmap for Russian, Korean, and other languages.**

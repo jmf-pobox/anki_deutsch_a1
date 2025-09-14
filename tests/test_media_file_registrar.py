@@ -22,7 +22,7 @@ class TestMediaFileRegistrar:
         return backend
 
     @pytest.fixture
-    def temp_audio_dir(self) -> Generator[Path, None, None]:
+    def temp_audio_dir(self) -> Generator[Path]:
         """Create temporary audio directory with test files."""
         with tempfile.TemporaryDirectory() as temp_dir:
             audio_dir = Path(temp_dir) / "audio"
@@ -36,7 +36,7 @@ class TestMediaFileRegistrar:
             yield audio_dir
 
     @pytest.fixture
-    def temp_image_dir(self) -> Generator[Path, None, None]:
+    def temp_image_dir(self) -> Generator[Path]:
         """Create temporary image directory with test files."""
         with tempfile.TemporaryDirectory() as temp_dir:
             image_dir = Path(temp_dir) / "images"
@@ -60,8 +60,8 @@ class TestMediaFileRegistrar:
         """Test MediaFileRegistrar initialization with default paths."""
         registrar = MediaFileRegistrar()
 
-        assert registrar._audio_base_path == Path("data/audio")
-        assert registrar._image_base_path == Path("data/images")
+        assert registrar._audio_base_path == Path("languages/audio")
+        assert registrar._image_base_path == Path("languages/images")
         assert registrar._registered_files == set()
 
     def test_extract_audio_references(

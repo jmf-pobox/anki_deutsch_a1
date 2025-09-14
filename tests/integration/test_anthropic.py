@@ -21,14 +21,14 @@ class MockModel(BaseModel):
 
 
 @pytest.fixture
-def mock_anthropic() -> Generator[MagicMock, None, None]:
+def mock_anthropic() -> Generator[MagicMock]:
     """Fixture for mocking the Anthropic client."""
     with patch("anthropic.Anthropic") as mock:
         yield mock
 
 
 @pytest.fixture
-def mock_keyring() -> Generator[MagicMock, None, None]:
+def mock_keyring() -> Generator[MagicMock]:
     """Fixture for mocking the keyring."""
     with patch("keyring.get_password") as mock:
         mock.return_value = None

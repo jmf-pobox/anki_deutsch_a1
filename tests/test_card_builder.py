@@ -8,7 +8,13 @@ import pytest
 
 from langlearn.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import MediaGenerationError
-from langlearn.models.records import BaseRecord, create_record
+from langlearn.languages.german.records.factory import (
+    AdjectiveRecord,
+    BaseRecord,
+    NounRecord,
+    VerbConjugationRecord,
+    create_record,
+)
 from langlearn.services.card_builder import CardBuilder
 from langlearn.services.template_service import TemplateService
 
@@ -138,7 +144,7 @@ class TestCardBuilder:
         }
 
         # Build card
-        field_values, note_type = card_builder.build_card_from_record(
+        field_values, _note_type = card_builder.build_card_from_record(
             record, enriched_data
         )
 
@@ -334,6 +340,7 @@ class TestCardBuilder:
         noun_record = create_record(
             "noun", ["Katze", "die", "cat", "Katzen", "Example", "Tier"]
         )
+        assert isinstance(noun_record, NounRecord)  # Type narrowing for MyPy
         # Add media fields that MediaEnricher would have added
         noun_record.image = "<img src='cat.jpg'>"
         noun_record.word_audio = "[sound:katze.mp3]"
@@ -345,6 +352,7 @@ class TestCardBuilder:
         adj_record = create_record(
             "adjective", ["schön", "beautiful", "Example", "schöner", "am schönsten"]
         )
+        assert isinstance(adj_record, AdjectiveRecord)  # Type narrowing for MyPy
         # Add media fields that MediaEnricher would have added
         adj_record.image = "<img src='beautiful.jpg'>"
         adj_record.word_audio = "[sound:schoen.mp3]"
@@ -397,7 +405,7 @@ class TestCardBuilder:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to build card from record 1.*Template error",
+            match=r"Failed to build card from record 1.*Template error",
         ):
             card_builder.build_cards_from_records(base_records)
 
@@ -697,6 +705,9 @@ class TestCardBuilderIntegration:
                 "Ich arbeite.",
             ],
         )
+        assert isinstance(
+            valid_record, VerbConjugationRecord
+        )  # Type narrowing for MyPy
         # Add media fields that MediaEnricher would have added
         valid_record.image = "<img src='work.jpg'>"
         valid_record.word_audio = "[sound:arbeiten.mp3]"

@@ -1,6 +1,6 @@
 """Unit tests for the Adjective model."""
 
-from langlearn.models.adjective import Adjective
+from langlearn.languages.german.models.adjective import Adjective
 
 
 def test_adjective_creation() -> None:

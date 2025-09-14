@@ -27,14 +27,14 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Any, Generic, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 ValueT = TypeVar("ValueT")
 InT = TypeVar("InT")
 OutT = TypeVar("OutT")
 
 
-class PipelineObject(Generic[ValueT]):
+class PipelineObject[ValueT]:
     """Container for the current value being transformed in a pipeline run.
 
     PipelineObject acts as a simple, typed holder that the Pipeline reads from
@@ -112,7 +112,7 @@ class PipelineTaskState:
         self.__logger.debug("Completed task with output: %s", message)
 
 
-class PipelineTask(Generic[InT, OutT], abc.ABC):
+class PipelineTask[InT, OutT](abc.ABC):
     """Abstract base class for a unit of work in a pipeline.
 
     Subclasses must implement ``_run`` and set ``self.output`` to the
@@ -255,7 +255,7 @@ class ToUpperCaseTask(PipelineTask[str, str]):
         self.output = str(self.input).upper()
 
 
-class Pipeline(Generic[ValueT]):
+class Pipeline[ValueT]:
     """A pipeline is a sequence of tasks executed in order.
 
     The pipeline receives a PipelineObject[T] on construction and exposes a

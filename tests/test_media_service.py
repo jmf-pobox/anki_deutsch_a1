@@ -38,7 +38,7 @@ class TestMediaService:
         )
 
     @pytest.fixture
-    def temp_project_root(self) -> Generator[Path, None, None]:
+    def temp_project_root(self) -> Generator[Path]:
         """Temporary project root for testing."""
         with tempfile.TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)

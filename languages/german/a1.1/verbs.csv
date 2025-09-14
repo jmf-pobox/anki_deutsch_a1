@@ -1,0 +1,21 @@
+verb,english,classification,present_ich,present_du,present_er,präteritum,auxiliary,perfect,example,separable
+sein,to be,unregelmäßig,bin,bist,ist,war,sein,ist gewesen,Ich bin Student.,false
+haben,to have,unregelmäßig,habe,hast,hat,hatte,haben,hat gehabt,Ich habe ein Auto.,false
+machen,to make/do,regelmäßig,mache,machst,macht,machte,haben,hat gemacht,Ich mache Hausaufgaben.,false
+gehen,to go,unregelmäßig,gehe,gehst,geht,ging,sein,ist gegangen,Ich gehe nach Hause.,false
+kommen,to come,unregelmäßig,komme,kommst,kommt,kam,sein,ist gekommen,Er kommt aus Deutschland.,false
+wohnen,to live,regelmäßig,wohne,wohnst,wohnt,wohnte,haben,hat gewohnt,Ich wohne in Berlin.,false
+heißen,to be called,unregelmäßig,heiße,heißt,heißt,hieß,haben,hat geheißen,Ich heiße Anna.,false
+lernen,to learn,regelmäßig,lerne,lernst,lernt,lernte,haben,hat gelernt,Ich lerne Deutsch.,false
+arbeiten,to work,regelmäßig,arbeite,arbeitest,arbeitet,arbeitete,haben,hat gearbeitet,Sie arbeitet als Lehrerin.,false
+sprechen,to speak,unregelmäßig,spreche,sprichst,spricht,sprach,haben,hat gesprochen,Er spricht Englisch.,false
+essen,to eat,unregelmäßig,esse,isst,isst,aß,haben,hat gegessen,Ich esse gern Pizza.,false
+trinken,to drink,unregelmäßig,trinke,trinkst,trinkt,trank,haben,hat getrunken,Sie trinkt Kaffee.,false
+schlafen,to sleep,unregelmäßig,schlafe,schläfst,schläft,schlief,haben,hat geschlafen,Das Baby schläft.,false
+sehen,to see,unregelmäßig,sehe,siehst,sieht,sah,haben,hat gesehen,Ich sehe den Film.,false
+hören,to hear,regelmäßig,höre,hörst,hört,hörte,haben,hat gehört,Ich höre Musik.,false
+lesen,to read,unregelmäßig,lese,liest,liest,las,haben,hat gelesen,Er liest ein Buch.,false
+schreiben,to write,unregelmäßig,schreibe,schreibst,schreibt,schrieb,haben,hat geschrieben,Ich schreibe einen Brief.,false
+spielen,to play,regelmäßig,spiele,spielst,spielt,spielte,haben,hat gespielt,Die Kinder spielen im Garten.,false
+kaufen,to buy,regelmäßig,kaufe,kaufst,kauft,kaufte,haben,hat gekauft,Ich kaufe Brot.,false
+verstehen,to understand,unregelmäßig,verstehe,verstehst,versteht,verstand,haben,hat verstanden,Ich verstehe Deutsch.,false

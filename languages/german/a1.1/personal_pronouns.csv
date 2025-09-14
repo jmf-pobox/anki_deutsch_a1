@@ -1,0 +1,37 @@
+pronoun,english,case,form,example
+ich,I,nominative,ich,Ich bin Student.
+ich,I/me,accusative,mich,Er sieht mich.
+ich,I/me,dative,mir,Sie hilft mir.
+ich,I/my,genitive,meiner,Das ist ein Freund meiner.
+du,you (informal),nominative,du,Du bist nett.
+du,you,accusative,dich,Ich sehe dich.
+du,you,dative,dir,Ich gebe dir das Buch.
+du,you/your,genitive,deiner,Das ist ein Freund deiner.
+er,he,nominative,er,Er ist groß.
+er,him,accusative,ihn,Ich kenne ihn.
+er,him,dative,ihm,Ich helfe ihm.
+er,his,genitive,seiner,Das ist ein Freund seiner.
+sie,she,nominative,sie,Sie ist schön.
+sie,her,accusative,sie,Ich sehe sie.
+sie,her,dative,ihr,Ich gebe ihr das Geschenk.
+sie,her/hers,genitive,ihrer,Das ist ein Freund ihrer.
+es,it,nominative,es,Es ist kalt.
+es,it,accusative,es,Ich sehe es.
+es,it,dative,ihm,Ich gebe ihm Wasser. (dem Kind)
+es,its,genitive,seiner,Das ist die Mutter seiner. (des Kindes)
+wir,we,nominative,wir,Wir sind hier.
+wir,us,accusative,uns,Er sieht uns.
+wir,us,dative,uns,Sie hilft uns.
+wir,our/ours,genitive,unser,Das ist ein Freund unser.
+ihr,you (plural informal),nominative,ihr,Ihr seid nett.
+ihr,you,accusative,euch,Ich sehe euch.
+ihr,you,dative,euch,Ich helfe euch.
+ihr,your/yours,genitive,euer,Das ist ein Freund euer.
+sie,they,nominative,sie,Sie sind groß.
+sie,them,accusative,sie,Ich kenne sie.
+sie,them,dative,ihnen,Ich helfe ihnen.
+sie,their/theirs,genitive,ihrer,Das ist das Auto ihrer.
+Sie,you (formal),nominative,Sie,Sie sind sehr freundlich.
+Sie,you,accusative,Sie,Ich sehe Sie.
+Sie,you,dative,Ihnen,Ich helfe Ihnen gern.
+Sie,your/yours (formal),genitive,Ihrer,Das ist ein Kollege Ihrer.

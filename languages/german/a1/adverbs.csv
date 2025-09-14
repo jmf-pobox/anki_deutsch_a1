@@ -1,0 +1,108 @@
+word,english,type,example
+hier,here,location,Ich wohne hier.
+dort,there,location,Das Buch liegt dort.
+da,there,location,Da ist der Bahnhof.
+oben,up/above,location,Die Wohnung ist oben.
+unten,down/below,location,Der Keller ist unten.
+vorn,in front,location,Der Lehrer steht vorn.
+vorne,in front,location,Ich sitze vorne im Bus.
+hinten,in back/behind,location,Das Bad ist hinten.
+links,left,location,Die Bank ist links.
+rechts,right,location,Die Apotheke ist rechts.
+drinnen,inside,location,Wir sind drinnen.
+draußen,outside,location,Die Kinder spielen draußen.
+überall,everywhere,location,Überall sind Menschen.
+nirgends,nowhere,location,Ich finde es nirgends.
+irgendwo,somewhere,location,Das Buch ist irgendwo hier.
+woanders,elsewhere,location,Lass uns woanders hingehen.
+zu Hause,at home,location,Ich bin zu Hause.
+weg,away,location,Er ist weg.
+heute,today,time,Heute ist Montag.
+gestern,yesterday,time,Gestern war Sonntag.
+morgen,tomorrow,time,Morgen fahre ich nach Berlin.
+jetzt,now,time,Jetzt esse ich.
+gleich,immediately/soon,time,Ich komme gleich.
+sofort,immediately,time,Komm sofort her!
+später,later,time,Wir sehen uns später.
+bald,soon,time,Er kommt bald.
+früh,early,time,Ich stehe früh auf.
+spät,late,time,Es ist spät.
+immer,always,frequency,Er ist immer pünktlich.
+nie,never,frequency,Ich rauche nie.
+niemals,never,frequency,Das werde ich niemals vergessen.
+oft,often,frequency,Wir treffen uns oft.
+manchmal,sometimes,frequency,Manchmal gehe ich ins Kino.
+selten,rarely,frequency,Ich esse selten Fleisch.
+meistens,mostly,frequency,Meistens fahre ich mit dem Bus.
+täglich,daily,frequency,Ich lese täglich die Zeitung.
+wöchentlich,weekly,frequency,Wir treffen uns wöchentlich.
+monatlich,monthly,frequency,Die Miete zahle ich monatlich.
+jährlich,yearly,frequency,Wir fahren jährlich nach Italien.
+wieder,again,frequency,Komm wieder!
+noch,still/yet,time,Ich bin noch hier.
+schon,already,time,Er ist schon da.
+noch nicht,not yet,time,Das Essen ist noch nicht fertig.
+nicht mehr,no longer,time,Ich wohne nicht mehr dort.
+erst,only/first,time,Es ist erst drei Uhr.
+zuerst,first,time,Zuerst essen wir.
+dann,then,time,Dann gehen wir spazieren.
+danach,afterwards,time,Danach trinken wir Kaffee.
+zuletzt,finally/lastly,time,Zuletzt räumen wir auf.
+vorher,before,time,Vorher muss ich einkaufen.
+nachher,afterwards,time,Nachher gehe ich schlafen.
+schnell,quickly,manner,Er läuft schnell.
+langsam,slowly,manner,Bitte sprechen Sie langsam.
+gut,well,manner,Sie singt gut.
+schlecht,badly,manner,Er schläft schlecht.
+gern,gladly/like to,manner,Ich esse gern Pizza.
+lieber,rather/prefer,manner,Ich trinke lieber Tee.
+am liebsten,most like to,manner,Am liebsten esse ich Schokolade.
+vorsichtig,carefully,manner,Fahr vorsichtig!
+leise,quietly,manner,Sprich leise!
+laut,loudly,manner,Er spricht zu laut.
+deutlich,clearly,manner,Sprechen Sie bitte deutlich.
+zusammen,together,manner,Wir gehen zusammen.
+allein,alone,manner,Ich wohne allein.
+gerade,just/straight,manner,Ich komme gerade nach Hause.
+direkt,directly,manner,Geh direkt nach Hause.
+plötzlich,suddenly,manner,Plötzlich regnet es.
+sehr,very,degree,Das ist sehr gut.
+zu,too,degree,Das ist zu teuer.
+ziemlich,quite,degree,Es ist ziemlich kalt.
+etwas,somewhat,degree,Ich bin etwas müde.
+ein bisschen,a little,degree,Ich spreche ein bisschen Deutsch.
+ganz,quite/completely,degree,Das ist ganz richtig.
+völlig,completely,degree,Das ist völlig falsch.
+total,totally,degree,Ich bin total müde.
+gar nicht,not at all,degree,Das gefällt mir gar nicht.
+überhaupt nicht,not at all,degree,Ich verstehe überhaupt nichts.
+fast,almost,degree,Es ist fast fertig.
+kaum,hardly,degree,Ich kann kaum sehen.
+genug,enough,degree,Das ist genug.
+besonders,especially,degree,Das ist besonders schön.
+etwa,approximately,degree,Es kostet etwa zehn Euro.
+ungefähr,approximately,degree,Ich komme ungefähr um drei.
+mindestens,at least,degree,Das dauert mindestens zwei Stunden.
+höchstens,at most,degree,Das kostet höchstens fünf Euro.
+vielleicht,maybe,manner,Vielleicht komme ich.
+wahrscheinlich,probably,manner,Er kommt wahrscheinlich später.
+sicher,surely,manner,Das ist sicher richtig.
+bestimmt,certainly,manner,Er kommt bestimmt.
+natürlich,naturally/of course,manner,Natürlich helfe ich dir.
+wirklich,really,manner,Das ist wirklich toll.
+eigentlich,actually,manner,Eigentlich habe ich keine Zeit.
+übrigens,by the way,manner,Übrigens kennst du Peter?
+auch,also/too,manner,Ich komme auch.
+nur,only,manner,Ich habe nur zehn Euro.
+sogar,even,manner,Sogar die Kinder verstehen das.
+außerdem,besides,manner,Außerdem ist es zu teuer.
+trotzdem,nevertheless,manner,Trotzdem gehe ich.
+deshalb,therefore,manner,Deshalb bleibe ich zu Hause.
+darum,therefore,manner,Darum lerne ich Deutsch.
+also,so/therefore,manner,Also gehen wir jetzt.
+leider,unfortunately,manner,Leider habe ich keine Zeit.
+hoffentlich,hopefully,manner,Hoffentlich regnet es nicht.
+gerade,just now,time,Ich bin gerade angekommen.
+endlich,finally,time,Endlich ist Wochenende!
+lange,long (time),time,Ich warte schon lange.
+kurz,briefly,time,Ich bleibe nur kurz.

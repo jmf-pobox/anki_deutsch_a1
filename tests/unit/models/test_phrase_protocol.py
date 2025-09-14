@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.models.phrase import Phrase
+from langlearn.languages.german.models.phrase import Phrase
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 
