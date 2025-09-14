@@ -224,7 +224,7 @@ class TestNounDomainBehavior:
 
         with pytest.raises(
             MediaGenerationError,
-            match="Failed to generate image search for noun 'Hoffnung'.*AI failed",
+            match=r"Failed to generate image search for noun 'Hoffnung'.*AI failed",
         ):
             strategy()
 
