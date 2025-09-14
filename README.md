@@ -1,22 +1,30 @@
-# 🎓 Language Learn - Anki Flashcard Generator
+# 🎓 Language Learn, an Anki Flashcard Generator
 
-**Multi-language flashcard generation system with language-specific grammar intelligence.**
+**Multi-language flashcard generation system that adapts to specific language grammar patterns.**
 
-Language Learn creates comprehensive vocabulary decks using a hybrid architecture. Currently supporting **German A1** as the first implementation, the system is designed for multi-language expansion with language-specific grammar handling, automatic media integration, and enterprise-grade quality standards.
+This project generates customized language learning Anki decks. One issue 
+this system addresses is that many existing Anki decks do not reflect the 
+specific challenges of the target language.  For example, memorizing 
+German and irregular verb conjugations are two challenges. The grammar of 
+the target language affects the best Anki deck design. This Anki deck 
+generator seeks to address that challenge.  The primary user of this 
+system is intended to be the language learner. A secondary user of the 
+system is intended to be foreign language teachers. This system is 
+inspired by Fluent Forever, a book by Gabriel Wyner.
 
 [![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
-[![Quality](https://img.shields.io/badge/MyPy-0%20errors-brightgreen)](https://mypy-lang.org/)
-[![Tests](https://img.shields.io/badge/Tests-686%20passing-brightgreen)](https://pytest.org/)
-[![Coverage](https://img.shields.io/badge/Coverage-73%25+-brightgreen)](https://coverage.readthedocs.io/)
+[![PyPI version](https://img.shields.io/pypi/v/langlearn.svg)](https://pypi.org/project/langlearn/)
+<a href="https://pypi.org/project/langlearn"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/langlearn?color=blue"></a>
+[![License](https://img.shields.io/github/license/jmf-pobox/anki_deutsch_a1.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/blob/main/LICENSE)
 
 ## 🎯 What This Does For You
 
-**Generate language-specific learning decks with production-grade quality:**
-- **Language-Specific Intelligence** → Adapts to unique grammar patterns (currently German, expanding to Russian, Korean, others)
+**Generate language-specific learning decks with the following features:**
+- **Language-Specific Adaptation** → Handles unique grammar patterns (currently German, expanding to Russian, Korean, others)
 - **Complete Grammar Coverage** → All word types with language-specific challenges (German: der/die/das articles, verb conjugations, cases)
 - **Rich Media Integration** → AWS Polly audio pronunciation, Pexels contextual images
-- **Smart Templates** → Clean card design with hint buttons, proper styling, contextual examples
-- **Test Coverage & Quality Tools** → 686 tests, 0 MyPy -strict errors
+- **Card Templates** → Clean design with hint buttons, proper styling, contextual examples
+- **Test Coverage & Quality Tools** → Comprehensive test suite, 0 MyPy strict mode errors
 
 ## 🚀 Quick Start
 
@@ -125,7 +133,7 @@ sprechen,to speak,spreche,sprichst,spricht,habe gesprochen,Ich spreche Deutsch
 - **Full Conjugation Audio:** Includes infinitive + all persons + perfect tense
 - **Visual Context:** Images based on example sentences
 - **Hint System:** Clean design with expandable translations
-- **Templates:** Professional styling matching established patterns
+- **Templates:** Consistent styling matching established patterns
 
 ### 🎯 **Other Card Types**
 - **Adjectives:** Comparative and superlative forms with audio
@@ -134,11 +142,11 @@ sprechen,to speak,spreche,sprichst,spricht,habe gesprochen,Ich spreche Deutsch
 - **Phrases:** Common expressions with natural audio
 - **Negations:** German negation patterns and usage
 
-### ✨ **Smart Features**
-- **Hybrid Architecture:** Enterprise-grade data processing
+### ✨ **System Features**
+- **Clean Pipeline:** CSV → Records → MediaEnricher → CardBuilder → AnkiBackend data flow
 - **Media Integration:** Automatic audio/image embedding in .apkg files
-- **Security Validated:** Comprehensive filename sanitization
-- **Performance Optimized:** Batch processing and intelligent caching
+- **Filename Sanitization:** Comprehensive validation for safe file operations
+- **Batch Processing:** Efficient handling and caching of media files
 - **German-Specific Logic:** Handles separable verbs, case declensions, gender patterns
 
 ## 🏗️ System Architecture
@@ -166,7 +174,7 @@ CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriche
 ## ⚙️ Advanced Configuration
 
 ### API Services (Optional)
-Enhance your decks with professional media:
+Enhance your decks with audio and images:
 
 **AWS Polly (Audio Pronunciation):**
 ```bash
@@ -183,16 +191,16 @@ python scripts/api_keyring.py add PEXELS_API_KEY your_key
 ## 📊 Quality & Development
 
 ### Quality Standards
-- ✅ **>70% Test Coverage:** Comprehensive edge case and error handling
-- ✅ **Zero MyPy Errors:** Strict type checking across 116 source files
+- ✅ **Test Coverage:** Edge case and error handling tests included (run `hatch run test-cov` for current metrics)
+- ✅ **Zero MyPy Errors:** Strict type checking across all source files
 - ✅ **Zero Linting Violations:** Ruff and black compliance
 
 ### Development Commands
 ```bash
 # Quality verification (required for contributions)
 hatch run type                 # MyPy type checking (0 errors required)
-hatch run test                 # Full test suite (686 tests)
-hatch run test-cov             # Coverage analysis (73%+ required)
+hatch run test                 # Full test suite
+hatch run test-cov             # Coverage analysis (see current metrics)
 hatch run format               # Code formatting
 hatch run ruff check --fix     # Linting compliance
 
@@ -221,10 +229,10 @@ hatch run app -- --deck business # Generate business German deck
 
 ### Common Solutions
 
-**"No cards generated":** 
+**"No cards generated":**
 - Run `hatch run test` to verify system integrity
 - Check CSV file formats match expected structure
-- Ensure all 686 tests pass for proper system validation
+- Ensure all tests pass for proper system validation
 
 **"Import failed in Anki":**
 - Use Anki desktop application (not AnkiWeb browser version)
@@ -244,14 +252,14 @@ hatch run app -- --deck business # Generate business German deck
 
 ## 🏗️ For Developers
 
-### Enterprise-Grade Development Environment
+### Development Environment
 ```bash
 # Complete development setup
 hatch env create
 hatch run type          # MyPy strict type checking (0 errors required)
 hatch run test          # All tests (unit + integration)
-hatch run test-unit     # Unit tests only (686+ tests, 100% pass rate required)
-hatch run test-cov      # Coverage analysis (73%+ maintained)
+hatch run test-unit     # Unit tests only (100% pass rate required)
+hatch run test-cov      # Coverage analysis (current metrics maintained)
 hatch run format        # Code formatting (PEP 8 compliance)
 hatch run lint          # Linting (zero violations required)
 hatch run check         # Complete quality verification
@@ -262,7 +270,7 @@ hatch run check         # Complete quality verification
 2. **Follow Quality Standards:** All 6 quality gates must pass (see CLAUDE.md)
 3. **Use Micro-Commits:** Atomic changes with comprehensive testing
 4. **Branch Workflow:** Feature branches with PR review process
-5. **Architecture Compliance:** Follow hybrid architecture patterns
+5. **Architecture Compliance:** Follow clean pipeline architecture patterns
 
 ### Key Architecture Files
 - **Services:** `src/langlearn/services/` (CardBuilder, MediaEnricher, RecordMapper)
