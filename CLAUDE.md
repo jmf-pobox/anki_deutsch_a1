@@ -221,11 +221,11 @@ GitHub issues serve as **state management markers** that identify where code div
 1. **Brief Summary Only**: Issues should contain:
    - **Problem**: One sentence describing the misalignment
    - **Location**: Which component/file is affected
-   - **Reference**: Link to authoritative spec (e.g., PROD-CARD-SPEC.md)
+   - **Reference**: Link to authoritative spec (e.g., PM-CARD-SPEC.md)
    - **Impact**: What functionality is blocked or broken
 
 2. **Defer to Authoritative Docs**: 
-   - ✅ "Card generation missing required fields - see PROD-CARD-SPEC.md section 3.2"
+   - ✅ "Card generation missing required fields - see PM-CARD-SPEC.md section 3.2"
    - ❌ "Card generation needs DuForm, SieForm, IhrForm fields with specific formatting..."
 
 3. **Avoid Specification Duplication**:
@@ -514,3 +514,4 @@ When you see an error like "Field 'DuForm' not found":
 - Always use direct imports using `__future__` in Python
 - Do not code hacks, defensive coding, or fallbacks
 - Write well-typed code with low conditional complexity that fails fast (throws exceptions) when validation fails
+- Avoid buzzwords, jargon, and adjectives (especially superlatives), and use precise, factual, accurate descriptions instead in all documentation and all conversation.

@@ -9,8 +9,9 @@ CSV files are organized by language and deck:
 languages/
 ├── german/
 │   ├── default/          # Complete A1 content (15 CSV files)
-│   ├── business/         # Business vocabulary (1 CSV file)
-│   └── beginner/         # Beginner content (1 CSV file)
+│   ├── a1.1/             # A1.1 level content (11 CSV files)
+│   ├── a1/               # A1 level content (10 CSV files)
+│   └── business/         # Business vocabulary (1 CSV file)
 ├── russian/
 │   └── basic/           # Sample structure
 └── korean/
@@ -19,7 +20,7 @@ languages/
 
 **File Locations**: All CSV files are located at `languages/{language}/{deck}/filename.csv`
 
-Important DRY note: Field-level column definitions and constraints are maintained authoritatively in DATA-DICTIONARY.md. Any detailed column tables in this file are informational and may be trimmed; if discrepancies exist, DATA-DICTIONARY.md is the source of truth.
+Important DRY note: Field-level column definitions and constraints are maintained authoritatively in ENG-DATA-DICTIONARY.md. Any detailed column tables in this file are informational and may be trimmed; if discrepancies exist, ENG-DATA-DICTIONARY.md is the source of truth.
 
 ## Core Principles
 
@@ -60,35 +61,23 @@ Important DRY note: Field-level column definitions and constraints are maintaine
 
 ## Word Type Specifications
 
-Authoritative field-level definitions and constraints are maintained in DATA-DICTIONARY.md. This section provides a high-level overview with links to the corresponding dictionary sections to avoid duplication.
+Authoritative field-level definitions and constraints are maintained in ENG-DATA-DICTIONARY.md. This section provides a high-level overview with links to the corresponding dictionary sections to avoid duplication.
 
 - Nouns (nouns.csv)
   - Purpose: German nouns with articles, plural forms, and examples
-  - See DATA-DICTIONARY.md → "Nouns (nouns.csv)"
+  - See ENG-DATA-DICTIONARY.md → "Nouns (nouns.csv)"
 
 - Adjectives (adjectives.csv)
   - Purpose: Adjectives with comparative/superlative forms
-  - See DATA-DICTIONARY.md → "Adjectives (adjectives.csv)"
+  - See ENG-DATA-DICTIONARY.md → "Adjectives (adjectives.csv)"
 
 - Verbs - Simple Format (verbs.csv)
   - Purpose: Basic verb conjugations for common verbs
-  - See DATA-DICTIONARY.md → "Verbs (verbs.csv)"
+  - See ENG-DATA-DICTIONARY.md → "Verbs (verbs.csv)"
 
 - Verbs - Unified Format (verbs_unified.csv)
   - Purpose: Multi-tense conjugation records
-  - See DATA-DICTIONARY.md → "Verbs Unified (verbs_unified.csv)"
-| du | No | string | du conjugation | fährst ab |
-| er | No | string | er/sie/es conjugation | fährt ab |
-| wir | No | string | wir conjugation | fahren ab |
-| ihr | No | string | ihr conjugation | fahrt ab |
-| sie | No | string | sie/Sie conjugation | fahren ab |
-| example | No | string | Example sentence | Der Bus fährt ab. |
-
-**Validation**:
-- `classification` must be one of: regelmäßig, unregelmäßig, gemischt
-- `auxiliary` must be: haben or sein
-- `tense` values: present, preterite, perfect, future
-- Multiple rows per verb (one per tense)
+  - See ENG-DATA-DICTIONARY.md → "Verbs Unified (verbs_unified.csv)"
 
 ### 5. Adverbs (adverbs.csv)
 
@@ -243,6 +232,8 @@ Authoritative field-level definitions and constraints are maintained in DATA-DIC
 ### 15. Articles Unified (articles_unified.csv)
 
 **Purpose**: German article declensions across all cases and genders
+
+**⚠️ SPECIFICATION VIOLATION**: This CSV file currently uses German headers (artikel_typ, geschlecht, beispiel_nom, etc.) which violates the English header principle stated in Core Principles section. This should be corrected to use English headers (article_type, gender, example_nom, etc.).
 
 **Columns**:
 | Column | Required | Type | Description | Example |

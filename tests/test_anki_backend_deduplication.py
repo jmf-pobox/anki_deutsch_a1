@@ -279,7 +279,7 @@ class TestAnkiBackendDeduplication:
         ):
             backend = AnkiBackend("Test Deck", mock_media_service)
 
-            # Verify directories are set up for optimization (now using MediaService directories)
+            # Verify directories are set up for optimization (using MediaService)
             assert backend._audio_dir is not None
             assert backend._images_dir is not None
             assert backend._audio_dir == mock_media_service._audio_dir

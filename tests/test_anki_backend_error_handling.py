@@ -407,8 +407,8 @@ class TestAnkiBackendErrorHandling:
             mock_media_service = Mock()
 
             # Add Path attributes needed by AnkiBackend
-            from pathlib import Path
             import tempfile
+            from pathlib import Path
 
             temp_dir = Path(tempfile.mkdtemp())
             mock_media_service._audio_dir = temp_dir / "audio"

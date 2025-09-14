@@ -6,12 +6,13 @@ This document provides comprehensive specifications for all German language card
 
 ## System Architecture
 
-**Current Architecture**: CSV → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → AnkiBackend → .apkg
+**Current Architecture**: CSV → Records (Pydantic models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 **Key Features**:
-- Domain models use dataclass with MediaGenerationCapable protocol
+- Records use Pydantic models for data validation and transport
+- Domain models use dataclass with MediaGenerationCapable protocol for business logic
 - All word types support intelligent media generation
-- Clean Pipeline architecture with RecordMapper → MediaEnricher → CardBuilder
+- Components process data sequentially: RecordMapper → MediaEnricher → CardBuilder
 
 ### Implementation Status by Card Type
 
@@ -30,8 +31,8 @@ This document provides comprehensive specifications for all German language card
 | **Artikel_Gender_Cloze** | Articles | ✅ Active | ⚠️ Partial | Cloze deletion for gender practice |
 | **Artikel_Context** | Articles | ❌ Inactive | ❌ None | Non-cloze version available but unused |
 | **Artikel_Gender** | Articles | ❌ Inactive | ❌ None | Non-cloze version available but unused |
-| **Noun_Article_Recognition** | Articles | ❌ Disabled | ❌ None | Requires ArticleApplicationService |
-| **Noun_Case_Context** | Articles | ❌ Disabled | ❌ None | Requires ArticleApplicationService |
+| **Noun_Article_Recognition** | Articles | ✅ Active | ✅ Full (Image + Audio) | ArticleApplicationService enabled |
+| **Noun_Case_Context** | Articles | ✅ Active | ✅ Full (Image + Audio) | ArticleApplicationService enabled |
 
 ### Architecture Details
 
@@ -56,7 +57,7 @@ This document provides comprehensive specifications for all German language card
 **Impact**: Article cards may display without visual/audio aids
 
 #### 2. **Disabled Noun-Article Integration**
-**Issue**: ArticleApplicationService is commented out, preventing noun-specific article practice
+**Status**: ArticleApplicationService is active, enabling noun-specific article practice
 
 **Impact**: 
 - Learners cannot practice noun-article associations ("das Haus", "der Mann")  
@@ -68,11 +69,11 @@ This document provides comprehensive specifications for all German language card
 1. Create dataclass model in `src/langlearn/models/`
 2. Implement MediaGenerationCapable protocol methods
 3. Add processing logic in `AnkiBackend` class
-4. Create templates in `templates/` directory if needed
+4. Create templates in `src/langlearn/languages/german/templates/` directory if needed
 
 **Current Data Flow**:
 ```
-CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
+CSV Files → Records → Domain Models → MediaEnricher → CardBuilder → AnkiBackend → .apkg Files
 ```
 
 **Multi-Deck Architecture Support**:
@@ -81,6 +82,8 @@ CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
 - **Path Resolution**: MediaFileRegistrar automatically configures paths based on language/deck parameters (normalized to lowercase)
 - **Output Naming**: Generated `.apkg` files follow `LangLearn_{Language}_{deck}.apkg` naming convention (language is capitalized in filename)
 - **CSV Data Sources**: All CSV files are located at `languages/{language}/{deck}/filename.csv` (lowercase paths)
+
+**Field Naming Convention**: CSV files use lowercase_underscore format (e.g., `word_audio`, `image_path`) while Anki field names use PascalCase format (e.g., `WordAudio`, `ImagePath`). The system automatically handles this conversion during card generation.
 
 ## Table of Contents - Organized by Sub-deck
 
@@ -135,8 +138,8 @@ CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
 
 ### Template Files
 
-- `adjective_front.html`
-- `adjective_back.html`
+- `adjective_DE_de_front.html`
+- `adjective_DE_de_back.html`
 - `adjective.css`
 
 ### Field Specifications
@@ -179,8 +182,8 @@ CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
 
 ### Template Files
 
-- `adverb_front.html`
-- `adverb_back.html`
+- `adverb_DE_de_front.html`
+- `adverb_DE_de_back.html`
 - `adverb.css`
 
 ### Field Specifications
@@ -234,7 +237,7 @@ CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
 
 **Processing Services**:
 1. **ArticlePatternProcessor**: Active - generates cloze deletion cards for pattern recognition
-2. **ArticleApplicationService**: Disabled - would create noun-specific article practice cards
+2. **ArticleApplicationService**: Active - creates noun-specific article practice cards
 
 ## Artikel_Context [INACTIVE - Non-Cloze Version]
 
@@ -400,7 +403,7 @@ CSV Files → Domain Models → MediaEnricher → AnkiBackend → .apkg Files
 **CSV Data Source**: `nouns.csv` (NounRecord) + article patterns
 **Sub-deck**: `Articles` (Main Deck::Articles)
 **Generator Service**: `ArticleApplicationService._create_article_recognition_card()`
-**Status**: **❌ DISABLED** - ArticleApplicationService is commented out in deck_builder.py
+**Status**: **✅ ACTIVE** - ArticleApplicationService is enabled in deck_builder.py
 
 ### Card Content
 
@@ -446,7 +449,7 @@ The service uses `_get_article_forms_for_noun()` to generate all case forms:
 **CSV Data Source**: `nouns.csv` (NounRecord) + generated case examples
 **Sub-deck**: `Articles` (Main Deck::Articles)
 **Generator Service**: `ArticleApplicationService._create_noun_case_card()`
-**Status**: **❌ DISABLED** - ArticleApplicationService is commented out in deck_builder.py
+**Status**: **✅ ACTIVE** - ArticleApplicationService is enabled in deck_builder.py
 
 ### Card Content
 
@@ -496,7 +499,7 @@ The `_generate_case_examples()` method creates contextually appropriate sentence
 **Current Pipeline**: 
 1. **CSV Loading**: `articles_unified.csv` → `UnifiedArticleRecord` via `RecordMapper`
 2. **Pattern Processing**: Each record generates 5 cloze cards (1 gender + 4 cases)  
-3. **Noun Integration**: Disabled - ArticleApplicationService is commented out
+3. **Noun Integration**: Active - ArticleApplicationService is enabled
 4. **Media Enrichment**: Images and audio added via `MediaEnricher` service
 5. **Card Assembly**: Final formatting via `CardBuilder` service
 
@@ -523,8 +526,8 @@ The `_generate_case_examples()` method creates contextually appropriate sentence
 
 ### Template Files
 
-- `negation_front.html`
-- `negation_back.html`
+- `negation_DE_de_front.html`
+- `negation_DE_de_back.html`
 - `negation.css`
 
 ### Field Specifications
@@ -566,8 +569,8 @@ The `_generate_case_examples()` method creates contextually appropriate sentence
 
 ### Template Files
 
-- `noun_front.html`
-- `noun_back.html`
+- `noun_DE_de_front.html`
+- `noun_DE_de_back.html`
 - `noun.css`
 
 ### Field Specifications
@@ -745,9 +748,6 @@ The `_generate_case_examples()` method creates contextually appropriate sentence
 
 ### Template Files
 
-- `verb_conjugation_front.html`
-- `verb_conjugation_back.html`
-- `verb_conjugation.css`
 - `verb_conjugation_DE_de_front.html`
 - `verb_conjugation_DE_de_back.html`
 - `verb_conjugation_DE_de.css`
@@ -789,9 +789,6 @@ The `_generate_case_examples()` method creates contextually appropriate sentence
 
 ### Template Files
 
-- `verb_imperative_front.html`
-- `verb_imperative_back.html`
-- `verb_imperative.css`
 - `verb_imperative_DE_de_front.html`
 - `verb_imperative_DE_de_back.html`
 - `verb_imperative_DE_de.css`

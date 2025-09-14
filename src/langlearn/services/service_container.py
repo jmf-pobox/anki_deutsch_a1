@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 class ServiceContainer:
     """Simple service container for managing shared service instances."""
+    """TODO: This code violates project standards.  Should not be using None
+    and hasattr like this.  Get rid of None and all of the extra checks."""
 
     _instance: Optional["ServiceContainer"] = None
     _anthropic_service: AnthropicService | None = None
@@ -96,12 +98,16 @@ class ServiceContainer:
         """
         if self._audio_service is None:
             try:
-                from langlearn.services.audio import AudioService
-                import tempfile
                 import os
+                import tempfile
 
-                # Use temporary directory for tests, proper directory structure otherwise
-                if "pytest" in os.environ.get("_", "") or "PYTEST_CURRENT_TEST" in os.environ:
+                from langlearn.services.audio import AudioService
+
+                # Use temporary directory for tests, proper directory otherwise
+                if (
+                    "pytest" in os.environ.get("_", "")
+                    or "PYTEST_CURRENT_TEST" in os.environ
+                ):
                     # In test environment - use temporary directory
                     temp_dir = tempfile.mkdtemp()
                     self._audio_service = AudioService(output_dir=temp_dir)

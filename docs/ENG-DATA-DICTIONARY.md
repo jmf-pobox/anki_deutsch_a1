@@ -213,7 +213,7 @@ This document provides a comprehensive field-by-field description of all data el
 ### Adding New Fields
 1. Update this data dictionary with new field specifications
 2. Add validation rules and examples
-3. Update PROD-CSV-SPEC.md with structural changes
+3. Update PM-CSV-SPEC.md with structural changes
 4. Verify existing data compatibility
 
 ### Modifying Existing Fields
@@ -226,7 +226,7 @@ This document provides a comprehensive field-by-field description of all data el
 
 ### Current Naming Inconsistencies
 
-The project has several functionally equivalent columns with inconsistent naming across CSV files. The following analysis identifies standardization opportunities:
+The project has several functionally equivalent columns with inconsistent naming across CSV files, and one major violation of the English header principle. The following analysis identifies standardization opportunities:
 
 #### Primary German Word Column (Major Inconsistency)
 **Current inconsistent naming for single words:**
@@ -243,10 +243,11 @@ The project has several functionally equivalent columns with inconsistent naming
 
 **Issue:** Single-word entries use different column names but should be standardized, while preserving meaningful semantic distinctions.
 
-#### Language Naming Convention Violations
+#### Language Naming Convention Violations (CRITICAL ISSUE)
 **articles_unified.csv violations:**
-- Uses German column names: `artikel_typ`, `geschlecht`, `beispiel_nom`, etc.
-- Should follow English naming convention except for grammatical forms
+- ❌ **CURRENT STATE**: Uses German column names: `artikel_typ`, `geschlecht`, `beispiel_nom`, `beispiel_akk`, `beispiel_dat`, `beispiel_gen`
+- ✅ **REQUIRED**: Should follow English naming convention for headers
+- **Impact**: This file violates the core principle that CSV headers must be in English while data is in target language
 
 ### Recommended Standardization Mapping
 
@@ -336,10 +337,11 @@ All field definitions above have been updated to include the expected language f
 
 ## Version History
 
-- **1.1** (2025-08-23): Added verbs.csv documentation
-  - Documented verbs.csv structure with 11 fields
-  - Renumbered sections to maintain proper sequence
-  - Updated column naming consistency analysis to include verb column
+- **1.2** (2025-01-14): Updated for current German default deck accuracy
+  - Verified all 15 CSV files in languages/german/default/ match documentation
+  - Added missing präteritum field to verbs.csv documentation
+  - Highlighted critical articles_unified.csv header violation
+  - Confirmed English headers vs German data principle compliance
   - Total CSV files documented: 15
 
 - **1.0** (2025-08-23): Initial comprehensive data dictionary
