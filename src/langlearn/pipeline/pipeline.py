@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Any, Generic, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 ValueT = TypeVar("ValueT")
 InT = TypeVar("InT")
@@ -112,7 +112,7 @@ class PipelineTaskState:
         self.__logger.debug("Completed task with output: %s", message)
 
 
-class PipelineTask(Generic[InT, OutT], abc.ABC):
+class PipelineTask[InT, OutT](abc.ABC):
     """Abstract base class for a unit of work in a pipeline.
 
     Subclasses must implement ``_run`` and set ``self.output`` to the
