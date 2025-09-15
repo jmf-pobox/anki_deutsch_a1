@@ -2,6 +2,8 @@
 
 from unittest.mock import Mock, patch
 
+import pytest
+
 from langlearn.services.service_container import (
     ServiceContainer,
     get_anthropic_service,
@@ -29,15 +31,15 @@ class TestServiceContainer:
 
         assert container1 is container2
 
-    def test_get_anthropic_service_returns_none_on_exception(self) -> None:
-        """Test that get_anthropic_service returns None when service unavailable."""
+    def test_get_anthropic_service_raises_on_exception(self) -> None:
+        """Test that get_anthropic_service raises exception when service unavailable."""
         with patch(
             "langlearn.services.service_container.AnthropicService"
         ) as mock_service:
             mock_service.side_effect = ValueError("API key not found")
 
-            result = get_anthropic_service()
-            assert result is None
+            with pytest.raises(ValueError, match="API key not found"):
+                get_anthropic_service()
 
     @patch("langlearn.services.audio.AudioService")
     def test_get_audio_service_creates_instance(self, mock_audio_service: Mock) -> None:

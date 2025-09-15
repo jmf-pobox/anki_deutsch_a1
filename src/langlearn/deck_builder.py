@@ -155,8 +155,6 @@ class DeckBuilder:
             # Translation service not needed for domain-model MediaEnricher
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()
-            if anthropic_service is None:
-                raise ValueError("AnthropicService is required for media enrichment")
 
             self._media_enricher = StandardMediaEnricher(
                 audio_service=actual_audio_service,

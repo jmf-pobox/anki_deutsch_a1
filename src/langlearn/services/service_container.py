@@ -33,23 +33,18 @@ class ServiceContainer:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def get_anthropic_service(self) -> AnthropicService | None:
+    def get_anthropic_service(self) -> AnthropicService:
         """Get the shared AnthropicService instance.
 
         Returns:
-            AnthropicService instance or None if configuration is missing
+            AnthropicService instance
+
+        Raises:
+            ValueError: If API key configuration is missing
+            ImportError: If anthropic package is not installed
         """
         if self._anthropic_service is None:
-            try:
-                self._anthropic_service = AnthropicService()
-            except ValueError as e:
-                # Expected error: Missing API key configuration
-                logger.info(f"AnthropicService not available: {e}")
-                return None
-            except ImportError as e:
-                # Expected error: Missing anthropic package
-                logger.warning(f"AnthropicService package not installed: {e}")
-                return None
+            self._anthropic_service = AnthropicService()
         return self._anthropic_service
 
     def get_translation_service(self) -> TranslationServiceProtocol | None:
@@ -158,11 +153,15 @@ class ServiceContainer:
 _container = ServiceContainer()
 
 
-def get_anthropic_service() -> AnthropicService | None:
+def get_anthropic_service() -> AnthropicService:
     """Factory function to get AnthropicService instance.
 
     Returns:
-        AnthropicService instance or None if not available
+        AnthropicService instance
+
+    Raises:
+        ValueError: If API key configuration is missing
+        ImportError: If anthropic package is not installed
     """
     return _container.get_anthropic_service()
 

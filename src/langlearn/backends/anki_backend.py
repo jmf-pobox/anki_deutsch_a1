@@ -102,8 +102,6 @@ class AnkiBackend(DeckBackend):
         from langlearn.services import get_anthropic_service
 
         anthropic_service = get_anthropic_service()
-        if anthropic_service is None:
-            raise ValueError("AnthropicService is required for media enrichment")
 
         self._media_enricher = StandardMediaEnricher(
             audio_service=self._media_service._audio_service,
