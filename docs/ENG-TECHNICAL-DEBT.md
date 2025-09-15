@@ -10,16 +10,16 @@
 
 **Last Update**: 2025-09-14 (tech-debt/simplify-codebase branch)
 
-**PROGRESS**: 4 of 5 technical debt issues **RESOLVED**:
+**PROGRESS**: 5 of 5 technical debt issues **RESOLVED** ✅
 
 **✅ RESOLVED ISSUES**:
 - 🔴 **CRITICAL**: Media type fallback complexity (commits: 4cdc71c, eba3f16)
 - 🟠 **HIGH**: ServiceContainer typing patterns (commit: 7e36c1d)
+- 🟠 **HIGH**: Backend capability detection (commit: f9d8076)
 - 🔵 **LOW**: TODO comments cleanup (commit: eba3f16)
 - 🔵 **LOW**: Debug logging cleanup (commit: 516b6ec)
 
-**🔄 REMAINING ISSUES** (Need GitHub issues):
-- 🟠 **1 HIGH**: Backend capability detection (hasattr checks in deck_manager.py)
+**🎉 ALL TECHNICAL DEBT RESOLVED** - Codebase now follows fail-fast principles consistently
 
 **RESOLVED ISSUES** (No longer problems):
 - ✅ All domain model fallback patterns fixed (7 files)
@@ -130,21 +130,23 @@ word = domain_model.get_primary_word()
 
 ### 2.3 Backend Capability Detection
 
-**Status**: 🟠 **CONFIRMED HIGH** - Unnecessary hasattr checks
+**Status**: ✅ **RESOLVED** - hasattr checks eliminated by improving interface design
 
 **Files**:
 - `src/langlearn/managers/deck_manager.py:58,92`
 
-**Current Patterns**:
+**Previous Pattern**:
 ```python
 # deck_manager.py
 if hasattr(self._backend, "set_current_subdeck"):
     self._backend.set_current_subdeck(full_deck_name)
 ```
 
-**Issue**: Backend versions are controlled by pyproject.toml and hatch - hasattr checks add unnecessary complexity
-
-**Required Fix**: Remove hasattr checks since dependencies are version-controlled
+**Resolution** (commit: f9d8076):
+1. **Added set_current_subdeck to DeckBackend interface** with default no-op implementation
+2. **Removed hasattr checks** from DeckManager
+3. **Direct method calls** now work for all backends
+4. **Maintains backward compatibility** via default implementation
 
 ---
 
