@@ -10,7 +10,7 @@ from .base import BaseRecord, RecordType
 class VerbImperativeRecord(BaseRecord):
     """Record for German verb imperative data from CSV.
 
-    Aligned with PROD-CARD-SPEC.md specification.
+    Aligned with PM-CARD-SPEC.md specification.
     Handles imperative forms: du, ihr, Sie, wir
     """
 

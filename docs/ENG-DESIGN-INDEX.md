@@ -2,6 +2,14 @@
 
 Comprehensive documentation for the **Anki German Language Deck Generator** - a production-ready flashcard generation system using Clean Pipeline Architecture.
 
+## Documentation Standards
+
+### File Naming Prefixes
+All documentation files follow consistent prefix conventions:
+- **ENG-**: Engineering documentation (technical design, architecture, development)
+- **PM-**: Product Management documentation (specifications, requirements, user stories)
+- **UX-**: User Experience documentation (design, usability, user research)
+
 **Current Status**:  
 - **Quality**: 813 tests passing (792 unit + 21 integration)  
 - **Coverage**: 24.79% overall  
@@ -14,15 +22,14 @@ Comprehensive documentation for the **Anki German Language Deck Generator** - a 
 
 ### Essential Reading Order
 1. **[ENG-DEVELOPMENT-GUIDE.md](./ENG-DEVELOPMENT-GUIDE.md)** - Complete development standards and workflow
-2. **[ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)** - How CSV becomes Anki cards (the pipeline)
-3. **[ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)** - High-level system architecture
+2. **[ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)** - Complete system design: how CSV becomes Anki cards
 
 ### Finding Information
 - **How to develop?** → [ENG-DEVELOPMENT-GUIDE.md](./ENG-DEVELOPMENT-GUIDE.md)
 - **How does it work?** → [ENG-SYSTEM-DESIGN.md](./ENG-SYSTEM-DESIGN.md)  
 - **What are the components?** → [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
 - **Current metrics?** → Run `hatch run test-cov` for live data
-- **Data formats?** → [PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)
+- **Data formats?** → [PM-CSV-SPEC.md](PM-CSV-SPEC.md)
 
 ---
 
@@ -51,16 +58,6 @@ Comprehensive documentation for the **Anki German Language Deck Generator** - a 
 
 ---
 
-### [ENG-ARCHITECTURE.md](./ENG-ARCHITECTURE.md)
-**Purpose**: High-level system architecture overview  
-**Audience**: Architects, Senior Engineers  
-**Content**:
-- System layers and responsibilities
-- Architectural patterns and decisions
-- Quality attributes and technology stack
-- Future architecture and extension points
-
----
 
 ### [ENG-COMPONENT-INVENTORY.md](./ENG-COMPONENT-INVENTORY.md)
 **Purpose**: Detailed inventory of all system components  
@@ -75,15 +72,15 @@ Comprehensive documentation for the **Anki German Language Deck Generator** - a 
 
 ## Data Specifications
 
-### [PROD-CSV-SPEC.md](./PROD-CSV-SPEC.md)
+### [PM-CSV-SPEC.md](PM-CSV-SPEC.md)
 **Purpose**: CSV format specifications for vocabulary data  
 **Content**: Column definitions, validation rules, encoding standards
 
-### [DATA-DICTIONARY.md](./DATA-DICTIONARY.md)
+### [DATA-DICTIONARY.md](ENG-DATA-DICTIONARY.md)
 **Purpose**: Authoritative field definitions for all card types  
 **Content**: Field names, types, validation rules, examples
 
-### [PROD-CARD-SPEC.md](./PROD-CARD-SPEC.md)
+### [PM-CARD-SPEC.md](PM-CARD-SPEC.md)
 **Purpose**: Anki card type specifications  
 **Content**: Card templates, field mappings, styling guidelines
 

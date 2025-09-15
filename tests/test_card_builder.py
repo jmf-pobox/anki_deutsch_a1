@@ -572,7 +572,7 @@ class TestCardBuilderIntegration:
 
         field_values, note_type = card_builder.build_card_from_record(record)
 
-        # Verify field count matches new PROD-CARD-SPEC.md structure
+        # Verify field count matches new PM-CARD-SPEC.md structure
         assert len(field_values) == 11  # All verb imperative fields per specification
         assert field_values[0] == "arbeiten"  # Infinitive (Sort Field)
         assert field_values[1] == "to work"  # English
@@ -590,7 +590,7 @@ class TestCardBuilderIntegration:
         assert note_type.name == "German Verb Imperative with Media"
         assert (
             len(note_type.fields) == 11
-        )  # Updated for new field count per PROD-CARD-SPEC.md
+        )  # Updated for new field count per PM-CARD-SPEC.md
 
     def test_verb_record_separable_formatting(self, card_builder: CardBuilder) -> None:
         """Test that separable verb field is formatted correctly."""
@@ -665,7 +665,7 @@ class TestCardBuilderIntegration:
 
         field_values, _ = card_builder.build_card_from_record(record, enriched_data)
 
-        # Check audio field formatting (updated indices for PROD-CARD-SPEC.md structure)
+        # Check audio field formatting (updated indices for PM-CARD-SPEC.md structure)
         assert field_values[10] == "[sound:arbeiten.mp3]"  # WordAudio (last field)
 
     def test_get_supported_record_types_includes_verbs(

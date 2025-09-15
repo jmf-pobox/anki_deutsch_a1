@@ -90,4 +90,13 @@ def mock_media_service() -> Mock:
     service.generate_image.return_value = "/fake/image.jpg"
     service.generate_or_get_audio.return_value = "/fake/audio.mp3"
     service.generate_or_get_image.return_value = "/fake/image.jpg"
+
+    # Add Path attributes needed by AnkiBackend
+    import tempfile
+    from pathlib import Path
+
+    temp_dir = Path(tempfile.mkdtemp())
+    service._audio_dir = temp_dir / "audio"
+    service._images_dir = temp_dir / "images"
+
     return service

@@ -406,6 +406,14 @@ class TestAnkiBackendErrorHandling:
             # Provide custom services (one working, one failing)
             mock_media_service = Mock()
 
+            # Add Path attributes needed by AnkiBackend
+            import tempfile
+            from pathlib import Path
+
+            temp_dir = Path(tempfile.mkdtemp())
+            mock_media_service._audio_dir = temp_dir / "audio"
+            mock_media_service._images_dir = temp_dir / "images"
+
             # Media service works but audio generation fails
             mock_media_service.generate_or_get_audio.side_effect = Exception(
                 "Audio generation failed"

@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import Mock, mock_open, patch
 
 import pytest
-from botocore.exceptions import (  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+from botocore.exceptions import (
     ClientError,
     NoCredentialsError,
 )
@@ -128,7 +128,9 @@ class TestAudioService:
         mock_boto_client.return_value = mock_client
         audio_service.client = mock_client
 
-        mock_error_response = {
+        from typing import Any
+
+        mock_error_response: Any = {
             "Error": {"Code": "InvalidParameterValue", "Message": "Invalid voice ID"}
         }
         mock_client.synthesize_speech.side_effect = ClientError(

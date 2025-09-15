@@ -62,7 +62,11 @@
       "Bash(git stash:*)",
       "Bash(gh api:*)",
       "Bash(pip index versions:*)",
-      "Bash(hatch env:*)"
+      "Bash(hatch env:*)",
+      "Bash(for:*)",
+      "Bash(head:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": [],
     "ask": []

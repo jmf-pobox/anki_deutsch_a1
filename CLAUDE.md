@@ -2,9 +2,17 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# Anki German Language Deck Generator
+# Anki Foreign Language Learning Deck Generator
 
-This project generates customized German language Anki decks, focusing on grammatical nuances specific to German such as noun genders, separable verbs, and case-dependent prepositions.
+This project generates customized language learning Anki decks. One issue 
+this system addresses is that many existing Anki decks do not reflect the 
+specific challenges of the target language.  For example, memorizing 
+German and irregular verb conjugations are two challenges. The grammar of 
+the target language affects the best Anki deck design. This Anki deck 
+generator seeks to address that challenge.  The primary user of this 
+system is intended to be the language learner. A secondary user of the 
+system is intended to be foreign language teachers. This system is 
+inspired by Fluent Forever, a book by Gabriel Wyner.  
 
 ## CRITICAL DEBUGGING PRINCIPLES (READ FIRST - PREVENTS WASTED TIME)
 
@@ -40,6 +48,33 @@ When encountering errors, follow this EXACT sequence:
 - ❌ Claiming "I've fixed it" without user confirmation
 - ❌ Removing debugging tools before user verifies the fix
 - ❌ Making assumptions about what "should" work
+
+## CLEAN DESIGN IMPROVEMENT PROTOCOL (MANDATORY)
+
+**🚨 CRITICAL: When improving designs, eliminate ALL traces of the old approach**
+
+### Complete Removal Principle
+When implementing design improvements, **delete everything** related to the old approach:
+
+1. **Old Code Path**: Remove the entire old implementation - no fallbacks, no "just in case" code
+2. **Old Tests**: Delete all tests for the deprecated approach - they test obsolete behavior
+3. **Old Documentation**: Remove all references to the old design from docs and comments
+4. **Old Interfaces**: Delete deprecated methods, classes, and APIs completely
+
+### Why Complete Removal is Mandatory
+- **Git preserves history** - the old implementation is permanently available in version control
+- **Fallback code creates confusion** - multiple ways to do the same thing violates single responsibility
+- **Deprecated tests mislead** - they validate behavior that should no longer exist
+- **Stale docs confuse users** - mixed old/new guidance creates uncertainty
+
+### Implementation Steps
+1. **Implement new design** with comprehensive tests
+2. **Update all callers** to use new approach
+3. **Delete old implementation** completely (code + tests + docs)
+4. **Verify removal** - ensure no references to old approach remain
+5. **Commit with clear message** indicating complete migration
+
+**🚫 NEVER**: Keep old code "just in case" or add fallback behavior during design improvements
 
 ## REQUIRED READING
 
@@ -127,16 +162,23 @@ hatch run test-cov      # Full test suite with coverage
 ```bash
 # Run after EVERY code change - NO SHORTCUTS:
 hatch run type                    # 1. ZERO MyPy errors (ABSOLUTE REQUIREMENT)
-hatch run ruff check --fix       # 2. ZERO Ruff violations (ABSOLUTE REQUIREMENT) 
+hatch run ruff check --fix       # 2. ZERO Ruff violations (ABSOLUTE REQUIREMENT)
 hatch run format                  # 3. Perfect formatting (ABSOLUTE REQUIREMENT)
 hatch run test                    # 4. ALL tests pass (ABSOLUTE REQUIREMENT)
 hatch run test-cov                # 5. Coverage maintained (ABSOLUTE REQUIREMENT)
+
+# Additional verification commands:
+hatch run test-unit              # Unit tests only (no live API calls)
+hatch run test-integration       # Integration tests (requires API keys)
+hatch run test-unit-cov         # Unit tests with coverage report
+hatch run lint                  # Check linting rules
+hatch run check                 # All checks (lint + type + test)
+hatch run check-unit            # All checks with unit tests only
 ```
 
 ### Branch Workflow (MANDATORY):
 - **ALL development** must use feature branches - NO direct commits to main
 - **Branch naming**: `feature/`, `fix/`, `refactor/`, `docs/`, `test/`
-- **Micro-commits**: 1-2 files, <50 lines preferred, <100 lines max
 
 ### Refactoring Best Practices (PROVEN EFFECTIVE):
 
@@ -151,7 +193,6 @@ hatch run test-cov                # 5. Coverage maintained (ABSOLUTE REQUIREMENT
 - **Quality gates between steps** - Run full test suite after each extraction  
 - **Type narrowing for MyPy** - Use `isinstance()` assertions for type safety
 - **Preserve backward compatibility** - Maintain legacy interfaces during migration
-- **Push frequency**: Every 3-5 commits OR every 30 minutes
 - **Create draft PR early** for continuous CI feedback
 
 **🚨 ABSOLUTE REQUIREMENTS - NO EXCEPTIONS:**
@@ -161,7 +202,6 @@ hatch run test-cov                # 5. Coverage maintained (ABSOLUTE REQUIREMENT
 - **Test suite**: ALL tests must pass
 - **Coverage**: Must not decrease from current levels
 - **User Verification**: Bug fixes require user confirmation before claiming success
-- **Branch-based development**: Create branch → develop → test → PR → review → merge
 
 **🚫 A CODE CHANGE IS NOT COMPLETE UNTIL ALL 5 QUALITY GATES PASS!**
 
@@ -181,11 +221,11 @@ GitHub issues serve as **state management markers** that identify where code div
 1. **Brief Summary Only**: Issues should contain:
    - **Problem**: One sentence describing the misalignment
    - **Location**: Which component/file is affected
-   - **Reference**: Link to authoritative spec (e.g., PROD-CARD-SPEC.md)
+   - **Reference**: Link to authoritative spec (e.g., PM-CARD-SPEC.md)
    - **Impact**: What functionality is blocked or broken
 
 2. **Defer to Authoritative Docs**: 
-   - ✅ "Card generation missing required fields - see PROD-CARD-SPEC.md section 3.2"
+   - ✅ "Card generation missing required fields - see PM-CARD-SPEC.md section 3.2"
    - ❌ "Card generation needs DuForm, SieForm, IhrForm fields with specific formatting..."
 
 3. **Avoid Specification Duplication**:
@@ -244,7 +284,6 @@ GitHub issues serve as **state management markers** that identify where code div
 
 **🚨 NEVER CLAIM "FIXED" WITHOUT USER VALIDATION**
 
-**Johnson's Law Reminder**: You CANNOT verify if something works. Only the user can.
 
 The following communication protocol is MANDATORY:
 
@@ -309,7 +348,7 @@ Please provide:
 
 **🚫 ABSOLUTE PROHIBITION**: Never claim any fix works in the Anki application without user confirmation.**
 
-## Development Commands
+## Development Commands & Testing
 
 ### Hatch Environment Management
 ```bash
@@ -320,10 +359,11 @@ hatch env create
 hatch run test               # All tests (unit + integration)
 hatch run test-unit         # Unit tests only (no live API calls)
 hatch run test-integration  # Integration tests (requires API keys)
+hatch run test-cov          # Complete coverage measurement (target: >85%)
 
 # Code Quality
 hatch run lint              # Ruff linting
-hatch run format            # Ruff formatting  
+hatch run format            # Ruff formatting
 hatch run type              # MyPy type checking
 hatch run check             # All checks (lint + type + test)
 hatch run check-unit        # All checks with unit tests only
@@ -341,19 +381,8 @@ hatch run test-env          # Test all API keys (Anthropic + Pexels) setup and c
 The project uses separate test categories with comprehensive coverage measurement:
 - **Unit tests**: Mock external dependencies, run with `hatch run test-unit`
 - **Integration tests**: Require live API keys, marked with `@pytest.mark.live`, run with `hatch run test-integration`
-- **Coverage testing**: Use `hatch run test-cov` for complete measurement (target: >85%)
-- **Ask the user**: The user will import the deck into Anki and verify actual functionality.
-- API keys are managed via the system keyring using the `api_keyring.py` utility
-
-
-Additional verification commands:
-```bash
-hatch run test-unit      # All tests must pass
-hatch run test-unit-cov  # Run tests with coverage report
-hatch run format         # Auto-fix formatting
-hatch run lint           # Check linting rules
-hatch run type           # Verify type safety
-```
+- **User verification**: The user imports the deck into Anki and verifies actual functionality
+- **API keys**: Managed via the system keyring using the `api_keyring.py` utility
 
 ## Project Architecture
 
@@ -362,65 +391,15 @@ hatch run type           # Verify type safety
 - **`docs/ENG-QUALITY-METRICS.md`** - Current quality metrics and technical debt analysis
 - **`docs/ENG-DEVELOPMENT-STANDARDS.md`** - Architectural principles and development standards
 
-### Core Components - Multi-Language Architecture (UPDATED 2025-01-08)
+### Architecture Overview
 
-The project is transitioning to a language-first architecture with Phase 2 partially complete:
+For detailed architecture information, see **[docs/ENG-ARCHITECTURE.md](docs/ENG-ARCHITECTURE.md)** which contains:
+- Complete system architecture and design patterns
+- Data flow pipeline: CSV → Records → MediaEnricher → CardBuilder → AnkiBackend
+- Component responsibilities and interactions
+- Multi-language architecture roadmap
 
-**Data Flow**: CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → AnkiBackend
-
-#### **Current Architecture State**:
-
-1. **German Language Package** (`src/langlearn/languages/german/`): ✅ **PARTIALLY COMPLETE**
-   - **Records** (`records/`): ✅ 13 individual record classes + GermanRecordFactory
-   - **Templates** (`templates/`): ✅ 54 German templates moved from generic location
-   - **Models** (`models/`): 🚧 Still in `src/langlearn/models/` (migration pending)
-   - **Services** (`services/`): 🚧 Still in `src/langlearn/services/` (migration pending)  
-   - **Data** (`data/`): 🚧 Still in project root `data/` (migration pending)
-
-2. **Core Infrastructure** (`src/langlearn/core/`): 🚧 **NOT YET CREATED**
-   - Language-agnostic services (AWS Polly, Pexels, Anthropic)
-   - Pipeline orchestration
-   - Base record types
-
-3. **Legacy Services** (`src/langlearn/services/`): 🚧 **MIXED LANGUAGE-SPECIFIC + INFRASTRUCTURE**
-   - **RecordMapper**: CSV → Records conversion (German-specific, needs move)
-   - **MediaEnricher**: Records → Domain Models conversion (German-specific, needs move)
-   - **CardBuilder**: Records → card templates (German-specific, needs move)
-   - **External APIs**: AWS Polly, Pexels, Anthropic (infrastructure, needs move to core/)
-
-4. **Backends** (`src/langlearn/backends/`): 
-   - **DeckBackend**: Abstract interface for deck generation
-   - **AnkiBackend**: Uses enriched Records for card creation
-
-5. **Main Application** (`deck_builder.py`): High-level orchestrator, templates path updated
-
-### Data Architecture
-- **CSV Files** (`languages/{language}/{deck}/`): Source data organized by language and deck
-- **Audio** (`languages/{language}/{deck}/audio/`): AWS Polly-generated pronunciation files
-- **Images** (`languages/{language}/{deck}/images/`): Pexels-sourced images with automatic backup
-- **Backups** (`languages/{language}/{deck}/backups/`): Automatic CSV backups during enrichment
-
-### Key Design Patterns
-
-- **Hybrid Architecture**: Data flows through both Records and Domain Models in sequence
-  - **Records**: Pydantic objects for data validation and transport
-  - **Domain Models**: Objects with German language business logic methods
-  - **MediaEnricher**: Orchestrates Records → Domain Models → enriched Records conversion
-  - **CardBuilder**: Transforms enriched Records into formatted card templates
-
-- **Dual Processing System**: Records and Domain Models work together
-  - **Record Types**: All word types use Pydantic BaseRecord models for validation
-  - **Domain Models**: Contain German-specific business logic methods (get_combined_audio_text, etc.)
-  - **MediaEnricher**: Bridges between the two systems for media generation
-
-- **Performance Optimizations**: 
-  - **Hash-based Caching**: Avoids duplicate API calls for media generation
-  - **Existence Checking**: MediaEnricher checks for existing files before generation
-
-- **German Language Specialization**: 
-  - **Pydantic Validation**: German-specific rules in Records (article validation, case patterns)
-  - **Template System**: HTML/CSS templates for different card types  
-  - **Business Logic Methods**: Domain models contain German grammar processing logic
+**Current Status**: Clean Pipeline Architecture with German A1 fully supported. All 7 German word types functional via Records + CardBuilder system.
 
 ## API Key Management
 
@@ -451,60 +430,15 @@ export AWS_SECRET_ACCESS_KEY=your_secret_key
 export AWS_DEFAULT_REGION=your_region
 ```
 
-## German Language Specifics
-
-This project addresses unique aspects of German language learning:
-
-### Noun Challenges
-- **Gender memorization**: Cards test article recall separately from noun meaning
-- **Case declensions**: All four cases (Nominativ, Akkusativ, Dativ, Genitiv) are included
-- **Plural forms**: Irregular plurals are validated against German patterns
-
-### Verb Complexities  
-- **Separable verbs**: Special handling for verbs like "aufstehen" (ich stehe auf)
-- **Irregular conjugations**: Models validate against known irregular patterns
-- **Perfect tense**: Automatic auxiliary verb selection (haben vs sein)
-
-### Other Features
-- **Case-dependent prepositions**: Models track which case each preposition requires
-- **Adjective declensions**: Support for all declension patterns
-- **Audio pronunciation**: All words include AWS Polly audio with German voice
-
-
-## Current Status
-
-### Multi-Language Architecture Migration Progress
-- **Phase 2 Partially Complete**: German records and templates successfully migrated
-- **Record System**: ✅ 13 German record classes + GermanRecordFactory implemented
-- **Template System**: ✅ 54 German templates moved to language-specific package
-- **Next Steps**: Domain models, services, and data migration to complete German package
-
-### Supported Word Types
-- **Fully Supported**: noun, adjective, adverb, negation, verb (via Records + CardBuilder)
-- **Legacy Support**: preposition, phrase (via fallback system)
-- **Total Coverage**: All 7 German A1 word types functional
-
 ## Project Structure
 
 See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete project structure details.
 
 Key directories:
 - `src/langlearn/` - Main application code
-- `data/` - CSV vocabulary files and generated media
+- `languages/` - CSV vocabulary files and generated media
 - `tests/` - Unit and integration tests  
 - `docs/` - Comprehensive documentation
-
-## Quality Maintenance
-
-### Absolute Requirements (NO EXCEPTIONS)
-
-1. **MyPy Compliance**: 0 errors required in strict mode
-2. **Ruff Linting**: 0 violations required
-3. **Test Suite**: All tests must pass
-4. **Coverage**: Must not decrease from 74%
-5. **Branch Workflow**: All changes via feature branches
-
-See `docs/ENG-DEVELOPMENT-GUIDE.md` for complete quality gate requirements and workflow.
 
 ## SUCCESS RATE TRACKING
 
@@ -553,12 +487,6 @@ With this setup, the noisy interpreter message disappears, and Hatch commands be
 - always run the app before stating you have complete work.  Look for obvious errors and address them before declaring the job is done.
 ## FINAL REMINDERS - CORE PRINCIPLES
 
-### Johnson's Law (NEVER FORGET)
-**"Any property of software that has not been verified, does not exist."**
-- You CANNOT verify end-to-end functionality - only the user can
-- Do NOT claim bugs are fixed until the user confirms
-- Do NOT remove debugging code until the user confirms the fix works
-- Do NOT declare victory based on unit tests alone
 
 ### Error Messages Are Sacred
 When you see an error like "Field 'DuForm' not found":
@@ -568,20 +496,22 @@ When you see an error like "Field 'DuForm' not found":
 4. Do NOT clean up formatting first
 5. Fix the EXACT issue the error describes, THEN handle other concerns
 
-### Communication Discipline
+### Additional Communication & Code Standards
 - State what you changed and why
 - Explain what needs user verification
-- Never claim success without user confirmation
 - Keep responses focused on solving the actual problem
-- Do not make value judgements about the code quality unless asked to do so.  Only write factual statements into documentation.
-- never use meaningless terms like enterprise grade.  never respond to criticism with your are right and other platitudes.
-- Prefer well defined protocols over duck typing and hasattr.
-- Using None sparingly and do not declare parameters to take a type or None unless there is no alternative.
-- never write inline import statements.
-- never use mock objects in production code, only test code.
-- ask me for design direction, do not come up with your own ideas of what good is.
-- make your commit messages modest and relatively short.
-- always us direct imports using __future__ in Python
-- do not code hacks, defensive coding, fallbacks. 
-- the goal is to write well-typed code with low conditional complexity 
-  that fails (e.g., throws and exception) when validation fails.
+- Do not make value judgements about the code quality unless asked to do so
+- Never use meaningless terms like "enterprise grade" or respond to criticism with platitudes
+- Ask user for design direction, do not come up with your own ideas of what good is
+- Make commit messages modest and relatively short
+- Do not add Claude Code attribution to every commit
+
+**Code Standards**:
+- Prefer well defined protocols over duck typing and hasattr
+- Use None sparingly; avoid `type | None` parameters unless no alternative
+- Never write inline import statements
+- Never use mock objects in production code, only test code
+- Always use direct imports using `__future__` in Python
+- Do not code hacks, defensive coding, or fallbacks
+- Write well-typed code with low conditional complexity that fails fast (throws exceptions) when validation fails
+- Avoid buzzwords, jargon, and adjectives (especially superlatives), and use precise, factual, accurate descriptions instead in all documentation and all conversation.

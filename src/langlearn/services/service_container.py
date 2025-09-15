@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 class ServiceContainer:
     """Simple service container for managing shared service instances."""
 
+    """TODO: This code violates project standards.  Should not be using None
+    and hasattr like this.  Get rid of None and all of the extra checks."""
+
     _instance: Optional["ServiceContainer"] = None
     _anthropic_service: AnthropicService | None = None
     _translation_service: TranslationServiceProtocol | None = None
@@ -96,9 +99,22 @@ class ServiceContainer:
         """
         if self._audio_service is None:
             try:
+                import os
+                import tempfile
+
                 from langlearn.services.audio import AudioService
 
-                self._audio_service = AudioService()
+                # Use temporary directory for tests, proper directory otherwise
+                if (
+                    "pytest" in os.environ.get("_", "")
+                    or "PYTEST_CURRENT_TEST" in os.environ
+                ):
+                    # In test environment - use temporary directory
+                    temp_dir = tempfile.mkdtemp()
+                    self._audio_service = AudioService(output_dir=temp_dir)
+                else:
+                    # In production environment - use default audio directory
+                    self._audio_service = AudioService()
             except ValueError as e:
                 # Expected error: Missing AWS credentials or configuration
                 logger.info(f"AudioService not available: {e}")
