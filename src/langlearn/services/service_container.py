@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class ServiceContainer:
     """Simple service container for managing shared service instances."""
+
     """TODO: This code violates project standards.  Should not be using None
     and hasattr like this.  Get rid of None and all of the extra checks."""
 

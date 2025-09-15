@@ -14,6 +14,7 @@ def has_aws_credentials() -> bool:
     """Check if AWS credentials are configured."""
     try:
         import tempfile
+
         service = AudioService(output_dir=tempfile.mkdtemp())
         # Try a simple describe voices call to verify credentials
         service.client.describe_voices()
@@ -31,6 +32,7 @@ pytestmark = pytest.mark.skipif(
 def test_live_audio_generation() -> None:
     """Test audio generation with real AWS Polly service."""
     import tempfile
+
     service = AudioService(output_dir=tempfile.mkdtemp())
     result = service.generate_audio("Hallo, wie geht es dir?")
 
@@ -45,6 +47,7 @@ def test_live_audio_generation() -> None:
 def test_live_audio_custom_config() -> None:
     """Test audio generation with custom configuration."""
     import tempfile
+
     service = AudioService(
         output_dir=tempfile.mkdtemp(),
         voice_id="Vicki",

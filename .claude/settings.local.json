@@ -64,7 +64,9 @@
       "Bash(pip index versions:*)",
       "Bash(hatch env:*)",
       "Bash(for:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": [],
     "ask": []
