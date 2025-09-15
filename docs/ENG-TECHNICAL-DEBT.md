@@ -10,15 +10,16 @@
 
 **Last Update**: 2025-09-14 (tech-debt/simplify-codebase branch)
 
-**PROGRESS**: 3 of 5 technical debt issues **RESOLVED**:
+**PROGRESS**: 4 of 5 technical debt issues **RESOLVED**:
 
 **✅ RESOLVED ISSUES**:
 - 🔴 **CRITICAL**: Media type fallback complexity (commits: 4cdc71c, eba3f16)
+- 🟠 **HIGH**: ServiceContainer typing patterns (commit: 7e36c1d)
 - 🔵 **LOW**: TODO comments cleanup (commit: eba3f16)
 - 🔵 **LOW**: Debug logging cleanup (commit: 516b6ec)
 
 **🔄 REMAINING ISSUES** (Need GitHub issues):
-- 🟠 **2 HIGH**: ServiceContainer typing patterns (Optional/None abuse, hasattr usage)
+- 🟠 **1 HIGH**: Backend capability detection (hasattr checks in deck_manager.py)
 
 **RESOLVED ISSUES** (No longer problems):
 - ✅ All domain model fallback patterns fixed (7 files)
@@ -109,22 +110,23 @@ word = domain_model.get_primary_word()
 
 ### 2.2 Service Container Detection
 
-**Status**: 🟠 **CONFIRMED HIGH** - Poor typing patterns with excessive Optional/None usage
+**Status**: ✅ **RESOLVED** - ServiceContainer now uses fail-fast pattern with proper typing
 
 **File**: `src/langlearn/services/service_container.py`
 
-**Issues**:
+**Previous Issues**:
 1. **Line 73**: `client = getattr(anthropic_service, "client", None)`
-2. **Lines 23-27**: Excessive Optional/None types:
-   ```python
-   _instance: Optional["ServiceContainer"] = None
-   _anthropic_service: AnthropicService | None = None
-   _translation_service: TranslationServiceProtocol | None = None
-   _audio_service: "AudioService | None" = None
-   _pexels_service: "PexelsService | None" = None
-   ```
+2. **Lines 23-27**: Excessive Optional/None return types for services
 
-**Required Fix**: Remove Optional/None abuse, use proper typing with protocols
+**Resolution** (commit: 7e36c1d):
+1. **Replaced getattr with direct attribute access**: `anthropic_service.client is None`
+2. **Converted 3 services to fail-fast pattern**:
+   - `get_anthropic_service() -> AnthropicService` (raises exceptions)
+   - `get_audio_service() -> AudioService` (raises exceptions)
+   - `get_pexels_service() -> PexelsService` (raises exceptions)
+3. **Keep translation service Optional**: Legitimate design choice for composite service
+4. **Updated tests**: Now expect exceptions instead of None returns
+5. **Removed TODO comment**: About None/hasattr abuse
 
 ### 2.3 Backend Capability Detection
 

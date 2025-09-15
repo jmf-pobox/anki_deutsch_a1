@@ -147,3 +147,12 @@ class DeckBackend(ABC):
             List of MediaFile objects
         """
         return self._media_files.copy()
+
+    def set_current_subdeck(self, full_deck_name: str | None) -> None:
+        """Set the current subdeck for note additions.
+
+        Args:
+            full_deck_name: Full deck name, or None for main deck
+        """
+        # Default implementation: no-op for backends that don't support subdecks
+        pass
