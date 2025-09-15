@@ -299,6 +299,5 @@ class TestDomainMediaGenerator:
             assert "no action taken" in mock_logger.call_args[0][0]
 
 
-
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
