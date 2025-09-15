@@ -155,4 +155,5 @@ class DeckBackend(ABC):
             full_deck_name: Full deck name, or None for main deck
         """
         # Default implementation: no-op for backends that don't support subdecks
-        pass
+        # This allows optional subdeck support without forcing implementation
+        _ = full_deck_name  # Explicitly acknowledge parameter to avoid unused warning
