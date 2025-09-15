@@ -3,7 +3,7 @@
 import os
 
 import pytest
-from botocore.exceptions import (  # type: ignore[import-untyped]  # External dependency boundary - no stubs available
+from botocore.exceptions import (
     NoCredentialsError,
 )
 
