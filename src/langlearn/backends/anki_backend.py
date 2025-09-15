@@ -681,41 +681,28 @@ class AnkiBackend(DeckBackend):
         logger.info(f"   📂 Copying to Anki collection: {normalized_filename}")
         self._collection.media.add_file(file_path)
 
-        # Generate reference based on expected media type and file extension
-        reference = normalized_filename
-        file_ext = Path(file_path).suffix.lower()
-        logger.info(f"   📄 File extension: '{file_ext}'")
-
-        # Use media_type context to determine proper reference format
-        audio_exts = [".mp3", ".wav", ".ogg"]
-        image_exts = [".jpg", ".jpeg", ".png", ".gif"]
-
-        if media_type == "audio" or (media_type == "" and file_ext in audio_exts):
-            # Audio files should be wrapped in [sound:] format
+        # Generate reference based on media type
+        if media_type == "audio":
+            # Audio files (always .mp3) should be wrapped in [sound:] format
             reference = f"[sound:{filename}]"
             logger.info(f"   🔊 Audio reference: '{reference}'")
-        elif media_type == "image" or (media_type == "" and file_ext in image_exts):
-            # Image files should be plain filename for <img> tags
+        elif media_type == "image":
+            # Image files (always .png/.jpg) should be plain filename for <img> tags
             reference = filename
             logger.info(f"   🖼️ Image reference: '{reference}'")
-        else:
-            # Fallback: use extension-based detection but log warning
-            if file_ext in audio_exts:
+        elif media_type == "":
+            # Legacy support: infer from file extension
+            file_ext = Path(file_path).suffix.lower()
+            if file_ext == ".mp3":
                 reference = f"[sound:{filename}]"
-                logger.warning(f"⚠️ Fallback to audio: '{reference}'")
-                if media_type and media_type != "audio":
-                    logger.warning(
-                        f"Media type mismatch: expected '{media_type}', "
-                        f"got audio file: {file_path}"
-                    )
-            elif file_ext in image_exts:
+                logger.info(f"   🔊 Audio reference (inferred): '{reference}'")
+            elif file_ext in [".jpg", ".jpeg", ".png"]:
                 reference = filename
-                logger.warning(f"⚠️ Fallback to image: '{reference}'")
-                if media_type and media_type != "image":
-                    logger.warning(
-                        f"Media type mismatch: expected '{media_type}', "
-                        f"got image file: {file_path}"
-                    )
+                logger.info(f"   🖼️ Image reference (inferred): '{reference}'")
+            else:
+                raise ValueError(f"Cannot infer media type from extension: {file_ext} for file: {file_path}")
+        else:
+            raise ValueError(f"Unknown media type: '{media_type}' for file: {file_path}")
 
         media_file = MediaFile(
             path=file_path, reference=reference, media_type=media_type
