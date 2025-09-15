@@ -167,9 +167,8 @@ class ArticlePatternProcessor:
         card_data["dative"] = record.dative
         card_data["genitive"] = record.genitive
 
-        # Add example fields if available
-        if hasattr(record, "example_nom"):
-            card_data["example_nom"] = record.example_nom
+        # Add example fields
+        card_data["example_nom"] = record.example_nom
 
         # Add artikel_typ conditional fields for template (safe access)
         artikel_typ = getattr(record, "artikel_typ", "bestimmt")  # Default for legacy
@@ -182,7 +181,7 @@ class ArticlePatternProcessor:
         )
 
         # Extract noun from example sentence and provide English translation
-        if hasattr(record, "example_nom") and record.example_nom:
+        if record.example_nom:
             noun_only = self._extract_noun_from_sentence(record.example_nom)
             card_data["NounOnly"] = noun_only  # Anki template field names are CamelCase
             # Simple English translations for common nouns
@@ -412,7 +411,7 @@ class ArticlePatternProcessor:
             f"{list(enriched_data.keys()) if enriched_data else 'None'}"
         )
         # Create cloze text: "{{c1::Der}} Mann ist hier"
-        example_sentence = getattr(record, "example_nom", "") or "ist hier"
+        example_sentence = record.example_nom or "ist hier"
         article = record.nominative
 
         # Case-insensitive replacement to handle capitalized articles in sentences
