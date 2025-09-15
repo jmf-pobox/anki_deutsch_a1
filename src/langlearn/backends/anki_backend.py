@@ -698,9 +698,14 @@ class AnkiBackend(DeckBackend):
                 reference = filename
                 logger.info(f"   🖼️ Image reference (inferred): '{reference}'")
             else:
-                raise ValueError(f"Cannot infer media type from extension: {file_ext} for file: {file_path}")
+                raise ValueError(
+                    f"Cannot infer media type from extension: {file_ext} "
+                    f"for file: {file_path}"
+                )
         else:
-            raise ValueError(f"Unknown media type: '{media_type}' for file: {file_path}")
+            raise ValueError(
+                f"Unknown media type: '{media_type}' for file: {file_path}"
+            )
 
         media_file = MediaFile(
             path=file_path, reference=reference, media_type=media_type

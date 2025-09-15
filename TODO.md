@@ -6,10 +6,16 @@ Last updated: 2025-01-14
 
 ### **PRIORITY 1: Technical Debt & Legacy Code Cleanup** 🔴 HIGH PRIORITY
 **Goal**: Simplify the codebase by removing technical debt and legacy patterns
-- **Pattern detection elimination** - Remove field name inspection fallbacks in MediaEnricher
+
+**✅ COMPLETED (tech-debt/simplify-codebase branch)**:
+- **Media type fallback complexity** - Simplified AnkiBackend detection logic (commits: 4cdc71c, eba3f16)
+- **TODO comments cleanup** - Removed completed TODO comments (commit: eba3f16)
+- **Debug logging cleanup** - Removed explicit DEBUG level settings (commit: 516b6ec)
+
+**🔄 REMAINING**:
+- **ServiceContainer refactoring** - Remove Optional/None abuse and hasattr usage patterns
+- **Pattern detection elimination** - Remove field name inspection fallbacks in MediaEnricher (if any remain)
 - **Legacy code removal** - Commented out, deprecated, or dual-system patterns
-- **Unused/dead code** - Unreachable code, unused imports, obsolete methods
-- **"TODO" comments** - Inline code comments indicating incomplete work
 
 ### **PRIORITY 2: ARTICLE CLOZE SYSTEM COMPLETION** 🟡 MEDIUM PRIORITY
 **Complete the cloze exercise system for German article learning**

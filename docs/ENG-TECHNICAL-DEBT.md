@@ -8,12 +8,17 @@
 
 ## Executive Summary
 
-Comprehensive verification completed. **5 CONFIRMED ISSUES** remain that need fixing:
+**Last Update**: 2025-09-14 (tech-debt/simplify-codebase branch)
 
-**CONFIRMED ISSUES** (Need GitHub issues):
-- 🔴 **1 CRITICAL**: Unnecessary media type fallback complexity
-- 🟠 **2 HIGH**: Poor typing patterns (Optional/None abuse, hasattr usage)
-- 🔵 **2 LOW**: TODO comments and debug logging cleanup
+**PROGRESS**: 3 of 5 technical debt issues **RESOLVED**:
+
+**✅ RESOLVED ISSUES**:
+- 🔴 **CRITICAL**: Media type fallback complexity (commits: 4cdc71c, eba3f16)
+- 🔵 **LOW**: TODO comments cleanup (commit: eba3f16)
+- 🔵 **LOW**: Debug logging cleanup (commit: 516b6ec)
+
+**🔄 REMAINING ISSUES** (Need GitHub issues):
+- 🟠 **2 HIGH**: ServiceContainer typing patterns (Optional/None abuse, hasattr usage)
 
 **RESOLVED ISSUES** (No longer problems):
 - ✅ All domain model fallback patterns fixed (7 files)
@@ -56,22 +61,17 @@ except Exception as e:
 
 ### 1.2 Media Service Fallbacks
 
-**Status**: 🔴 **CONFIRMED CRITICAL** - Unnecessary media type fallback complexity
+**Status**: ✅ **RESOLVED** - Complex fallback logic simplified and removed
 
-**File**: `src/langlearn/backends/anki_backend.py:700-718`
+**File**: `src/langlearn/backends/anki_backend.py` (commits: 4cdc71c, eba3f16)
 
-**Issue**: Overly complex fallback logic for media type detection when audio=mp3, image=png always
+**Previous Issue**: Overly complex fallback logic for media type detection when audio=mp3, image=png always
 
-**Current Pattern**:
-```python
-else:
-    # Fallback: use extension-based detection but log warning
-    if file_ext in audio_exts:
-        reference = f"[sound:{filename}]"
-        logger.warning(f"⚠️ Fallback to audio: '{reference}'")
-```
-
-**Required Fix**: Simplify since audio files are always mp3, image files are always png
+**Resolution**:
+- Simplified media type detection to explicit audio/image/legacy cases
+- Removed ~30 lines of complex extension detection and warning logic
+- Kept minimal legacy support for empty media_type (infer from extension)
+- Now uses clear conditional logic instead of fallback chains
 
 ### 1.3 Article Processing Fallbacks
 
@@ -193,20 +193,19 @@ TODO: This design concept has not yet been implemented.  Do not delete.
 
 ## 🔵 CATEGORY 5: Debug Logging in Production (LOW)
 
-**Status**: 🔵 **CONFIRMED LOW** - Explicit debug logging in production code
+**Status**: ✅ **RESOLVED** - Explicit DEBUG level settings removed
 
-**Files with DEBUG level settings**:
-- `src/langlearn/services/pexels_service.py` - Line 21
-- `src/langlearn/services/csv_service.py` - Line 15
-- `src/langlearn/services/audio.py` - Line 24
-- `src/langlearn/services/anthropic_service.py` - Line 13
+**Files Updated** (commit: 516b6ec):
+- `src/langlearn/services/pexels_service.py`
+- `src/langlearn/services/csv_service.py`
+- `src/langlearn/services/audio.py`
+- `src/langlearn/services/anthropic_service.py`
 
-**Current Pattern**:
-```python
-logger.setLevel(logging.DEBUG)
-```
-
-**Required Fix**: Remove explicit DEBUG level settings, use environment variable control instead
+**Resolution**:
+- Removed `logger.setLevel(logging.DEBUG)` from all 4 service files
+- Removed `file_handler.setLevel(logging.DEBUG)` from all 4 service files
+- Logging levels now controlled via environment variables
+- Follows production logging best practices
 
 ---
 
