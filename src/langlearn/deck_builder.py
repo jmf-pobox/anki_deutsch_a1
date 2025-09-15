@@ -16,16 +16,10 @@ from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.core.services.template_service import TemplateService
 
+# Language-agnostic imports - services resolved via LanguageRegistry
 from .core.backends.anki_backend import AnkiBackend
 from .core.backends.base import DeckBackend
-
-# Legacy domain model imports removed - using Clean Pipeline Records
-# Removed unused protocol imports - services are used directly
-from .languages.german.services.article_application_service import (
-    ArticleApplicationService,
-)
-from .languages.german.services.card_builder import CardBuilder
-from .languages.german.services.record_mapper import RecordMapper
+from .languages.registry import LanguageRegistry
 
 # CardGeneratorFactory import removed - using Clean Pipeline CardBuilder
 from .managers.deck_manager import DeckManager
@@ -92,18 +86,26 @@ class DeckBuilder:
         self.language = language
         self.deck_type = deck_type
 
-        # Initialize Clean Pipeline services
-        self._record_mapper = RecordMapper()
+        # Get language implementation via LanguageRegistry
+        self._language_impl = LanguageRegistry.get(language)
+
+        # Initialize language-specific services via LanguageRegistry
+        record_mapper_class = self._language_impl.get_record_mapper()
+        self._record_mapper = record_mapper_class()
 
         # Initialize template service with language-specific templates directory
         template_dir = Path(__file__).parent / "languages" / language / "templates"
         self._template_service = TemplateService(template_dir)
 
-        # Initialize CardBuilder service for Clean Pipeline
-        self._card_builder = CardBuilder(template_service=self._template_service)
+        # Initialize CardBuilder service via LanguageRegistry
+        card_builder_class = self._language_impl.get_card_builder()
+        self._card_builder = card_builder_class(template_service=self._template_service)
 
-        # Initialize ArticleApplicationService for unified article system
-        self._article_service = ArticleApplicationService(self._card_builder)
+        # Initialize ArticleApplicationService via language implementation
+        grammar_module = self._language_impl.get_grammar_service()
+        self._article_service = grammar_module.ArticleApplicationService(
+            self._card_builder
+        )
 
         # Initialize StandardMediaEnricher (type annotation)
         self._media_enricher: Any = None  # Will be properly initialized later
@@ -122,7 +124,7 @@ class DeckBuilder:
             images_dir=str(language_deck_data_dir / "images"),
         )
 
-        # Always create media service - no optional media
+        # Create media service
         self._media_service = MediaService(
             audio_service=actual_audio_service,
             pexels_service=actual_pexels_service,
@@ -143,12 +145,11 @@ class DeckBuilder:
             image_base_path=language_deck_data_dir / "images",
         )
 
-        # Initialize StandardMediaEnricher for Clean Pipeline
+        # Initialize StandardMediaEnricher
         if self._media_service:
             from .core.services import get_anthropic_service
             from .languages.german.services.media_enricher import StandardMediaEnricher
 
-            # Translation service not needed for domain-model MediaEnricher
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()
 
@@ -161,8 +162,6 @@ class DeckBuilder:
             )
         else:
             self._media_enricher = None
-
-        # Card generator factory removed - using CardBuilder service in Clean Pipeline
 
         # Clean Pipeline records (unified architecture)
         self._loaded_records: list[BaseRecord] = []

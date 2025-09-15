@@ -1,4 +1,4 @@
-"""Base classes and enums for German record types."""
+"""Base classes and enums for language-agnostic record types."""
 
 from abc import ABC, abstractmethod
 from enum import Enum

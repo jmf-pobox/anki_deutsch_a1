@@ -23,7 +23,7 @@ class Language(Protocol):
 
     @abstractmethod
     def get_supported_record_types(self) -> list[str]:
-        """Get record types this language supports (e.g., ['noun', 'verb', 'adjective'])."""
+        """Get record types this language supports (e.g., ['noun', 'verb'])."""
         ...
 
     @abstractmethod

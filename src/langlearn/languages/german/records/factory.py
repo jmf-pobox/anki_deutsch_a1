@@ -5,10 +5,11 @@ overloaded methods and centralized registry management."""
 
 from typing import ClassVar, Literal, overload
 
+from langlearn.core.records import BaseRecord, RecordClassProtocol, RecordType
+
 from .adjective_record import AdjectiveRecord
 from .adverb_record import AdverbRecord
 from .article_record import ArticleRecord
-from .base import BaseRecord, RecordClassProtocol, RecordType
 from .indefinite_article_record import IndefiniteArticleRecord
 from .negation_record import NegationRecord
 from .negative_article_record import NegativeArticleRecord

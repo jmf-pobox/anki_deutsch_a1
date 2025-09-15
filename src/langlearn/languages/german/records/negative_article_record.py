@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import Field, field_validator
 
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
 class NegativeArticleRecord(BaseRecord):

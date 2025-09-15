@@ -5,8 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from langlearn.protocols.language_protocol import Language
-
 
 class GermanLanguage:
     """German language implementation."""

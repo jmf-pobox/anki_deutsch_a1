@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Type
+from typing import ClassVar
 
 from langlearn.protocols.language_protocol import Language
 
@@ -10,10 +10,10 @@ from langlearn.protocols.language_protocol import Language
 class LanguageRegistry:
     """Central registry for available languages."""
 
-    _languages: dict[str, Type[Language]] = {}
+    _languages: ClassVar[dict[str, type[Language]]] = {}
 
     @classmethod
-    def register(cls, language_code: str, language_class: Type[Language]) -> None:
+    def register(cls, language_code: str, language_class: type[Language]) -> None:
         """Register a language implementation."""
         cls._languages[language_code] = language_class
 
