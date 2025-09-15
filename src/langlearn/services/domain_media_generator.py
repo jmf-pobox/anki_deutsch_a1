@@ -159,13 +159,9 @@ class DomainMediaGenerator:
             MediaGenerationError: If stats collection fails
         """
         try:
-            if hasattr(self._media_service, "get_stats"):
-                stats = self._media_service.get_stats()
-                # Convert MediaGenerationStats to dict for consistent interface
-                if hasattr(stats, "__dict__"):
-                    return stats.__dict__
-                return {"stats": str(stats)}
-            return {"media_service_stats": "unavailable"}
+            stats = self._media_service.get_stats()
+            # Convert MediaGenerationStats to dict for consistent interface
+            return stats.__dict__
         except Exception as e:
             logger.error(f"Could not get media service stats: {e}")
             from langlearn.exceptions import MediaGenerationError
@@ -175,20 +171,12 @@ class DomainMediaGenerator:
     def clear_cache(self) -> None:
         """Clear any caches in the underlying media service.
 
-        Raises:
-            MediaGenerationError: If cache clearing fails
+        Note: MediaService doesn't currently support cache clearing.
+        This method exists for interface compatibility but is a no-op.
         """
-        try:
-            if hasattr(self._media_service, "clear_cache"):
-                self._media_service.clear_cache()
-                logger.info("Media service cache cleared")
-        except Exception as e:
-            logger.error(f"Could not clear media service cache: {e}")
-            from langlearn.exceptions import MediaGenerationError
-
-            raise MediaGenerationError(
-                f"Failed to clear media service cache: {e}"
-            ) from e
+        # MediaService doesn't have cache clearing - this is a no-op
+        # If cache clearing is needed, implement it directly in MediaService
+        logger.debug("DomainMediaGenerator.clear_cache() called - no action taken")
 
 
 class MockDomainMediaGenerator:
