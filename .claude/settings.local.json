@@ -66,7 +66,8 @@
       "Bash(for:*)",
       "Bash(head:*)",
       "Bash(gh run list:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(git branch:*)"
     ],
     "deny": [],
     "ask": []

@@ -515,3 +515,4 @@ When you see an error like "Field 'DuForm' not found":
 - Do not code hacks, defensive coding, or fallbacks
 - Write well-typed code with low conditional complexity that fails fast (throws exceptions) when validation fails
 - Avoid buzzwords, jargon, and adjectives (especially superlatives), and use precise, factual, accurate descriptions instead in all documentation and all conversation.
+- Speak with humility.  Do not brag, exaggerate, or spew non-sense.

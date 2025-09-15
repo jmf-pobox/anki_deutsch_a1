@@ -52,13 +52,13 @@ class TestServiceContainer:
         assert result is mock_instance
         mock_audio_service.assert_called_once()
 
-    def test_get_audio_service_returns_none_on_exception(self) -> None:
-        """Test that get_audio_service returns None when service unavailable."""
+    def test_get_audio_service_raises_on_exception(self) -> None:
+        """Test that get_audio_service raises exception when service unavailable."""
         with patch("langlearn.services.audio.AudioService") as mock_service:
             mock_service.side_effect = ValueError("AWS credentials not available")
 
-            result = get_audio_service()
-            assert result is None
+            with pytest.raises(ValueError, match="AWS credentials not available"):
+                get_audio_service()
 
     @patch("langlearn.services.pexels_service.PexelsService")
     def test_get_pexels_service_creates_instance(
@@ -73,13 +73,13 @@ class TestServiceContainer:
         assert result is mock_instance
         mock_pexels_service.assert_called_once()
 
-    def test_get_pexels_service_returns_none_on_exception(self) -> None:
-        """Test that get_pexels_service returns None when service unavailable."""
+    def test_get_pexels_service_raises_on_exception(self) -> None:
+        """Test that get_pexels_service raises exception when service unavailable."""
         with patch("langlearn.services.pexels_service.PexelsService") as mock_service:
             mock_service.side_effect = ValueError("API key not available")
 
-            result = get_pexels_service()
-            assert result is None
+            with pytest.raises(ValueError, match="API key not available"):
+                get_pexels_service()
 
     @patch("langlearn.services.audio.AudioService")
     def test_service_caching(self, mock_audio_service: Mock) -> None:
