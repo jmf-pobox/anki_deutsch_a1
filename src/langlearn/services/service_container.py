@@ -55,35 +55,39 @@ class ServiceContainer:
         """
         if self._translation_service is None:
             # Try to create translation service using Anthropic
-            anthropic_service = self.get_anthropic_service()
-            if anthropic_service:
-                # Check for explicit test mode environment variable to avoid
-                # creating translation service during testing
-                if os.getenv("DISABLE_TRANSLATION_SERVICE") == "1":
-                    logger.debug(
-                        "Translation service disabled via DISABLE_TRANSLATION_SERVICE"
-                    )
-                    return None
+            try:
+                anthropic_service = self.get_anthropic_service()
+            except (ValueError, ImportError):
+                # AnthropicService not available, translation service unavailable
+                return None
 
-                # Require a real underlying client
-                client = getattr(anthropic_service, "client", None)
-                if client is None:
-                    logger.debug(
-                        "Translation unavailable: Anthropic client not initialized"
-                    )
-                    return None
-                try:
-                    self._translation_service = AnthropicTranslationService(
-                        anthropic_service
-                    )
-                except ValueError as e:
-                    # Expected error: Invalid configuration
-                    logger.info(f"TranslationService not available: {e}")
-                    return None
-                except ImportError as e:
-                    # Expected error: Missing dependencies
-                    logger.warning(f"TranslationService dependencies missing: {e}")
-                    return None
+            # Check for explicit test mode environment variable to avoid
+            # creating translation service during testing
+            if os.getenv("DISABLE_TRANSLATION_SERVICE") == "1":
+                logger.debug(
+                    "Translation service disabled via DISABLE_TRANSLATION_SERVICE"
+                )
+                return None
+
+            # Require a real underlying client
+            client = getattr(anthropic_service, "client", None)
+            if client is None:
+                logger.debug(
+                    "Translation unavailable: Anthropic client not initialized"
+                )
+                return None
+            try:
+                self._translation_service = AnthropicTranslationService(
+                    anthropic_service
+                )
+            except ValueError as e:
+                # Expected error: Invalid configuration
+                logger.info(f"TranslationService not available: {e}")
+                return None
+            except ImportError as e:
+                # Expected error: Missing dependencies
+                logger.warning(f"TranslationService dependencies missing: {e}")
+                return None
         return self._translation_service
 
     def get_audio_service(self) -> "AudioService | None":
