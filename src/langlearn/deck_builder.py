@@ -145,8 +145,8 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
-            from .languages.german.services.media_enricher import StandardMediaEnricher
             from .core.services import get_anthropic_service
+            from .languages.german.services.media_enricher import StandardMediaEnricher
 
             # Translation service not needed for domain-model MediaEnricher
             # Get anthropic service for AI-powered search term generation
