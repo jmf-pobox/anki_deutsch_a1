@@ -15,7 +15,6 @@ from langlearn.protocols.image_search_protocol import ImageSearchProtocol
 
 # Set up logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 # Create logs directory if it doesn't exist
 log_dir = Path("logs")
@@ -27,7 +26,6 @@ file_handler = logging.handlers.RotatingFileHandler(
     maxBytes=1024 * 1024,
     backupCount=5,  # 1MB
 )
-file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(
     logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 )
