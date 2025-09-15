@@ -10,7 +10,7 @@ from collections import defaultdict
 # Use TYPE_CHECKING to avoid circular imports
 from typing import TYPE_CHECKING, Any
 
-from langlearn.backends.base import NoteType
+from langlearn.core.backends.base import NoteType
 from langlearn.languages.german.records.factory import VerbConjugationRecord
 
 if TYPE_CHECKING:

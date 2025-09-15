@@ -17,7 +17,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.core.backends.base import CardTemplate, NoteType
 from langlearn.languages.german.records.factory import (
     ArticleRecord,
     IndefiniteArticleRecord,

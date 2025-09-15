@@ -7,7 +7,7 @@ addressing the core use case of German article learning: noun-article associatio
 import logging
 from typing import TYPE_CHECKING, Any
 
-from langlearn.backends.base import NoteType
+from langlearn.core.backends.base import NoteType
 from langlearn.languages.german.records.factory import NounRecord
 
 if TYPE_CHECKING:

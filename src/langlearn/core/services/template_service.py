@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import NamedTuple
 
-from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.core.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import TemplateError
 
 logger = logging.getLogger(__name__)

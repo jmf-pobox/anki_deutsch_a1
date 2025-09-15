@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends import AnkiBackend, CardTemplate, NoteType
+from langlearn.core.backends import AnkiBackend, CardTemplate, NoteType
 
 
 class StubEnricher:

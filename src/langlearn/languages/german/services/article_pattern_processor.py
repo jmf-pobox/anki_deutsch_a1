@@ -8,7 +8,7 @@ per article type (gender recognition + 4 case contexts).
 import logging
 from typing import TYPE_CHECKING, Any
 
-from langlearn.backends.base import NoteType
+from langlearn.core.backends.base import NoteType
 from langlearn.exceptions import ArticlePatternError
 from langlearn.languages.german.records.factory import (
     ArticleRecord,

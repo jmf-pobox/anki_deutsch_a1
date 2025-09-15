@@ -16,8 +16,8 @@ from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.core.services.template_service import TemplateService
 
-from .backends.anki_backend import AnkiBackend
-from .backends.base import DeckBackend
+from .core.backends.anki_backend import AnkiBackend
+from .core.backends.base import DeckBackend
 
 # Legacy domain model imports removed - using Clean Pipeline Records
 # Removed unused protocol imports - services are used directly

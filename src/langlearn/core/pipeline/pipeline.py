@@ -11,7 +11,7 @@ This module defines a small, generic pipeline framework:
 
 Quick start
 -----------
->>> from langlearn.pipeline.pipeline import (
+>>> from langlearn.core.pipeline.pipeline import (
 ...     PipelineObject, Pipeline, ToUpperCaseTask, ReverseStringTask,
 ... )
 >>> holder: PipelineObject[str] = PipelineObject()

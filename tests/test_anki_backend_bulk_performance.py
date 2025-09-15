@@ -11,8 +11,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends.anki_backend import AnkiBackend
-from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.core.backends.anki_backend import AnkiBackend
+from langlearn.core.backends.base import CardTemplate, NoteType
 
 
 class TestAnkiBackendBulkPerformance:
@@ -21,7 +21,7 @@ class TestAnkiBackendBulkPerformance:
     def test_bulk_note_creation_performance(self, mock_media_service: Mock) -> None:
         """Test performance of bulk note creation operations."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -132,7 +132,7 @@ class TestAnkiBackendBulkPerformance:
     def test_bulk_media_generation_optimization(self, mock_media_service: Mock) -> None:
         """Test bulk operations with media generation optimization."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -197,7 +197,7 @@ class TestAnkiBackendBulkPerformance:
     ) -> None:
         """Test memory efficiency with large dataset simulation."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -249,7 +249,7 @@ class TestAnkiBackendBulkPerformance:
     def test_concurrent_access_simulation(self, mock_media_service: Mock) -> None:
         """Test simulated concurrent access patterns for thread safety."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -332,7 +332,7 @@ class TestAnkiBackendBulkPerformance:
     def test_export_performance_with_large_deck(self, mock_media_service: Mock) -> None:
         """Test deck export performance with large deck simulation."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -376,7 +376,7 @@ class TestAnkiBackendBulkPerformance:
     def test_csv_data_processing_simulation(self, mock_media_service: Mock) -> None:
         """Test processing simulation with CSV data structure."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -478,7 +478,7 @@ class TestAnkiBackendBulkPerformance:
     def test_statistics_calculation_performance(self, mock_media_service: Mock) -> None:
         """Test performance of statistics calculation with large datasets."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()

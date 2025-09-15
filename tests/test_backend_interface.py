@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends import AnkiBackend
-from langlearn.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.core.backends import AnkiBackend
+from langlearn.core.backends.base import CardTemplate, DeckBackend, NoteType
 
 
 class TestDeckBackendInterface:

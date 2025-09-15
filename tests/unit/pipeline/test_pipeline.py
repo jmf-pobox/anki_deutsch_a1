@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from langlearn.pipeline.pipeline import (
+from langlearn.core.pipeline.pipeline import (
     Pipeline,
     PipelineObject,
     PipelineTask,
@@ -178,7 +178,7 @@ def test_main_prints_result(capsys: pytest.CaptureFixture[str]) -> None:
     # Configure holder to known value and run the sample pipeline inside main
     import logging
 
-    from langlearn.pipeline import pipeline as mod
+    from langlearn.core.pipeline import pipeline as mod
 
     logging.getLogger(__name__)  # ensure logging import exercised
 

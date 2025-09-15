@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends.base import DeckBackend
+from langlearn.core.backends.base import DeckBackend
 from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 
 

@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends.base import DeckBackend, MediaFile
+from langlearn.core.backends.base import DeckBackend, MediaFile
 from langlearn.deck_builder import DeckBuilder
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.adverb import Adverb, AdverbType
