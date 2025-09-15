@@ -10,12 +10,13 @@
 
 **Last Update**: 2025-09-14 (tech-debt/simplify-codebase branch)
 
-**PROGRESS**: 5 of 5 technical debt issues **RESOLVED** ✅
+**PROGRESS**: 6 of 6 technical debt issues **RESOLVED** ✅
 
 **✅ RESOLVED ISSUES**:
 - 🔴 **CRITICAL**: Media type fallback complexity (commits: 4cdc71c, eba3f16)
 - 🟠 **HIGH**: ServiceContainer typing patterns (commit: 7e36c1d)
 - 🟠 **HIGH**: Backend capability detection (commit: f9d8076)
+- 🟠 **HIGH**: DomainMediaGenerator hasattr patterns (commit: fcf10b5)
 - 🔵 **LOW**: TODO comments cleanup (commit: eba3f16)
 - 🔵 **LOW**: Debug logging cleanup (commit: 516b6ec)
 
@@ -147,6 +148,34 @@ if hasattr(self._backend, "set_current_subdeck"):
 2. **Removed hasattr checks** from DeckManager
 3. **Direct method calls** now work for all backends
 4. **Maintains backward compatibility** via default implementation
+
+### 2.4 DomainMediaGenerator Speculative Patterns
+
+**Status**: ✅ **RESOLVED** - Removed YAGNI violations and speculative hasattr patterns
+
+**File**: `src/langlearn/services/domain_media_generator.py`
+
+**Previous Issues**:
+1. **Speculative hasattr checks** for non-existent MediaService methods
+2. **Complex fallback logic** for "future extensibility"
+3. **Silent failures** instead of fail-fast behavior
+
+**Patterns Removed** (commit: fcf10b5):
+```python
+# Bogus patterns removed:
+if hasattr(self._media_service, "get_stats"):
+    # MediaService ALWAYS has get_stats
+if hasattr(stats, "__dict__"):
+    # ALL objects have __dict__
+if hasattr(self._media_service, "clear_cache"):
+    # MediaService NEVER had clear_cache - speculative code
+```
+
+**Resolution**:
+1. **Removed speculative hasattr checks** - MediaService interface is known and controlled
+2. **Converted clear_cache to proper no-op** with clear documentation
+3. **Updated tests to expect fail-fast behavior** instead of silent fallbacks
+4. **Applied YAGNI principle** - removed speculative "future extensibility"
 
 ---
 
