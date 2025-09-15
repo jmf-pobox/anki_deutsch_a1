@@ -125,7 +125,7 @@ def temp_directory_with_nested_path(
 @pytest.fixture
 def mock_aws_services() -> Any:
     """Mock AWS services to avoid requiring credentials in unit tests."""
-    with patch("langlearn.services.audio.boto3.client") as mock_boto3:
+    with patch("langlearn.core.services.audio_service.boto3.client") as mock_boto3:
         mock_polly = MagicMock()
         mock_boto3.return_value = mock_polly
         yield mock_polly
@@ -135,10 +135,10 @@ def mock_aws_services() -> Any:
 def mock_external_services() -> Any:
     """Mock all external services for unit testing."""
     with (
-        patch("langlearn.services.audio.boto3.client") as mock_boto3,
-        patch("langlearn.services.pexels_service.PexelsService") as mock_pexels,
+        patch("langlearn.core.services.audio_service.boto3.client") as mock_boto3,
+        patch("langlearn.core.services.image_service.PexelsService") as mock_pexels,
         patch(
-            "langlearn.services.anthropic_service.AnthropicService"
+            "langlearn.core.services.ai_service.AnthropicService"
         ) as mock_anthropic,
     ):
         # Configure mock boto3 client

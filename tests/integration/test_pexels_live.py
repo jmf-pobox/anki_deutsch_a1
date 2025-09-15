@@ -10,7 +10,7 @@ import keyring
 import pytest
 import requests
 
-from langlearn.services import PexelsService
+from langlearn.core.services.image_service import PexelsService
 from tests.test_utils import is_rate_limited_error, skip_if_rate_limited
 
 logger = logging.getLogger(__name__)

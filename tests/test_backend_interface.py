@@ -18,8 +18,12 @@ class TestDeckBackendInterface:
         """Create a backend instance for testing."""
         # Mock external services for unit testing
         with (
-            patch("langlearn.services.audio.boto3.client") as mock_boto_client,
-            patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+            patch(
+                "langlearn.core.services.audio_service.boto3.client"
+            ) as mock_boto_client,
+            patch(
+                "langlearn.core.services.image_service.requests.get"
+            ) as mock_requests,
             patch("keyring.get_password") as mock_keyring,
         ):
             mock_boto_client.return_value = Mock()
@@ -164,8 +168,12 @@ class TestDeckBackendInterface:
         """Test that AnkiBackend supports all interface operations."""
         # Mock AWS services to avoid region configuration issues in CI
         with (
-            patch("langlearn.services.audio.boto3.client") as mock_boto_client,
-            patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+            patch(
+                "langlearn.core.services.audio_service.boto3.client"
+            ) as mock_boto_client,
+            patch(
+                "langlearn.core.services.image_service.requests.get"
+            ) as mock_requests,
         ):
             mock_boto_client.return_value = Mock()
             mock_requests.return_value = Mock()

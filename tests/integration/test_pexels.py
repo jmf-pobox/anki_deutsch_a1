@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 import pytest
 
-from langlearn.services import PexelsService
+from langlearn.core.services.image_service import PexelsService
 from tests.test_utils import (
     check_rate_limit_in_logs,
     is_rate_limited_error,

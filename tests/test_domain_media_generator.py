@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from langlearn.core.services.domain_media_generator import DomainMediaGenerator
 from langlearn.exceptions import MediaGenerationError
-from langlearn.services.domain_media_generator import DomainMediaGenerator
 
 
 class TestDomainMediaGenerator:
@@ -157,7 +157,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test context enhanced query with all parameters provided."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.core.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_context_enhanced_query(
                 "Hund", "dog", "Der Hund bellt"
@@ -172,7 +172,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test context enhanced query with missing data."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.core.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_context_enhanced_query("", "dog", "")
 
@@ -192,7 +192,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test conceptual search terms with all parameters."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.core.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_conceptual_search_terms(
                 "adverb", "schnell", "quickly"
@@ -207,7 +207,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test conceptual search terms with missing data."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.core.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_conceptual_search_terms("", "word", "")
 
@@ -220,7 +220,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test conceptual search terms without English translation."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.core.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_conceptual_search_terms("adverb", "schnell", "")
 
@@ -286,7 +286,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test clear_cache is a no-op since MediaService doesn't support caching."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.core.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             generator.clear_cache()
 

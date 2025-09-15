@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import NamedTuple
 
-from .audio import AudioService
-from .pexels_service import PexelsService, PhotoSize
+from .audio_service import AudioService
+from .image_service import PexelsService, PhotoSize
 
 logger = logging.getLogger(__name__)
 

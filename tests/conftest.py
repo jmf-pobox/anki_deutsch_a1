@@ -53,8 +53,8 @@ def mock_external_services(
 
     # Mock external service calls
     with (
-        patch("langlearn.services.audio.boto3.client") as mock_boto_client,
-        patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+        patch("langlearn.core.services.audio_service.boto3.client") as mock_boto_client,
+        patch("langlearn.core.services.image_service.requests.get") as mock_requests,
         patch("keyring.get_password") as mock_keyring,
     ):
         # Configure mocks

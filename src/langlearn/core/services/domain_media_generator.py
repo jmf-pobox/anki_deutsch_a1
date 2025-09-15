@@ -10,7 +10,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from langlearn.services.media_service import MediaService
+    from langlearn.core.services.media_service import MediaService
 
 logger = logging.getLogger(__name__)
 

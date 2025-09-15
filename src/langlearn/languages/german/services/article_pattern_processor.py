@@ -16,10 +16,11 @@ from langlearn.languages.german.records.factory import (
     NegativeArticleRecord,
     UnifiedArticleRecord,
 )
-from langlearn.services.german_explanation_factory import GermanExplanationFactory
+
+from .german_explanation_factory import GermanExplanationFactory
 
 if TYPE_CHECKING:
-    from langlearn.services.card_builder import CardBuilder
+    from .card_builder import CardBuilder
 
 logger = logging.getLogger(__name__)
 

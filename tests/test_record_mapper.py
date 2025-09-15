@@ -14,7 +14,7 @@ from langlearn.languages.german.records.factory import (
     NegationRecord,
     NounRecord,
 )
-from langlearn.services.record_mapper import RecordMapper
+from langlearn.languages.german.services.record_mapper import RecordMapper
 
 
 class TestRecordMapper:

@@ -11,10 +11,10 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from langlearn.core.services.ai_service import AnthropicService
+from langlearn.core.services.audio_service import AudioService
+from langlearn.core.services.image_service import PexelsService
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
-from langlearn.services.anthropic_service import AnthropicService
-from langlearn.services.audio import AudioService
-from langlearn.services.pexels_service import PexelsService
 
 logger = logging.getLogger(__name__)
 

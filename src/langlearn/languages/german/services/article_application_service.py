@@ -11,7 +11,7 @@ from langlearn.backends.base import NoteType
 from langlearn.languages.german.records.factory import NounRecord
 
 if TYPE_CHECKING:
-    from langlearn.services.card_builder import CardBuilder
+    from .card_builder import CardBuilder
 
 logger = logging.getLogger(__name__)
 

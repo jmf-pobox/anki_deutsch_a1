@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TypeVar
 
 from langlearn.languages.german.records.factory import BaseRecord
-from langlearn.services.record_mapper import RecordMapper
+from langlearn.languages.german.services.record_mapper import RecordMapper
 
 # Set up logging
 logger = logging.getLogger(__name__)

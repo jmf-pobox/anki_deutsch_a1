@@ -24,7 +24,9 @@ from langlearn.languages.german.records.factory import (
     NegativeArticleRecord,
     UnifiedArticleRecord,
 )
-from langlearn.services.article_pattern_processor import ArticlePatternProcessor
+from langlearn.languages.german.services.article_pattern_processor import (
+    ArticlePatternProcessor,
+)
 
 
 class TestArticlePatternProcessor:

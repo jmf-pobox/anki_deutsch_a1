@@ -13,7 +13,9 @@ Test coverage includes:
 
 import pytest
 
-from langlearn.services.german_explanation_factory import GermanExplanationFactory
+from langlearn.languages.german.services.german_explanation_factory import (
+    GermanExplanationFactory,
+)
 
 
 class TestGermanExplanationFactory:

@@ -10,23 +10,26 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
+from langlearn.core.services.audio_service import AudioService
+from langlearn.core.services.image_service import PexelsService
+from langlearn.core.services.media_file_registrar import MediaFileRegistrar
+from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
+from langlearn.core.services.template_service import TemplateService
+
 from .backends.anki_backend import AnkiBackend
 from .backends.base import DeckBackend
+
+# Legacy domain model imports removed - using Clean Pipeline Records
+# Removed unused protocol imports - services are used directly
+from .languages.german.services.article_application_service import (
+    ArticleApplicationService,
+)
+from .languages.german.services.card_builder import CardBuilder
+from .languages.german.services.record_mapper import RecordMapper
 
 # CardGeneratorFactory import removed - using Clean Pipeline CardBuilder
 from .managers.deck_manager import DeckManager
 from .managers.media_manager import MediaManager
-
-# Legacy domain model imports removed - using Clean Pipeline Records
-# Removed unused protocol imports - services are used directly
-from .services.article_application_service import ArticleApplicationService
-from .services.audio import AudioService
-from .services.card_builder import CardBuilder
-from .services.media_file_registrar import MediaFileRegistrar
-from .services.media_service import MediaGenerationConfig, MediaService
-from .services.pexels_service import PexelsService
-from .services.record_mapper import RecordMapper
-from .services.template_service import TemplateService
 
 if TYPE_CHECKING:
     from langlearn.languages.german.records.factory import BaseRecord
@@ -142,8 +145,8 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher for Clean Pipeline
         if self._media_service:
-            from .services import get_anthropic_service
-            from .services.media_enricher import StandardMediaEnricher
+            from .languages.german.services.media_enricher import StandardMediaEnricher
+            from .core.services import get_anthropic_service
 
             # Translation service not needed for domain-model MediaEnricher
             # Get anthropic service for AI-powered search term generation
@@ -307,7 +310,7 @@ class DeckBuilder:
                 logger.info(f"Generating media for {record_type} records...")
 
                 # Convert Records to Domain Models for media enrichment
-                from langlearn.services.record_to_model_factory import (
+                from .languages.german.services.record_to_model_factory import (
                     RecordToModelFactory,
                 )
 

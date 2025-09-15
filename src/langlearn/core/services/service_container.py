@@ -3,11 +3,11 @@
 import logging
 from typing import TYPE_CHECKING, Optional
 
-from .anthropic_service import AnthropicService
+from langlearn.core.services.ai_service import AnthropicService
 
 if TYPE_CHECKING:
-    from langlearn.services.audio import AudioService
-    from langlearn.services.pexels_service import PexelsService
+    from langlearn.core.services.audio_service import AudioService
+    from langlearn.core.services.image_service import PexelsService
 
 # Module-level logger for tests to patch/log
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ class ServiceContainer:
             import os
             import tempfile
 
-            from langlearn.services.audio import AudioService
+            from langlearn.core.services.audio_service import AudioService
 
             # Use temporary directory for tests, proper directory otherwise
             if (
@@ -81,7 +81,7 @@ class ServiceContainer:
             ImportError: If requests or dependencies are missing
         """
         if self._pexels_service is None:
-            from langlearn.services.pexels_service import PexelsService
+            from langlearn.core.services.image_service import PexelsService
 
             self._pexels_service = PexelsService()
         return self._pexels_service

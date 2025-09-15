@@ -566,7 +566,7 @@ The migration follows a phased approach that minimizes disruption while systemat
    ```bash
    git mv src/langlearn/services/audio.py src/langlearn/core/services/audio_service.py
    git mv src/langlearn/services/pexels_service.py src/langlearn/core/services/image_service.py
-   git mv src/langlearn/services/anthropic_service.py src/langlearn/core/services/ai_service.py
+   git mv src/langlearn/services/ai_service.py src/langlearn/core/services/ai_service.py
    git mv src/langlearn/services/media_service.py src/langlearn/core/services/media_service.py
    git mv src/langlearn/services/csv_service.py src/langlearn/core/services/csv_service.py
    git mv src/langlearn/services/service_container.py src/langlearn/core/services/service_container.py

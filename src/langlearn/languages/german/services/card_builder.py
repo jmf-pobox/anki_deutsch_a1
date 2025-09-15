@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.core.services.template_service import TemplateService
 from langlearn.languages.german.records.factory import (
     ArticleRecord,
     BaseRecord,
@@ -18,7 +19,6 @@ from langlearn.languages.german.records.factory import (
     UnifiedArticleRecord,
     VerbConjugationRecord,
 )
-from langlearn.services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ class CardBuilder:
         self._template_service = template_service
 
         # Initialize article application service for noun-article cards
-        from langlearn.services.article_application_service import (
+        from .article_application_service import (
             ArticleApplicationService,
         )
 
@@ -844,7 +844,7 @@ class CardBuilder:
         logger.info("Building verb conjugation cards from %d records", len(records))
 
         # Import here to avoid circular dependency
-        from langlearn.services.verb_conjugation_processor import (
+        from .verb_conjugation_processor import (
             VerbConjugationProcessor,
         )
 
@@ -880,7 +880,7 @@ class CardBuilder:
         logger.info("Building article pattern cards from %d records", len(records))
 
         # Import here to avoid circular dependency
-        from langlearn.services.article_pattern_processor import (
+        from .article_pattern_processor import (
             ArticlePatternProcessor,
         )
 

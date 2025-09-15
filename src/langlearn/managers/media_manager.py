@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from langlearn.backends.base import DeckBackend, MediaFile
-from langlearn.services.media_service import MediaService
+from langlearn.core.services.media_service import MediaService
 
 logger = logging.getLogger(__name__)
 

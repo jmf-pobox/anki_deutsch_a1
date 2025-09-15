@@ -15,6 +15,11 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
+# Removed unused MediaServiceProtocol import - using concrete MediaService
+from langlearn.core.services.audio_service import AudioService
+from langlearn.core.services.domain_media_generator import DomainMediaGenerator
+from langlearn.core.services.image_service import PexelsService
+from langlearn.core.services.media_service import MediaService
 from langlearn.exceptions import (
     CardGenerationError,
     DataProcessingError,
@@ -28,13 +33,7 @@ from langlearn.languages.german.models.phrase import Phrase
 from langlearn.languages.german.models.preposition import Preposition
 from langlearn.languages.german.models.verb import Verb
 from langlearn.languages.german.records.factory import create_record
-
-# Removed unused MediaServiceProtocol import - using concrete MediaService
-from langlearn.services.audio import AudioService
-from langlearn.services.domain_media_generator import DomainMediaGenerator
-from langlearn.services.media_enricher import StandardMediaEnricher
-from langlearn.services.media_service import MediaService
-from langlearn.services.pexels_service import PexelsService
+from langlearn.languages.german.services.media_enricher import StandardMediaEnricher
 
 from .base import DeckBackend, MediaFile, NoteType
 
@@ -99,7 +98,7 @@ class AnkiBackend(DeckBackend):
         self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
         # Create MediaEnricher for Clean Pipeline Architecture
-        from langlearn.services import get_anthropic_service
+        from langlearn.core.services import get_anthropic_service
 
         anthropic_service = get_anthropic_service()
 

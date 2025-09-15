@@ -8,7 +8,7 @@ from typing import TypedDict
 
 import pytest
 
-from langlearn.services import AudioService
+from langlearn.core.services.audio_service import AudioService
 
 
 class ErrorDict(TypedDict, total=False):
