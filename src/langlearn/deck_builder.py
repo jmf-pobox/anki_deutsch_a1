@@ -26,9 +26,6 @@ from .services.media_file_registrar import MediaFileRegistrar
 from .services.media_service import MediaGenerationConfig, MediaService
 from .services.pexels_service import PexelsService
 from .services.record_mapper import RecordMapper
-from .services.service_container import (
-    get_translation_service as _get_translation_service,
-)
 from .services.template_service import TemplateService
 
 if TYPE_CHECKING:
@@ -36,10 +33,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# Re-export factory for tests that patch DeckBuilder-level symbol
-# Some tests expect to patch langlearn.deck_builder.get_translation_service
-# Provide a module-level alias to satisfy those patches.
-get_translation_service = _get_translation_service
 
 T = TypeVar("T")
 

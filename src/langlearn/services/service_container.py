@@ -1,11 +1,9 @@
 """Service container for dependency injection."""
 
 import logging
-import os
 from typing import TYPE_CHECKING, Optional
 
 from .anthropic_service import AnthropicService
-from .translation_service import AnthropicTranslationService, TranslationServiceProtocol
 
 if TYPE_CHECKING:
     from langlearn.services.audio import AudioService
@@ -20,7 +18,6 @@ class ServiceContainer:
 
     _instance: Optional["ServiceContainer"] = None
     _anthropic_service: AnthropicService | None = None
-    _translation_service: TranslationServiceProtocol | None = None
     _audio_service: "AudioService | None" = None
     _pexels_service: "PexelsService | None" = None
 
@@ -43,48 +40,6 @@ class ServiceContainer:
         if self._anthropic_service is None:
             self._anthropic_service = AnthropicService()
         return self._anthropic_service
-
-    def get_translation_service(self) -> TranslationServiceProtocol | None:
-        """Get the shared TranslationService instance.
-
-        Returns:
-            TranslationService instance or None if not available
-        """
-        if self._translation_service is None:
-            # Try to create translation service using Anthropic
-            try:
-                anthropic_service = self.get_anthropic_service()
-            except (ValueError, ImportError):
-                # AnthropicService not available, translation service unavailable
-                return None
-
-            # Check for explicit test mode environment variable to avoid
-            # creating translation service during testing
-            if os.getenv("DISABLE_TRANSLATION_SERVICE") == "1":
-                logger.debug(
-                    "Translation service disabled via DISABLE_TRANSLATION_SERVICE"
-                )
-                return None
-
-            # Require a real underlying client
-            if anthropic_service.client is None:
-                logger.debug(
-                    "Translation unavailable: Anthropic client not initialized"
-                )
-                return None
-            try:
-                self._translation_service = AnthropicTranslationService(
-                    anthropic_service
-                )
-            except ValueError as e:
-                # Expected error: Invalid configuration
-                logger.info(f"TranslationService not available: {e}")
-                return None
-            except ImportError as e:
-                # Expected error: Missing dependencies
-                logger.warning(f"TranslationService dependencies missing: {e}")
-                return None
-        return self._translation_service
 
     def get_audio_service(self) -> "AudioService":
         """Get the shared AudioService instance.
@@ -154,15 +109,6 @@ def get_anthropic_service() -> AnthropicService:
         ImportError: If anthropic package is not installed
     """
     return _container.get_anthropic_service()
-
-
-def get_translation_service() -> TranslationServiceProtocol | None:
-    """Factory function to get TranslationService instance.
-
-    Returns:
-        TranslationService instance or None if not available
-    """
-    return _container.get_translation_service()
 
 
 def get_audio_service() -> "AudioService":
