@@ -664,8 +664,6 @@ class AnkiBackend(DeckBackend):
 
     def add_media_file(self, file_path: str, media_type: str = "") -> MediaFile:
         """Add a media file to the deck."""
-        """TODO: Simplify as this is is unnecessarily complex: we only use
-        mp3 and png."""
         logger.info(
             f"🔧 AnkiBackend.add_media_file: '{file_path}' (media_type='{media_type}')"
         )
