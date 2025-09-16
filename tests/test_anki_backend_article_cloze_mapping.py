@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.core.backends import AnkiBackend, CardTemplate, NoteType
+from langlearn.languages.german.language import GermanLanguage
 
 
 class StubEnricher:
@@ -31,7 +32,7 @@ class StubEnricher:
 def test_cloze_article_backend_mapping_returns_media(
     tmp_path: Path, note_type_name: str, mock_media_service: Mock
 ) -> None:
-    backend = AnkiBackend("Test Deck", mock_media_service)
+    backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
     # Inject stub enricher and an in-memory media service to avoid side effects
     # Monkeypatch the backend's media enricher with a stub that supplies media

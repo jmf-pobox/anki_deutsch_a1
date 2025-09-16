@@ -12,6 +12,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from langlearn.core.backends.anki_backend import AnkiBackend
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestAnkiBackendDeduplication:
@@ -23,7 +24,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file doesn't exist (new file)
             text = "Guten Tag"
@@ -50,7 +51,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file exists (duplicate)
             text = "Hallo Welt"
@@ -76,7 +77,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file doesn't exist (new file)
             word = "Katze"
@@ -103,7 +104,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file exists (duplicate)
             word = "Hund"
@@ -131,7 +132,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Directly set statistics to test calculation logic
             backend._media_generation_stats.update(
@@ -165,7 +166,7 @@ class TestAnkiBackendDeduplication:
             )
             mock_collection.db.scalar.return_value = 10
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Set up deduplication statistics
             backend._media_generation_stats.update(
@@ -200,7 +201,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             text = "Spezielle deutsche Wörter"
             expected_hash = hashlib.md5(text.encode()).hexdigest()
 
@@ -227,7 +228,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             word = "Schmetterling"
 
             # Test word-based filename logic
@@ -252,7 +253,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             with (
                 patch.object(
@@ -277,7 +278,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Verify directories are set up for optimization (using MediaService)
             assert backend._audio_dir is not None
@@ -291,7 +292,7 @@ class TestAnkiBackendDeduplication:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Simulate concurrent calls with same text
             text = "Gleichzeitig"
@@ -326,7 +327,7 @@ class TestAnkiBackendOptimizationFeatures:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Verify directory paths are set up correctly for optimization
             assert backend._audio_dir is not None
@@ -340,7 +341,7 @@ class TestAnkiBackendOptimizationFeatures:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Set up scenario with high reuse (good optimization)
             backend._media_generation_stats.update(

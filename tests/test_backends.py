@@ -8,6 +8,7 @@ from unittest.mock import Mock
 import pytest
 
 from langlearn.core.backends import AnkiBackend, CardTemplate, NoteType
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestBackendAbstraction:
@@ -40,7 +41,9 @@ class TestBackendAbstraction:
         self, sample_note_type: NoteType, mock_media_service: Mock
     ) -> None:
         """Test basic functionality of the official Anki backend."""
-        backend = AnkiBackend("Test Deck", mock_media_service, "Test Description")
+        backend = AnkiBackend(
+            "Test Deck", mock_media_service, GermanLanguage(), "Test Description"
+        )
 
         # Test note type creation
         note_type_id = backend.create_note_type(sample_note_type)
@@ -69,7 +72,7 @@ class TestBackendAbstraction:
     ) -> None:
         """Test media file handling with Anki backend."""
         # Test with Anki backend
-        anki_backend = AnkiBackend("Media Test", mock_media_service)
+        anki_backend = AnkiBackend("Media Test", mock_media_service, GermanLanguage())
         media_file = anki_backend.add_media_file(temp_audio_file)
         # AnkiBackend wraps audio files in [sound:] format for Anki compatibility
         expected_reference = f"[sound:{os.path.basename(temp_audio_file)}]"
@@ -84,7 +87,7 @@ class TestBackendAbstraction:
     ) -> None:
         """Test export functionality for Anki backend."""
         # Test Anki backend export (Phase 2: .apkg files)
-        anki_backend = AnkiBackend("Export Test", mock_media_service)
+        anki_backend = AnkiBackend("Export Test", mock_media_service, GermanLanguage())
         note_type_id = anki_backend.create_note_type(sample_note_type)
         # Should raise DataProcessingError for insufficient fields
         from langlearn.exceptions import DataProcessingError
@@ -106,7 +109,7 @@ class TestBackendAbstraction:
 
     def test_error_handling(self, mock_media_service: Mock) -> None:
         """Test error handling in Anki backend."""
-        backend = AnkiBackend("Error Test", mock_media_service)
+        backend = AnkiBackend("Error Test", mock_media_service, GermanLanguage())
 
         # Test adding note with invalid note type ID
         with pytest.raises(ValueError, match="Note type ID"):
@@ -120,7 +123,7 @@ class TestBackendAbstraction:
         self, sample_note_type: NoteType, mock_media_service: Mock
     ) -> None:
         """Test that Anki backend implements the interface correctly."""
-        backend = AnkiBackend("Interface Test", mock_media_service)
+        backend = AnkiBackend("Interface Test", mock_media_service, GermanLanguage())
 
         # Test interface methods exist and work
         assert hasattr(backend, "create_note_type")

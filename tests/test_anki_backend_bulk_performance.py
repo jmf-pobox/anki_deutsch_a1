@@ -13,6 +13,7 @@ import pytest
 
 from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.core.backends.base import CardTemplate, NoteType
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestAnkiBackendBulkPerformance:
@@ -49,7 +50,9 @@ class TestAnkiBackendBulkPerformance:
             mock_collection.new_note.return_value = mock_note
             mock_collection.models.get.return_value = mock_notetype
 
-            backend = AnkiBackend("German A1 Deck", mock_media_service)
+            backend = AnkiBackend(
+                "German A1 Deck", mock_media_service, GermanLanguage()
+            )
 
             # Create note type
             template = CardTemplate(
@@ -141,7 +144,9 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("German A1 Media Deck", mock_media_service)
+            backend = AnkiBackend(
+                "German A1 Media Deck", mock_media_service, GermanLanguage()
+            )
 
             # Mock media services for performance testing
             with (
@@ -207,7 +212,9 @@ class TestAnkiBackendBulkPerformance:
             )
             mock_collection.db.scalar.return_value = 1000  # 1000 notes
 
-            backend = AnkiBackend("Large German A1 Deck", mock_media_service)
+            backend = AnkiBackend(
+                "Large German A1 Deck", mock_media_service, GermanLanguage()
+            )
 
             # Simulate large internal state
             backend._note_type_map = {
@@ -258,7 +265,9 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("Concurrent Access Test", mock_media_service)
+            backend = AnkiBackend(
+                "Concurrent Access Test", mock_media_service, GermanLanguage()
+            )
 
             # Mock media generation for concurrent testing
             with (
@@ -341,7 +350,9 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("Large Export Test", mock_media_service)
+            backend = AnkiBackend(
+                "Large Export Test", mock_media_service, GermanLanguage()
+            )
 
             # Simulate large deck with many media files
             backend._media_files = [
@@ -385,7 +396,9 @@ class TestAnkiBackendBulkPerformance:
                 id=12345
             )
 
-            backend = AnkiBackend("CSV Processing Test", mock_media_service)
+            backend = AnkiBackend(
+                "CSV Processing Test", mock_media_service, GermanLanguage()
+            )
 
             # Simulate processing CSV-like data (typical German A1 vocabulary)
             csv_noun_data = [
@@ -488,7 +501,9 @@ class TestAnkiBackendBulkPerformance:
             )
             mock_collection.db.scalar.return_value = 5000  # Large note count
 
-            backend = AnkiBackend("Statistics Performance Test", mock_media_service)
+            backend = AnkiBackend(
+                "Statistics Performance Test", mock_media_service, GermanLanguage()
+            )
 
             # Simulate large-scale statistics
             backend._note_type_map = {

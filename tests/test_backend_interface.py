@@ -8,6 +8,7 @@ import pytest
 
 from langlearn.core.backends import AnkiBackend
 from langlearn.core.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestDeckBackendInterface:
@@ -46,7 +47,12 @@ class TestDeckBackendInterface:
                 os.environ[key] = value
 
             try:
-                return AnkiBackend("Test Deck", mock_media_service, "Test description")
+                return AnkiBackend(
+                    "Test Deck",
+                    mock_media_service,
+                    GermanLanguage(),
+                    "Test description",
+                )
             finally:
                 # Restore original environment
                 for key, original_value in original_env.items():
@@ -177,7 +183,9 @@ class TestDeckBackendInterface:
         ):
             mock_boto_client.return_value = Mock()
             mock_requests.return_value = Mock()
-            backend = AnkiBackend("Interface Test", mock_media_service)
+            backend = AnkiBackend(
+                "Interface Test", mock_media_service, GermanLanguage()
+            )
 
             template = CardTemplate(
                 name="Test Template", front_html="{{Field1}}", back_html="{{Field2}}"

@@ -14,6 +14,7 @@ import pytest
 
 from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.core.backends.base import CardTemplate, NoteType
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestAnkiBackendCoreMethodsCoverage:
@@ -51,7 +52,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_changes.id = 98765
             mock_models.add.return_value = mock_changes
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Create note type with templates
             template = CardTemplate(
@@ -103,7 +104,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_models.new_field.return_value = {"name": "field"}
             mock_models.add.return_value = Mock(id=54321)
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Create note type without templates
             note_type = NoteType(
@@ -133,7 +134,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Set up note type mapping
             from anki.models import NotetypeId
@@ -189,7 +190,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             patch("langlearn.core.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Try to add note with non-existent note type
             with pytest.raises(ValueError, match="Note type ID invalid_id not found"):
@@ -207,7 +208,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             from anki.models import NotetypeId
 
@@ -246,7 +247,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             from anki.models import NotetypeId
 
@@ -270,7 +271,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             backend._media_files = [Mock(), Mock()]  # 2 media files
 
             # Mock AnkiPackageExporter with export_to_file method
@@ -304,7 +305,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             with patch("anki.exporting.AnkiPackageExporter") as mock_exporter_cls:
                 mock_exporter = Mock()
@@ -332,7 +333,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             with (
                 patch("anki.exporting.AnkiPackageExporter") as mock_exporter_cls,
@@ -367,7 +368,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             backend._media_files = [Mock(), Mock(), Mock()]  # 3 media files
 
             # Mock exporter for successful export
@@ -403,7 +404,7 @@ class TestAnkiBackendCoreMethodsCoverage:
             mock_db.scalar.side_effect = Exception("Database error")
             mock_collection.db = mock_db
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             backend._note_type_map = {"1": Mock()}
             backend._media_files = [Mock(), Mock()]
 

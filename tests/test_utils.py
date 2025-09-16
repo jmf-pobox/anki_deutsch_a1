@@ -9,6 +9,7 @@ import pytest
 
 from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.deck_builder import DeckBuilder
+from langlearn.languages.german.language import GermanLanguage
 
 
 # Rate limit detection utilities
@@ -180,11 +181,20 @@ def mock_media_service(mock_audio_service: Any, mock_pexels_service: Any) -> Mag
 
 
 @pytest.fixture
+def mock_german_language() -> GermanLanguage:
+    """Create a GermanLanguage instance for testing."""
+    return GermanLanguage()
+
+
+@pytest.fixture
 def anki_backend_with_mocks(
     mock_media_service: Any,
+    mock_german_language: GermanLanguage,
 ) -> Generator[AnkiBackend]:
     """Create an AnkiBackend instance with mocked services via dependency injection."""
-    backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
+    backend = AnkiBackend(
+        "Test Deck", mock_media_service, mock_german_language, "Test description"
+    )
     yield backend
     # Cleanup if needed - removed as AnkiBackend doesn't have cleanup method
     pass
@@ -207,9 +217,12 @@ def deck_builder_with_mocks(
 def anki_backend_no_aws(
     mock_external_services: Any,
     mock_media_service: Any,
+    mock_german_language: GermanLanguage,
 ) -> Generator[AnkiBackend]:
     """Create an AnkiBackend instance with mocked external services."""
-    backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
+    backend = AnkiBackend(
+        "Test Deck", mock_media_service, mock_german_language, "Test description"
+    )
     yield backend
     # Cleanup if needed - removed as AnkiBackend doesn't have cleanup method
     pass

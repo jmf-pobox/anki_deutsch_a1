@@ -24,15 +24,9 @@ from langlearn.exceptions import (
     DataProcessingError,
     MediaGenerationError,
 )
-from langlearn.languages.german.models.adjective import Adjective
-from langlearn.languages.german.models.adverb import Adverb, AdverbType
-from langlearn.languages.german.models.negation import Negation, NegationType
-from langlearn.languages.german.models.noun import Noun
-from langlearn.languages.german.models.phrase import Phrase
-from langlearn.languages.german.models.preposition import Preposition
-from langlearn.languages.german.models.verb import Verb
 from langlearn.languages.german.records.factory import create_record
 from langlearn.languages.german.services.media_enricher import StandardMediaEnricher
+from langlearn.protocols.language_protocol import Language
 
 from .base import DeckBackend, MediaFile, NoteType
 
@@ -50,16 +44,19 @@ class AnkiBackend(DeckBackend):
         self,
         deck_name: str,
         media_service: MediaService,
+        language: Language,
         description: str = "",
     ) -> None:
         """Initialize the official Anki backend.
 
         Args:
             deck_name: Name of the deck to create
-            description: Optional description for the deck
             media_service: Required MediaService for media generation
+            language: Language implementation for domain model creation
+            description: Optional description for the deck
         """
         super().__init__(deck_name, description)
+        self._language = language
 
         # Create temporary collection file
         self._temp_dir = tempfile.mkdtemp()
@@ -418,9 +415,9 @@ class AnkiBackend(DeckBackend):
                     # Create record from fields
                     record = create_record(record_type, fields)
 
-                    # Create domain model for business logic validation
-                    domain_model = self._create_domain_model_from_record(
-                        record, record_type
+                    # Create domain model using language factory
+                    domain_model = self._language.create_domain_model(
+                        record_type, record
                     )
 
                     # Enrich record using MediaEnricher with domain model
@@ -540,71 +537,6 @@ class AnkiBackend(DeckBackend):
             raise DataProcessingError(
                 f"Media processing failed for note type {note_type_input}: {e}"
             ) from e
-
-    def _create_domain_model_from_record(self, record: Any, record_type: str) -> Any:
-        """Create domain model instance from record data."""
-        # TODO: If this is still used, it should be in its own class or it
-        #  should simply be integrated into each domain class as a factory
-        #  method.  I do not think having this long list of cases makes
-        #  sense here.
-        if record_type == "noun":
-            return Noun(
-                noun=record.noun,
-                article=record.article,
-                english=record.english,
-                plural=record.plural,
-                example=record.example,
-                related=record.related,
-            )
-        elif record_type == "adjective":
-            return Adjective(
-                word=record.word,
-                english=record.english,
-                example=record.example,
-                comparative=record.comparative,
-                superlative=record.superlative,
-            )
-        elif record_type == "adverb":
-            return Adverb(
-                word=record.word,
-                english=record.english,
-                type=AdverbType(record.type),
-                example=record.example,
-            )
-        elif record_type == "negation":
-            return Negation(
-                word=record.word,
-                english=record.english,
-                type=NegationType(record.type),
-                example=record.example,
-            )
-        elif record_type == "verb":
-            return Verb(
-                verb=record.verb,
-                english=record.english,
-                present_ich=record.present_ich,
-                present_du=record.present_du,
-                present_er=record.present_er,
-                perfect=record.perfect,
-                example=record.example,
-            )
-        elif record_type == "phrase":
-            return Phrase(
-                phrase=record.phrase,
-                english=record.english,
-                context=record.context,
-                related=record.related,
-            )
-        elif record_type == "preposition":
-            return Preposition(
-                preposition=record.preposition,
-                english=record.english,
-                case=record.case,
-                example1=record.example1,
-                example2=record.example2,
-            )
-        else:
-            raise ValueError(f"Unsupported record type: {record_type}")
 
     def _generate_or_get_audio(self, text: str) -> str:
         """Generate audio for text or return existing audio file path."""

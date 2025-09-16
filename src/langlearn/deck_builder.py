@@ -183,6 +183,7 @@ class DeckBuilder:
             return AnkiBackend(
                 deck_name=deck_name,
                 media_service=self._media_service,
+                language=self._language_impl,
             )
         elif backend_type == "genanki":
             raise ValueError(

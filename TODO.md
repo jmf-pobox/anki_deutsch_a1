@@ -26,28 +26,40 @@ Each step must pass quality gates before proceeding to the next:
 - Update `GermanLanguage` to return German domain model factory
 - **Quality Gates**: All tests pass, no MyPy errors
 
-**Step 3: Replace Direct German Model Imports** (Risk: Medium, 2-3 days)
-- Remove lines 28-34 hardcoded German model imports from `anki_backend.py`
-- Replace with language-agnostic domain model creation via protocol
-- Modify `__init__()` to accept language parameter and resolve domain models via registry
-- **Quality Gates**: All existing tests pass, deck generation works
+**Step 3: Update AnkiBackend to use domain model factory** ✅ **PARTIALLY COMPLETE**
+- ✅ Updated AnkiBackend constructor to accept Language parameter
+- ✅ Replaced `_create_domain_model_from_record()` with `language.create_domain_model()`
+- ✅ All tests pass with zero MyPy errors
+- ⚠️ **DESIGN VIOLATION DISCOVERED**: AnkiBackend still has German-specific imports and logic
 
-**Step 4: Abstract Note Type Names** (Risk: Medium, 2-3 days)
-- Remove hardcoded German note type names (lines 308-326)
-- Move note type naming to language protocol (`get_note_type_name(card_type)`)
-- Update German language to provide German-specific naming
-- **Quality Gates**: Generated decks have correct note type names
+**Step 3b: Complete AnkiBackend Language-Agnostic Design** (Risk: Medium, 1-2 days)
+- Remove German imports that violate architecture:
+  - `from langlearn.languages.german.records.factory import create_record`
+  - `from langlearn.languages.german.services.media_enricher import StandardMediaEnricher`
+- Remove hardcoded German note type mapping logic (lines ~306-326):
+  - `"German Noun": "noun"`, `"German Adjective": "adjective"`, etc.
+- Add missing Language protocol methods:
+  - `create_record_from_csv(record_type, fields) -> BaseRecord`
+  - `get_media_enricher() -> MediaEnricherProtocol`
+  - `get_note_type_mappings() -> dict[str, str]`
+- **Quality Gates**: AnkiBackend has zero German imports, all language logic delegated to protocols
 
-**Step 5: Replace German Record Factory** (Risk: Medium, 1-2 days)
-- Remove line 35 German record factory import
-- Use language protocol `get_record_factory()` method
-- **Quality Gates**: Record processing works through language resolution
+**Step 4: Replace German Record Factory** (Risk: Low, 1 day)
+- Move record creation from German factory to Language protocol
+- Add `create_record_from_csv()` method to Language protocol
+- Update GermanLanguage to implement record creation
+- **Quality Gates**: Record processing works through language protocol
 
-**Step 6: Replace German MediaEnricher** (Risk: High, 2-3 days)
-- Remove line 36 hardcoded German media enricher import
-- Create media enricher factory in language protocol
-- Refactor media generation to work through language protocol
+**Step 5: Replace German MediaEnricher** (Risk: Medium, 1-2 days)
+- Create `MediaEnricherProtocol` for language-agnostic media enrichment
+- Add `get_media_enricher()` method to Language protocol
+- Update GermanLanguage to provide StandardMediaEnricher
 - **Quality Gates**: Media generation works, audio/image files generated correctly
+
+**Step 6: Move German Note Type Mappings** (Risk: Low, 1 day)
+- Add `get_note_type_mappings()` method to Language protocol
+- Move hardcoded German mappings to GermanLanguage implementation
+- **Quality Gates**: Generated decks have correct note type names
 
 **Total Estimated Duration**: 7-12 days with proper testing between each step
 
