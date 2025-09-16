@@ -137,7 +137,6 @@ class AnkiBackend(DeckBackend):
             Unique identifier for the created note type
         """
         # Create Anki note type
-        # FIXME: is this a typo?
         notetype = self._collection.models.new(note_type.name)
 
         # Add fields
@@ -443,7 +442,7 @@ class AnkiBackend(DeckBackend):
 
         for img_filename in img_matches:
             # Try to find the image file in the images directory
-            image_path = Path("data/images") / img_filename
+            image_path = self._images_dir / img_filename
             if image_path.exists():
                 try:
                     logger.info(f"   🖼️ Adding image from HTML: {img_filename}")
@@ -459,7 +458,7 @@ class AnkiBackend(DeckBackend):
 
         for audio_filename in sound_matches:
             # Try to find the audio file in the audio directory
-            audio_path = Path("data/audio") / audio_filename
+            audio_path = self._audio_dir / audio_filename
             if audio_path.exists():
                 try:
                     logger.info(f"   🔊 Adding audio from HTML: {audio_filename}")
