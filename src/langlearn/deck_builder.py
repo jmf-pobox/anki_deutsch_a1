@@ -204,7 +204,7 @@ class DeckBuilder:
         data_dir = Path(data_dir)
         logger.info(f"Loading data from directory: {data_dir}")
 
-        # Clean Pipeline approach: Map CSV files directly to record types
+        # Map CSV files directly to record types
         csv_to_record_type = {
             "nouns.csv": "noun",
             "adjectives.csv": "adjective",
@@ -212,31 +212,23 @@ class DeckBuilder:
             "negations.csv": "negation",
             "prepositions.csv": "preposition",
             "phrases.csv": "phrase",
-            # Unified Article system for case learning
             "articles_unified.csv": "unified_article",
-            # Re-enabled basic verb cards (Issue #26) - processed first
             "verbs.csv": "verb",
-            # Modern multi-tense verb system - same subdeck as basic verbs
-            "verbs_unified.csv": "verb_conjugation",  # Multi-tense verb system
+            "verbs_unified.csv": "verb_conjugation",
         }
 
         for filename, record_type in csv_to_record_type.items():
             file_path = data_dir / filename
             if file_path.exists():
                 logger.info(f"Loading {record_type} data from {file_path}")
-                # Use Clean Pipeline: CSV → Records
                 records = self._record_mapper.load_records_from_csv(file_path)
                 self._loaded_records.extend(records)
                 logger.info(f"Loaded {len(records)} {record_type} records")
-
-            # Legacy compatibility removed - using Clean Pipeline only
             else:
                 logger.debug(f"Data file not found: {file_path}")
 
         total_records = len(self._loaded_records)
         logger.info(f"Total records loaded via Clean Pipeline: {total_records}")
-
-    # Legacy model conversion methods removed - Clean Pipeline uses records directly
 
     # Subdeck Organization Methods
 
@@ -254,7 +246,7 @@ class DeckBuilder:
         self._deck_manager.reset_to_main_deck()
         logger.info("Reset to main deck")
 
-    # Card Generation Methods (Clean Pipeline only)
+    # Card Generation Methods
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
         """Generate all cards using Clean Pipeline.
@@ -271,7 +263,7 @@ class DeckBuilder:
 
         logger.info(f"Generating cards for {len(self._loaded_records)} records")
 
-        # **CLEAN PIPELINE FLOW**: Records → MediaEnricher → CardBuilder → AnkiBackend
+        # **PIPELINE FLOW**: Records → MediaEnricher → CardBuilder → AnkiBackend
 
         # Step 1: Group records by type for processing
         records_by_type: dict[str, list[BaseRecord]] = {}

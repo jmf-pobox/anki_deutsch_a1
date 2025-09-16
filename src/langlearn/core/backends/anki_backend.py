@@ -15,7 +15,6 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
-# Removed unused MediaServiceProtocol import - using concrete MediaService
 from langlearn.core.services.audio_service import AudioService
 from langlearn.core.services.domain_media_generator import DomainMediaGenerator
 from langlearn.core.services.image_service import PexelsService
@@ -304,6 +303,7 @@ class AnkiBackend(DeckBackend):
                 note_type_name = note_type_input
 
             # Map note type name to record type for Clean Pipeline Architecture
+            # TODO: This logic is hard coded to German and is an issue.
             note_type_to_record_type = {
                 "German Noun": "noun",
                 "German Noun with Media": "noun",
@@ -543,6 +543,10 @@ class AnkiBackend(DeckBackend):
 
     def _create_domain_model_from_record(self, record: Any, record_type: str) -> Any:
         """Create domain model instance from record data."""
+        # TODO: If this is still used, it should be in its own class or it
+        #  should simply be integrated into each domain class as a factory
+        #  method.  I do not think having this long list of cases makes
+        #  sense here.
         if record_type == "noun":
             return Noun(
                 noun=record.noun,
