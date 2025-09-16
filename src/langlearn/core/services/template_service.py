@@ -1,6 +1,7 @@
 """Template management service for Anki card templates."""
 
 import logging
+from collections.abc import Callable
 from pathlib import Path
 from typing import NamedTuple
 
@@ -26,13 +27,20 @@ class TemplateService:
     for performance.
     """
 
-    def __init__(self, template_dir: Path) -> None:
+    def __init__(
+        self,
+        template_dir: Path,
+        template_resolver: Callable[[str, str], str] | None = None
+    ) -> None:
         """Initialize TemplateService.
 
         Args:
             template_dir: Directory containing template files
+            template_resolver: Optional function to resolve template paths
+                             (card_type, side) -> template_filename
         """
         self._template_dir = template_dir
+        self._template_resolver = template_resolver
         self._cache: dict[str, CardTemplate] = {}
 
         if not self._template_dir.exists():
@@ -97,10 +105,20 @@ class TemplateService:
         Returns:
             TemplateFiles with loaded content
         """
-        # Try actual template naming convention with DE_de suffix
-        front_file = self._template_dir / f"{card_type}_DE_de_front.html"
-        back_file = self._template_dir / f"{card_type}_DE_de_back.html"
-        css_file = self._template_dir / f"{card_type}_DE_de.css"
+        # Use template resolver if provided, otherwise fallback to German convention
+        if self._template_resolver:
+            front_filename = self._template_resolver(card_type, "front")
+            back_filename = self._template_resolver(card_type, "back")
+            css_filename = self._template_resolver(card_type, "css")
+        else:
+            # Fallback to German convention for backward compatibility
+            front_filename = f"{card_type}_DE_de_front.html"
+            back_filename = f"{card_type}_DE_de_back.html"
+            css_filename = f"{card_type}_DE_de.css"
+
+        front_file = self._template_dir / front_filename
+        back_file = self._template_dir / back_filename
+        css_file = self._template_dir / css_filename
 
         # Validate that all required template files exist
         if not front_file.exists():

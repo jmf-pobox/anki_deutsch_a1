@@ -93,9 +93,10 @@ class DeckBuilder:
         record_mapper_class = self._language_impl.get_record_mapper()
         self._record_mapper = record_mapper_class()
 
-        # Initialize template service with language-specific templates directory
-        template_dir = Path(__file__).parent / "languages" / language / "templates"
-        self._template_service = TemplateService(template_dir)
+        # Initialize template service with language-specific resolver
+        template_dir = self._language_impl.get_template_directory()
+        template_resolver = self._language_impl.get_template_filename
+        self._template_service = TemplateService(template_dir, template_resolver)
 
         # Initialize CardBuilder service via LanguageRegistry
         card_builder_class = self._language_impl.get_card_builder()

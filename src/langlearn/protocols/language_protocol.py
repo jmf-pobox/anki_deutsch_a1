@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from pathlib import Path
 from typing import Any, Protocol
 
 
@@ -44,4 +45,14 @@ class Language(Protocol):
     @abstractmethod
     def get_template_path(self, record_type: str, side: str) -> str:
         """Get template path for record type and side (front/back)."""
+        ...
+
+    @abstractmethod
+    def get_template_filename(self, card_type: str, side: str) -> str:
+        """Get template filename for card type and side."""
+        ...
+
+    @abstractmethod
+    def get_template_directory(self) -> Path:
+        """Get the templates directory for this language."""
         ...

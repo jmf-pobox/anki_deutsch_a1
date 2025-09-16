@@ -64,3 +64,23 @@ class GermanLanguage:
         template_path = templates_dir / template_name
 
         return str(template_path)
+
+    def get_template_filename(self, card_type: str, side: str) -> str:
+        """Get template filename for card type and side.
+
+        Args:
+            card_type: Type of card (noun, verb, etc.)
+            side: Template side ("front", "back", "css")
+
+        Returns:
+            Template filename following German convention
+        """
+        if side == "css":
+            return f"{card_type}_DE_de.css"
+        else:
+            return f"{card_type}_DE_de_{side}.html"
+
+    def get_template_directory(self) -> Path:
+        """Get the templates directory for German language."""
+        current_dir = Path(__file__).parent
+        return current_dir / "templates"
