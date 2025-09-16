@@ -24,7 +24,6 @@ from langlearn.exceptions import (
     DataProcessingError,
     MediaGenerationError,
 )
-from langlearn.languages.german.records.factory import create_record
 from langlearn.languages.german.services.media_enricher import StandardMediaEnricher
 from langlearn.protocols.language_protocol import Language
 
@@ -412,8 +411,8 @@ class AnkiBackend(DeckBackend):
                 # Use Clean Pipeline Architecture
                 logger.debug(f"Using Clean Pipeline Architecture for: {note_type_name}")
                 try:
-                    # Create record from fields
-                    record = create_record(record_type, fields)
+                    # Create record from fields using language-specific factory
+                    record = self._language.create_record_from_csv(record_type, fields)
 
                     # Create domain model using language factory
                     domain_model = self._language.create_domain_model(
