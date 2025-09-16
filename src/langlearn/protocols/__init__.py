@@ -6,6 +6,7 @@ from langlearn.protocols.image_query_generation_protocol import (
 )
 from langlearn.protocols.image_search_protocol import ImageSearchProtocol
 from langlearn.protocols.language_protocol import Language
+from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 __all__ = [
@@ -13,5 +14,6 @@ __all__ = [
     "ImageSearchProtocol",
     "Language",
     "LanguageDomainModel",
+    "MediaEnricherProtocol",
     "MediaGenerationCapable",
 ]
