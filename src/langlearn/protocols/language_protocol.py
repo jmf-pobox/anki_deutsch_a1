@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from pathlib import Path
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
+
+if TYPE_CHECKING:
+    from langlearn.core.records import BaseRecord
+    from langlearn.protocols.domain_model_protocol import LanguageDomainModel
 
 
 class Language(Protocol):
@@ -55,4 +59,22 @@ class Language(Protocol):
     @abstractmethod
     def get_template_directory(self) -> Path:
         """Get the templates directory for this language."""
+        ...
+
+    @abstractmethod
+    def create_domain_model(
+        self, record_type: str, record: BaseRecord
+    ) -> LanguageDomainModel:
+        """Create language-specific domain model from record.
+
+        Args:
+            record_type: Type of record (noun, verb, adjective, etc.)
+            record: Validated record data from CSV
+
+        Returns:
+            Language-specific domain model implementing LanguageDomainModel protocol
+
+        Raises:
+            ValueError: If record_type is not supported by this language
+        """
         ...
