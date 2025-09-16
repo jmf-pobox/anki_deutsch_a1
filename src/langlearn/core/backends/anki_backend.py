@@ -298,32 +298,10 @@ class AnkiBackend(DeckBackend):
                 # It's already a note type name (for backward compatibility with tests)
                 note_type_name = note_type_input
 
-            # Map note type name to record type for Clean Pipeline Architecture
-            # TODO: This logic is hard coded to German and is an issue.
-            note_type_to_record_type = {
-                "German Noun": "noun",
-                "German Noun with Media": "noun",
-                "German Adjective": "adjective",
-                "German Adjective with Media": "adjective",
-                "German Adverb": "adverb",
-                "German Adverb with Media": "adverb",
-                "German Negation": "negation",
-                "German Negation with Media": "negation",
-                "German Verb": "verb",
-                "German Verb with Media": "verb",
-                "German Phrase": "phrase",
-                "German Phrase with Media": "phrase",
-                "German Preposition": "preposition",
-                "German Preposition with Media": "preposition",
-                "German Artikel Gender with Media": "artikel_gender",
-                "German Artikel Context with Media": "artikel_context",
-                "German Noun_Case_Context with Media": "noun_case_context",
-                "German Noun_Article_Recognition with Media": (
-                    "noun_article_recognition"
-                ),
-            }
+            # Map note type name to record type using language-specific mappings
+            note_type_to_record_type = self._language.get_note_type_mappings()
 
-            # Check if we support this note type with new architecture
+            # Check if we support this note type with language-agnostic architecture
             record_type = None
             for note_pattern, rec_type in note_type_to_record_type.items():
                 if note_pattern.lower() in note_type_name.lower():
