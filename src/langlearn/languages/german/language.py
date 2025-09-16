@@ -216,18 +216,39 @@ class GermanLanguage:
     def create_record_from_csv(self, record_type: str, fields: list[str]) -> BaseRecord:
         """Create German record from CSV fields using German record factory."""
         from .records.factory import create_record
+
         return create_record(record_type, fields)
 
     def get_media_enricher(self) -> MediaEnricherProtocol:
-        """Get German-specific media enricher configured with services from AnkiBackend."""
-        # This method should be called by AnkiBackend after it has configured the services
-        # For now, this is a placeholder implementation that will be properly integrated
-        # when AnkiBackend is refactored to use this method
+        """Get German-specific media enricher configured with services."""
+        # This method should be called by AnkiBackend after it has configured
+        # the services. For now, this is a placeholder implementation that will
+        # be properly integrated when AnkiBackend is refactored to use this method
 
         # Return type annotation satisfies protocol, actual implementation will be
         # provided when AnkiBackend calls this with proper service injection
         raise NotImplementedError(
-            "get_media_enricher() should be called from AnkiBackend with proper service injection"
+            "get_media_enricher() should be called from AnkiBackend with proper "
+            "service injection"
+        )
+
+    def create_media_enricher(
+        self,
+        audio_service: Any,
+        pexels_service: Any,
+        anthropic_service: Any,
+        audio_base_path: Any,
+        image_base_path: Any,
+    ) -> MediaEnricherProtocol:
+        """Create German-specific media enricher with injected services."""
+        from .services.media_enricher import StandardMediaEnricher
+
+        return StandardMediaEnricher(
+            audio_service=audio_service,
+            pexels_service=pexels_service,
+            anthropic_service=anthropic_service,
+            audio_base_path=audio_base_path,
+            image_base_path=image_base_path,
         )
 
     def get_note_type_mappings(self) -> dict[str, str]:

@@ -106,6 +106,29 @@ class Language(Protocol):
         ...
 
     @abstractmethod
+    def create_media_enricher(
+        self,
+        audio_service: Any,
+        pexels_service: Any,
+        anthropic_service: Any,
+        audio_base_path: Any,
+        image_base_path: Any,
+    ) -> MediaEnricherProtocol:
+        """Create language-specific media enricher with injected services.
+
+        Args:
+            audio_service: Audio generation service
+            pexels_service: Image search service
+            anthropic_service: Text generation service
+            audio_base_path: Base path for audio files
+            image_base_path: Base path for image files
+
+        Returns:
+            Media enricher implementing MediaEnricherProtocol for this language
+        """
+        ...
+
+    @abstractmethod
     def get_note_type_mappings(self) -> dict[str, str]:
         """Get language-specific note type name mappings.
 

@@ -24,7 +24,6 @@ from langlearn.exceptions import (
     DataProcessingError,
     MediaGenerationError,
 )
-from langlearn.languages.german.services.media_enricher import StandardMediaEnricher
 from langlearn.protocols.language_protocol import Language
 
 from .base import DeckBackend, MediaFile, NoteType
@@ -97,7 +96,7 @@ class AnkiBackend(DeckBackend):
 
         anthropic_service = get_anthropic_service()
 
-        self._media_enricher = StandardMediaEnricher(
+        self._media_enricher = self._language.create_media_enricher(
             audio_service=self._media_service._audio_service,
             pexels_service=self._media_service._pexels_service,
             anthropic_service=anthropic_service,
@@ -139,6 +138,7 @@ class AnkiBackend(DeckBackend):
             Unique identifier for the created note type
         """
         # Create Anki note type
+        # FIXME: is this a typo?
         notetype = self._collection.models.new(note_type.name)
 
         # Add fields

@@ -69,7 +69,8 @@
       "Bash(gh run view:*)",
       "Bash(git branch:*)",
       "WebFetch(domain:github.com)",
-      "Bash(gh issue create:*)"
+      "Bash(gh issue create:*)",
+      "Bash(do echo \"=== Checking $file ===\" grep -n \"AnkiBackend(\" \"$file\")"
     ],
     "deny": [],
     "ask": []
