@@ -137,3 +137,33 @@ class Language(Protocol):
             Example: {"German Noun": "noun", "German Verb": "verb"}
         """
         ...
+
+    @abstractmethod
+    def process_fields_for_anki(
+        self,
+        note_type_name: str,
+        fields: list[str],
+        media_enricher: MediaEnricherProtocol,
+    ) -> list[str]:
+        """Process fields for Anki note creation with language-specific logic.
+
+        This method handles all language-specific business logic for converting
+        raw CSV fields into properly formatted Anki note fields, including:
+        - Language-specific note type handling (e.g., German cloze cards)
+        - Media generation and formatting
+        - Field ordering and content transformation
+        - Grammar-specific audio generation patterns
+
+        Args:
+            note_type_name: Name of the Anki note type (e.g., "German Noun")
+            fields: Raw field values from CSV or card data
+            media_enricher: Media enricher for generating audio/images
+
+        Returns:
+            Processed field values ready for Anki note creation
+
+        Raises:
+            DataProcessingError: If field processing fails
+            MediaGenerationError: If media generation fails
+        """
+        ...

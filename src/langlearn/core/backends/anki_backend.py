@@ -1,6 +1,5 @@
 """Official Anki library backend implementation for deck generation."""
 
-import contextlib
 import hashlib
 import logging
 import os
@@ -276,7 +275,7 @@ class AnkiBackend(DeckBackend):
     def _process_fields_with_media(
         self, note_type_input: str, fields: list[str]
     ) -> list[str]:
-        """Process fields using domain model delegation.
+        """Process fields using language-specific delegation.
 
         Args:
             note_type_input: Either note type ID or note type name
@@ -298,213 +297,10 @@ class AnkiBackend(DeckBackend):
                 # It's already a note type name (for backward compatibility with tests)
                 note_type_name = note_type_input
 
-            # Map note type name to record type using language-specific mappings
-            note_type_to_record_type = self._language.get_note_type_mappings()
-
-            # Check if we support this note type with language-agnostic architecture
-            record_type = None
-            for note_pattern, rec_type in note_type_to_record_type.items():
-                if note_pattern.lower() in note_type_name.lower():
-                    record_type = rec_type
-                    break
-
-            # Special handling for Artikel Cloze note types
-            # These do not have a dedicated record class; we enrich via key-based
-            # fallback in the MediaEnricher (keys: text, explanation, image, audio)
-            if note_type_name in {
-                "German Artikel Gender Cloze",
-                "German Artikel Context Cloze",
-            }:
-                # Expected Anki field order: Text, Explanation, Image, Audio
-                text = fields[0] if len(fields) > 0 else ""
-                explanation = fields[1] if len(fields) > 1 else ""
-                image_field = fields[2] if len(fields) > 2 else ""
-                audio_field = fields[3] if len(fields) > 3 else ""
-
-                # Only include media keys if they are non-empty so that enrichers
-                # (including stub test enrichers that use setdefault) can populate them
-                cloze_record = {
-                    "text": text,
-                    "explanation": explanation,
-                }
-                if image_field:
-                    cloze_record["image"] = image_field
-                if audio_field:
-                    cloze_record["audio"] = audio_field
-
-                # Create Article domain model from cloze data to enable media generation
-                try:
-                    from langlearn.languages.german.models.article import Article
-
-                    # Create Article domain model with cloze data
-                    # The Article model contains the German linguistic logic
-                    article_model = Article(
-                        artikel_typ="bestimmt",  # Default for cloze exercises
-                        geschlecht="maskulin",  # Default, could be extracted
-                        nominativ="der",  # Default values for cloze
-                        akkusativ="den",
-                        dativ="dem",
-                        genitiv="des",
-                        beispiel_nom=Article.extract_clean_text_from_cloze(
-                            text
-                        ),  # Use domain model logic
-                        beispiel_akk="",
-                        beispiel_dat="",
-                        beispiel_gen="",
-                    )
-
-                    # Use MediaEnricher with Article domain model
-                    media_data = self._media_enricher.enrich_with_media(article_model)
-
-                    # Merge media data into the record
-                    enriched = cloze_record.copy()
-                    enriched.update(media_data)
-
-                    # Format media for Anki
-                    image_filename = enriched.get("image", "")
-                    audio_filename = enriched.get(
-                        "word_audio", enriched.get("audio", "")
-                    )
-
-                    formatted_image = (
-                        f'<img src="{image_filename}" />' if image_filename else ""
-                    )
-                    formatted_audio = (
-                        f"[sound:{audio_filename}]" if audio_filename else ""
-                    )
-
-                    return [
-                        enriched.get("text", ""),
-                        enriched.get("explanation", ""),
-                        formatted_image,
-                        formatted_audio,
-                    ]
-                except Exception as e:
-                    logger.error(f"Media enrichment failed for cloze article: {e}")
-                    raise MediaGenerationError(
-                        f"Failed to enrich cloze article media: {e}"
-                    ) from e
-
-            if record_type is not None:
-                # Use Clean Pipeline Architecture
-                logger.debug(f"Using Clean Pipeline Architecture for: {note_type_name}")
-                try:
-                    # Create record from fields using language-specific factory
-                    record = self._language.create_record_from_csv(record_type, fields)
-
-                    # Create domain model using language factory
-                    domain_model = self._language.create_domain_model(
-                        record_type, record
-                    )
-
-                    # Enrich record using MediaEnricher with domain model
-                    media_data = self._media_enricher.enrich_with_media(domain_model)
-                    enriched_record_dict = record.to_dict()
-                    enriched_record_dict.update(media_data)
-
-                    # Convert back to field list format for backward compatibility
-                    # The specific field order depends on the record type
-                    if record_type == "noun":
-                        # Ensure audio filename uses the media service's returned path
-                        try:
-                            # Ensure a call with combined article+noun+plural exists
-                            combined = (
-                                f"{enriched_record_dict['article']} "
-                                f"{enriched_record_dict['noun']}, "
-                                f"{enriched_record_dict['plural']}"
-                            )
-                            with contextlib.suppress(Exception):
-                                self._media_service.generate_or_get_audio(combined)
-                            # Also ensure example sentence audio generation is invoked
-                            audio_path = None
-                            try:
-                                if enriched_record_dict.get("example"):
-                                    audio_path = (
-                                        self._media_service.generate_or_get_audio(
-                                            enriched_record_dict["example"]
-                                        )
-                                    )
-                            except (OSError, ValueError) as e:
-                                logger.warning(
-                                    f"Audio generation failed for example sentence: {e}"
-                                )
-                                audio_path = None
-                            except Exception as e:
-                                logger.error(
-                                    f"Unexpected error during audio generation: {e}"
-                                )
-                                raise MediaGenerationError(
-                                    f"Failed to generate audio for example: {e}"
-                                ) from e
-
-                            # Use the example audio basename per test expectation
-                            if audio_path:
-                                audio_name = Path(audio_path).name
-                                enriched_record_dict["word_audio"] = (
-                                    f"[sound:{audio_name}]"
-                                )
-                                enriched_record_dict["example_audio"] = (
-                                    f"[sound:{audio_name}]"
-                                )
-                        except KeyError as e:
-                            logger.warning(
-                                f"Missing required field in noun record: {e}"
-                            )
-                            # Continue with partial data
-                        except Exception as e:
-                            logger.error(f"Unexpected error processing noun media: {e}")
-                            raise MediaGenerationError(
-                                f"Failed to process noun media: {e}"
-                            ) from e
-                        return [
-                            enriched_record_dict["noun"],
-                            enriched_record_dict["article"],
-                            enriched_record_dict["english"],
-                            enriched_record_dict["plural"],
-                            enriched_record_dict["example"],
-                            enriched_record_dict["related"],
-                            enriched_record_dict.get("image", ""),
-                            enriched_record_dict.get("word_audio", ""),
-                            enriched_record_dict.get("example_audio", ""),
-                        ]
-                    elif record_type == "adjective":
-                        return [
-                            enriched_record_dict["word"],
-                            enriched_record_dict["english"],
-                            enriched_record_dict["example"],
-                            enriched_record_dict["comparative"],
-                            enriched_record_dict["superlative"],
-                            enriched_record_dict.get("image", ""),
-                            enriched_record_dict.get("word_audio", ""),
-                            enriched_record_dict.get("example_audio", ""),
-                        ]
-                    elif record_type in ["adverb", "negation"]:
-                        return [
-                            enriched_record_dict["word"],
-                            enriched_record_dict["english"],
-                            enriched_record_dict["type"],
-                            enriched_record_dict["example"],
-                            enriched_record_dict.get("image", ""),
-                            enriched_record_dict.get("word_audio", ""),
-                            enriched_record_dict.get("example_audio", ""),
-                        ]
-
-                except Exception as record_error:
-                    logger.error(
-                        f"Clean Pipeline Architecture failed for {note_type_name}: "
-                        f"{record_error}"
-                    )
-                    raise DataProcessingError(
-                        f"Clean Pipeline Architecture failed for {note_type_name}: "
-                        f"{record_error}"
-                    ) from record_error
-
-            # No processing available - unsupported note type
-            logger.warning(
-                f"No processing available for: {note_type_name}. "
-                f"Returning fields unchanged."
+            # Delegate all field processing to language-specific implementation
+            return self._language.process_fields_for_anki(
+                note_type_name, fields, self._media_enricher
             )
-            return fields
 
         except DataProcessingError:
             # Re-raise DataProcessingError without modification
