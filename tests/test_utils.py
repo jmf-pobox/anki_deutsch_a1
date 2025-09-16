@@ -137,9 +137,7 @@ def mock_external_services() -> Any:
     with (
         patch("langlearn.core.services.audio_service.boto3.client") as mock_boto3,
         patch("langlearn.core.services.image_service.PexelsService") as mock_pexels,
-        patch(
-            "langlearn.core.services.ai_service.AnthropicService"
-        ) as mock_anthropic,
+        patch("langlearn.core.services.ai_service.AnthropicService") as mock_anthropic,
     ):
         # Configure mock boto3 client
         mock_polly = MagicMock()

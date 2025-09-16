@@ -67,7 +67,9 @@
       "Bash(head:*)",
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh issue create:*)"
     ],
     "deny": [],
     "ask": []

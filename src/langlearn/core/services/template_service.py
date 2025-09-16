@@ -30,7 +30,7 @@ class TemplateService:
     def __init__(
         self,
         template_dir: Path,
-        template_resolver: Callable[[str, str], str] | None = None
+        template_resolver: Callable[[str, str], str] | None = None,
     ) -> None:
         """Initialize TemplateService.
 
