@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from langlearn.core.records import BaseRecord
     from langlearn.protocols.domain_model_protocol import LanguageDomainModel
+    from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 
 
 class GermanLanguage:
@@ -211,3 +212,43 @@ class GermanLanguage:
                 f"Unsupported record type '{record_type}' for German language "
                 f"or incorrect record instance type. Supported types: {supported_types}"
             )
+
+    def create_record_from_csv(self, record_type: str, fields: list[str]) -> BaseRecord:
+        """Create German record from CSV fields using German record factory."""
+        from .records.factory import create_record
+        return create_record(record_type, fields)
+
+    def get_media_enricher(self) -> MediaEnricherProtocol:
+        """Get German-specific media enricher configured with services from AnkiBackend."""
+        # This method should be called by AnkiBackend after it has configured the services
+        # For now, this is a placeholder implementation that will be properly integrated
+        # when AnkiBackend is refactored to use this method
+
+        # Return type annotation satisfies protocol, actual implementation will be
+        # provided when AnkiBackend calls this with proper service injection
+        raise NotImplementedError(
+            "get_media_enricher() should be called from AnkiBackend with proper service injection"
+        )
+
+    def get_note_type_mappings(self) -> dict[str, str]:
+        """Get German-specific Anki note type name mappings."""
+        return {
+            "German Noun": "noun",
+            "German Noun with Media": "noun",
+            "German Adjective": "adjective",
+            "German Adjective with Media": "adjective",
+            "German Adverb": "adverb",
+            "German Adverb with Media": "adverb",
+            "German Negation": "negation",
+            "German Negation with Media": "negation",
+            "German Verb": "verb",
+            "German Verb with Media": "verb",
+            "German Phrase": "phrase",
+            "German Phrase with Media": "phrase",
+            "German Preposition": "preposition",
+            "German Preposition with Media": "preposition",
+            "German Artikel Gender with Media": "artikel_gender",
+            "German Artikel Context with Media": "artikel_context",
+            "German Noun_Case_Context with Media": "noun_case_context",
+            "German Noun_Article_Recognition with Media": "noun_article_recognition",
+        }
