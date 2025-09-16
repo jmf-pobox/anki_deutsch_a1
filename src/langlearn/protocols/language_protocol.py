@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Protocol
 if TYPE_CHECKING:
     from langlearn.core.records import BaseRecord
     from langlearn.protocols.domain_model_protocol import LanguageDomainModel
+    from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 
 
 class Language(Protocol):
@@ -76,5 +77,40 @@ class Language(Protocol):
 
         Raises:
             ValueError: If record_type is not supported by this language
+        """
+        ...
+
+    @abstractmethod
+    def create_record_from_csv(self, record_type: str, fields: list[str]) -> BaseRecord:
+        """Create language-specific record from CSV fields.
+
+        Args:
+            record_type: Type of record to create (noun, verb, adjective, etc.)
+            fields: CSV field values
+
+        Returns:
+            Validated record instance for this language
+
+        Raises:
+            ValueError: If record_type is not supported or fields are invalid
+        """
+        ...
+
+    @abstractmethod
+    def get_media_enricher(self) -> MediaEnricherProtocol:
+        """Get language-specific media enricher.
+
+        Returns:
+            Media enricher implementing MediaEnricherProtocol for this language
+        """
+        ...
+
+    @abstractmethod
+    def get_note_type_mappings(self) -> dict[str, str]:
+        """Get language-specific note type name mappings.
+
+        Returns:
+            Dictionary mapping Anki note type names to record types.
+            Example: {"German Noun": "noun", "German Verb": "verb"}
         """
         ...
