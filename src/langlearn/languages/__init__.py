@@ -5,6 +5,7 @@ system for the multi-language Anki deck generator.
 """
 
 from .german.language import GermanLanguage
+from .korean.language import KoreanLanguage
 from .registry import LanguageRegistry
 from .russian.language import RussianLanguage
 
@@ -16,8 +17,13 @@ LanguageRegistry.register("german", GermanLanguage)  # Allow both codes
 LanguageRegistry.register("ru", RussianLanguage)
 LanguageRegistry.register("russian", RussianLanguage)  # Allow both codes
 
+# Register Korean language
+LanguageRegistry.register("ko", KoreanLanguage)
+LanguageRegistry.register("korean", KoreanLanguage)  # Allow both codes
+
 __all__ = [
     "GermanLanguage",
+    "KoreanLanguage",
     "LanguageRegistry",
     "RussianLanguage",
 ]

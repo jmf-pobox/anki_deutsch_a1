@@ -128,6 +128,14 @@ class DeckBuilder:
                     language_code="ru-RU",
                     engine="standard",  # Russian voices use standard engine
                 )
+            elif language.lower() in ("ko", "korean"):
+                # Use a Korean Polly voice and language so Hangul text succeeds
+                actual_audio_service = AudioService(
+                    output_dir=str(language_deck_data_dir / "audio"),
+                    voice_id="Seoyeon",  # Korean voice (female)
+                    language_code="ko-KR",
+                    engine="standard",  # Korean voices use standard engine
+                )
             else:
                 # Default: German
                 actual_audio_service = AudioService(
@@ -283,27 +291,8 @@ class DeckBuilder:
         # Step 1: Group records by type for processing
         records_by_type: dict[str, list[BaseRecord]] = {}
         for record in self._loaded_records:
-            record_type = record.__class__.__name__.replace("Record", "").lower()
-
-            # Handle special naming for unified article records
-            if record_type == "unifiedarticle":
-                record_type = "unified_article"
-
-            # Handle language-prefixed record names (e.g., RussianNounRecord -> noun)
-            if record_type.startswith(("russian", "german", "spanish", "french")):
-                # Extract just the word type from language-prefixed names
-                for word_type in [
-                    "noun",
-                    "verb",
-                    "adjective",
-                    "adverb",
-                    "preposition",
-                    "phrase",
-                    "negation",
-                ]:
-                    if record_type.endswith(word_type):
-                        record_type = word_type
-                        break
+            # Use the record's get_record_type() method for consistent naming
+            record_type = record.get_record_type().value
 
             if record_type not in records_by_type:
                 records_by_type[record_type] = []
@@ -315,15 +304,12 @@ class DeckBuilder:
             logger.info(f"Processing {len(records)} {record_type} records")
 
             # Step 1.5: Create subdeck for this word type
-            # Special case: all verb-related cards go to "Verbs" subdeck
-            if record_type in ["verb", "verbconjugation", "verbimperative"]:
-                subdeck_name = "Verbs"
-            elif record_type == "unified_article":
-                subdeck_name = "Articles"
+            # Use the record class's get_subdeck_name() method for consistent naming
+            if records:  # Use the first record to get the subdeck name
+                subdeck_name = records[0].__class__.get_subdeck_name()
             else:
-                subdeck_name = record_type.capitalize() + (
-                    "s" if not record_type.endswith("s") else ""
-                )
+                # Fallback if no records (shouldn't happen)
+                subdeck_name = record_type.replace("_", " ").title() + "s"
             self.create_subdeck(subdeck_name)
             logger.info(f"Created subdeck: {subdeck_name}")
 
@@ -348,6 +334,12 @@ class DeckBuilder:
                     )
 
                     record_to_model_factory = RussianRecordToModelFactory
+                elif self.language.lower() in ("ko", "korean"):
+                    from .languages.korean.services.record_to_model_factory import (
+                        RecordToModelFactory as KoreanRecordToModelFactory,
+                    )
+
+                    record_to_model_factory = KoreanRecordToModelFactory
                 else:
                     raise ValueError(
                         f"Unsupported language for domain models: {self.language}"
@@ -516,13 +508,11 @@ class DeckBuilder:
                     logger.error(f"Failed to add {record_type} card: {e}")
 
             # Format result key to match expected output format
-            # Special case: consolidate all verb-related cards under "verbs" key
-            if record_type in ["verb", "verbconjugation", "verbimperative"]:
-                result_key = "verbs"
-            elif record_type == "unified_article":
-                result_key = "articles"
+            # Use the record class's get_result_key() method for consistent naming
+            if records:  # Use the first record to get the result key
+                result_key = records[0].__class__.get_result_key()
             else:
-                # (remove underscores, add 's')
+                # Fallback if no records (shouldn't happen)
                 result_key = record_type.replace("_", "") + "s"
 
             # Accumulate cards for consolidated result keys

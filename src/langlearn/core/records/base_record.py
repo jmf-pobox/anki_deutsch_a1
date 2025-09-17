@@ -24,6 +24,9 @@ class RecordType(Enum):
     INDEFINITE_ARTICLE = "indefinite_article"
     NEGATIVE_ARTICLE = "negative_article"
 
+    # Language-specific record types
+    KOREAN_NOUN = "korean_noun"
+
 
 class RecordClassProtocol(Protocol):
     """Protocol defining the interface that all record classes must implement."""
@@ -103,3 +106,94 @@ class BaseRecord(BaseModel, ABC):
         Returns:
             list[str]: Field names in CSV order
         """
+
+    @classmethod
+    def get_subdeck_name(cls) -> str:
+        """Get the subdeck name for this record type.
+
+        Returns:
+            str: Subdeck name for Anki (e.g., "Nouns", "Verbs")
+        """
+        record_type = cls.get_record_type()
+
+        # Map record types to subdeck names
+        subdeck_mapping = {
+            RecordType.NOUN: "Nouns",
+            RecordType.VERB: "Verbs",
+            RecordType.VERB_CONJUGATION: "Verbs",
+            RecordType.VERB_IMPERATIVE: "Verbs",
+            RecordType.ADJECTIVE: "Adjectives",
+            RecordType.ADVERB: "Adverbs",
+            RecordType.PREPOSITION: "Prepositions",
+            RecordType.PHRASE: "Phrases",
+            RecordType.NEGATION: "Negations",
+            RecordType.UNIFIED_ARTICLE: "Articles",
+            RecordType.ARTICLE: "Articles",
+            RecordType.INDEFINITE_ARTICLE: "Articles",
+            RecordType.NEGATIVE_ARTICLE: "Articles",
+            # Language-specific types
+            RecordType.KOREAN_NOUN: "Nouns",
+        }
+
+        return subdeck_mapping.get(record_type, f"{record_type.value.title()}s")
+
+    @classmethod
+    def get_result_key(cls) -> str:
+        """Get the result key for card statistics.
+
+        Returns:
+            str: Result key for statistics (e.g., "nouns", "verbs")
+        """
+        record_type = cls.get_record_type()
+
+        # Map record types to result keys
+        result_mapping = {
+            RecordType.NOUN: "nouns",
+            RecordType.VERB: "verbs",
+            RecordType.VERB_CONJUGATION: "verbs",
+            RecordType.VERB_IMPERATIVE: "verbs",
+            RecordType.ADJECTIVE: "adjectives",
+            RecordType.ADVERB: "adverbs",
+            RecordType.PREPOSITION: "prepositions",
+            RecordType.PHRASE: "phrases",
+            RecordType.NEGATION: "negations",
+            RecordType.UNIFIED_ARTICLE: "articles",
+            RecordType.ARTICLE: "articles",
+            RecordType.INDEFINITE_ARTICLE: "articles",
+            RecordType.NEGATIVE_ARTICLE: "articles",
+            # Language-specific types
+            RecordType.KOREAN_NOUN: "nouns",
+        }
+
+        return result_mapping.get(record_type, f"{record_type.value}s")
+
+    @classmethod
+    def get_display_name(cls) -> str:
+        """Get the display name for this record type.
+
+        Returns:
+            str: Display name for UI (e.g., "Noun", "Verb")
+        """
+        record_type = cls.get_record_type()
+
+        # Map record types to display names
+        display_mapping = {
+            RecordType.NOUN: "Noun",
+            RecordType.VERB: "Verb",
+            RecordType.VERB_CONJUGATION: "Verb Conjugation",
+            RecordType.VERB_IMPERATIVE: "Verb Imperative",
+            RecordType.ADJECTIVE: "Adjective",
+            RecordType.ADVERB: "Adverb",
+            RecordType.PREPOSITION: "Preposition",
+            RecordType.PHRASE: "Phrase",
+            RecordType.NEGATION: "Negation",
+            RecordType.UNIFIED_ARTICLE: "Unified Article",
+            RecordType.ARTICLE: "Article",
+            RecordType.INDEFINITE_ARTICLE: "Indefinite Article",
+            RecordType.NEGATIVE_ARTICLE: "Negative Article",
+            # Language-specific types
+            RecordType.KOREAN_NOUN: "Noun",
+        }
+
+        default = record_type.value.replace("_", " ").title()
+        return display_mapping.get(record_type, default)

@@ -17,6 +17,7 @@ class TestRussianFieldAssignment:
         """Test end-to-end Russian field assignment from records to Anki backend."""
         # Skip if Russian language is not registered
         from langlearn.languages import LanguageRegistry
+
         try:
             LanguageRegistry.get("russian")
         except ValueError:
@@ -101,6 +102,7 @@ class TestRussianFieldAssignment:
         """Test that Russian audio service uses correct voice and language."""
         # Skip if Russian language is not registered
         from langlearn.languages import LanguageRegistry
+
         try:
             LanguageRegistry.get("russian")
         except ValueError:

@@ -135,11 +135,13 @@ class MediaFileRegistrar:
 
         # Use regex pattern for comprehensive filename validation
         # Disallow consecutive dots, filenames starting/ending with dots
-        # Only allow alphanumerics, single dots, dashes, underscores
+        # Allow Unicode characters (for international languages)
         import re
 
-        safe_pattern = r"^[A-Za-z0-9](?!.*\.\.)[A-Za-z0-9._-]*[A-Za-z0-9_-]$"
-        return re.match(safe_pattern, filename) is not None
+        # Pattern allows Unicode word characters, dots, dashes, underscores
+        # \w includes Unicode letters and numbers in Python 3
+        safe_pattern = r"^[\w](?!.*\.\.)[.\w_-]*[\w_-]$"
+        return re.match(safe_pattern, filename, re.UNICODE) is not None
 
     def _extract_image_references(self, content: str) -> list[str]:
         """Extract image file references from content.

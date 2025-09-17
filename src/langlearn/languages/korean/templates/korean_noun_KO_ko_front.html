@@ -1,0 +1,30 @@
+<!-- Korean Noun Card Front Template -->
+<div class="card korean-noun-front">
+  <!-- Main Hangul Display -->
+  <div class="hangul">{{Hangul}}</div>
+
+  <!-- Romanization for pronunciation support -->
+  <div class="romanization">[{{Romanization}}]</div>
+
+  <!-- Image (if available) -->
+  {{#Image}}
+  <div class="image-container">
+    {{Image}}
+  </div>
+  {{/Image}}
+
+  <!-- Audio for pronunciation -->
+  {{#WordAudio}}
+  <div class="audio-section">
+    {{WordAudio}}
+  </div>
+  {{/WordAudio}}
+
+  <!-- Counter information as learning hint -->
+  {{#Counter}}
+  <div class="counter-section">
+    <div class="counter-title">Classifier/Counter</div>
+    <div class="counter-info">{{Counter}}</div>
+  </div>
+  {{/Counter}}
+</div>

@@ -1,33 +1,6 @@
-"""Core infrastructure services package."""
+"""Core services for the language learning application."""
 
-# Service container functions - preferred import pattern
-# Direct service imports for dependency injection
-from .audio_service import AudioService
-from .domain_media_generator import DomainMediaGenerator, MockDomainMediaGenerator
-from .image_service import PexelsService
-from .media_file_registrar import MediaFileRegistrar
-from .media_service import MediaGenerationConfig, MediaService
-from .service_container import (
-    get_anthropic_service,
-    get_audio_service,
-    get_pexels_service,
-    reset_services,
-)
-from .template_service import TemplateService
+from .naming_service import NamingService
+from .service_container import get_anthropic_service
 
-__all__ = [
-    # Direct service classes (for dependency injection)
-    "AudioService",
-    "DomainMediaGenerator",
-    "MediaFileRegistrar",
-    "MediaGenerationConfig",
-    "MediaService",
-    "MockDomainMediaGenerator",
-    "PexelsService",
-    "TemplateService",
-    # Service factory functions (preferred pattern)
-    "get_anthropic_service",
-    "get_audio_service",
-    "get_pexels_service",
-    "reset_services",
-]
+__all__ = ["NamingService", "get_anthropic_service"]

@@ -99,9 +99,14 @@ def main() -> None:
                 sys.exit(1)
 
             print(f"✅ Loaded {total_words} words:")
+            # Import NamingService for consistent naming
+            from langlearn.core.services import NamingService
+
             for word_type, count in loaded_data.items():
                 if count > 0:
-                    print(f"   📖 {word_type.title()}: {count}")
+                    # Use NamingService for consistent display names
+                    display_name = NamingService.get_display_name(word_type)
+                    print(f"   📖 {display_name}: {count}")
 
             # Generate cards with media
             print("\n🎴 Generating Anki cards with media...")
