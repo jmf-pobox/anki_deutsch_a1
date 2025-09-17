@@ -443,6 +443,7 @@ class AnkiBackend(DeckBackend):
         for img_filename in img_matches:
             # Try to find the image file in the images directory
             image_path = self._images_dir / img_filename
+
             if image_path.exists():
                 try:
                     logger.info(f"   🖼️ Adding image from HTML: {img_filename}")

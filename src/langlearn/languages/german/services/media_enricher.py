@@ -110,6 +110,11 @@ class StandardMediaEnricher(MediaEnricher):
             image_filename = f"{model_word.lower()}.jpg"
             image_path = self._image_base_path / image_filename
 
+            # DEBUGGING: Log the filename generation process
+            logger.info(f"[DEBUG] model_word: {model_word}")
+            logger.info(f"[DEBUG] image_filename: {image_filename}")
+            logger.info(f"[DEBUG] image_path: {image_path}")
+
             if image_path.exists():
                 logger.debug(f"Image exists: {image_path}")
                 media_data["image"] = image_filename
