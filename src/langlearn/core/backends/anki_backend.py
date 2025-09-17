@@ -386,7 +386,7 @@ class AnkiBackend(DeckBackend):
 
         # Generate reference based on media type
         if media_type == "audio":
-            # Audio files (always .mp3) should be wrapped in [sound:] format
+            # Audio files should use [sound:] wrapper for Anki field references
             reference = f"[sound:{filename}]"
             logger.info(f"   🔊 Audio reference: '{reference}'")
         elif media_type == "image":

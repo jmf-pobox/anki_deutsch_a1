@@ -11,6 +11,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+# Import to ensure language registration happens at test session start
+import langlearn.languages  # noqa: F401
+
 
 @pytest.fixture(autouse=True)
 def mock_external_services(

@@ -1,20 +1,34 @@
 """Tests for the multi-language system."""
 
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from langlearn.languages import GermanLanguage, LanguageRegistry
 
 
+@pytest.fixture
+def clean_registry() -> Any:
+    """Fixture that saves registry state, clears it, then restores it."""
+    # Save current registry state
+    saved_languages = LanguageRegistry._languages.copy()
+
+    # Clear registry for clean test
+    LanguageRegistry.clear()
+
+    yield
+
+    # Restore original registry state
+    LanguageRegistry._languages.clear()
+    LanguageRegistry._languages.update(saved_languages)
+
+
 class TestLanguageRegistry:
     """Test LanguageRegistry functionality."""
 
-    def test_registry_registration_and_retrieval(self) -> None:
+    def test_registry_registration_and_retrieval(self, clean_registry: Any) -> None:
         """Test that languages can be registered and retrieved."""
-        # Clear registry for clean test
-        LanguageRegistry.clear()
-
         # Register test language
         LanguageRegistry.register("de", GermanLanguage)
 
@@ -26,16 +40,13 @@ class TestLanguageRegistry:
         # Test listing
         assert LanguageRegistry.list_available() == ["de"]
 
-    def test_registry_unknown_language_error(self) -> None:
+    def test_registry_unknown_language_error(self, clean_registry: Any) -> None:
         """Test error handling for unknown languages."""
-        LanguageRegistry.clear()
-
         with pytest.raises(ValueError, match="Language ru not registered"):
             LanguageRegistry.get("ru")
 
-    def test_registry_multiple_language_codes(self) -> None:
+    def test_registry_multiple_language_codes(self, clean_registry: Any) -> None:
         """Test multiple codes can map to same language."""
-        LanguageRegistry.clear()
         LanguageRegistry.register("de", GermanLanguage)
         LanguageRegistry.register("german", GermanLanguage)
 

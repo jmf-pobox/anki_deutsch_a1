@@ -125,6 +125,10 @@ addopts = "-ra -q --doctest-modules"
 testpaths = [
     "tests",
 ]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "live: marks tests as requiring live API calls",
+]
 
 [tool.coverage.run]
 source = ["src"]

@@ -73,6 +73,7 @@ class AudioService:
         voice_id: VoiceIdType = "Daniel",
         language_code: LanguageCodeType = "de-DE",
         speech_rate: int = 75,
+        engine: EngineType = "neural",
     ) -> None:
         """Initialize the AudioService.
 
@@ -81,20 +82,23 @@ class AudioService:
             voice_id: AWS Polly voice ID (default: "Daniel")
             language_code: Language code (default: "de-DE")
             speech_rate: Speech rate in percentage (default: 75)
+            engine: AWS Polly engine type (default: "neural")
         """
         if TYPE_CHECKING:
             self.client: PollyClient
         self.client = boto3.client("polly")
         self.output_dir = Path(output_dir)
         self.voice_id = voice_id
+        self.engine = engine
         self.language_code = language_code
         self.speech_rate = speech_rate
         self.output_dir.mkdir(exist_ok=True)
         logger.info(
             "AudioService initialized with voice_id=%s, language_code=%s, "
-            "speech_rate=%d",
+            "engine=%s, speech_rate=%d",
             voice_id,
             language_code,
+            engine,
             speech_rate,
         )
 
@@ -128,7 +132,7 @@ class AudioService:
                 "VoiceId": self.voice_id,
                 "LanguageCode": self.language_code,
                 "OutputFormat": "mp3",
-                "Engine": "neural",  # Daniel requires neural
+                "Engine": self.engine,  # Configurable engine type
                 "SampleRate": "16000",  # Lower sample rate for smaller files
                 # (was 22050 default)
             }

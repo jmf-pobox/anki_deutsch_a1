@@ -6,12 +6,18 @@ system for the multi-language Anki deck generator.
 
 from .german.language import GermanLanguage
 from .registry import LanguageRegistry
+from .russian.language import RussianLanguage
 
 # Register German language
 LanguageRegistry.register("de", GermanLanguage)
 LanguageRegistry.register("german", GermanLanguage)  # Allow both codes
 
+# Register Russian language
+LanguageRegistry.register("ru", RussianLanguage)
+LanguageRegistry.register("russian", RussianLanguage)  # Allow both codes
+
 __all__ = [
     "GermanLanguage",
     "LanguageRegistry",
+    "RussianLanguage",
 ]

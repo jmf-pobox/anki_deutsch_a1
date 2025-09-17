@@ -116,9 +116,23 @@ class DeckBuilder:
         language_deck_data_dir = project_root / "languages" / language / deck_type
 
         # Use provided services or create defaults with language/deck specific paths
-        actual_audio_service = audio_service or AudioService(
-            output_dir=str(language_deck_data_dir / "audio")
-        )
+        # Choose appropriate TTS voice/language per target language
+        if audio_service is not None:
+            actual_audio_service = audio_service
+        else:
+            if language.lower() in ("ru", "russian"):
+                # Use a Russian Polly voice and language so Cyrillic text succeeds
+                actual_audio_service = AudioService(
+                    output_dir=str(language_deck_data_dir / "audio"),
+                    voice_id="Tatyana",  # Russian voice (female)
+                    language_code="ru-RU",
+                    engine="standard",  # Russian voices use standard engine
+                )
+            else:
+                # Default: German
+                actual_audio_service = AudioService(
+                    output_dir=str(language_deck_data_dir / "audio")
+                )
         actual_pexels_service = pexels_service or PexelsService()
         media_config = MediaGenerationConfig(
             audio_dir=str(language_deck_data_dir / "audio"),
@@ -275,6 +289,22 @@ class DeckBuilder:
             if record_type == "unifiedarticle":
                 record_type = "unified_article"
 
+            # Handle language-prefixed record names (e.g., RussianNounRecord -> noun)
+            if record_type.startswith(("russian", "german", "spanish", "french")):
+                # Extract just the word type from language-prefixed names
+                for word_type in [
+                    "noun",
+                    "verb",
+                    "adjective",
+                    "adverb",
+                    "preposition",
+                    "phrase",
+                    "negation",
+                ]:
+                    if record_type.endswith(word_type):
+                        record_type = word_type
+                        break
+
             if record_type not in records_by_type:
                 records_by_type[record_type] = []
             records_by_type[record_type].append(record)
@@ -303,9 +333,25 @@ class DeckBuilder:
                 logger.info(f"Generating media for {record_type} records...")
 
                 # Convert Records to Domain Models for media enrichment
-                from .languages.german.services.record_to_model_factory import (
-                    RecordToModelFactory,
-                )
+                # Use language-specific RecordToModelFactory
+                # Type annotation for factory to handle language-specific imports
+                record_to_model_factory: Any = None
+                if self.language == "german":
+                    from .languages.german.services.record_to_model_factory import (
+                        RecordToModelFactory as GermanRecordToModelFactory,
+                    )
+
+                    record_to_model_factory = GermanRecordToModelFactory
+                elif self.language == "russian":
+                    from .languages.russian.services.record_to_model_factory import (
+                        RecordToModelFactory as RussianRecordToModelFactory,
+                    )
+
+                    record_to_model_factory = RussianRecordToModelFactory
+                else:
+                    raise ValueError(
+                        f"Unsupported language for domain models: {self.language}"
+                    )
 
                 record_dicts = []
                 domain_models = []
@@ -313,7 +359,7 @@ class DeckBuilder:
 
                 for i, rec in enumerate(records):
                     try:
-                        domain_model = RecordToModelFactory.create_domain_model(rec)
+                        domain_model = record_to_model_factory.create_domain_model(rec)
                         record_dicts.append(rec.to_dict())
                         domain_models.append(domain_model)
                     except ValueError as e:
