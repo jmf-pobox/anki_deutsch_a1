@@ -1,6 +1,12 @@
-# Production CSV Specification
+# German Language - CSV Format Specification
 
-This document defines the canonical CSV format specifications for the Anki German Language Deck Generator project. All CSV files must conform to these standards to ensure consistency, maintainability, and extensibility to future languages and multiple decks per language.
+This document defines the canonical CSV format specifications for the **German Language** implementation in the Anki Multi-Language Deck Generator project.
+
+> **Language-Specific Nature**: CSV specifications are inherently language-specific because each language's unique grammar dictates the required fields. German requires specific fields for cases, genders, verb conjugations, and article declensions that don't exist in other languages.
+>
+> **Other Languages**: See language-specific documentation:
+> - **RUSSIAN-LANGUAGE-SPEC.md** - Russian case system and declensions
+> - **KOREAN-LANGUAGE-SPEC.md** - Korean particle system and counters
 
 ## Directory Structure
 

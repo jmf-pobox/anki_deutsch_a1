@@ -1,146 +1,198 @@
 # Project TODO - Current Status
 
-Last updated: 2025-01-15
+Last updated: 2025-01-17
 
 ## 🚨 CRITICAL PRIORITY
 
-### **PRIORITY 1: AnkiBackend Language-Agnostic Refactoring** 🔴 **CRITICAL**
+### **PRIORITY 1: DeckBuilder Multi-Language Architecture Refactoring** 🔴 **CRITICAL**
 
-**Problem**: `src/langlearn/core/backends/anki_backend.py` has extensive hardcoded German imports that violate the multi-language architecture and block adding new languages.
+**Problem**: `src/langlearn/deck_builder.py` violates Clean Architecture principles with extensive language-specific conditionals and hardcoded imports, making it difficult to scale to new languages.
 
-**Status**: ✅ **Multi-language foundation 75% complete**, ⚠️ **AnkiBackend refactoring pending**
+**Status**: 🚧 **Design Analysis Complete** - Implementation Pending
 
-#### **Incremental Implementation Plan**
+#### **Architectural Violations Identified**
 
-Each step must pass quality gates before proceeding to the next:
+1. **Scattered Language Conditionals** (Lines 123-143)
+   - Hardcoded voice selection: `if language.lower() in ("ru", "russian")`
+   - Hardcoded TTS configuration per language
+   - Default fallback to German configuration
 
-**Step 1: Abstract Domain Model Interface** (Risk: Low, 1-2 days)
-- Create `LanguageDomainModel` protocol in `src/langlearn/protocols/domain_model_protocol.py`
-- Define common methods all domain models must implement (`get_combined_audio_text()`, etc.)
-- Validate protocol compiles and imports work
-- **Quality Gates**: `hatch run check` passes
+2. **Language-Specific Service Imports** (Lines 325-346)
+   - Direct imports in `generate_all_cards()`: `from .languages.german.services.record_to_model_factory`
+   - Conditional factory selection based on language string
+   - Violation of dependency injection principles
 
-**Step 2: Create Domain Model Factory Protocol** (Risk: Low, 1 day)
-- Create `DomainModelFactory` protocol in language protocol
-- Add `get_domain_model_factory()` method to `Language` protocol
-- Update `GermanLanguage` to return German domain model factory
-- **Quality Gates**: All tests pass, no MyPy errors
+3. **Hardcoded German MediaEnricher** (Lines 173-188)
+   - Forces all languages to use: `from .languages.german.services.media_enricher import StandardMediaEnricher`
+   - Prevents language-specific media enrichment strategies
 
-**Step 3: Update AnkiBackend to use domain model factory** ✅ **PARTIALLY COMPLETE**
-- ✅ Updated AnkiBackend constructor to accept Language parameter
-- ✅ Replaced `_create_domain_model_from_record()` with `language.create_domain_model()`
-- ✅ All tests pass with zero MyPy errors
-- ⚠️ **DESIGN VIOLATION DISCOVERED**: AnkiBackend still has German-specific imports and logic
+4. **Mixed Responsibilities**
+   - DeckBuilder is simultaneously: orchestrator, service factory, language configurator
+   - Violates Single Responsibility Principle
 
-**Step 3b: Complete AnkiBackend Language-Agnostic Design** ✅ **COMPLETED**
-- ✅ Remove German imports that violate architecture:
-  - ✅ `from langlearn.languages.german.records.factory import create_record`
-  - ✅ `from langlearn.languages.german.services.media_enricher import StandardMediaEnricher`
-- ✅ Remove hardcoded German note type mapping logic (lines ~306-326):
-  - ✅ `"German Noun": "noun"`, `"German Adjective": "adjective"`, etc.
-- ✅ Add missing Language protocol methods:
-  - ✅ `create_record_from_csv(record_type, fields) -> BaseRecord`
-  - ✅ `get_media_enricher() -> MediaEnricherProtocol`
-  - ✅ `create_media_enricher() -> MediaEnricherProtocol`
-  - ✅ `get_note_type_mappings() -> dict[str, str]`
-- ✅ **Quality Gates**: AnkiBackend basic imports removed, protocol methods implemented
+#### **Recommended Solution: Service Container Pattern**
 
-**Step 4: Complete `_process_fields_with_media` Language-Agnostic Refactoring** ✅ **COMPLETED**
-**Problem**: Method contained extensive German-specific business logic that broke language-agnostic architecture
+**Design Pattern**: Abstract Factory + Dependency Injection + Strategy Pattern
 
-**Violations Resolved**:
-- ✅ Removed hardcoded German note type names: `"German Artikel Gender Cloze"`, `"German Artikel Context Cloze"`
-- ✅ Removed direct German model import: `from langlearn.languages.german.models.article import Article`
-- ✅ Removed German grammatical logic: `artikel_typ="bestimmt"`, `geschlecht="maskulin"`, cases
-- ✅ Removed German audio combination: `f"{article} {noun}, {plural}"`
-- ✅ Removed hardcoded field ordering per record type: `if record_type == "noun": return [...]`
+**Implementation Plan** (4 Phases, ~3-4 days total):
 
-**Design Solution Implemented**: **Field Processing Delegation Pattern**
-- ✅ Added `process_fields_for_anki()` method to Language protocol
-- ✅ Moved all German logic from `_process_fields_with_media` to `GermanLanguage.process_fields_for_anki()`
-- ✅ Updated AnkiBackend to pure delegation: `return self._language.process_fields_for_anki(note_type_name, fields, media_enricher)`
-- ✅ **Quality Gates Passed**: AnkiBackend has zero German business logic, ~200 lines reduced to ~37 lines
-
-**Step 5: German Field Processing Implementation** ✅ **COMPLETED**
-- ✅ Moved cloze handling logic to GermanLanguage
-- ✅ Moved record-specific field formatting to GermanLanguage
-- ✅ Preserved German audio combination logic in German domain models
-- ✅ All German note types handled correctly in language-specific code
-- ✅ **Quality Gates Passed**: Deck generation produces identical output, all 636 tests pass
-
-**ARCHITECTURAL ACHIEVEMENT**:
-**AnkiBackend is now a pure, language-agnostic Anki API**
-- Zero German imports or hardcoded logic
-- Complete protocol-based delegation
-- Ready for multi-language support (Russian, Korean, etc.)
-- ~83% code reduction in critical method (240 lines → 37 lines)
-
-**Step 6: Future Optimization - German Service Architecture** 🟡 **LOWER PRIORITY**
-- Move German-specific field processing to dedicated service
-- Create `GermanFieldProcessor` to handle cloze and record formatting
-- Extract German audio generation patterns to reusable utility
-- **Quality Gates**: Code organization follows German language package standards
-
-**Total Duration**: ✅ **COMPLETED** - All critical language-agnostic refactoring complete
-
----
-
-## 🏗️ ARCHITECTURAL DESIGN ANALYSIS
-
-### **Field Processing Delegation Pattern** (Step 4 Solution)
-
-**Current Problem**: `AnkiBackend._process_fields_with_media()` contains ~200 lines of German-specific business logic:
+##### **Phase 1: Extend Language Protocol** (Low Risk, 4 hours)
+Add service creation responsibilities to Language protocol:
 
 ```python
-# VIOLATIONS (to be removed):
-if note_type_name in {"German Artikel Gender Cloze", "German Artikel Context Cloze"}:
-    from langlearn.languages.german.models.article import Article  # Direct import!
-    article_model = Article(artikel_typ="bestimmt", geschlecht="maskulin", ...)  # German grammar!
+# src/langlearn/protocols/language_protocol.py
+class Language(Protocol):
+    @abstractmethod
+    def create_audio_service(self, output_dir: Path) -> AudioService:
+        """Create language-configured audio service."""
+        ...
 
-if record_type == "noun":
-    combined = f"{article} {noun}, {plural}"  # German audio pattern!
-    return [noun, article, english, plural, ...]  # German field order!
+    @abstractmethod
+    def create_record_to_model_factory(self) -> RecordToModelFactory:
+        """Create record to model factory."""
+        ...
+
+    @abstractmethod
+    def create_service_container(
+        self,
+        audio_dir: Path,
+        image_dir: Path,
+        project_root: Path
+    ) -> ServiceContainer:
+        """Create complete service container for this language."""
+        ...
 ```
 
-**Proposed Solution**: **Complete Delegation to Language Layer**
+**Quality Gates**:
+- MyPy passes with new protocol methods
+- No existing functionality broken
+
+##### **Phase 2: Implement Service Container** (Medium Risk, 4 hours)
 
 ```python
-# AnkiBackend (language-agnostic):
-def _process_fields_with_media(self, note_type_name: str, fields: list[str]) -> list[str]:
-    return self._language.process_fields_for_anki(note_type_name, fields)
+# src/langlearn/core/services/service_container.py
+@dataclass
+class ServiceContainer:
+    """Container for all language-specific services."""
+    audio_service: AudioService
+    pexels_service: PexelsService
+    media_enricher: MediaEnricher
+    record_mapper: RecordMapper
+    card_builder: CardBuilder
+    template_service: TemplateService
+    grammar_service: Any
+    record_to_model_factory: RecordToModelFactory
 ```
+
+Update each language to implement `create_service_container()`:
+- Move TTS configuration to GermanLanguage, RussianLanguage, KoreanLanguage
+- Move service initialization to language implementations
+- Return fully configured ServiceContainer
+
+**Quality Gates**:
+- All 636 unit tests pass
+- Service creation works for all 3 languages
+
+##### **Phase 3: Refactor DeckBuilder** (Higher Risk, 6 hours)
+
+Transform DeckBuilder into pure orchestrator:
 
 ```python
-# GermanLanguage (German-specific logic):
-def process_fields_for_anki(self, note_type_name: str, fields: list[str]) -> list[str]:
-    # Handle all German note types, cloze logic, field formatting
-    # Import German models locally within this method
-    # Apply German grammatical rules and audio patterns
+class DeckBuilder:
+    def __init__(self, deck_name: str, language: str, deck_type: str = "default"):
+        # Single language lookup
+        self._language = LanguageRegistry.get(language)
+
+        # Get ALL services from language (no conditionals)
+        paths = self._calculate_paths(language, deck_type)
+        self._services = self._language.create_service_container(
+            audio_dir=paths.audio_dir,
+            image_dir=paths.image_dir,
+            project_root=paths.project_root
+        )
+
+        # Pure delegation from here
+        self._backend = self._create_backend(deck_name, self._language)
+        # No more language-specific logic below this line
 ```
 
-**Benefits**:
-- ✅ **Zero German Logic in AnkiBackend**: Pure Anki API for any language
-- ✅ **Language Encapsulation**: All German knowledge in German package
-- ✅ **Future Language Support**: Russian/Korean can implement their own field processing
-- ✅ **Maintainability**: German changes don't affect core Anki backend
-- ✅ **Type Safety**: Protocol ensures all languages implement field processing
+Remove ALL:
+- Language conditionals (lines 123-143, 325-346)
+- Direct language service imports
+- Hardcoded German references
 
-**Migration Strategy**:
-1. Add `process_fields_for_anki()` to Language protocol
-2. Copy existing German logic to `GermanLanguage.process_fields_for_anki()`
-3. Replace AnkiBackend method body with single delegation call
-4. Test identical deck generation output
-5. Remove all German imports from AnkiBackend
+**Quality Gates**:
+- Zero language conditionals in deck_builder.py
+- All tests pass
+- Deck generation produces identical output
+
+##### **Phase 4: Cleanup and Documentation** (Low Risk, 2 hours)
+
+- Remove obsolete imports
+- Update architecture documentation
+- Add integration tests for multi-language support
+- Update ENG-SYSTEM-DESIGN.md with new architecture
+
+**Quality Gates**:
+- Full test suite passes
+- Documentation reflects new design
+- Code coverage maintained
+
+#### **Success Metrics**
+
+**Before Refactoring**:
+- ❌ 3+ conditional blocks for language selection
+- ❌ Direct imports of language-specific services
+- ❌ Hardcoded German MediaEnricher for all languages
+- ❌ Mixed orchestration and configuration responsibilities
+
+**After Refactoring**:
+- ✅ Zero language conditionals in DeckBuilder
+- ✅ Pure delegation to ServiceContainer
+- ✅ Each language fully encapsulates its configuration
+- ✅ Single Responsibility: DeckBuilder only orchestrates
+- ✅ New languages require zero changes to DeckBuilder
+
+#### **Risk Mitigation**
+
+1. **Incremental Approach**: Each phase independently deployable
+2. **Backward Compatibility**: Maintain existing public API
+3. **Test Coverage**: Run full test suite after each phase
+4. **Feature Branch**: All work on `refactor/deck-builder-multi-language`
 
 ---
 
 ### **PRIORITY 2: COMPLETED WORK** ✅
-**Multi-Language Architecture Foundation**:
-- ✅ Records: Core infrastructure extracted, German records properly organized
-- ✅ Language System: Protocol-based registry with German implementation
-- ✅ Template System: Language-agnostic resolution via protocol
-- ✅ German Package: Models, services, records, templates properly located
-- ✅ Data Structure: Already organized as `languages/{language}/{deck}/`
+
+**Korean Language Implementation**: ✅ **100% COMPLETE** (2025-01-17)
+- ✅ Complete Korean language package with noun records, templates, and services
+- ✅ Korean particle system (은/는, 이/가, 을/를) with phonological rules
+- ✅ Counter/classifier system (개, 명, 마리, 채, 권) integration
+- ✅ Hangul typography with proper font families
+- ✅ Unicode filename validation for international languages (fixed MediaFileRegistrar)
+- ✅ NamingService architecture for consistent multi-language naming
+- ✅ Korean voice support (Seoyeon) for AWS Polly TTS
+- ✅ Fail-fast template loading without fallbacks
+- ✅ All three languages (German, Russian, Korean) verified working
+
+**AnkiBackend Language-Agnostic Refactoring**: ✅ **100% COMPLETE**
+- ✅ Removed all German imports from AnkiBackend
+- ✅ Implemented field processing delegation pattern
+- ✅ Complete protocol-based language abstraction
+- ✅ ~83% code reduction in critical method (240 lines → 37 lines)
+
+**Multi-Language Architecture Foundation**: ✅ **100% COMPLETE**
+- ✅ Language protocol and registry system
+- ✅ German, Russian, Korean language implementations
+- ✅ Template system with language-specific resolution
+- ✅ Data organization: `languages/{language}/{deck}/`
+
+**Documentation Consolidation**: ✅ **100% COMPLETE** (2025-01-17)
+- ✅ Updated existing docs to clarify German-specific scope
+- ✅ Created minimal specs for Russian and Korean languages
+- ✅ Enhanced multi-language CSV specification
+
+---
 
 ### **PRIORITY 3: Future Enhancement Opportunities** 🟡 LOW PRIORITY
 
@@ -153,40 +205,46 @@ def process_fields_for_anki(self, note_type_name: str, fields: list[str]) -> lis
 - ServiceContainer refactoring - Remove Optional/None abuse patterns
 - Legacy code removal - Any remaining commented out or deprecated patterns
 
+---
+
 ## 🎯 SUCCESS METRICS
 
-**Current State (2025-01-16)**:
-- ✅ Multi-language architecture: **100% complete**
-- ✅ All 636 unit tests passing + 19 integration tests
-- ✅ MyPy strict mode: 0 errors across 126 files
-- ✅ Code quality: Perfect Ruff compliance
-- ✅ Language-agnostic template system implemented
-- ✅ German package properly organized per ENG-PACKAGING.md
-- ✅ **AnkiBackend language-agnostic refactoring complete**
-- ✅ **Zero hardcoded language references in core components**
+**Current State (2025-01-17)**:
+- ✅ **Three working languages**: German (full), Russian (minimal), Korean (minimal)
+- ✅ All languages verified working with media generation and Anki import
+- ✅ Multi-language architecture: **95% complete** (DeckBuilder refactoring pending)
+- ✅ All unit tests passing + integration tests
+- ✅ MyPy strict mode: 0 errors across codebase
+- ✅ AnkiBackend fully language-agnostic
+- ✅ Unicode filename support for international scripts
+- ⚠️ DeckBuilder contains language-specific conditionals (to be removed)
 
-**Achieved Target State**:
-- ✅ AnkiBackend is now a pure, language-agnostic Anki API
-- ✅ Multi-language architecture 100% compliant with protocols
-- ✅ Ready for Russian/Korean language addition
-- ✅ Complete separation of concerns: language logic in language packages
+**Target State After DeckBuilder Refactoring**:
+- ✅ 100% language-agnostic core components
+- ✅ Zero conditionals or hardcoded language references
+- ✅ Adding new language requires only creating language package
+- ✅ Complete adherence to Clean Architecture principles
 
 ---
 
 ## 📚 ARCHIVED: COMPLETED WORK
 
+### **AnkiBackend Refactoring (2025-01-16)**
+- ✅ Complete language-agnostic transformation
+- ✅ Field processing delegation pattern implemented
+- ✅ Zero German business logic in backend
+
 ### **Documentation Consolidation (2025-01-14)**
-- ✅ **Technical debt documents** - 3 documents consolidated into ENG-TECHNICAL-DEBT.md
-- ✅ **Coding standards documents** - 4 documents consolidated into ENG-CODING-STANDARDS.md
-- ✅ **Component inventory verification** - All components verified against actual codebase
-- ✅ **Architecture status updates** - Implementation status accurately documented
+- ✅ Technical debt documents consolidated
+- ✅ Coding standards documents consolidated
+- ✅ Component inventory verification complete
 
 ### **Multi-Language Architecture Phase 2 (2025-01-08)**
-- ✅ **German Record System** - 13 record classes extracted and organized
-- ✅ **Template Migration** - 54 German templates moved to language-specific package
-- ✅ **Architecture Foundation** - Language-first organization established
+- ✅ German Record System - 13 record classes extracted
+- ✅ Template Migration - 54 German templates moved
+- ✅ Architecture Foundation established
 
 ### **Previous Major Milestones**
-- ✅ **MediaGenerationCapable Protocol Migration** - Modern dataclass + protocol pattern implemented
-- ✅ **Legacy Code Removal** - Significant codebase cleanup and modernization
-- ✅ **Code Quality Standards** - PEP 8 compliance and type safety achieved
+- ✅ MediaGenerationCapable Protocol Migration
+- ✅ Legacy Code Removal
+- ✅ Code Quality Standards achieved

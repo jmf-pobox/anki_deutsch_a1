@@ -1,8 +1,13 @@
-# German Anki Card Type Specifications
+# German Language - Anki Card Type Specifications
 
-This document provides comprehensive specifications for all German language card types in the system.
+This document provides comprehensive specifications for all **German language** card types in the system.
 
+**Language**: German (Deutsch)
 **Total Card Types**: 15
+
+> **Note**: This specification is specific to the German language implementation. For other languages, see:
+> - Russian Language: Minimal noun cards (5 basic nouns)
+> - Korean Language: Minimal noun cards with particle system (5 basic nouns)
 
 ## System Architecture
 

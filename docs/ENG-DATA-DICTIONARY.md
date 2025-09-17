@@ -1,8 +1,11 @@
-# Data Dictionary
+# German Language - Data Dictionary
 
-## Version 1.0 - German Language Learning System
+## Version 1.2 - German Language Learning System
 
-This document provides a comprehensive field-by-field description of all data elements across all CSV files in the German Language Learning System. Each field includes data type, constraints, validation rules, and examples.
+This document provides a comprehensive field-by-field description of all data elements across all CSV files in the **German Language Learning System**. Each field includes data type, constraints, validation rules, and examples.
+
+> **Language Scope**: This data dictionary is specific to the German language implementation only.
+> Other languages (Russian, Korean) have separate, minimal data structures documented in their respective language packages.
 
 ## General Data Standards
 
