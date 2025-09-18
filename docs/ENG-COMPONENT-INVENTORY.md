@@ -1,239 +1,237 @@
-# Single Responsibility Principle - Codebase Inventory
+# Component Inventory - Infrastructure/Platform/Languages Architecture
 
-This document provides a comprehensive inventory of the German A1 vocabulary deck generator codebase, organized by the Single Responsibility Principle (SRP). Each component has been analyzed for its specific responsibility and adherence to clean architecture principles.
+This document provides a comprehensive inventory of the langlearn codebase organized by the **Infrastructure/Platform/Languages** architectural pattern. Each component is categorized by its role in the three-tier system that enables extensible language learning deck generation.
+
+**Updated**: 2024-09-18 to reflect Infrastructure/Platform/Languages migration
+
+---
 
 ## Architecture Overview
 
-The langlearn codebase follows clean architecture with clear separation of concerns across distinct layers: **Domain Models**, **Business Services**, **Infrastructure Backends**, **Orchestration Managers**, **Presentation Cards**, and **Cross-cutting Utils**. The architecture enables flexible German language learning content generation with strong type safety and extensibility.
+The langlearn system follows a three-tier architecture with clear separation of concerns:
+
+- **🏗️ Infrastructure Layer** (`langlearn.infrastructure.*`): "You use this" - Stable, concrete implementations
+- **🎯 Platform Layer** (`langlearn.core.*`): "You extend this" - Extension points and orchestration
+- **🌍 Languages Layer** (`langlearn.languages.*`): "You implement this" - Language-specific implementations
 
 ---
 
-## 📁 Package Structure and Responsibilities
+## 🏗️ Infrastructure Layer - "You use this"
 
-### `/src/langlearn/` - Root Package
-**Primary Responsibility**: Top-level namespace for the German language learning Anki deck generation system. Coordinates all subsystems for creating vocabulary learning materials with German-specific grammar rules and media integration.
+**Package**: `src/langlearn/infrastructure/`
+**Purpose**: Provides stable, concrete implementations that all languages use without modification
 
----
+### Backend Implementations
 
-### 🏗️ `/src/langlearn/languages/german/models/` - German Domain Models Layer
-
-**Package Responsibility**: Contains modern Python dataclass-based domain models representing German vocabulary with language-specific validation and behavior. Features MediaGenerationCapable protocol compliance that encapsulates German grammar rules and linguistic expertise.
-
-#### Core German Vocabulary Models
-
-| **Class** | **File** | **Single Responsibility** |
-|-----------|----------|---------------------------|
-| **`Noun`** | `languages/german/models/noun.py` | Dataclass representing German nouns with article/gender, plural forms, and case information. Implements MediaGenerationCapable with `get_combined_audio_text()`, `is_concrete()`, and `get_image_search_strategy()` methods for German-specific media generation. |
-| **`Adjective`** | `languages/german/models/adjective.py` | Dataclass handling German adjectives with comparative/superlative forms and declension validation. MediaGenerationCapable with `get_combined_audio_text()`, `validate_comparative()`, and `validate_superlative()` methods. |
-| **`Adverb`** | `languages/german/models/adverb.py` | Dataclass modeling German adverbs with type classification (time, place, manner, degree). MediaGenerationCapable with `AdverbType` enum for categorization and context-aware media generation. |
-| **`Negation`** | `languages/german/models/negation.py` | Dataclass representing German negation patterns and words (nicht, kein, nie, etc.). MediaGenerationCapable with `NegationType` enum and position validation for German syntax rules. |
-
-#### Verb Hierarchy (German Verb System)
-
-| **Class** | **File** | **Single Responsibility** |
-|-----------|----------|---------------------------|
-| **`Verb`** | `languages/german/models/verb.py` | Dataclass for German verbs with conjugation patterns, tense forms, and auxiliary selection. MediaGenerationCapable with comprehensive German verb validation and pronunciation support. |
-
-#### Grammar and Function Words
-
-| **Class** | **File** | **Single Responsibility** |
-|-----------|----------|---------------------------|
-| **`Article`** | `languages/german/models/article.py` | Dataclass for German articles with case/gender declensions. MediaGenerationCapable with article-specific formatting and context generation. |
-| **`Preposition`** | `languages/german/models/preposition.py` | Dataclass for German prepositions with case governance (Akkusativ, Dativ, Genitiv) and two-way preposition logic. MediaGenerationCapable with relationship-based image search and pronunciation support. |
-| **`Phrase`** | `languages/german/models/phrase.py` | Dataclass for German phrases and expressions with contextual usage information. MediaGenerationCapable with situational media generation and communicative function support. |
-
-### 📋 `/src/langlearn/languages/german/records/` - German Record Types
-
-**Package Responsibility**: Pydantic-based record classes for CSV data validation and transport. Contains 15+ German-specific record types with validation rules.
-
-#### Key Record Classes
-
-| **Class** | **File** | **Single Responsibility** |
-|-----------|----------|---------------------------|
-| **`BaseRecord`** | `languages/german/records/base.py` | Abstract base for all German record types with common validation patterns. |
-| **`GermanRecordFactory`** | `languages/german/records/factory.py` | Factory for creating appropriate record types from CSV data with German-specific validation. |
-| **`NounRecord`** | `languages/german/records/noun_record.py` | Pydantic model for German noun CSV data with article validation. |
-| **`VerbRecord`** | `languages/german/records/verb_record.py` | Pydantic model for German verb CSV data with conjugation patterns. |
-| **`AdjectiveRecord`** | `languages/german/records/adjective_record.py` | Pydantic model for German adjective CSV data with comparative/superlative forms. |
-
-### 🔄 `/src/langlearn/models/` - Backward Compatibility Layer
-
-**Package Responsibility**: Provides backward compatibility imports from German-specific packages. Contains only `__init__.py` with re-exports for legacy code compatibility.
-
-#### **REMOVED Legacy Architecture** ❌
-
-**Migration Completed (2025-09-02)**: All domain models migrated from Pydantic to modern Python patterns.
-
-*Legacy Components Eliminated:*
-- ~~`FieldProcessor` interface~~ → Replaced by Clean Pipeline Architecture
-- ~~`ModelFactory` class~~ → Eliminated factory pattern, direct protocol compliance
-- ~~Pydantic BaseModel inheritance~~ → Migrated to @dataclass + MediaGenerationCapable
-- ~~Dual inheritance (BaseModel + FieldProcessor)~~ → Single MediaGenerationCapable protocol
-- ~~Metaclass conflicts~~ → Resolved with protocol-based design
-
-*Legacy Domain Models Removed (2025-08-30):*
-- ~~`RegularVerb`, `IrregularVerb`, `SeparableVerb`~~ → Replaced by VerbConjugationRecord
-- ~~`Conjunction`, `Interjection`~~ → Not used in production 
-- ~~`PersonalPronoun`, `PossessivePronoun`, `OtherPronoun`~~ → Not used in production
-- ~~`CardinalNumber`, `OrdinalNumber`~~ → Not used in production
-
----
-
-### ⚙️ `/src/langlearn/services/` - Business Logic Layer
-
-**Package Responsibility**: Contains business logic services and external API integrations. Each service handles one specific capability while maintaining clean boundaries and single responsibilities.
-
-#### External API Integration Services
-
-| **Service** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`AudioService`** | `audio.py` | Integrates with AWS Polly for German text-to-speech generation. Handles audio file creation, caching, and German pronunciation optimization. |
-| **`PexelsService`** | `pexels_service.py` | Manages Pexels API integration for vocabulary image search and download. Implements rate limiting, error handling, and image optimization. |
-| **`AnthropicService`** | `anthropic_service.py` | Provides AI-powered content enhancement and validation using Anthropic's Claude API for German language processing. |
-
-#### Data and Content Services
-
-| **Service** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`CSVService`** | `csv_service.py` | Generic CSV reading with automatic Pydantic model conversion and validation. Provides type-safe data loading from vocabulary files. |
-| **`MediaService`** | `media_service.py` | Orchestrates audio and image generation with intelligent caching, deduplication, and batch processing. Coordinates between AudioService and PexelsService. |
-| **`TemplateService`** | `template_service.py` | Manages Anki card template loading, caching, and NoteType creation. Handles HTML/CSS template files and card formatting. |
-| **`CardBuilder`** | `card_builder.py` | Transforms enriched records into formatted Anki cards with appropriate templates and field mappings. Core service for card generation. |
-| **`MediaEnricher`** | `media_enricher.py` | Orchestrates Records → Domain Models conversion and media generation with existence checking and caching. |
-| **`RecordMapper`** | `record_mapper.py` | Maps CSV data to appropriate Record types using factory patterns and validation. |
-| **`DomainMediaGenerator`** | `domain_media_generator.py` | Adapter that provides MediaGenerator interface to domain models, bridging clean domain interfaces with existing service layer. |
-| **`MediaFileRegistrar`** | `media_file_registrar.py` | Manages media file registration and tracking for deck generation. |
-
-#### German-Specific Services
-
-| **Service** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`ArticleApplicationService`** | `article_application_service.py` | Applies German article rules and patterns to vocabulary items. |
-| **`ArticlePatternProcessor`** | `article_pattern_processor.py` | Processes German article patterns and validates grammatical correctness. |
-| **`GermanExplanationFactory`** | `german_explanation_factory.py` | Creates German-specific explanations and contextual information for vocabulary. |
-| **`VerbConjugationProcessor`** | `verb_conjugation_processor.py` | Handles German verb conjugation patterns and tense processing. |
-
-#### Infrastructure Services
-
-| **Service** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`ServiceContainer`** | `service_container.py` | Dependency injection container for managing service instances and configurations. |
-| **`TranslationService`** | `translation_service.py` | Translation services using AI providers for content enhancement. |
-| **`RecordToModelFactory`** | `record_to_model_factory.py` | Factory service for converting Record objects to Domain Models. |
-
----
-
-### 🔧 `/src/langlearn/backends/` - Infrastructure Layer
-
-**Package Responsibility**: Anki deck generation backend infrastructure with Strategy pattern foundation. Currently provides one concrete implementation of the deck generation interface.
-
-#### Backend Implementation Classes
-
-| **Backend** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`DeckBackend`** | `base.py:70` | Abstract base class defining the interface for all deck generation backends. Includes supporting classes `MediaFile`, `CardTemplate`, and `NoteType`. |
-| **`AnkiBackend`** | `anki_backend.py:44` | **Only concrete implementation** - uses the official Anki library with full collection management and advanced features. Includes Clean Pipeline Architecture with domain model delegation. |
-
----
-
-### 🎯 `/src/langlearn/managers/` - Orchestration Layer
-
-**Package Responsibility**: Higher-level orchestration components that coordinate multiple services while maintaining clean boundaries and avoiding implementation details.
-
-#### Management Classes
-
-| **Manager** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`DeckManager`** | `deck_manager.py:15` | Manages deck organization, subdeck hierarchy, naming conventions, and structural operations. Delegates actual deck operations to backends. |
-| **`MediaManager`** | `media_manager.py:12` | Coordinates comprehensive media generation workflows across multiple services. Orchestrates audio, image, and metadata generation for vocabulary items. |
-
----
-
-### 🃏 `/src/langlearn/cards/` - Presentation Layer **[REMOVED]**
-
-**Status**: This package no longer exists in the current codebase. Card generation functionality has been integrated directly into the AnkiBackend using Clean Pipeline Architecture.
-
----
-
-### 🛠️ `/src/langlearn/utils/` - Cross-Cutting Concerns
-
-**Package Responsibility**: Utility classes and cross-cutting concerns that support the application without containing domain-specific logic.
-
-#### Utility Classes
-
-| **Utility** | **File** | **Single Responsibility** |
-|-------------|----------|---------------------------|
-| **`Environment utilities`** | `environment.py` | Environment setup and configuration utilities. |
-
-#### Support Scripts (in `/scripts/`)
-
-| **Script** | **File** | **Single Responsibility** |
-|------------|----------|---------------------------|
-| **`CredentialManager`** | `api_keyring.py:15` | Secure API key management using the system keyring. Provides encrypted credential storage for AWS, Pexels, and other external services. |
-| **`sync_api_key.py`** | `sync_api_key.py:1` | Synchronizes API keys from secure keyring to environment variables for development workflows. |
-| **`test_api_key.py`** | `test_api_key.py:1` | Validates API key functionality and connectivity for external services during setup and troubleshooting. |
-
----
-
-
-## 🏛️ Root Level Components
-
-### Primary Application Classes
+**Location**: `src/langlearn/infrastructure/backends/`
 
 | **Component** | **File** | **Single Responsibility** |
 |---------------|----------|---------------------------|
-| **`GermanDeckBuilder`** | `deck_builder.py:20` | High-level orchestrator and main public API for comprehensive German vocabulary deck creation. Coordinates all subsystems while providing a clean, user-friendly interface. |
-| **`AnkiDeckGenerator`** | `generator.py:25` | Legacy deck generator class (being phased out). Provides backward compatibility during migration to the new architecture. |
-| **`main`** | `main.py:10` | Application entry point and command-line interface. Coordinates initialization, configuration, and execution of the deck building process. |
+| **`DeckBackend`** | `base.py` | Abstract interface defining deck creation contract. Specifies methods for note types, media files, and deck export that all backends must implement. |
+| **`AnkiBackend`** | `anki_backend.py` | Concrete implementation creating `.apkg` files from card data. Handles Anki collection management, note type creation, media packaging, and deck export with comprehensive error handling. |
+| **`MediaFile`** | `base.py` | Value object representing media files with path and Anki reference. Provides type-safe media file handling across the system. |
+| **`NoteType`** | `base.py` | Value object defining Anki note type structure with fields and templates. Encapsulates card type definitions for consistent deck generation. |
+| **`CardTemplate`** | `base.py` | Value object for Anki card templates with HTML, CSS, and metadata. Provides structured template definitions for card rendering. |
+
+### Service Implementations
+
+**Location**: `src/langlearn/infrastructure/services/`
+
+| **Service** | **File** | **Single Responsibility** |
+|-------------|----------|---------------------------|
+| **`AudioService`** | `audio_service.py` | AWS Polly integration for German text-to-speech. Handles SSML generation, audio file caching with MD5 hashing, and pronunciation optimization for language learning. |
+| **`PexelsService`** | `image_service.py` | Pexels API integration for vocabulary image search and download. Implements rate limiting, retry logic with exponential backoff, and image optimization for educational content. |
+| **`AnthropicService`** | `ai_service.py` | Anthropic Claude API integration for AI-enhanced content generation. Provides context-aware image queries and content validation for vocabulary learning. |
+| **`MediaEnricher`** | `media_enricher.py` | Orchestrates audio and image generation with intelligent caching and deduplication. Coordinates between AudioService and PexelsService for efficient media creation. |
+| **`StandardMediaEnricher`** | `media_enricher.py` | Standard implementation of MediaEnricher with full audio and image generation capabilities. Used by all language implementations for consistent media handling. |
+| **`CSVService`** | `csv_service.py` | Generic CSV reading with automatic Pydantic model conversion. Provides type-safe data loading from vocabulary files with comprehensive validation and error reporting. |
+| **`TemplateService`** | `template_service.py` | Anki card template loading and NoteType creation. Manages HTML/CSS template files with caching and provides card formatting services for all languages. |
+| **`NamingService`** | `naming_service.py` | Standardized filename and path generation for media assets. Ensures consistent naming conventions across audio files, images, and deck outputs. |
+| **`MediaFileRegistrar`** | `media_file_registrar.py` | Tracks and manages media file relationships and dependencies. Prevents duplicate media generation and maintains media file integrity across deck builds. |
+| **`ServiceContainer`** | `service_container.py` | Dependency injection container for infrastructure services. Provides singleton pattern management and service lifecycle for AudioService, PexelsService, and AnthropicService. |
+| **`DomainMediaGenerator`** | `domain_media_generator.py` | Bridge between domain models and media services. Handles protocol compliance and provides fallback strategies for media generation across different language implementations. |
 
 ---
 
-## 🎨 `/src/langlearn/examples/` - Usage Examples **[REMOVED]**
+## 🎯 Platform Layer - "You extend this"
 
-**Status**: This package no longer exists in the current codebase. Example usage is documented in CLAUDE.md and the main application entry point demonstrates usage patterns.
+**Package**: `src/langlearn/core/`
+**Purpose**: Provides extension points, orchestration, and contracts that languages implement
+
+### Deck Management and Orchestration
+
+**Location**: `src/langlearn/core/deck/`
+
+| **Component** | **File** | **Single Responsibility** |
+|---------------|----------|---------------------------|
+| **`DeckBuilderAPI`** | `builder.py` | Observable 5-phase deck generation pipeline. Orchestrates data loading, model creation, media enrichment, card building, and deck export with comprehensive progress tracking and error handling. |
+| **`DeckPhases`** | `phases.py` | State management for deck generation phases (INITIALIZED → DATA_LOADED → MODELS_BUILT → MEDIA_ENRICHED → CARDS_BUILT → EXPORTED). Enforces valid phase transitions and provides phase validation. |
+| **`BuiltCards`** | `data_types.py` | Type-safe container for generated card data with metadata. Encapsulates cards, categorization by type, template usage statistics, and build errors for comprehensive deck analysis. |
+| **`DeckProgress`** | `progress.py` | Progress tracking and reporting for deck generation operations. Provides percentage completion, phase timing, and detailed progress information for user feedback. |
+| **`DeckGenerationResult`** | `data_types.py` | Result object containing deck export metadata and statistics. Includes output path, cards exported count, media files included, and generation performance metrics. |
+
+### Records and Data Validation
+
+**Location**: `src/langlearn/core/records/`
+
+| **Component** | **File** | **Single Responsibility** |
+|---------------|----------|---------------------------|
+| **`BaseRecord`** | `base_record.py` | Abstract foundation for all language record types with common validation patterns. Provides Pydantic-based validation, field transformation utilities, and integration with platform systems. |
+
+### Extension Protocols
+
+**Location**: `src/langlearn/core/protocols/`
+
+| **Protocol** | **File** | **Single Responsibility** |
+|--------------|----------|---------------------------|
+| **`MediaGenerationCapable`** | `media_generation_protocol.py` | Contract for domain models requiring media generation. Defines `get_combined_audio_text()`, `get_image_search_strategy()`, and media-related methods that all vocabulary models must implement. |
+| **`CardProcessorProtocol`** | `card_processor_protocol.py` | Contract for language-specific card processing. Defines methods for transforming domain models into Anki card fields with language-specific formatting and template selection. |
+| **`TTSConfig`** | `tts_protocol.py` | Configuration protocol for text-to-speech services. Defines voice selection, language codes, and audio generation parameters for consistent pronunciation across languages. |
+| **`ImageSearchCapable`** | `image_search_protocol.py` | Contract for AI-enhanced image query generation. Defines methods for creating context-aware image search queries using AI services for improved vocabulary visualization. |
+
+### Pipeline Framework
+
+**Location**: `src/langlearn/core/pipeline/`
+
+| **Component** | **File** | **Single Responsibility** |
+|---------------|----------|---------------------------|
+| **`Pipeline`** | `pipeline.py` | Generic processing pipeline framework with task orchestration. Provides sequential task execution with state management and error propagation for extensible data processing workflows. |
+| **`PipelineTask`** | `pipeline.py` | Base class for pipeline task implementations with input/output validation. Ensures type safety and proper state transitions in processing workflows. |
+| **`PipelineObject`** | `pipeline.py` | Container for pipeline data with input/output aliasing. Provides consistent data flow through pipeline stages with comprehensive state tracking. |
+| **`PipelineTaskState`** | `pipeline.py` | State tracking for individual pipeline tasks with completion status and logging. Enables progress monitoring and debugging of complex data processing operations. |
 
 ---
 
-## 📊 Architecture Quality Assessment
+## 🌍 Languages Layer - "You implement this"
 
-### ✅ Single Responsibility Principle Adherence: **EXCELLENT**
+**Package**: `src/langlearn/languages/`
+**Purpose**: Language-specific implementations using platform extension points
 
-- **Domain Models**: Each model represents exactly one German part of speech with its specific grammar rules and behavior
-- **Services**: Each service handles precisely one external integration or business capability  
-- **Backends**: Clean abstraction with single implementations per Anki library
-- **Managers**: Focused orchestration without mixing implementation details
-- **Cards**: Type-specific card generation with shared base functionality
+### German Language Implementation
 
-### ✅ Separation of Concerns: **EXCELLENT**
+**Location**: `src/langlearn/languages/german/`
 
-- **Clear Layer Boundaries**: Domain → Services → Infrastructure → Orchestration → Presentation
-- **Proper Dependency Direction**: Higher-level components depend on abstractions, not concrete implementations
-- **External Integration Isolation**: All external APIs cleanly isolated in the services layer
+#### Domain Models (`languages/german/models/`)
 
-### 🎯 Key Design Patterns Implemented
+| **Model** | **File** | **Single Responsibility** |
+|-----------|----------|---------------------------|
+| **`Noun`** | `noun.py` | German noun representation with article/gender, plural forms, and case information. Implements MediaGenerationCapable with German-specific audio text generation and concreteness-based image search strategies. |
+| **`Adjective`** | `adjective.py` | German adjective with comparative/superlative forms and declension rules. Provides German-specific pronunciation patterns and context-aware image search for descriptive vocabulary. |
+| **`Adverb`** | `adverb.py` | German adverb with type classification (manner, time, place, degree). Implements conceptual image search strategies for abstract vocabulary concepts with MediaGenerationCapable compliance. |
+| **`Verb`** | `verb.py` | German verb with conjugation patterns, separable prefixes, and auxiliary selection. Provides comprehensive German verb system support with pronunciation and visual learning aids. |
+| **`Negation`** | `negation.py` | German negation patterns (nicht, kein, nie) with syntactic positioning rules. Implements German-specific negation grammar for accurate language learning content. |
+| **`Article`** | `article.py` | German articles with complete case/gender declension system. Provides comprehensive German article support with context-sensitive pronunciation and usage examples. |
+| **`Preposition`** | `preposition.py` | German prepositions with case governance and two-way preposition logic. Implements relationship-based image search and comprehensive German prepositional system. |
+| **`Phrase`** | `phrase.py` | German phrases and expressions with contextual usage patterns. Provides situational media generation and communicative function support for practical German learning. |
 
-1. **Strategy Pattern**: Backend abstraction enables switching between genanki and official Anki library implementations
-2. **Template Method Pattern**: BaseCardGenerator provides common workflow with type-specific implementations  
-3. **Dependency Injection**: Services and backends are injected rather than hard-coded dependencies
-4. **Repository Pattern**: CSVService acts as a data repository with automatic model conversion
-5. **Facade Pattern**: GermanDeckBuilder provides a simplified interface to the complex subsystem
-6. **Domain-Driven Design**: Rich domain models with German language behavior, not anemic data containers
+#### Record Types (`languages/german/records/`)
 
-### 🏆 Architecture Strengths
+| **Record** | **File** | **Single Responsibility** |
+|------------|----------|---------------------------|
+| **`GermanRecordFactory`** | `factory.py` | Factory for creating German-specific record types from CSV data with comprehensive validation. Maps CSV rows to appropriate German record classes with language-specific validation rules. |
+| **`NounRecord`** | `noun_record.py` | Pydantic validation for German noun CSV data with article/gender validation. Ensures data integrity for German noun system with comprehensive field validation. |
+| **`VerbRecord`** | `verb_record.py` | Pydantic validation for German verb CSV data with conjugation pattern validation. Handles German verb complexity with separable prefixes and auxiliary selection rules. |
+| **`AdjectiveRecord`** | `adjective_record.py` | Pydantic validation for German adjective CSV data with comparative/superlative form validation. Ensures complete German adjective declension support. |
 
-- **Type Safety**: Comprehensive use of Pydantic models, generics, and Python typing
-- **German Language Focus**: Domain models capture German-specific grammar rules and linguistic patterns
-- **Media Integration**: Sophisticated audio/image generation with intelligent caching and deduplication  
-- **Backend Flexibility**: Clean abstraction supports multiple Anki deck generation libraries
-- **Rich Domain Models**: Models contain behavior and business logic, not just data
-- **Clean Interfaces**: All public interfaces are focused, minimal, and purpose-built
+#### Language Services (`languages/german/services/`)
 
-### 📈 Maintainability Indicators
+| **Service** | **File** | **Single Responsibility** |
+|-------------|----------|---------------------------|
+| **`CardBuilder`** | `card_builder.py` | German-specific card formatting and template selection. Transforms German domain models into Anki-ready card data with language-appropriate formatting and field mapping. |
+| **`CardProcessor`** | `card_processor.py` | German vocabulary card processing with type-specific handling. Implements CardProcessorProtocol for German language with specialized processing for each word type. |
+| **`ArticleApplicationService`** | `article_application_service.py` | German article application and declension logic. Handles complex German article system with case/gender agreement and contextual article selection. |
+| **`ArticlePatternProcessor`** | `article_pattern_processor.py` | Pattern matching and processing for German articles in various contexts. Provides sophisticated article handling for German grammar complexity. |
+| **`VerbConjugationProcessor`** | `verb_conjugation_processor.py` | German verb conjugation processing with comprehensive tense support. Handles German verb complexity including separable verbs and auxiliary selection. |
 
-- **Low Coupling**: Components interact through well-defined interfaces
-- **High Cohesion**: Each class and module has a single, clear purpose  
-- **Testability**: Clear separation enables easy unit testing of individual components
-- **Extensibility**: New German word types or backends can be added without modifying existing code
-- **Readability**: Component responsibilities are immediately clear from naming and organization
+### Korean Language Implementation
 
-This codebase demonstrates exemplary adherence to the Single Responsibility Principle with excellent separation of concerns, making it maintainable, testable, and extensible for German language learning applications.
+**Location**: `src/langlearn/languages/korean/`
+
+| **Component** | **File** | **Single Responsibility** |
+|---------------|----------|---------------------------|
+| **`KoreanLanguage`** | `language.py` | Korean language configuration with Hangul support and Korean-specific TTS settings. Provides Korean language integration with platform services. |
+| **`CardBuilder`** | `services/card_builder.py` | Korean-specific card formatting with Hangul character handling. Transforms Korean domain models into Anki cards with proper Korean typography and layout. |
+| **`CardProcessor`** | `services/card_processor.py` | Korean vocabulary card processing with language-specific formatting. Implements CardProcessorProtocol for Korean with specialized Hangul and romanization support. |
+| **`GrammarService`** | `services/grammar_service.py` | Korean grammar processing and validation services. Handles Korean grammatical structures and language-specific validation rules. |
+
+### Russian Language Implementation
+
+**Location**: `src/langlearn/languages/russian/`
+
+| **Component** | **File** | **Single Responsibility** |
+|---------------|----------|---------------------------|
+| **`RussianLanguage`** | `language.py` | Russian language configuration with Cyrillic support and native pronunciation settings. Provides Russian language integration with specialized voice and character handling. |
+| **`CardBuilder`** | `services/card_builder.py` | Russian-specific card formatting with Cyrillic character support. Handles Russian typography, case system, and cultural context for effective language learning. |
+| **`CardProcessor`** | `services/card_processor.py` | Russian vocabulary processing with case system support. Implements CardProcessorProtocol for Russian with comprehensive grammar and declension handling. |
+| **`GrammarService`** | `services/grammar_service.py` | Russian grammar processing including case system and aspect handling. Provides sophisticated Russian grammatical analysis and validation. |
+
+---
+
+## Cross-Cutting Concerns
+
+### Management Layer
+
+**Location**: `src/langlearn/managers/`
+
+| **Manager** | **File** | **Single Responsibility** |
+|-------------|----------|---------------------------|
+| **`DeckManager`** | `deck_manager.py` | High-level deck orchestration with subdeck management and export coordination. Bridges between platform layer and infrastructure backends for complete deck lifecycle management. |
+| **`MediaManager`** | `media_manager.py` | Media asset coordination across infrastructure services with deduplication and optimization. Provides unified interface for all media operations with intelligent caching strategies. |
+
+### Application Entry Points
+
+**Location**: `src/langlearn/`
+
+| **Component** | **File** | **Single Responsibility** |
+|---------------|----------|---------------------------|
+| **`main.py`** | `main.py` | Primary application entry point with command-line interface. Coordinates deck generation workflow with user feedback and comprehensive error handling. |
+
+---
+
+## Quality Metrics
+
+### Architecture Compliance
+
+- **✅ Layer Separation**: No circular dependencies between Infrastructure/Platform/Languages
+- **✅ Protocol Compliance**: All language implementations properly implement platform protocols
+- **✅ Single Responsibility**: Each component has one clear, well-defined purpose
+- **✅ Open-Closed Principle**: Infrastructure closed for modification, languages open for extension
+
+### Testing Coverage
+
+- **Unit Tests**: 672 tests covering all layers with comprehensive mocking of external dependencies
+- **Integration Tests**: 19 tests for end-to-end pipeline validation with live service integration
+- **Protocol Tests**: Dedicated test suites ensuring language implementations comply with platform contracts
+
+### Code Quality
+
+- **Type Safety**: MyPy strict mode with zero type errors across 163 source files
+- **Linting**: Ruff with zero violations, consistent code style across all layers
+- **Documentation**: Comprehensive docstrings and architectural documentation for all components
+
+---
+
+## Extension Guidelines
+
+### Adding New Languages
+
+1. **Implement Domain Models**: Extend platform protocols (`MediaGenerationCapable`)
+2. **Create Record Classes**: Extend platform `BaseRecord` for data validation
+3. **Build Language Services**: Implement `CardProcessorProtocol` and `TTSConfig`
+4. **Register with Platform**: Add to language discovery system
+
+### Adding New Infrastructure Services
+
+1. **Define Clear Interface**: Create protocol or abstract base class
+2. **Implement Service**: Add to `infrastructure/services/`
+3. **Update ServiceContainer**: Add dependency injection support
+4. **Integrate with Platform**: Connect to orchestration layer
+
+### Adding New Platform Features
+
+1. **Design Extension Points**: Create protocols for language implementation
+2. **Build Orchestration Logic**: Add to platform layer
+3. **Update Documentation**: Document new extension capabilities
+4. **Provide Examples**: Show usage in existing language implementations
+
+The Infrastructure/Platform/Languages architecture enables clean separation of concerns while providing powerful extension capabilities for new languages and features.

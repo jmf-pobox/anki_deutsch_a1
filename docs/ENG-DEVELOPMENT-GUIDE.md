@@ -321,6 +321,271 @@ class MediaGenerator(Protocol):
 
 ---
 
+## Infrastructure/Platform/Languages Architecture
+
+**Updated**: 2024-09-18 - New architectural standards
+
+### Overview
+
+The langlearn system follows a three-tier **Infrastructure/Platform/Languages** architecture that provides clear separation of concerns and extensibility:
+
+- **🏗️ Infrastructure Layer** (`langlearn.infrastructure.*`): "You use this" - Stable, concrete implementations
+- **🎯 Platform Layer** (`langlearn.core.*`): "You extend this" - Extension points and orchestration
+- **🌍 Languages Layer** (`langlearn.languages.*`): "You implement this" - Language-specific implementations
+
+### Architectural Guidelines
+
+#### 🏗️ Infrastructure Layer - "You use this"
+
+**Package**: `langlearn.infrastructure.*`
+**Purpose**: Stable implementations that all languages use without modification
+
+```python
+# GOOD: Using infrastructure services
+from langlearn.infrastructure.services import AudioService, PexelsService
+from langlearn.infrastructure.backends import AnkiBackend
+
+# Infrastructure provides concrete implementations
+audio_service = AudioService(voice_id="Tatyana", language_code="ru-RU")
+backend = AnkiBackend("Russian Deck", media_service)
+```
+
+**Infrastructure Layer Rules:**
+- ✅ **Closed for modification**: Do not edit infrastructure components for language-specific needs
+- ✅ **Language agnostic**: Infrastructure components work with any language
+- ✅ **Stable interfaces**: Well-defined contracts that rarely change
+- ❌ **No language-specific logic**: Keep all linguistic knowledge in language layer
+
+#### 🎯 Platform Layer - "You extend this"
+
+**Package**: `langlearn.core.*`
+**Purpose**: Extension points and orchestration contracts
+
+```python
+# GOOD: Extending platform protocols
+from langlearn.core.protocols import MediaGenerationCapable, CardProcessorProtocol
+from langlearn.core.records import BaseRecord
+
+@dataclass
+class SpanishNoun(MediaGenerationCapable):
+    """Spanish noun extending platform protocol."""
+
+    def get_combined_audio_text(self) -> str:
+        # Spanish-specific audio generation logic
+        return f"{self.article} {self.word}. {self.example}"
+
+    def get_image_search_strategy(self, ai_service=None) -> str:
+        # Spanish-specific image search logic
+        return f"{self.english} Spanish vocabulary"
+
+class SpanishRecord(BaseRecord):
+    """Spanish record extending platform base."""
+    word: str
+    article: str
+    gender: str
+
+    @field_validator('gender')
+    def validate_spanish_gender(cls, v):
+        # Spanish-specific validation
+        if v not in ['masculino', 'femenino']:
+            raise ValueError(f"Invalid Spanish gender: {v}")
+        return v
+```
+
+**Platform Layer Rules:**
+- ✅ **Open for extension**: Implement protocols and extend base classes
+- ✅ **Language-agnostic orchestration**: Platform handles common workflow logic
+- ✅ **Protocol compliance**: All language implementations must follow contracts
+- ❌ **No concrete implementations**: Platform defines interfaces, not implementations
+
+#### 🌍 Languages Layer - "You implement this"
+
+**Package**: `langlearn.languages.*`
+**Purpose**: Language-specific implementations using platform extension points
+
+```python
+# GOOD: Language-specific implementations
+from langlearn.languages.spanish.models import SpanishNoun
+from langlearn.languages.spanish.services import SpanishCardProcessor
+
+class SpanishCardProcessor(CardProcessorProtocol):
+    """Spanish-specific card processing."""
+
+    def process_noun(self, noun: SpanishNoun, media_data: dict) -> tuple[list[str], NoteType]:
+        # Spanish-specific card formatting
+        fields = [
+            f"{noun.article} {noun.word}",  # Spanish article handling
+            noun.english,
+            noun.gender,  # Spanish gender system
+            noun.plural,  # Spanish plural rules
+            media_data.get('audio', ''),
+            media_data.get('image', ''),
+        ]
+        return fields, self._get_spanish_note_type()
+```
+
+**Languages Layer Rules:**
+- ✅ **Complete implementation freedom**: Implement any language-specific logic
+- ✅ **Protocol compliance**: Must implement all required platform contracts
+- ✅ **Linguistic expertise**: Encode all language-specific knowledge here
+- ❌ **No infrastructure dependencies**: Use infrastructure through platform layer only
+
+### Package Import Standards
+
+#### Import Hierarchy (MANDATORY)
+
+```python
+# CORRECT: Follow architectural layers
+from langlearn.infrastructure.services import AudioService  # Infrastructure
+from langlearn.core.protocols import MediaGenerationCapable  # Platform
+from langlearn.languages.german.models import Noun         # Language
+
+# INCORRECT: Cross-layer violations
+from langlearn.infrastructure.services.audio_service import AudioService  # Too specific
+from langlearn.languages.german.models import Noun
+from langlearn.infrastructure.backends import AnkiBackend  # Skip platform layer
+```
+
+#### Layer Dependency Rules
+
+```python
+# ✅ ALLOWED: Higher layers can import from lower layers
+# Languages → Platform → Infrastructure
+
+# Languages can use Platform
+from langlearn.core.protocols import MediaGenerationCapable
+
+# Languages can use Infrastructure (through Platform)
+from langlearn.core.deck import DeckBuilderAPI  # Platform orchestrates infrastructure
+
+# Platform can use Infrastructure
+from langlearn.infrastructure.services import MediaEnricher
+
+# ❌ FORBIDDEN: Lower layers cannot import from higher layers
+# Infrastructure → Platform (FORBIDDEN)
+# Infrastructure → Languages (FORBIDDEN)
+# Platform → Languages (FORBIDDEN)
+
+# BAD: Infrastructure depending on languages
+from langlearn.languages.german.models import Noun  # FORBIDDEN in infrastructure
+```
+
+### Adding New Languages
+
+#### Step 1: Create Language Package Structure
+```bash
+# Create new language directory
+mkdir -p src/langlearn/languages/spanish/
+mkdir -p src/langlearn/languages/spanish/models/
+mkdir -p src/langlearn/languages/spanish/services/
+mkdir -p src/langlearn/languages/spanish/records/
+```
+
+#### Step 2: Implement Domain Models
+```python
+# File: src/langlearn/languages/spanish/models/noun.py
+from dataclasses import dataclass
+from langlearn.core.protocols import MediaGenerationCapable
+
+@dataclass
+class SpanishNoun(MediaGenerationCapable):
+    word: str
+    article: str
+    gender: str
+    plural: str
+    english: str
+
+    def get_combined_audio_text(self) -> str:
+        return f"{self.article} {self.word}. {self.english}."
+
+    def get_image_search_strategy(self, ai_service=None) -> str:
+        return f"{self.english} Spanish vocabulary"
+```
+
+#### Step 3: Create Record Classes
+```python
+# File: src/langlearn/languages/spanish/records/noun_record.py
+from langlearn.core.records import BaseRecord
+from pydantic import field_validator
+
+class SpanishNounRecord(BaseRecord):
+    word: str
+    article: str
+    gender: str
+    plural: str
+    english: str
+
+    @field_validator('gender')
+    def validate_spanish_gender(cls, v):
+        valid_genders = ['masculino', 'femenino']
+        if v not in valid_genders:
+            raise ValueError(f"Invalid Spanish gender: {v}")
+        return v
+```
+
+#### Step 4: Build Language Services
+```python
+# File: src/langlearn/languages/spanish/services/card_processor.py
+from langlearn.core.protocols import CardProcessorProtocol
+from langlearn.infrastructure.backends.base import NoteType
+
+class SpanishCardProcessor(CardProcessorProtocol):
+    def process_noun(self, model, media_data) -> tuple[list[str], NoteType]:
+        # Spanish-specific processing logic
+        pass
+```
+
+#### Step 5: Register with Platform
+```python
+# File: src/langlearn/languages/spanish/language.py
+from langlearn.core.protocols import TTSConfig
+
+class SpanishLanguage:
+    def get_tts_config(self) -> TTSConfig:
+        return TTSConfig(
+            voice_id="Conchita",
+            language_code="es-ES",
+            engine="neural"
+        )
+```
+
+### Architecture Compliance Checks
+
+#### Automated Validation
+```bash
+# Check import compliance (planned)
+hatch run check-architecture
+
+# Verify layer boundaries (planned)
+hatch run check-dependencies
+
+# Validate protocol compliance (planned)
+hatch run check-protocols
+```
+
+#### Manual Code Review Checklist
+- ✅ **No circular dependencies** between layers
+- ✅ **Protocol compliance** in language implementations
+- ✅ **Proper import hierarchy** followed
+- ✅ **Single responsibility** maintained in each component
+- ✅ **Language-agnostic** infrastructure and platform code
+
+### Migration from Legacy Architecture
+
+**Completed Migration (2024-09-18)**:
+- ✅ `langlearn.core.services.*` → `langlearn.infrastructure.services.*`
+- ✅ `langlearn.core.backends.*` → `langlearn.infrastructure.backends.*`
+- ✅ Platform renamed from `platform` to `core` (Python naming conflict resolution)
+- ✅ All 691 tests updated and passing
+- ✅ Zero architectural technical debt
+
+**Future Migrations**:
+- Managers layer integration with platform orchestration
+- Enhanced protocol-based extension system
+- Dynamic language discovery and registration
+
+---
+
 ## Testing Standards
 
 ### Test Coverage Requirements
