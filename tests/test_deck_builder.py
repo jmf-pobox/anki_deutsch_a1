@@ -150,7 +150,7 @@ class TestGermanDeckBuilder:
     def test_load_data_from_directory(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
-        """Test loading data from directory with multiple files using Clean Pipeline."""
+        """Test loading data from directory with multiple files."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
@@ -281,7 +281,7 @@ class TestGermanDeckBuilder:
 
     @patch("langlearn.deck_builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
-        """Test loading data from directory with all file types using Clean Pipeline."""
+        """Test loading data from directory with all file types."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 

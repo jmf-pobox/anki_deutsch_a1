@@ -1,4 +1,4 @@
-"""German Record Factory for Clean Pipeline Architecture.
+"""German Record Factory for record-based architecture.
 
 Provides factory methods for creating German record instances with type-safe
 overloaded methods and centralized registry management."""

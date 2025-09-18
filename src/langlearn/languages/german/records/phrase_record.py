@@ -10,7 +10,7 @@ from langlearn.core.records import BaseRecord, RecordType
 class PhraseRecord(BaseRecord):
     """Record for German phrase data from CSV.
 
-    Simple Clean Pipeline migration for current phrases.csv structure.
+    Simple record processing migration for current phrases.csv structure.
     Matches existing phrases.csv format:
     phrase,english,context,related
     """

@@ -1,6 +1,6 @@
-"""Card builder service for Clean Pipeline Architecture.
+"""Card builder service for record-based architecture.
 
-This service handles the final assembly step in the Clean Pipeline Architecture:
+This service handles the final assembly step in the record-based architecture:
 Enriched Records → Cards with applied templates and formatting.
 """
 
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class CardBuilder:
     """Builds formatted cards from enriched records using templates.
 
-    This service represents the final assembly step in Clean Pipeline Architecture:
+    This service represents the final assembly step in record-based architecture:
     CSV → Records → Domain Models → MediaEnricher → Enriched Records → CardBuilder
     """
 
@@ -683,7 +683,7 @@ class CardBuilder:
     def _get_required_fields_for_record_type(self, record_type: str) -> list[str]:
         """Get required fields for card building for a record type.
 
-        CardBuilder runs AFTER MediaEnricher in the Clean Pipeline Architecture:
+        CardBuilder runs AFTER MediaEnricher in the record-based architecture:
         CSV → RecordMapper → Records → MediaEnricher → CardBuilder → AnkiBackend
 
         Therefore, all fields marked as Required ✅ in PM-CARD-SPEC.md must be

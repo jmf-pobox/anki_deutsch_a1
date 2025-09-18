@@ -192,7 +192,7 @@ class KoreanLanguage:
                     break
 
             if record_type is not None:
-                # Use Clean Pipeline Architecture for standard record types
+                # Use record-based architecture for standard record types
                 return self._process_standard_record_fields(
                     record_type, fields, media_enricher
                 )
@@ -223,7 +223,7 @@ class KoreanLanguage:
 
         logger = logging.getLogger(__name__)
 
-        logger.debug(f"Using Clean Pipeline Architecture for Korean: {record_type}")
+        logger.debug(f"Using record-based architecture for Korean: {record_type}")
         try:
             # Create record from fields using Korean record factory
             record = self.create_record_from_csv(record_type, fields)
@@ -259,11 +259,11 @@ class KoreanLanguage:
 
         except Exception as record_error:
             logger.error(
-                f"Clean Pipeline Architecture failed for Korean {record_type}: "
+                f"record-based architecture failed for Korean {record_type}: "
                 f"{record_error}"
             )
             raise DataProcessingError(
-                f"Clean Pipeline Architecture failed for Korean {record_type}: "
+                f"record-based architecture failed for Korean {record_type}: "
                 f"{record_error}"
             ) from record_error
 

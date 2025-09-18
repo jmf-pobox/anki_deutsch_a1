@@ -10,7 +10,7 @@ from langlearn.core.records import BaseRecord, RecordType
 class PrepositionRecord(BaseRecord):
     """Record for German preposition data from CSV.
 
-    Simple Clean Pipeline migration for current prepositions.csv structure.
+    Simple record processing migration for current prepositions.csv structure.
     Matches existing prepositions.csv format:
     preposition,english,case,example1,example2
     """

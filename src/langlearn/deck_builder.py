@@ -10,23 +10,19 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
+from langlearn.core.backends.anki_backend import AnkiBackend
+from langlearn.core.backends.base import DeckBackend
 from langlearn.core.services.audio_service import AudioService
 from langlearn.core.services.image_service import PexelsService
 from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.core.services.template_service import TemplateService
-
-# Language-agnostic imports - services resolved via LanguageRegistry
-from .core.backends.anki_backend import AnkiBackend
-from .core.backends.base import DeckBackend
-from .languages.registry import LanguageRegistry
-
-# CardGeneratorFactory import removed - using Clean Pipeline CardBuilder
-from .managers.deck_manager import DeckManager
-from .managers.media_manager import MediaManager
+from langlearn.languages.registry import LanguageRegistry
+from langlearn.managers.deck_manager import DeckManager
+from langlearn.managers.media_manager import MediaManager
 
 if TYPE_CHECKING:
-    from langlearn.languages.german.records.factory import BaseRecord
+    from langlearn.core.records import BaseRecord
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +158,7 @@ class DeckBuilder:
         self._deck_manager = DeckManager(self._backend)
         self._media_manager = MediaManager(self._backend, self._media_service)
 
-        # Initialize MediaFileRegistrar for Clean Pipeline with language/deck paths
+        # Initialize MediaFileRegistrar with language/deck paths
         self._media_file_registrar = MediaFileRegistrar(
             audio_base_path=language_deck_data_dir / "audio",
             image_base_path=language_deck_data_dir / "images",
@@ -170,8 +166,8 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher
         if self._media_service:
-            from .core.services import get_anthropic_service
-            from .core.services.media_enricher import StandardMediaEnricher
+            from langlearn.core.services import get_anthropic_service
+            from langlearn.core.services.media_enricher import StandardMediaEnricher
 
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()
@@ -186,7 +182,7 @@ class DeckBuilder:
         else:
             self._media_enricher = None
 
-        # Clean Pipeline records (unified architecture)
+        # Records from CSV data
         self._loaded_records: list[BaseRecord] = []
 
         logger.info(f"Initialized GermanDeckBuilder with {backend_type} backend")
@@ -216,10 +212,10 @@ class DeckBuilder:
         else:
             raise ValueError(f"Unknown backend type: {backend_type}")
 
-    # Data Loading Methods (Clean Pipeline only)
+    # Data Loading Methods
 
     def load_data_from_directory(self, data_dir: str | Path) -> None:
-        """Load all available data files from a directory using Clean Pipeline.
+        """Load all available data files from a directory.
 
         Args:
             data_dir: Directory containing CSV data files
@@ -251,7 +247,7 @@ class DeckBuilder:
                 logger.debug(f"Data file not found: {file_path}")
 
         total_records = len(self._loaded_records)
-        logger.info(f"Total records loaded via Clean Pipeline: {total_records}")
+        logger.info(f"Total records loaded: {total_records}")
 
     # Subdeck Organization Methods
 
@@ -272,7 +268,7 @@ class DeckBuilder:
     # Card Generation Methods
 
     def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
-        """Generate all cards using Clean Pipeline.
+        """Generate all cards from loaded records.
 
         Args:
             generate_media: Whether to generate audio/image media
@@ -313,7 +309,7 @@ class DeckBuilder:
             self.create_subdeck(subdeck_name)
             logger.info(f"Created subdeck: {subdeck_name}")
 
-            # Step 2: Media enrichment (if enabled) - Clean Pipeline batch processing
+            # Step 2: Media enrichment (if enabled) - batch processing
             enriched_data_list: list[dict[str, Any]] = []
             if generate_media and self._media_enricher:
                 logger.info(f"Generating media for {record_type} records...")
@@ -526,7 +522,7 @@ class DeckBuilder:
             self.reset_to_main_deck()
 
         total = sum(results.values())
-        logger.info(f"🎉 Clean Pipeline generated {total} total cards: {results}")
+        logger.info(f"🎉 Generated {total} total cards: {results}")
 
         return results
 
@@ -550,7 +546,7 @@ class DeckBuilder:
         Returns:
             Dictionary containing all available statistics
         """
-        # Count Clean Pipeline records by type
+        # Count loaded records by type
         clean_pipeline_stats = {}
         for record in self._loaded_records:
             record_type = record.__class__.__name__.replace("Record", "").lower()
@@ -565,9 +561,9 @@ class DeckBuilder:
                 "media_enabled": True,
             },
             "loaded_data": {
-                # Clean Pipeline data (unified architecture)
+                # Loaded data
                 **clean_pipeline_stats,
-                # Total records via Clean Pipeline
+                # Total loaded records
                 "total_clean_pipeline_records": len(self._loaded_records),
             },
             "deck_stats": self._deck_manager.get_stats(),
@@ -595,9 +591,9 @@ class DeckBuilder:
 
     def clear_loaded_data(self) -> None:
         """Clear all loaded data from memory."""
-        # Clear Clean Pipeline data (unified architecture)
+        # Clear loaded data
         self._loaded_records.clear()
-        logger.info("Cleared all loaded data (Clean Pipeline records)")
+        logger.info("Cleared all loaded data")
 
     # Context Manager Support
 

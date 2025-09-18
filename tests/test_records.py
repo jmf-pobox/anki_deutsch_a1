@@ -1,5 +1,5 @@
 """
-Tests for Record types in the Clean Pipeline Architecture.
+Tests for Record types in the record processing Architecture.
 
 This module tests the pure data container records that represent structured CSV data.
 """

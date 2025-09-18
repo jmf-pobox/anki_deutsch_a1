@@ -1,4 +1,4 @@
-"""Media file registrar service for Clean Pipeline Architecture.
+"""Media file registrar service for record-based architecture.
 
 This service handles media file registration with the backend for APKG export.
 It maintains clean separation between card formatting and infrastructure concerns.
@@ -21,7 +21,7 @@ class MediaFileRegistrar:
     registers the corresponding files with the backend. It maintains
     clean separation between card formatting and infrastructure concerns.
 
-    Part of Clean Pipeline Architecture:
+    Part of record-based architecture:
     CardBuilder → MediaFileRegistrar → Backend
     """
 

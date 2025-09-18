@@ -1,7 +1,7 @@
 """Tests for RecordMapper service.
 
 This module tests the RecordMapper service that converts CSV field arrays
-to Record instances in the Clean Pipeline Architecture.
+to Record instances in the record processing Architecture.
 """
 
 from pathlib import Path

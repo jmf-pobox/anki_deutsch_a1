@@ -1,4 +1,4 @@
-"""Russian Card builder service for Clean Pipeline Architecture."""
+"""Russian Card builder service for record-based architecture."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Russian RecordMapper service for Clean Pipeline Architecture."""
+"""Russian RecordMapper service for record-based architecture."""
 
 from __future__ import annotations
 

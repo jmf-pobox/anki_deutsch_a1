@@ -10,7 +10,7 @@ from langlearn.core.records import BaseRecord, RecordType
 class VerbRecord(BaseRecord):
     """Record for German verb data from CSV.
 
-    Enhanced Clean Pipeline for complete verb CSV structure.
+    Enhanced record processing for complete verb CSV structure.
     Matches enhanced verbs.csv format:
     verb,english,classification,present_ich,present_du,present_er,präteritum,auxiliary,perfect,example,separable
     """

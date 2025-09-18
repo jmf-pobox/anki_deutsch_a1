@@ -237,7 +237,7 @@ class TestCSVServiceOptionalFields:
 
 
 class TestCSVServiceRecords:
-    """Test CSVService Record-based functionality for Clean Pipeline Architecture."""
+    """Test CSVService Record-based functionality for record processing Architecture."""
 
     @pytest.fixture
     def csv_service(self) -> CSVService:

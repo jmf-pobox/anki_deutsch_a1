@@ -90,7 +90,7 @@ class AnkiBackend(DeckBackend):
         # Create domain media generator for field processing delegation
         self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
-        # Create MediaEnricher for Clean Pipeline Architecture
+        # Create MediaEnricher for record-based architecture
         from langlearn.core.services import get_anthropic_service
 
         anthropic_service = get_anthropic_service()

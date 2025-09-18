@@ -1,4 +1,4 @@
-"""Korean card builder service for Clean Pipeline Architecture."""
+"""Korean card builder service for record-based architecture."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""RecordMapper service for Clean Pipeline Architecture.
+"""RecordMapper service for record-based architecture.
 
 This service handles the conversion from CSV field arrays to Record instances,
 providing clean separation between CSV parsing and domain logic.
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class RecordMapper:
-    """Maps CSV field arrays to Record instances for Clean Pipeline Architecture."""
+    """Maps CSV field arrays to Record instances for record-based architecture."""
 
     def __init__(self, project_root: Path | None = None):
         """Initialize RecordMapper.

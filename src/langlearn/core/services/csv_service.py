@@ -40,7 +40,7 @@ T = TypeVar("T")
 class CSVService:
     """Generic CSV service for reading data files.
 
-    Supports both legacy domain model loading and new Clean Pipeline Architecture
+    Supports both legacy domain model loading and new record-based architecture
     with Record-based processing.
     """
 
@@ -90,12 +90,12 @@ class CSVService:
             logger.error("Unexpected error reading data from %s: %s", file_path, e)
             raise
 
-    # Clean Pipeline Architecture methods
+    # record-based architecture methods
 
     def read_csv_as_records(
         self, file_path: Path, record_type: str
     ) -> list[BaseRecord]:
-        """Read CSV data as Record instances for Clean Pipeline Architecture.
+        """Read CSV data as Record instances for record-based architecture.
 
         Args:
             file_path: Path to the CSV file
