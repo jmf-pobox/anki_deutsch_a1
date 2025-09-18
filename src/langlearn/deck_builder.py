@@ -12,12 +12,30 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.core.backends.base import DeckBackend
+from langlearn.core.services import get_anthropic_service
 from langlearn.core.services.audio_service import AudioService
 from langlearn.core.services.image_service import PexelsService
+from langlearn.core.services.media_enricher import StandardMediaEnricher
 from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.core.services.template_service import TemplateService
+from langlearn.languages.german.records.factory import (
+    ArticleRecord,
+    IndefiniteArticleRecord,
+    NegativeArticleRecord,
+    UnifiedArticleRecord,
+    VerbConjugationRecord,
+)
+from langlearn.languages.german.services.record_to_model_factory import (
+    RecordToModelFactory as GermanRecordToModelFactory,
+)
+from langlearn.languages.korean.services.record_to_model_factory import (
+    RecordToModelFactory as KoreanRecordToModelFactory,
+)
 from langlearn.languages.registry import LanguageRegistry
+from langlearn.languages.russian.services.record_to_model_factory import (
+    RecordToModelFactory as RussianRecordToModelFactory,
+)
 from langlearn.managers.deck_manager import DeckManager
 from langlearn.managers.media_manager import MediaManager
 
@@ -112,31 +130,17 @@ class DeckBuilder:
         language_deck_data_dir = project_root / "languages" / language / deck_type
 
         # Use provided services or create defaults with language/deck specific paths
-        # Choose appropriate TTS voice/language per target language
+        # Get TTS configuration from language implementation
         if audio_service is not None:
             actual_audio_service = audio_service
         else:
-            if language.lower() in ("ru", "russian"):
-                # Use a Russian Polly voice and language so Cyrillic text succeeds
-                actual_audio_service = AudioService(
-                    output_dir=str(language_deck_data_dir / "audio"),
-                    voice_id="Tatyana",  # Russian voice (female)
-                    language_code="ru-RU",
-                    engine="standard",  # Russian voices use standard engine
-                )
-            elif language.lower() in ("ko", "korean"):
-                # Use a Korean Polly voice and language so Hangul text succeeds
-                actual_audio_service = AudioService(
-                    output_dir=str(language_deck_data_dir / "audio"),
-                    voice_id="Seoyeon",  # Korean voice (female)
-                    language_code="ko-KR",
-                    engine="standard",  # Korean voices use standard engine
-                )
-            else:
-                # Default: German
-                actual_audio_service = AudioService(
-                    output_dir=str(language_deck_data_dir / "audio")
-                )
+            tts_config = self._language_impl.get_tts_config()
+            actual_audio_service = AudioService(
+                output_dir=str(language_deck_data_dir / "audio"),
+                voice_id=tts_config.voice_id,
+                language_code=tts_config.language_code,
+                engine=tts_config.engine,
+            )
         actual_pexels_service = pexels_service or PexelsService()
         media_config = MediaGenerationConfig(
             audio_dir=str(language_deck_data_dir / "audio"),
@@ -166,9 +170,6 @@ class DeckBuilder:
 
         # Initialize StandardMediaEnricher
         if self._media_service:
-            from langlearn.core.services import get_anthropic_service
-            from langlearn.core.services.media_enricher import StandardMediaEnricher
-
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()
 
@@ -319,22 +320,10 @@ class DeckBuilder:
                 # Type annotation for factory to handle language-specific imports
                 record_to_model_factory: Any = None
                 if self.language == "german":
-                    from .languages.german.services.record_to_model_factory import (
-                        RecordToModelFactory as GermanRecordToModelFactory,
-                    )
-
                     record_to_model_factory = GermanRecordToModelFactory
                 elif self.language == "russian":
-                    from .languages.russian.services.record_to_model_factory import (
-                        RecordToModelFactory as RussianRecordToModelFactory,
-                    )
-
                     record_to_model_factory = RussianRecordToModelFactory
                 elif self.language.lower() in ("ko", "korean"):
-                    from .languages.korean.services.record_to_model_factory import (
-                        RecordToModelFactory as KoreanRecordToModelFactory,
-                    )
-
                     record_to_model_factory = KoreanRecordToModelFactory
                 else:
                     raise ValueError(
@@ -423,10 +412,6 @@ class DeckBuilder:
 
             # Special handling for verb conjugation records - use multi-card generation
             if record_type == "verbconjugation":
-                from langlearn.languages.german.records.factory import (
-                    VerbConjugationRecord,
-                )
-
                 # Cast records to the proper type for verb conjugation processing
                 verb_records = [
                     r for r in records if isinstance(r, VerbConjugationRecord)
@@ -442,13 +427,6 @@ class DeckBuilder:
 
             # Special handling for unified articles (MediaEnricher + specialized cards)
             elif record_type == "unified_article":
-                from langlearn.languages.german.records.factory import (
-                    ArticleRecord,
-                    IndefiniteArticleRecord,
-                    NegativeArticleRecord,
-                    UnifiedArticleRecord,
-                )
-
                 # Filter unified article records (supporting all article types)
                 article_records = [
                     r

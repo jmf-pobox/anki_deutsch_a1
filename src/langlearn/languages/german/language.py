@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from langlearn.core.protocols.tts_protocol import TTSConfig
+
 if TYPE_CHECKING:
     from langlearn.core.records import BaseRecord
     from langlearn.protocols.domain_model_protocol import LanguageDomainModel
@@ -92,6 +94,14 @@ class GermanLanguage:
         """Get the templates directory for German language."""
         current_dir = Path(__file__).parent
         return current_dir / "templates"
+
+    def get_tts_config(self) -> TTSConfig:
+        """Get TTS configuration for German language."""
+        return TTSConfig(
+            voice_id="Marlene",
+            language_code="de-DE",
+            engine="standard",
+        )
 
     def create_domain_model(
         self, record_type: str, record: BaseRecord

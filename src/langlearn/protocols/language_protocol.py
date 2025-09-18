@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
 
 if TYPE_CHECKING:
+    from langlearn.core.protocols.tts_protocol import TTSConfig
     from langlearn.core.records import BaseRecord
     from langlearn.protocols.domain_model_protocol import LanguageDomainModel
     from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
@@ -45,6 +46,16 @@ class Language(Protocol):
     @abstractmethod
     def get_record_mapper(self) -> Any:
         """Get language-specific record mapper."""
+        ...
+
+    @abstractmethod
+    def get_tts_config(self) -> TTSConfig:
+        """Get TTS configuration for this language.
+
+        Returns:
+            TTSConfig with voice_id, language_code, and engine settings
+            appropriate for this language's text-to-speech generation.
+        """
         ...
 
     @abstractmethod
