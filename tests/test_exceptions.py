@@ -57,7 +57,7 @@ class TestRecordValidationError:
             english="test",
             article="das",
             plural="Tests",
-            example="Das ist ein Test."
+            example="Das ist ein Test.",
         )
 
         # Test ProcessingError creation without context

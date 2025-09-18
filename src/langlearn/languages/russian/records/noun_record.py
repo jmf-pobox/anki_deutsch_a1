@@ -2,37 +2,35 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, Literal
 
 from langlearn.core.records.base_record import BaseRecord, RecordType
 
 
+@dataclass
 class RussianNounRecord(BaseRecord):
     """Russian noun record with case declensions and grammatical features."""
 
-    # Core noun data
+    # Required fields (no defaults)
     noun: str  # Base form (nominative singular)
     english: str  # English translation
-    example: str = ""  # Example sentence in Russian
-    related: str = ""  # Related words or topic
-
-    # Russian-specific grammatical features
     gender: Literal["masculine", "feminine", "neuter"]
-    animacy: Literal["animate", "inanimate"] = "inanimate"
-
-    # Case declensions (singular)
     nominative: str  # Base form (same as noun)
     genitive: str  # Родительный падеж
+
+    # Optional fields (with defaults)
+    example: str = ""  # Example sentence in Russian
+    related: str = ""  # Related words or topic
+    animacy: Literal["animate", "inanimate"] = "inanimate"
     accusative: str = ""  # Винительный падеж (often same as nom/gen based on animacy)
     instrumental: str = ""  # Творительный падеж
     prepositional: str = ""  # Предложный падеж
     dative: str = ""  # Дательный падеж
-
-    # Plural forms (key cases)
     plural_nominative: str = ""  # Именительный падеж множественного числа
     plural_genitive: str = ""  # Родительный падеж множественного числа
 
-    def model_post_init(self, __context: Any) -> None:
+    def __post_init__(self) -> None:
         """Post-initialization validation for Russian noun data."""
         # Basic validation
         if not self.noun or not self.english:

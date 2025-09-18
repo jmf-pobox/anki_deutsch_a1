@@ -13,8 +13,7 @@ from typing import Any, ClassVar, Protocol
 class RecordType(Enum):
     """Strongly-typed enumeration for record types."""
 
-    # FIXME: This needs to be revisited given multi-language support
-
+    # Core German record types
     NOUN = "noun"
     ADJECTIVE = "adjective"
     ADVERB = "adverb"

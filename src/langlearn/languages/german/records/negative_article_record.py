@@ -1,41 +1,41 @@
 """NegativeArticleRecord for German negative articles from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
-
-from pydantic import Field, field_validator
 
 from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class NegativeArticleRecord(BaseRecord):
     """Record for German negative articles from CSV - declension grid format."""
 
-    gender: str = Field(..., description="Gender (masculine, feminine, neuter, plural)")
-    nominative: str = Field(..., description="Nominative case form")
-    accusative: str = Field(..., description="Accusative case form")
-    dative: str = Field(..., description="Dative case form")
-    genitive: str = Field(..., description="Genitive case form")
-    example_nom: str = Field(..., description="Example sentence in nominative")
-    example_acc: str = Field(..., description="Example sentence in accusative")
-    example_dat: str = Field(..., description="Example sentence in dative")
-    example_gen: str = Field(..., description="Example sentence in genitive")
+    gender: str
+    nominative: str
+    accusative: str
+    dative: str
+    genitive: str
+    example_nom: str
+    example_acc: str
+    example_dat: str
+    example_gen: str
 
     # Media fields (populated during enrichment)
-    article_audio: str | None = Field(
-        default=None, description="Article audio reference"
-    )
-    example_audio: str | None = Field(
-        default=None, description="Example audio reference"
-    )
+    article_audio: str | None = None
+    example_audio: str | None = None
 
-    @field_validator("gender")
-    @classmethod
-    def validate_gender(cls, v: str) -> str:
-        """Validate gender values."""
+    def __post_init__(self) -> None:
+        """Post-init validation for dataclass."""
+        self.validate()
+
+    def validate(self) -> None:
+        """Validate the record after initialization."""
+        # Validate gender
         valid_genders = {"masculine", "feminine", "neuter", "plural"}
-        if v not in valid_genders:
-            raise ValueError(f"Invalid gender: {v}. Must be one of {valid_genders}")
-        return v
+        if self.gender not in valid_genders:
+            raise ValueError(
+                f"Invalid gender: {self.gender}. Must be one of {valid_genders}"
+            )
 
     @classmethod
     def get_record_type(cls) -> RecordType:

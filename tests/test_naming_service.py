@@ -1,6 +1,5 @@
 """Tests for NamingService."""
 
-
 from langlearn.core.records.base_record import RecordType
 from langlearn.infrastructure.services.naming_service import NamingService
 from langlearn.languages.german.records.noun_record import NounRecord

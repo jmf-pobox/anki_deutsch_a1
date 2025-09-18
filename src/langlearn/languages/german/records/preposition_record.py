@@ -1,12 +1,12 @@
 """PrepositionRecord for German preposition data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
-
-from pydantic import Field
 
 from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class PrepositionRecord(BaseRecord):
     """Record for German preposition data from CSV.
 
@@ -15,23 +15,17 @@ class PrepositionRecord(BaseRecord):
     preposition,english,case,example1,example2
     """
 
-    preposition: str = Field(..., description="German preposition")
-    english: str = Field(..., description="English translation")
-    case: str = Field(..., description="Required grammatical case(s)")
-    example1: str = Field(..., description="First example sentence")
-    example2: str = Field(..., description="Second example sentence")
+    preposition: str
+    english: str
+    case: str
+    example1: str
+    example2: str
 
     # Media fields (populated during enrichment)
-    word_audio: str | None = Field(
-        default=None, description="Preposition pronunciation audio reference"
-    )
-    example1_audio: str | None = Field(
-        default=None, description="First example audio reference"
-    )
-    example2_audio: str | None = Field(
-        default=None, description="Second example audio reference"
-    )
-    image: str | None = Field(default=None, description="Image reference")
+    word_audio: str | None = None
+    example1_audio: str | None = None
+    example2_audio: str | None = None
+    image: str | None = None
 
     @classmethod
     def get_record_type(cls) -> RecordType:

@@ -23,7 +23,6 @@ dependencies = [
     "python-pexels>=1.1",
     "keyring>=24.3.0",
     "pandas>=2.2.0",
-    "pydantic>=2.11.9",
 ]
 
 [project.optional-dependencies]

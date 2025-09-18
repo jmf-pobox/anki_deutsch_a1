@@ -1,7 +1,6 @@
 """Strategic unit tests for Korean record modules to improve coverage."""
 
 import pytest
-from pydantic import ValidationError
 
 from langlearn.languages.korean.records.noun_record import KoreanNounRecord
 from langlearn.languages.korean.services.card_builder import KoreanCardBuilder
@@ -26,15 +25,15 @@ class TestKoreanNounRecord:
 
     def test_required_fields_validation(self) -> None:
         """Test that required fields are validated."""
-        with pytest.raises(ValidationError) as exc_info:
+        # Dataclasses raise TypeError for missing required arguments
+        with pytest.raises(TypeError) as exc_info:
             KoreanNounRecord()  # type: ignore[call-arg]
 
-        errors = exc_info.value.errors()
-        required_fields = {error["loc"][0] for error in errors}
-        assert "hangul" in required_fields
-        assert "romanization" in required_fields
-        assert "english" in required_fields
-        assert "primary_counter" in required_fields
+        error_msg = str(exc_info.value)
+        assert "hangul" in error_msg
+        assert "romanization" in error_msg
+        assert "english" in error_msg
+        assert "primary_counter" in error_msg
 
     def test_particle_auto_generation_consonant(self) -> None:
         """Test automatic particle generation for consonant-ending word."""
@@ -95,7 +94,7 @@ class TestKoreanNounRecord:
         assert record.semantic_category == "object"
 
         # Invalid category should raise error
-        with pytest.raises(ValidationError, match="Invalid semantic category"):
+        with pytest.raises(ValueError, match="Invalid semantic category"):
             KoreanNounRecord(
                 hangul="test",
                 romanization="test",

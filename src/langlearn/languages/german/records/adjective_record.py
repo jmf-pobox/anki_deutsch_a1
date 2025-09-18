@@ -1,27 +1,25 @@
 """AdjectiveRecord for German adjective data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
-
-from pydantic import Field
 
 from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class AdjectiveRecord(BaseRecord):
     """Record for German adjective data from CSV."""
 
-    word: str = Field(..., description="German adjective")
-    english: str = Field(..., description="English translation")
-    example: str = Field(..., description="Example sentence")
-    comparative: str = Field(..., description="Comparative form")
-    superlative: str = Field(default="", description="Superlative form")
+    word: str
+    english: str
+    example: str
+    comparative: str
+    superlative: str = ""
 
     # Media fields (populated during enrichment)
-    image: str | None = Field(default=None, description="Image reference")
-    word_audio: str | None = Field(default=None, description="Word audio reference")
-    example_audio: str | None = Field(
-        default=None, description="Example audio reference"
-    )
+    image: str | None = None
+    word_audio: str | None = None
+    example_audio: str | None = None
 
     @classmethod
     def get_record_type(cls) -> RecordType:

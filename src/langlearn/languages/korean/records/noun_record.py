@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
-
-from pydantic import Field, field_validator, model_validator
 
 from langlearn.core.records.base_record import BaseRecord, RecordType
 
 
+@dataclass
 class KoreanNounRecord(BaseRecord):
     """Korean noun record with essential particle patterns and counter information.
 
@@ -19,40 +19,31 @@ class KoreanNounRecord(BaseRecord):
     3. Proper Hangul and pronunciation support
     """
 
-    # Core identification
-    hangul: str = Field(..., description="Korean word in Hangul script")
-    romanization: str = Field(..., description="Revised romanization")
-    english: str = Field(..., description="English translation")
+    # Required fields (no defaults)
+    hangul: str
+    romanization: str
+    english: str
+    primary_counter: str
 
-    # Essential particle patterns (automatically determined by final sound)
-    topic_particle: str = Field(default="", description="Topic particle: 은/는")
-    subject_particle: str = Field(default="", description="Subject particle: 이/가")
-    object_particle: str = Field(default="", description="Object particle: 을/를")
-    possessive_form: str = Field(default="", description="Possessive form with 의")
+    # Optional fields (with defaults)
+    topic_particle: str = ""
+    subject_particle: str = ""
+    object_particle: str = ""
+    possessive_form: str = ""
+    counter_example: str = ""
+    honorific_form: str | None = None
+    semantic_category: str = "object"
+    usage_notes: str | None = None
+    example: str = ""
+    example_english: str = ""
 
-    # Counter system (pedagogically critical)
-    primary_counter: str = Field(..., description="Main counter for this noun")
-    counter_example: str = Field(default="", description="Example: 사과 세 개")
+    def __post_init__(self) -> None:
+        """Post-initialization to generate particle forms and validate data."""
+        self._generate_particle_forms()
+        self._validate_counter()
+        self._validate_category()
 
-    # Honorific system (when applicable)
-    honorific_form: str | None = Field(
-        default=None, description="Honorific form if exists"
-    )
-
-    # Semantic and usage information
-    semantic_category: str = Field(
-        default="object", description="person, object, place, abstract"
-    )
-    usage_notes: str | None = Field(default=None, description="Special usage notes")
-
-    # Example sentence
-    example: str = Field(default="", description="Example sentence in Korean")
-    example_english: str = Field(
-        default="", description="English translation of example"
-    )
-
-    @model_validator(mode="after")
-    def generate_particle_forms(self) -> KoreanNounRecord:
+    def _generate_particle_forms(self) -> None:
         """Auto-generate particle forms based on phonological rules."""
         if not self.topic_particle:
             self.topic_particle = self._generate_topic_particle()
@@ -62,7 +53,6 @@ class KoreanNounRecord(BaseRecord):
             self.object_particle = self._generate_object_particle()
         if not self.possessive_form:
             self.possessive_form = f"{self.hangul}의"
-        return self
 
     def _generate_topic_particle(self) -> str:
         """Generate topic particle (은/는) based on final sound."""
@@ -95,9 +85,7 @@ class KoreanNounRecord(BaseRecord):
 
         return False
 
-    @field_validator("primary_counter")
-    @classmethod
-    def validate_counter(cls, v: str) -> str:
+    def _validate_counter(self) -> None:
         """Validate that counter is one of the common Korean counters."""
         common_counters = {
             "개": "general objects",
@@ -112,21 +100,18 @@ class KoreanNounRecord(BaseRecord):
             "그루": "trees",
         }
 
-        if v not in common_counters:
+        if self.primary_counter not in common_counters:
             # Allow the counter but could warn in logs
             pass
-        return v
 
-    @field_validator("semantic_category")
-    @classmethod
-    def validate_category(cls, v: str) -> str:
+    def _validate_category(self) -> None:
         """Validate semantic category."""
         valid_categories = {"person", "object", "place", "abstract", "animal", "food"}
-        if v not in valid_categories:
+        if self.semantic_category not in valid_categories:
             raise ValueError(
-                f"Invalid semantic category: {v}. Must be one of {valid_categories}"
+                f"Invalid semantic category: {self.semantic_category}. "
+                f"Must be one of {valid_categories}"
             )
-        return v
 
     @classmethod
     def get_record_type(cls) -> RecordType:

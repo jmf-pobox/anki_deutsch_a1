@@ -1,9 +1,9 @@
-"""VerbConjugationRecord for German verb conjugation data from CSV."""
+"""VerbConjugationRecord for German verb conjugation data - Dataclass version."""
 
 from dataclasses import dataclass
 from typing import Any
 
-from langlearn.core.records import BaseRecord, RecordType
+from langlearn.core.records.base_record_dataclass import BaseRecord, RecordType
 
 
 @dataclass
@@ -20,15 +20,12 @@ class VerbConjugationRecord(BaseRecord):
     separable: bool
     auxiliary: str
     tense: str
-
-    # Six conjugation forms (optional for imperative/perfect tenses)
     ich: str = ""
     du: str = ""
     er: str = ""
     wir: str = ""
     ihr: str = ""
     sie: str = ""
-
     example: str = ""
 
     # Media fields (populated during enrichment)
@@ -36,12 +33,12 @@ class VerbConjugationRecord(BaseRecord):
     example_audio: str | None = None
     image: str | None = None
 
-    def __post_init__(self) -> None:
-        """Post-init validation for dataclass."""
-        self.validate()
-
     def validate(self) -> None:
-        """Validate the record after initialization."""
+        """Validate verb conjugation data.
+
+        This replaces Pydantic's field_validator and model_validator.
+        Called automatically after initialization via __post_init__.
+        """
         # Validate classification
         valid_classifications = {"regelmäßig", "unregelmäßig", "gemischt", "modal"}
         if self.classification not in valid_classifications:
@@ -72,16 +69,22 @@ class VerbConjugationRecord(BaseRecord):
                 f"Invalid tense: {self.tense}. Must be one of {valid_tenses}"
             )
 
-        # Clean conjugation forms
-        self.ich = self.ich.strip() if self.ich else ""
-        self.du = self.du.strip() if self.du else ""
-        self.er = self.er.strip() if self.er else ""
-        self.wir = self.wir.strip() if self.wir else ""
-        self.ihr = self.ihr.strip() if self.ihr else ""
-        self.sie = self.sie.strip() if self.sie else ""
+        # Validate conjugation forms (strip and normalize)
+        self.ich = self._normalize_form(self.ich)
+        self.du = self._normalize_form(self.du)
+        self.er = self._normalize_form(self.er)
+        self.wir = self._normalize_form(self.wir)
+        self.ihr = self._normalize_form(self.ihr)
+        self.sie = self._normalize_form(self.sie)
 
         # Validate tense completeness
         self._validate_tense_completeness()
+
+    def _normalize_form(self, form: str | None) -> str:
+        """Normalize a conjugation form, handling None and empty values."""
+        if form is None or form == "":
+            return ""
+        return form.strip()
 
     def _validate_tense_completeness(self) -> None:
         """Validate that required conjugation forms are present for each tense."""
@@ -101,21 +104,19 @@ class VerbConjugationRecord(BaseRecord):
             else:
                 # Regular verbs require all 6 persons
                 required_forms = [
-                    self.ich,
-                    self.du,
-                    self.er,
-                    self.wir,
-                    self.ihr,
-                    self.sie,
+                    ("ich", self.ich),
+                    ("du", self.du),
+                    ("er", self.er),
+                    ("wir", self.wir),
+                    ("ihr", self.ihr),
+                    ("sie", self.sie),
                 ]
-                empty_forms = [
-                    i
-                    for i, form in enumerate(required_forms)
+                missing = [
+                    name
+                    for name, form in required_forms
                     if not form or form.strip() == ""
                 ]
-                if empty_forms:
-                    person_names = ["ich", "du", "er", "wir", "ihr", "sie"]
-                    missing = [person_names[i] for i in empty_forms]
+                if missing:
                     raise ValueError(
                         f"{tense} tense requires all persons: "
                         f"missing {', '.join(missing)}"

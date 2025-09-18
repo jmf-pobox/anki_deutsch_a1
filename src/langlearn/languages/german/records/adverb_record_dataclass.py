@@ -1,9 +1,9 @@
-"""AdverbRecord for German adverb data from CSV."""
+"""AdverbRecord for German adverb data from CSV - Dataclass version."""
 
 from dataclasses import dataclass
 from typing import Any
 
-from langlearn.core.records import BaseRecord, RecordType
+from langlearn.core.records.base_record_dataclass import BaseRecord, RecordType
 
 
 @dataclass

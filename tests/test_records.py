@@ -522,7 +522,7 @@ class TestRecordDataIntegrity:
         assert isinstance(record, AdjectiveRecord)  # Type narrowing for MyPy
 
         # Should be serializable
-        json_data = record.model_dump()
+        json_data = record.to_dict()
         assert json_data["word"] == "schön"
         assert json_data["english"] == "beautiful"
 

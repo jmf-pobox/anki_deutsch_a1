@@ -1,26 +1,24 @@
 """NegationRecord for German negation data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
-
-from pydantic import Field
 
 from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class NegationRecord(BaseRecord):
     """Record for German negation data from CSV."""
 
-    word: str = Field(..., description="German negation word")
-    english: str = Field(..., description="English translation")
-    type: str = Field(..., description="Negation type (general, article, etc.)")
-    example: str = Field(..., description="Example sentence")
+    word: str
+    english: str
+    type: str
+    example: str
 
     # Media fields (populated during enrichment)
-    image: str | None = Field(default=None, description="Image reference")
-    word_audio: str | None = Field(default=None, description="Word audio reference")
-    example_audio: str | None = Field(
-        default=None, description="Example audio reference"
-    )
+    image: str | None = None
+    word_audio: str | None = None
+    example_audio: str | None = None
 
     @classmethod
     def get_record_type(cls) -> RecordType:
