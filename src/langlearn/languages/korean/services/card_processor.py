@@ -8,8 +8,10 @@ if TYPE_CHECKING:
     from langlearn.core.backends.base import NoteType
     from langlearn.core.records import BaseRecord
 
+from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
 
-class KoreanCardProcessor:
+
+class KoreanCardProcessor(LanguageCardProcessor):
     """Korean language card processor handling Korean-specific card generation logic."""
 
     def get_record_to_model_factory(self) -> Any:

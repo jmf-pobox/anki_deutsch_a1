@@ -508,6 +508,7 @@ When you see an error like "Field 'DuForm' not found":
 
 **Code Standards**:
 - Prefer well defined protocols over duck typing and hasattr
+- **Protocol Inheritance Required**: All classes implementing protocols MUST explicitly inherit from the protocol class (e.g., `class ConcreteClass(ProtocolClass):`) for PyCharm visibility, type safety, and IDE support
 - Use None sparingly; avoid `type | None` parameters unless no alternative
 - Never write inline import statements
 - Never use mock objects in production code, only test code

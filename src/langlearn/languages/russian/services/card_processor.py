@@ -8,8 +8,10 @@ if TYPE_CHECKING:
     from langlearn.core.backends.base import NoteType
     from langlearn.core.records import BaseRecord
 
+from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
 
-class RussianCardProcessor:
+
+class RussianCardProcessor(LanguageCardProcessor):
     """Russian language card processor.
 
     Handles Russian-specific card generation logic.
