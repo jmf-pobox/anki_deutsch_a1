@@ -1,13 +1,15 @@
-"""Media enrichment service using domain models exclusively.
+"""Language-agnostic media enrichment services.
 
-This service provides audio and image generation for German language learning
-cards by leveraging domain model expertise through the MediaGenerationCapable protocol.
+This module provides the core media enrichment functionality that can be used
+by any language implementation. It includes both abstract base classes and
+concrete implementations that work with domain models through protocols.
 """
 
 from __future__ import annotations
 
 import hashlib
 import logging
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
@@ -19,9 +21,15 @@ from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 logger = logging.getLogger(__name__)
 
 
-class MediaEnricher:
-    """Abstract base class for media enrichment."""
+class MediaEnricherBase(ABC):
+    """Abstract base class for language-agnostic media enrichment.
 
+    This class defines the interface that all media enrichers must implement,
+    providing a consistent API for enriching domain models with media content
+    (audio and images) regardless of the target language.
+    """
+
+    @abstractmethod
     def enrich_with_media(self, domain_model: MediaGenerationCapable) -> dict[str, Any]:
         """Enrich domain model with media using its domain expertise.
 
@@ -31,11 +39,29 @@ class MediaEnricher:
         Returns:
             Dictionary with media fields (image, audio references)
         """
-        raise NotImplementedError
+
+    @abstractmethod
+    def enrich_records(
+        self, records: list[dict[str, Any]], domain_models: list[MediaGenerationCapable]
+    ) -> list[dict[str, Any]]:
+        """Batch enrich records with domain models.
+
+        Args:
+            records: List of record dictionaries
+            domain_models: List of corresponding domain models
+
+        Returns:
+            List of enriched record dictionaries
+        """
 
 
-class StandardMediaEnricher(MediaEnricher):
-    """Standard implementation of media enrichment using domain models."""
+class StandardMediaEnricher(MediaEnricherBase):
+    """Standard implementation of media enrichment using domain models.
+
+    This is a language-agnostic implementation that can be used by any language.
+    It leverages domain models that implement the MediaGenerationCapable protocol
+    to generate appropriate audio and image content.
+    """
 
     def __init__(
         self,
@@ -188,3 +214,7 @@ class StandardMediaEnricher(MediaEnricher):
         """Extract the primary word from domain model for filename generation."""
         # Use the protocol method to get the primary word directly
         return domain_model.get_primary_word()
+
+
+# Legacy alias for backward compatibility during transition
+MediaEnricher = MediaEnricherBase

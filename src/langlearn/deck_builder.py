@@ -171,7 +171,7 @@ class DeckBuilder:
         # Initialize StandardMediaEnricher
         if self._media_service:
             from .core.services import get_anthropic_service
-            from .languages.german.services.media_enricher import StandardMediaEnricher
+            from .core.services.media_enricher import StandardMediaEnricher
 
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()

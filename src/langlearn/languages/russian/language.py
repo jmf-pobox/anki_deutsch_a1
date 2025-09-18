@@ -142,9 +142,9 @@ class RussianLanguage:
         image_base_path: Any,
     ) -> MediaEnricherProtocol:
         """Create Russian-specific media enricher with injected services."""
-        # For now, we'll reuse the StandardMediaEnricher
+        # Use the core StandardMediaEnricher (language-agnostic)
         # In the future, this could be RussianMediaEnricher with Cyrillic-specific logic
-        from langlearn.languages.german.services.media_enricher import (
+        from langlearn.core.services.media_enricher import (
             StandardMediaEnricher,
         )
 

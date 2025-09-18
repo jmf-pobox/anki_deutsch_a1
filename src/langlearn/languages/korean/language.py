@@ -143,9 +143,9 @@ class KoreanLanguage:
         image_base_path: Any,
     ) -> MediaEnricherProtocol:
         """Create Korean-specific media enricher with injected services."""
-        # For now, we'll reuse the StandardMediaEnricher with Korean audio settings
+        # Use the core StandardMediaEnricher (language-agnostic)
         # In the future, this could be KoreanMediaEnricher with Hangul-specific logic
-        from langlearn.languages.german.services.media_enricher import (
+        from langlearn.core.services.media_enricher import (
             StandardMediaEnricher,
         )
 
