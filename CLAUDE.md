@@ -560,3 +560,51 @@ When you see an error like "Field 'DuForm' not found":
 - STOP USING THE PHRASE CLEAN PIPELINE
 - Do not say "Clean Architecture" this is some buzzword you are inventing.
 - do not worry about backwards compatibility or fallback logic that masks errors
+
+## CI/LOCAL ENVIRONMENT CONSISTENCY (MANDATORY)
+
+**🚨 CRITICAL: Local and CI environments must match to prevent unpredictable failures**
+
+### Python Version Alignment (ABSOLUTE REQUIREMENT)
+- **Local Hatch environment**: Check with `hatch run python --version`
+- **GitHub Actions CI**: Must match in `.github/workflows/ci.yml`
+- **MyPy configuration**: Must match in `pyproject.toml` under `[tool.mypy] python_version`
+
+**Example Alignment:**
+```yaml
+# .github/workflows/ci.yml
+- name: Set up Python 3.13
+  uses: actions/setup-python@v4
+  with:
+    python-version: "3.13"
+```
+
+```toml
+# pyproject.toml
+[tool.mypy]
+python_version = "3.13"
+```
+
+### Preventing Version Drift
+- **When upgrading Python locally**: Update CI configuration immediately
+- **When updating dependencies**: Test both locally and create test PR
+- **Before major changes**: Verify `hatch run check-unit` passes locally
+
+### Troubleshooting CI Failures
+1. **Check Python versions first**: Compare local vs CI
+2. **Check Hatch versions**: CI uses latest, local may be different
+3. **Run exact CI commands locally**:
+   ```bash
+   hatch run type      # Same as CI MyPy step
+   hatch run lint      # Same as CI Ruff step
+   hatch run test-unit # Same as CI test step
+   ```
+4. **If commands work locally but fail in CI**: Version mismatch likely
+
+### Warning Signs of Version Issues
+- ❌ "JSON object must be str" errors in Hatch
+- ❌ MyPy errors in CI that don't occur locally
+- ❌ Import errors for modules that exist locally
+- ❌ Different test results between local and CI
+
+**Remember**: If it passes locally but fails in CI, fix the environment mismatch, don't change the code.
