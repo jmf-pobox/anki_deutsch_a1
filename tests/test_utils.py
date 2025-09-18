@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from langlearn.core.backends.anki_backend import AnkiBackend
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
 from langlearn.languages.german.language import GermanLanguage
 
 

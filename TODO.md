@@ -1,27 +1,11 @@
 # Project TODO
 
-Last updated: 2025-01-17
+Last updated: 2025-01-18
 
 ## 🚨 ACTIVE PRIORITIES
 
-### **PRIORITY 1: Complete DeckBuilder Language-Agnostic Design** 🟠 **HIGH PRIORITY**
 
-**Problem**: DeckBuilder hardcodes `StandardMediaEnricher` for all languages (lines 153-159), preventing language-specific media enrichment strategies.
-
-**Status**: 95% complete - only MediaEnricher delegation remaining
-
-**Solution**: Add language-specific media enricher creation to Language protocol.
-
-**Remaining Work (~4 hours)**:
-1. **Add MediaEnricher method to Language protocol** (1h)
-2. **Update language implementations** (2h) - German, Russian, Korean return appropriate enrichers
-3. **Replace hardcoded StandardMediaEnricher in DeckBuilder** (1h) - Use language delegation
-
-**Quality Gates**: No hardcoded services in DeckBuilder, all tests pass, all languages work
-
----
-
-### **PRIORITY 2: DeckBuilder API Redesign** 🔴 **CRITICAL**
+### **PRIORITY 1: DeckBuilder API Redesign** 🔴 **CRITICAL**
 
 **Problem**: DeckBuilder is "a process wrapped in a class" with a 167-line monolithic `generate_all_cards` method that hides intermediate state and provides no read APIs.
 
@@ -41,7 +25,7 @@ Last updated: 2025-01-17
 
 ---
 
-### **PRIORITY 3: Replace Pydantic with Dataclasses** 🟠 **HIGH PRIORITY**
+### **PRIORITY 2: Replace Pydantic with Dataclasses** 🟠 **HIGH PRIORITY**
 
 **Problem**: Pydantic creates metaclass conflicts preventing protocol inheritance, adds complexity with minimal benefit (67 files coupled, only 5 test validation).
 
@@ -56,7 +40,7 @@ Last updated: 2025-01-17
 
 ---
 
-### **PRIORITY 4: Protocol Inheritance Audit** 🟡 **MEDIUM PRIORITY**
+### **PRIORITY 3: Protocol Inheritance Audit** 🟡 **MEDIUM PRIORITY**
 
 **Problem**: Many concrete classes implement protocols but don't explicitly inherit, breaking PyCharm visibility.
 
@@ -77,10 +61,10 @@ Last updated: 2025-01-17
 - ✅ Three languages implemented: German (full), Russian (minimal), Korean (minimal)
 - ✅ All tests passing, MyPy strict mode clean
 - ✅ AnkiBackend fully language-agnostic
+- ✅ **DeckBuilder 100% language-agnostic** - zero hardcoded services
 - ✅ Multi-language architecture foundation complete
 
 **Pending Work**:
-- ⚠️ DeckBuilder hardcodes StandardMediaEnricher (final 5% of language-agnostic design)
 - ⚠️ API design needs observable phases and read access
 - ⚠️ Pydantic prevents clean protocol inheritance
 
@@ -89,6 +73,7 @@ Last updated: 2025-01-17
 ## 📚 COMPLETED WORK
 
 ### **Recently Completed**
+- ✅ **DeckBuilder Language-Agnostic Architecture** - 100% complete, zero hardcoded services
 - ✅ **Korean Language Implementation** - Complete package with particles, counters, typography
 - ✅ **AnkiBackend Language-Agnostic Refactoring** - 83% code reduction (240→37 lines)
 - ✅ **Multi-Language Architecture Foundation** - Protocol system, registry, template resolution

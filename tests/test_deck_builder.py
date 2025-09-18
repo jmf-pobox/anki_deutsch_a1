@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from langlearn.core.backends.base import DeckBackend, MediaFile
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.adverb import Adverb, AdverbType
 from langlearn.languages.german.models.negation import Negation, NegationType
@@ -115,7 +115,7 @@ class TestGermanDeckBuilder:
 
     def test_initialization_media_disabled(self) -> None:
         """Test GermanDeckBuilder initialization with media generation disabled."""
-        with patch("langlearn.deck_builder.AnkiBackend") as mock_anki:
+        with patch("langlearn.core.deck.builder.AnkiBackend") as mock_anki:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
@@ -125,7 +125,7 @@ class TestGermanDeckBuilder:
 
     # Legacy CSV loading tests removed - use load_data_from_directory
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_load_data_from_directory(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
@@ -165,7 +165,7 @@ class TestGermanDeckBuilder:
                 # Should have loaded records
                 assert len(builder._loaded_records) == 1
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_create_subdeck(self, mock_anki: Mock) -> None:
         """Test creating subdecks."""
         mock_backend = Mock(spec=DeckBackend)
@@ -177,7 +177,7 @@ class TestGermanDeckBuilder:
             builder.create_subdeck("Nouns")
             mock_set.assert_called_once_with("Nouns")
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_reset_to_main_deck(self, mock_anki: Mock) -> None:
         """Test resetting to main deck."""
         mock_backend = Mock(spec=DeckBackend)
@@ -200,22 +200,37 @@ class TestGermanDeckBuilder:
     # Legacy test removed: test_generate_all_cards
     # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_export_deck(self, mock_anki: Mock) -> None:
-        """Test exporting deck to file."""
+        """Test exporting deck to file with proper phase management."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
         builder = DeckBuilder("Test Deck", "german")
 
+        # Set up the builder in the proper phase for export
+        # Set to CARDS_BUILT phase
+        builder._phase = builder._phase.__class__.CARDS_BUILT
+        # Mock the built cards so export doesn't fail
+        from langlearn.core.deck import BuiltCards
+        builder._built_cards = BuiltCards(
+            cards=[([], mock_anki)],  # Mock cards data
+            cards_by_type={"test": []},
+            template_usage={"test": 1},
+            build_errors=[]
+        )
+
         with patch.object(builder._deck_manager, "export_deck") as mock_export:
-            builder.export_deck("output/test.apkg")
+            result = builder.export_deck("output/test.apkg")
             mock_export.assert_called_once_with("output/test.apkg")
+            # Verify the result has expected structure
+            assert result.output_path.name == "test.apkg"
+            assert result.cards_exported == 1
 
     # Legacy test removed: test_get_statistics
     # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_get_subdeck_info(self, mock_anki: Mock) -> None:
         """Test getting subdeck information."""
         mock_backend = Mock(spec=DeckBackend)
@@ -248,7 +263,7 @@ class TestGermanDeckBuilder:
     # Legacy test removed: test_clear_loaded_data
     # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_context_manager_support(self, mock_anki: Mock) -> None:
         """Test context manager support."""
         mock_backend = Mock(spec=DeckBackend)
@@ -258,7 +273,7 @@ class TestGermanDeckBuilder:
             assert isinstance(builder, DeckBuilder)
             assert builder.deck_name == "Test Deck"
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
         """Test loading data from directory with all file types."""
         mock_backend = Mock(spec=DeckBackend)

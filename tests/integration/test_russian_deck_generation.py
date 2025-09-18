@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
 from tests.utils.deck_inspector import DeckInspector
 
 
@@ -95,9 +95,15 @@ class TestRussianDeckGeneration:
             deck_type="default",
         ) as builder:
             # Verify audio service configuration
-            assert builder._media_enricher._audio_service.voice_id == "Tatyana"
-            assert builder._media_enricher._audio_service.language_code == "ru-RU"
-            assert builder._media_enricher._audio_service.engine == "standard"
+            from typing import cast
+
+            from langlearn.core.services.media_enricher import StandardMediaEnricher
+
+            media_enricher = cast("StandardMediaEnricher", builder._media_enricher)
+            audio_service = media_enricher._audio_service
+            assert audio_service.voice_id == "Tatyana"
+            assert audio_service.language_code == "ru-RU"
+            assert audio_service.engine == "standard"
 
     def test_russian_subdeck_naming(self, tmp_path: Path) -> None:
         """Test that Russian deck creates properly named subdecks."""

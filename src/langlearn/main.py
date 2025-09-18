@@ -10,7 +10,7 @@ import logging
 import sys
 from pathlib import Path
 
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI
 
 # Set up logging
 logging.basicConfig(
@@ -76,8 +76,8 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        # Create the deck using DeckBuilder with language/deck configuration
-        with DeckBuilder(
+        # Create the deck using DeckBuilderAPI with language/deck configuration
+        with DeckBuilderAPI(
             deck_name=deck_name,
             language=args.language,
             deck_type=args.deck,
@@ -86,13 +86,10 @@ def main() -> None:
 
             # Load data from directory
             print(f"\n📚 Loading vocabulary data from {data_dir}...")
-            builder.load_data_from_directory(data_dir)
+            loaded_data = builder.load_data(data_dir)
 
             # Show what was loaded
-            stats = builder.get_statistics()
-            loaded_data = stats["loaded_data"]
-
-            total_words = sum(loaded_data.values())
+            total_words = loaded_data.total_records
             if total_words == 0:
                 print("❌ No vocabulary data found in data directory")
                 sys.exit(1)
@@ -101,7 +98,8 @@ def main() -> None:
             # Import NamingService for consistent naming
             from langlearn.core.services import NamingService
 
-            for word_type, count in loaded_data.items():
+            for word_type, records in loaded_data.records_by_type.items():
+                count = len(records)
                 if count > 0:
                     # Use NamingService for consistent display names
                     display_name = NamingService.get_display_name(word_type)
@@ -109,24 +107,32 @@ def main() -> None:
 
             # Generate cards with media
             print("\n🎴 Generating Anki cards with media...")
-            results = builder.generate_all_cards(generate_media=True)
 
-            total_cards = sum(results.values())
+            # Enrich with media
+            print("   🖼️  Enriching records with media...")
+            for progress in builder.enrich_media():
+                print(
+                    f"      Processing {progress.record_type}: "
+                    f"{progress.processed}/{progress.total}"
+                )
+
+            # Build cards
+            print("   🔨 Building Anki cards...")
+            built_cards = builder.build_cards()
+
+            total_cards = len(built_cards.cards)
             print(f"✅ Generated {total_cards} cards:")
-            for card_type, count in results.items():
+            for card_type, cards in built_cards.cards_by_type.items():
+                count = len(cards)
                 print(f"   🎴 {card_type.title()}: {count}")
 
             # Show final statistics
-            final_stats = builder.get_statistics()
+            pipeline_summary = builder.get_pipeline_summary()
             print("\n📊 Final Statistics:")
-            print(f"   📋 Total notes: {final_stats['deck_stats']['notes_count']}")
-
-            # Show subdeck information
-            subdeck_info = builder.get_subdeck_info()
-            if subdeck_info["subdeck_names"]:
-                print(f"   🗂️  Subdecks: {len(subdeck_info['subdeck_names'])}")
-                for name in subdeck_info["subdeck_names"]:
-                    print(f"      - {name}")
+            print(f"   📋 Total records loaded: {pipeline_summary.loaded}")
+            print(f"   🖼️  Records enriched with media: {pipeline_summary.enriched}")
+            print(f"   🎴 Cards built: {pipeline_summary.built}")
+            print(f"   📊 Current phase: {pipeline_summary.phase.value}")
 
             # Export deck
             if args.output:
@@ -136,18 +142,14 @@ def main() -> None:
                 output_file = output_dir / filename
             print(f"\n💾 Exporting deck to {output_file}...")
 
-            builder.export_deck(output_file)
+            export_result = builder.export_deck(output_file)
 
             # Show export results
-            if output_file.exists():
-                file_size = output_file.stat().st_size
-                print("✅ Deck exported successfully!")
-                print(f"   📁 File: {output_file}")
-                print(f"   📊 Size: {file_size:,} bytes")
-                print("\n🎉 Import this file into Anki to start learning!")
-            else:
-                print("❌ Export failed - file not created")
-                sys.exit(1)
+            print("✅ Deck exported successfully!")
+            print(f"   📁 File: {export_result.output_path}")
+            print(f"   📊 Size: {export_result.file_size:,} bytes")
+            print(f"   🎴 Cards exported: {export_result.cards_exported}")
+            print("\n🎉 Import this file into Anki to start learning!")
 
     except KeyboardInterrupt:
         print("\n⏹️  Cancelled by user")

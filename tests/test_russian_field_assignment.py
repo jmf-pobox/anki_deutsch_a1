@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from langlearn.core.backends.base import NoteType
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
 
 
 class TestRussianFieldAssignment:
@@ -114,7 +114,12 @@ class TestRussianFieldAssignment:
         )
 
         # Verify Russian-specific audio configuration
-        audio_service = deck_builder._media_enricher._audio_service
+        from typing import cast
+
+        from langlearn.core.services.media_enricher import StandardMediaEnricher
+
+        media_enricher = cast("StandardMediaEnricher", deck_builder._media_enricher)
+        audio_service = media_enricher._audio_service
         assert audio_service.voice_id == "Tatyana"
         assert audio_service.language_code == "ru-RU"
         assert audio_service.engine == "standard"
