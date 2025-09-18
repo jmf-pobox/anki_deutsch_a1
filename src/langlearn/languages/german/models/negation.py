@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.exceptions import MediaGenerationError
 
@@ -76,7 +77,7 @@ class NegationType(str, Enum):
 
 
 @dataclass
-class Negation(MediaGenerationCapable):
+class Negation(LanguageDomainModel, MediaGenerationCapable):
     """German negation domain model with linguistic expertise and media generation.
 
     Represents a German negation word with its properties, German linguistic knowledge,

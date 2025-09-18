@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class KoreanNoun(MediaGenerationCapable):
+class KoreanNoun(LanguageDomainModel, MediaGenerationCapable):
     """Korean noun domain model with particle patterns and media generation.
 
     Focuses on pedagogically critical features for English speakers:

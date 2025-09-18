@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.exceptions import MediaGenerationError
 
@@ -70,7 +71,7 @@ Usage:
 
 
 @dataclass
-class Noun(MediaGenerationCapable):
+class Noun(LanguageDomainModel, MediaGenerationCapable):
     """German noun domain model with linguistic expertise and media
     generation.
 

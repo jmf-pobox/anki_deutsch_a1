@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class RussianNoun(MediaGenerationCapable):
+class RussianNoun(LanguageDomainModel, MediaGenerationCapable):
     """Russian noun domain model with grammatical knowledge and media generation."""
 
     # Core noun data

@@ -13,6 +13,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
+from langlearn.core.protocols.media_enricher_protocol import MediaEnricherProtocol
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.infrastructure.services.ai_service import AnthropicService
 from langlearn.infrastructure.services.audio_service import AudioService
@@ -55,7 +56,7 @@ class MediaEnricherBase(ABC):
         """
 
 
-class StandardMediaEnricher(MediaEnricherBase):
+class StandardMediaEnricher(MediaEnricherProtocol, MediaEnricherBase):
     """Standard implementation of media enrichment using domain models.
 
     This is a language-agnostic implementation that can be used by any language.

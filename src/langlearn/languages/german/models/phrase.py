@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.exceptions import MediaGenerationError
 
@@ -64,7 +65,7 @@ Usage:
 
 
 @dataclass
-class Phrase(MediaGenerationCapable):
+class Phrase(LanguageDomainModel, MediaGenerationCapable):
     """German phrase domain model with linguistic expertise and media generation.
 
     Represents a German phrase with its properties, German linguistic knowledge,

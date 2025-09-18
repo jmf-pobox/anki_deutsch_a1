@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.exceptions import MediaGenerationError
 
@@ -111,7 +112,7 @@ GERMAN_TO_ENGLISH_ADVERB_TYPE_MAP = {
 
 
 @dataclass
-class Adverb(MediaGenerationCapable):
+class Adverb(LanguageDomainModel, MediaGenerationCapable):
     """German adverb domain model with linguistic expertise and media generation.
 
     Represents a German adverb with its properties, German linguistic knowledge,
