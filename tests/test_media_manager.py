@@ -7,8 +7,11 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.core.backends.base import DeckBackend, MediaFile
-from langlearn.core.services.media_service import MediaGenerationStats, MediaService
+from langlearn.infrastructure.backends.base import DeckBackend, MediaFile
+from langlearn.infrastructure.services.media_service import (
+    MediaGenerationStats,
+    MediaService,
+)
 from langlearn.managers.media_manager import MediaManager, MediaStats
 
 

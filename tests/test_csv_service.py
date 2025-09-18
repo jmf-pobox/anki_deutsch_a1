@@ -9,7 +9,7 @@ from unittest.mock import mock_open, patch
 import pytest
 from pydantic import BaseModel, ValidationError, field_validator
 
-from langlearn.core.services.csv_service import CSVService
+from langlearn.infrastructure.services.csv_service import CSVService
 from langlearn.languages.german.records.factory import AdjectiveRecord, NounRecord
 
 

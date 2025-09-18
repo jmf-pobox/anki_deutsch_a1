@@ -169,7 +169,7 @@ class RussianLanguage(Language):
         """Create Russian-specific media enricher with injected services."""
         # Use the core StandardMediaEnricher (language-agnostic)
         # In the future, this could be RussianMediaEnricher with Cyrillic-specific logic
-        from langlearn.core.services.media_enricher import (
+        from langlearn.infrastructure.services.media_enricher import (
             StandardMediaEnricher,
         )
 

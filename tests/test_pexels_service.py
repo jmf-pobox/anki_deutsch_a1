@@ -7,8 +7,12 @@ from unittest.mock import Mock, patch
 import pytest
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
-from langlearn.core.services.image_service import PexelsService, Photo, PhotoSize
 from langlearn.exceptions import MediaGenerationError
+from langlearn.infrastructure.services.image_service import (
+    PexelsService,
+    Photo,
+    PhotoSize,
+)
 from tests.test_utils import mock_env
 
 

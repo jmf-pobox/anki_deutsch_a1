@@ -41,5 +41,3 @@ class RussianGrammarService:
             "prepositional",  # предложный
             "dative",  # дательный
         ]
-
-

@@ -8,7 +8,7 @@ coupling to specific backend implementations.
 
 from typing import Any
 
-from langlearn.core.backends.base import DeckBackend, NoteType
+from langlearn.infrastructure.backends.base import DeckBackend, NoteType
 
 
 class DeckManager:

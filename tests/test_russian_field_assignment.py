@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from langlearn.core.backends.base import NoteType
 from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
+from langlearn.infrastructure.backends.base import NoteType
 
 
 class TestRussianFieldAssignment:
@@ -116,7 +116,9 @@ class TestRussianFieldAssignment:
         # Verify Russian-specific audio configuration
         from typing import cast
 
-        from langlearn.core.services.media_enricher import StandardMediaEnricher
+        from langlearn.infrastructure.services.media_enricher import (
+            StandardMediaEnricher,
+        )
 
         media_enricher = cast("StandardMediaEnricher", deck_builder._media_enricher)
         audio_service = media_enricher._audio_service

@@ -12,7 +12,7 @@ from botocore.exceptions import (
     NoCredentialsError,
 )
 
-from langlearn.core.services.audio_service import AudioService
+from langlearn.infrastructure.services.audio_service import AudioService
 
 
 class TestAudioService:
@@ -27,7 +27,7 @@ class TestAudioService:
     @pytest.fixture
     def audio_service(self, temp_dir: Path) -> AudioService:
         """AudioService instance for testing."""
-        with patch("langlearn.core.services.audio_service.boto3.client"):
+        with patch("langlearn.infrastructure.services.audio_service.boto3.client"):
             return AudioService(
                 output_dir=str(temp_dir / "audio"),
                 voice_id="Daniel",
@@ -39,7 +39,7 @@ class TestAudioService:
         """Test that AudioService creates output directory."""
         output_dir = temp_dir / "audio_output"
 
-        with patch("langlearn.core.services.audio_service.boto3.client"):
+        with patch("langlearn.infrastructure.services.audio_service.boto3.client"):
             service = AudioService(output_dir=str(output_dir))
 
         assert output_dir.exists()
@@ -52,7 +52,7 @@ class TestAudioService:
         """Test AudioService initialization with custom parameters."""
         output_dir = temp_dir / "custom_audio"
 
-        with patch("langlearn.core.services.audio_service.boto3.client"):
+        with patch("langlearn.infrastructure.services.audio_service.boto3.client"):
             service = AudioService(
                 output_dir=str(output_dir),
                 voice_id="Marlene",
@@ -65,7 +65,7 @@ class TestAudioService:
         assert service.language_code == "de-AT"
         assert service.speech_rate == 90
 
-    @patch("langlearn.core.services.audio_service.boto3.client")
+    @patch("langlearn.infrastructure.services.audio_service.boto3.client")
     def test_generate_audio_success(
         self, mock_boto_client: Mock, audio_service: AudioService
     ) -> None:
@@ -103,7 +103,7 @@ class TestAudioService:
         assert result is not None
         assert result.endswith(".mp3")
 
-    @patch("langlearn.core.services.audio_service.boto3.client")
+    @patch("langlearn.infrastructure.services.audio_service.boto3.client")
     def test_generate_audio_no_credentials_error(
         self, mock_boto_client: Mock, audio_service: AudioService
     ) -> None:
@@ -118,7 +118,7 @@ class TestAudioService:
         with pytest.raises(NoCredentialsError):
             audio_service.generate_audio("test text")
 
-    @patch("langlearn.core.services.audio_service.boto3.client")
+    @patch("langlearn.infrastructure.services.audio_service.boto3.client")
     def test_generate_audio_client_error(
         self, mock_boto_client: Mock, audio_service: AudioService
     ) -> None:
@@ -140,7 +140,7 @@ class TestAudioService:
         with pytest.raises(ClientError):
             audio_service.generate_audio("test text")
 
-    @patch("langlearn.core.services.audio_service.boto3.client")
+    @patch("langlearn.infrastructure.services.audio_service.boto3.client")
     def test_generate_audio_save_file_fails(
         self, mock_boto_client: Mock, audio_service: AudioService
     ) -> None:
@@ -208,7 +208,7 @@ class TestAudioService:
         """Test SSML generation with different speech rates."""
         # Test with custom speech rate
         with tempfile.TemporaryDirectory() as temp_dir:
-            with patch("langlearn.core.services.audio_service.boto3.client"):
+            with patch("langlearn.infrastructure.services.audio_service.boto3.client"):
                 service = AudioService(output_dir=str(temp_dir), speech_rate=90)
 
             mock_client = Mock()

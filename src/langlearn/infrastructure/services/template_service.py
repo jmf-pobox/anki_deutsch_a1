@@ -5,8 +5,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import NamedTuple
 
-from langlearn.core.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import TemplateError
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
 
 logger = logging.getLogger(__name__)
 

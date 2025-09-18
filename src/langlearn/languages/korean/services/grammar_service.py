@@ -281,5 +281,3 @@ def analyze_korean_noun(
         "honorific": KoreanHonorificService.get_honorific_form(hangul),
         "phonology": KoreanPhonologyService.analyze_final_consonant(hangul),
     }
-
-

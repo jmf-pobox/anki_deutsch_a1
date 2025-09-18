@@ -97,7 +97,9 @@ class TestRussianDeckGeneration:
             # Verify audio service configuration
             from typing import cast
 
-            from langlearn.core.services.media_enricher import StandardMediaEnricher
+            from langlearn.infrastructure.services.media_enricher import (
+                StandardMediaEnricher,
+            )
 
             media_enricher = cast("StandardMediaEnricher", builder._media_enricher)
             audio_service = media_enricher._audio_service

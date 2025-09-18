@@ -96,7 +96,7 @@ def main() -> None:
 
             print(f"✅ Loaded {total_words} words:")
             # Import NamingService for consistent naming
-            from langlearn.core.services import NamingService
+            from langlearn.infrastructure.services import NamingService
 
             for word_type, records in loaded_data.records_by_type.items():
                 count = len(records)

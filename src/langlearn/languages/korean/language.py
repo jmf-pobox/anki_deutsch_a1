@@ -170,7 +170,7 @@ class KoreanLanguage(Language):
         """Create Korean-specific media enricher with injected services."""
         # Use the core StandardMediaEnricher (language-agnostic)
         # In the future, this could be KoreanMediaEnricher with Hangul-specific logic
-        from langlearn.core.services.media_enricher import (
+        from langlearn.infrastructure.services.media_enricher import (
             StandardMediaEnricher,
         )
 

@@ -9,7 +9,7 @@ import pytest
 from anthropic.types import Message
 from pydantic import BaseModel
 
-from langlearn.core.services.ai_service import AnthropicService
+from langlearn.infrastructure.services.ai_service import AnthropicService
 
 
 class MockModel(BaseModel):

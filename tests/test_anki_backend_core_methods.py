@@ -12,8 +12,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.core.backends.anki_backend import AnkiBackend
-from langlearn.core.backends.base import CardTemplate, NoteType
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
 from langlearn.languages.german.language import GermanLanguage
 
 
@@ -23,7 +23,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_create_note_type_complete_flow(self, mock_media_service: Mock) -> None:
         """Test complete note type creation flow."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             # Set up detailed mocks
@@ -88,7 +90,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_create_note_type_without_templates(self, mock_media_service: Mock) -> None:
         """Test note type creation without templates."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -125,7 +129,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_add_note_complete_flow(self, mock_media_service: Mock) -> None:
         """Test complete note addition flow."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -187,7 +193,7 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_add_note_invalid_note_type_error(self, mock_media_service: Mock) -> None:
         """Test error handling for invalid note type ID."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
@@ -199,7 +205,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_add_note_without_tags(self, mock_media_service: Mock) -> None:
         """Test adding note without tags."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -238,7 +246,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_add_note_notetype_not_found_error(self, mock_media_service: Mock) -> None:
         """Test error when note type is not found in collection."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -262,7 +272,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_export_deck_export_to_file_method(self, mock_media_service: Mock) -> None:
         """Test deck export using export_to_file method."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -296,7 +308,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_export_deck_exportinto_fallback(self, mock_media_service: Mock) -> None:
         """Test deck export fallback to exportInto method."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -324,7 +338,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_export_deck_collection_fallback(self, mock_media_service: Mock) -> None:
         """Test deck export fallback to shutil.copy2 when no exporter methods exist."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -359,7 +375,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_export_deck_logging_functionality(self, mock_media_service: Mock) -> None:
         """Test export deck logging functionality."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -378,7 +396,7 @@ class TestAnkiBackendCoreMethodsCoverage:
                 mock_exporter.export_to_file = Mock()
 
                 with patch(
-                    "langlearn.core.backends.anki_backend.logger.info"
+                    "langlearn.infrastructure.backends.anki_backend.logger.info"
                 ) as mock_logger:
                     backend.export_deck("/output/logged.apkg")
 
@@ -390,7 +408,9 @@ class TestAnkiBackendCoreMethodsCoverage:
     def test_get_stats_exception_handling(self, mock_media_service: Mock) -> None:
         """Test exception handling in get_stats method."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()

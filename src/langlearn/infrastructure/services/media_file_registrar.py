@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from langlearn.core.backends.base import DeckBackend
+from langlearn.infrastructure.backends.base import DeckBackend
 
 logger = logging.getLogger(__name__)
 

@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from langlearn.core.backends.base import CardTemplate, NoteType
 from langlearn.core.records.base_record import BaseRecord
-from langlearn.core.services.template_service import TemplateService
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
+from langlearn.infrastructure.services.template_service import TemplateService
 
 logger = logging.getLogger(__name__)
 

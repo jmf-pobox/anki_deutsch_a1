@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.core.backends import AnkiBackend
-from langlearn.core.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.infrastructure.backends import AnkiBackend
+from langlearn.infrastructure.backends.base import CardTemplate, DeckBackend, NoteType
 from langlearn.languages.german.language import GermanLanguage
 
 
@@ -20,10 +20,10 @@ class TestDeckBackendInterface:
         # Mock external services for unit testing
         with (
             patch(
-                "langlearn.core.services.audio_service.boto3.client"
+                "langlearn.infrastructure.services.audio_service.boto3.client"
             ) as mock_boto_client,
             patch(
-                "langlearn.core.services.image_service.requests.get"
+                "langlearn.infrastructure.services.image_service.requests.get"
             ) as mock_requests,
             patch("keyring.get_password") as mock_keyring,
         ):
@@ -175,10 +175,10 @@ class TestDeckBackendInterface:
         # Mock AWS services to avoid region configuration issues in CI
         with (
             patch(
-                "langlearn.core.services.audio_service.boto3.client"
+                "langlearn.infrastructure.services.audio_service.boto3.client"
             ) as mock_boto_client,
             patch(
-                "langlearn.core.services.image_service.requests.get"
+                "langlearn.infrastructure.services.image_service.requests.get"
             ) as mock_requests,
         ):
             mock_boto_client.return_value = Mock()

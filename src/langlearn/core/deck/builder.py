@@ -6,14 +6,17 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, TypeVar
 
-from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.core.records import BaseRecord
-from langlearn.core.services import get_anthropic_service
-from langlearn.core.services.audio_service import AudioService
-from langlearn.core.services.image_service import PexelsService
-from langlearn.core.services.media_file_registrar import MediaFileRegistrar
-from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
-from langlearn.core.services.template_service import TemplateService
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.infrastructure.services import get_anthropic_service
+from langlearn.infrastructure.services.audio_service import AudioService
+from langlearn.infrastructure.services.image_service import PexelsService
+from langlearn.infrastructure.services.media_file_registrar import MediaFileRegistrar
+from langlearn.infrastructure.services.media_service import (
+    MediaGenerationConfig,
+    MediaService,
+)
+from langlearn.infrastructure.services.template_service import TemplateService
 from langlearn.languages.registry import LanguageRegistry
 from langlearn.managers.deck_manager import DeckManager
 from langlearn.managers.media_manager import MediaManager
@@ -219,7 +222,7 @@ class DeckBuilderAPI:
     ) -> Iterator[list[BaseRecord]]:
         """Split records into batches for processing."""
         for i in range(0, len(records), batch_size):
-            yield records[i:i + batch_size]
+            yield records[i : i + batch_size]
 
     # --- Data Loading Phase ---
 
@@ -334,8 +337,7 @@ class DeckBuilderAPI:
                 continue
 
             logger.info(
-                f"Processing {len(records)} {record_type} records for "
-                f"media enrichment"
+                f"Processing {len(records)} {record_type} records for media enrichment"
             )
 
             # Process records using media enricher if available
@@ -370,10 +372,8 @@ class DeckBuilderAPI:
                         # Use the media enricher to enrich records
                         for i, domain_model in enumerate(domain_models):
                             try:
-                                media_data = (
-                                    self._media_enricher.enrich_with_media(
-                                        domain_model
-                                    )
+                                media_data = self._media_enricher.enrich_with_media(
+                                    domain_model
                                 )
                                 record_dicts[i].update(media_data)
                             except Exception as e:
@@ -426,9 +426,7 @@ class DeckBuilderAPI:
             )
 
         self._phase = Phase.MEDIA_ENRICHED
-        total_enriched = sum(
-            len(data.records) for data in self._enriched_data.values()
-        )
+        total_enriched = sum(len(data.records) for data in self._enriched_data.values())
         logger.info(
             f"Media enrichment complete. Enriched {total_enriched} records "
             f"across {len(self._enriched_data)} types"
@@ -540,7 +538,7 @@ class DeckBuilderAPI:
                         # Create Card object for tracking
                         # Convert field_values list to dict for Card object
                         # Use note type field names if available
-                        field_names = getattr(note_type, 'field_names', [])
+                        field_names = getattr(note_type, "field_names", [])
                         if len(field_names) >= len(field_values):
                             fields_dict = dict(
                                 zip(field_names, field_values, strict=False)
@@ -548,8 +546,7 @@ class DeckBuilderAPI:
                         else:
                             # Fallback to indexed keys
                             fields_dict = {
-                                f"Field{i}": val
-                                for i, val in enumerate(field_values)
+                                f"Field{i}": val for i, val in enumerate(field_values)
                             }
 
                         card = Card(
@@ -572,6 +569,7 @@ class DeckBuilderAPI:
                         cards_created += 1
                     except Exception as e:
                         from .data_types import BuildError
+
                         error = BuildError(
                             record_index=cards_created,
                             record_type=record_type,
@@ -587,6 +585,7 @@ class DeckBuilderAPI:
 
             except Exception as e:
                 from .data_types import BuildError
+
                 error = BuildError(
                     record_index=0,
                     record_type=record_type,
@@ -637,7 +636,7 @@ class DeckBuilderAPI:
         field_values, note_type = self._built_cards.cards[index]
 
         # Convert field_values list to dict for preview
-        field_names = getattr(note_type, 'field_names', [])
+        field_names = getattr(note_type, "field_names", [])
         if len(field_names) >= len(field_values):
             fields = dict(zip(field_names, field_values, strict=False))
         else:
@@ -652,9 +651,8 @@ class DeckBuilderAPI:
         back = f"English: {english}"
 
         # Handle example field
-        has_example = (
-            fields.get("Example")
-            or (len(field_values) > 2 and field_values[2])
+        has_example = fields.get("Example") or (
+            len(field_values) > 2 and field_values[2]
         )
         if has_example:
             example = fields.get(
@@ -721,9 +719,7 @@ class DeckBuilderAPI:
     def get_pipeline_summary(self) -> PipelineSummary:
         """Get comprehensive summary of all phases."""
         loaded = self._loaded_data.total_records if self._loaded_data else 0
-        enriched = sum(
-            len(data.records) for data in self._enriched_data.values()
-        )
+        enriched = sum(len(data.records) for data in self._enriched_data.values())
         built = len(self._built_cards.cards) if self._built_cards else 0
         exported = self._export_result is not None
 

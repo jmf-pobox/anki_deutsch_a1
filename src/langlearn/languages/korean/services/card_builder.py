@@ -6,9 +6,9 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from langlearn.core.backends.base import CardTemplate, NoteType
 from langlearn.core.records.base_record import BaseRecord
-from langlearn.core.services.template_service import TemplateService
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
+from langlearn.infrastructure.services.template_service import TemplateService
 from langlearn.languages.korean.records.noun_record import KoreanNounRecord
 
 logger = logging.getLogger(__name__)

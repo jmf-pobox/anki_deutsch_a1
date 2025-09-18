@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.core.backends import AnkiBackend, CardTemplate, NoteType
+from langlearn.infrastructure.backends import AnkiBackend, CardTemplate, NoteType
 from langlearn.languages.german.language import GermanLanguage
 
 

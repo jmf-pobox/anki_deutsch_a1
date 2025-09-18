@@ -273,7 +273,9 @@ class GermanLanguage(Language):
         image_base_path: Any,
     ) -> MediaEnricherProtocol:
         """Create German-specific media enricher with injected services."""
-        from langlearn.core.services.media_enricher import StandardMediaEnricher
+        from langlearn.infrastructure.services.media_enricher import (
+            StandardMediaEnricher,
+        )
 
         return StandardMediaEnricher(
             audio_service=audio_service,

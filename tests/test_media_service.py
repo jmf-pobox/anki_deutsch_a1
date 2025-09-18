@@ -8,9 +8,12 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.core.services.audio_service import AudioService
-from langlearn.core.services.image_service import PexelsService
-from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
+from langlearn.infrastructure.services.audio_service import AudioService
+from langlearn.infrastructure.services.image_service import PexelsService
+from langlearn.infrastructure.services.media_service import (
+    MediaGenerationConfig,
+    MediaService,
+)
 
 
 class TestMediaService:

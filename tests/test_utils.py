@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
 from langlearn.languages.german.language import GermanLanguage
 
 
@@ -126,7 +126,9 @@ def temp_directory_with_nested_path(
 @pytest.fixture
 def mock_aws_services() -> Any:
     """Mock AWS services to avoid requiring credentials in unit tests."""
-    with patch("langlearn.core.services.audio_service.boto3.client") as mock_boto3:
+    with patch(
+        "langlearn.infrastructure.services.audio_service.boto3.client"
+    ) as mock_boto3:
         mock_polly = MagicMock()
         mock_boto3.return_value = mock_polly
         yield mock_polly
@@ -136,9 +138,15 @@ def mock_aws_services() -> Any:
 def mock_external_services() -> Any:
     """Mock all external services for unit testing."""
     with (
-        patch("langlearn.core.services.audio_service.boto3.client") as mock_boto3,
-        patch("langlearn.core.services.image_service.PexelsService") as mock_pexels,
-        patch("langlearn.core.services.ai_service.AnthropicService") as mock_anthropic,
+        patch(
+            "langlearn.infrastructure.services.audio_service.boto3.client"
+        ) as mock_boto3,
+        patch(
+            "langlearn.infrastructure.services.image_service.PexelsService"
+        ) as mock_pexels,
+        patch(
+            "langlearn.infrastructure.services.ai_service.AnthropicService"
+        ) as mock_anthropic,
     ):
         # Configure mock boto3 client
         mock_polly = MagicMock()

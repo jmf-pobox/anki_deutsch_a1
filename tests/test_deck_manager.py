@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.core.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.infrastructure.backends.base import CardTemplate, DeckBackend, NoteType
 from langlearn.managers.deck_manager import DeckManager
 
 

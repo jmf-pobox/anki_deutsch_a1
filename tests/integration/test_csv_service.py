@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from langlearn.core.services.csv_service import CSVService
+from langlearn.infrastructure.services.csv_service import CSVService
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.noun import Noun
 from langlearn.languages.german.models.preposition import Preposition

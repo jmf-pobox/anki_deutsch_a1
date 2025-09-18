@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.core.backends.base import DeckBackend, MediaFile
 from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
+from langlearn.infrastructure.backends.base import DeckBackend, MediaFile
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.adverb import Adverb, AdverbType
 from langlearn.languages.german.models.negation import Negation, NegationType
@@ -213,11 +213,12 @@ class TestGermanDeckBuilder:
         builder._phase = builder._phase.__class__.CARDS_BUILT
         # Mock the built cards so export doesn't fail
         from langlearn.core.deck import BuiltCards
+
         builder._built_cards = BuiltCards(
             cards=[([], mock_anki)],  # Mock cards data
             cards_by_type={"test": []},
             template_usage={"test": 1},
-            build_errors=[]
+            build_errors=[],
         )
 
         with patch.object(builder._deck_manager, "export_deck") as mock_export:

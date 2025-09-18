@@ -14,15 +14,17 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
-from langlearn.core.services.audio_service import AudioService
-from langlearn.core.services.domain_media_generator import DomainMediaGenerator
-from langlearn.core.services.image_service import PexelsService
-from langlearn.core.services.media_service import MediaService
 from langlearn.exceptions import (
     CardGenerationError,
     DataProcessingError,
     MediaGenerationError,
 )
+from langlearn.infrastructure.services.audio_service import AudioService
+from langlearn.infrastructure.services.domain_media_generator import (
+    DomainMediaGenerator,
+)
+from langlearn.infrastructure.services.image_service import PexelsService
+from langlearn.infrastructure.services.media_service import MediaService
 from langlearn.protocols.language_protocol import Language
 
 from .base import DeckBackend, MediaFile, NoteType
@@ -91,7 +93,7 @@ class AnkiBackend(DeckBackend):
         self._domain_media_generator = DomainMediaGenerator(self._media_service)
 
         # Create MediaEnricher for record-based architecture
-        from langlearn.core.services import get_anthropic_service
+        from langlearn.infrastructure.services import get_anthropic_service
 
         anthropic_service = get_anthropic_service()
 

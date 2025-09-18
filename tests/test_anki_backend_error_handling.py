@@ -9,8 +9,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.core.backends.anki_backend import AnkiBackend
-from langlearn.core.backends.base import CardTemplate, NoteType
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
 from langlearn.languages.german.language import GermanLanguage
 
 
@@ -21,7 +21,7 @@ class TestAnkiBackendErrorHandling:
         """Test handling of Anki Collection creation failure."""
         with (
             patch(
-                "langlearn.core.backends.anki_backend.Collection",
+                "langlearn.infrastructure.backends.anki_backend.Collection",
                 side_effect=Exception("Collection creation failed"),
             ),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
@@ -33,7 +33,9 @@ class TestAnkiBackendErrorHandling:
     def test_deck_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of deck creation failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -49,7 +51,9 @@ class TestAnkiBackendErrorHandling:
     def test_note_type_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of note type creation failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -82,7 +86,9 @@ class TestAnkiBackendErrorHandling:
     def test_field_addition_failure(self, mock_media_service: Mock) -> None:
         """Test handling of field addition failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -111,7 +117,9 @@ class TestAnkiBackendErrorHandling:
     def test_template_addition_failure(self, mock_media_service: Mock) -> None:
         """Test handling of template addition failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -152,7 +160,9 @@ class TestAnkiBackendErrorHandling:
     def test_note_creation_failure(self, mock_media_service: Mock) -> None:
         """Test handling of note creation failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -189,7 +199,9 @@ class TestAnkiBackendErrorHandling:
     ) -> None:
         """Test handling of note addition to collection failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -229,7 +241,9 @@ class TestAnkiBackendErrorHandling:
     def test_media_service_failure_recovery(self, mock_media_service: Mock) -> None:
         """Test graceful handling of media service failures."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -271,7 +285,9 @@ class TestAnkiBackendErrorHandling:
     def test_media_file_not_found_error(self, mock_media_service: Mock) -> None:
         """Test handling of missing media files."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
             patch("os.path.exists", return_value=False),
         ):
@@ -290,7 +306,9 @@ class TestAnkiBackendErrorHandling:
     def test_media_file_addition_failure(self, mock_media_service: Mock) -> None:
         """Test handling of media file addition failure."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
             patch("os.path.exists", return_value=True),
         ):
@@ -312,7 +330,9 @@ class TestAnkiBackendErrorHandling:
     def test_export_all_methods_failure(self, mock_media_service: Mock) -> None:
         """Test handling when all export methods fail."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -344,7 +364,9 @@ class TestAnkiBackendErrorHandling:
     def test_database_query_failure_in_stats(self, mock_media_service: Mock) -> None:
         """Test handling of database query failure in statistics."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -375,7 +397,9 @@ class TestAnkiBackendErrorHandling:
     def test_cleanup_failure_handling(self, mock_media_service: Mock) -> None:
         """Test handling of cleanup failures during destruction."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test_cleanup"),
         ):
             mock_collection = Mock()
@@ -395,7 +419,9 @@ class TestAnkiBackendErrorHandling:
     def test_partial_service_failure_with_custom_services(self) -> None:
         """Test handling partial failures with custom service injection."""
         with (
-            patch("langlearn.core.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
