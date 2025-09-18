@@ -157,6 +157,45 @@ hatch run test-cov      # Full test suite with coverage
   - `refactor(utils): extract rate_limit_reached() [no behavior change]`
 - **Push frequency**: Every 3-5 commits OR every 30 minutes
 
+### Changelog Maintenance (MANDATORY):
+**🚨 CRITICAL: Update CHANGELOG.md with every significant change**
+
+**When to Update the Changelog:**
+- **Every feature addition** - Add to "Added" section in [Unreleased]
+- **Every breaking change** - Add to "Changed" section with **BREAKING** label
+- **Every bug fix** - Add to "Fixed" section
+- **Every removal** - Add to "Removed" section
+- **Before major releases** - Move [Unreleased] items to versioned release
+
+**Format Requirements:**
+```markdown
+## [Unreleased]
+### Added
+- New Korean particle validation system
+- Russian case declension support
+
+### Changed
+- **BREAKING**: Updated record validation from Pydantic to dataclass pattern
+
+### Fixed
+- Bug in German verb conjugation templates
+
+### Removed
+- Pydantic dependency (replaced with dataclasses)
+```
+
+**Version Release Process:**
+1. **Move [Unreleased] to version**: `## [0.3.0] - 2025-01-19`
+2. **Add new [Unreleased] section**: Keep it empty for next changes
+3. **Update version numbers**: Follow semantic versioning (Major.Minor.Patch)
+4. **Tag release**: Create git tag with version number
+
+**Benefits:**
+- **Historical tracking**: Easy to recall what was accomplished
+- **User communication**: Clear understanding of changes between versions
+- **Release planning**: Helps determine appropriate version increments
+- **Team coordination**: Everyone can see recent work and breaking changes
+
 ### Required Quality Gates (MANDATORY):
 
 ```bash
