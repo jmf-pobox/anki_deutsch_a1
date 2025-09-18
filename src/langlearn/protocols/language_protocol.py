@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol
 
 if TYPE_CHECKING:
+    from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
     from langlearn.core.protocols.tts_protocol import TTSConfig
     from langlearn.core.records import BaseRecord
     from langlearn.protocols.domain_model_protocol import LanguageDomainModel
@@ -55,6 +56,16 @@ class Language(Protocol):
         Returns:
             TTSConfig with voice_id, language_code, and engine settings
             appropriate for this language's text-to-speech generation.
+        """
+        ...
+
+    @abstractmethod
+    def get_card_processor(self) -> LanguageCardProcessor:
+        """Get card processor for this language.
+
+        Returns:
+            LanguageCardProcessor that handles language-specific card generation logic,
+            including special record type handling and card building coordination.
         """
         ...
 

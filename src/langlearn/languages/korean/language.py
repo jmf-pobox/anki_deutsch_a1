@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 from langlearn.core.protocols.tts_protocol import TTSConfig
 
 if TYPE_CHECKING:
+    from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
     from langlearn.core.records import BaseRecord
     from langlearn.protocols.domain_model_protocol import LanguageDomainModel
     from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
@@ -81,6 +82,12 @@ class KoreanLanguage:
             language_code="ko-KR",
             engine="standard",
         )
+
+    def get_card_processor(self) -> LanguageCardProcessor:
+        """Get card processor for Korean language."""
+        from .services.card_processor import KoreanCardProcessor
+
+        return KoreanCardProcessor()
 
     def create_domain_model(
         self, record_type: str, record: BaseRecord

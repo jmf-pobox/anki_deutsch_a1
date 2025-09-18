@@ -19,23 +19,7 @@ from langlearn.core.services.media_enricher import StandardMediaEnricher
 from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.core.services.template_service import TemplateService
-from langlearn.languages.german.records.factory import (
-    ArticleRecord,
-    IndefiniteArticleRecord,
-    NegativeArticleRecord,
-    UnifiedArticleRecord,
-    VerbConjugationRecord,
-)
-from langlearn.languages.german.services.record_to_model_factory import (
-    RecordToModelFactory as GermanRecordToModelFactory,
-)
-from langlearn.languages.korean.services.record_to_model_factory import (
-    RecordToModelFactory as KoreanRecordToModelFactory,
-)
 from langlearn.languages.registry import LanguageRegistry
-from langlearn.languages.russian.services.record_to_model_factory import (
-    RecordToModelFactory as RussianRecordToModelFactory,
-)
 from langlearn.managers.deck_manager import DeckManager
 from langlearn.managers.media_manager import MediaManager
 
@@ -316,19 +300,9 @@ class DeckBuilder:
                 logger.info(f"Generating media for {record_type} records...")
 
                 # Convert Records to Domain Models for media enrichment
-                # Use language-specific RecordToModelFactory
-                # Type annotation for factory to handle language-specific imports
-                record_to_model_factory: Any = None
-                if self.language == "german":
-                    record_to_model_factory = GermanRecordToModelFactory
-                elif self.language == "russian":
-                    record_to_model_factory = RussianRecordToModelFactory
-                elif self.language.lower() in ("ko", "korean"):
-                    record_to_model_factory = KoreanRecordToModelFactory
-                else:
-                    raise ValueError(
-                        f"Unsupported language for domain models: {self.language}"
-                    )
+                # Use language-specific RecordToModelFactory via card processor
+                card_processor = self._language_impl.get_card_processor()
+                record_to_model_factory = card_processor.get_record_to_model_factory()
 
                 record_dicts = []
                 domain_models = []
@@ -407,48 +381,14 @@ class DeckBuilder:
                 # No media generation - create empty enrichment data
                 enriched_data_list = [{}] * len(records)
 
-            # Step 3: Card building via CardBuilder service
+            # Step 3: Card building via language-specific card processor
             logger.info(f"Building cards for {record_type} records...")
 
-            # Special handling for verb conjugation records - use multi-card generation
-            if record_type == "verbconjugation":
-                # Cast records to the proper type for verb conjugation processing
-                verb_records = [
-                    r for r in records if isinstance(r, VerbConjugationRecord)
-                ]
-                logger.info(
-                    f"Using verb conjugation multi-card generation for "
-                    f"{len(verb_records)} records"
-                )
-
-                cards = self._card_builder.build_verb_conjugation_cards(
-                    verb_records, enriched_data_list
-                )
-
-            # Special handling for unified articles (MediaEnricher + specialized cards)
-            elif record_type == "unified_article":
-                # Filter unified article records (supporting all article types)
-                article_records = [
-                    r
-                    for r in records
-                    if isinstance(
-                        r,
-                        ArticleRecord
-                        | IndefiniteArticleRecord
-                        | NegativeArticleRecord
-                        | UnifiedArticleRecord,
-                    )
-                ]
-
-                # Use specialized article card building WITH enriched media data
-                cards = self._card_builder.build_article_pattern_cards(
-                    article_records, enriched_data_list
-                )
-            else:
-                # Standard single-card generation for other record types
-                cards = self._card_builder.build_cards_from_records(
-                    records, enriched_data_list
-                )
+            # Delegate all language-specific card building logic to card processor
+            card_processor = self._language_impl.get_card_processor()
+            cards = card_processor.process_records_for_cards(
+                records, record_type, enriched_data_list, self._card_builder
+            )
 
             # Step 4: Create note types and add cards to backend via AnkiBackend
             cards_created = 0
