@@ -26,7 +26,6 @@ class TestRussianFieldAssignment:
         # Create DeckBuilder with Russian language
         deck_builder = DeckBuilder(
             deck_name="Test Russian Field Assignment",
-            backend_type="anki",
             language="russian",
             deck_type="default",
         )
@@ -110,7 +109,6 @@ class TestRussianFieldAssignment:
 
         deck_builder = DeckBuilder(
             deck_name="Test Russian Audio Config",
-            backend_type="anki",
             language="russian",
             deck_type="default",
         )

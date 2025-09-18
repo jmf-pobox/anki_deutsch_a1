@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from langlearn.core.backends.anki_backend import AnkiBackend
-from langlearn.core.backends.base import DeckBackend
 from langlearn.core.services import get_anthropic_service
 from langlearn.core.services.audio_service import AudioService
 from langlearn.core.services.image_service import PexelsService
@@ -63,7 +62,6 @@ class DeckBuilder:
     def __init__(
         self,
         deck_name: str,
-        backend_type: str = "anki",
         language: str = "german",
         deck_type: str = "default",
         audio_service: AudioService | None = None,
@@ -73,14 +71,12 @@ class DeckBuilder:
 
         Args:
             deck_name: Name of the Anki deck to create
-            backend_type: Backend to use ("anki")
             language: Language for the deck (e.g., "german", "russian")
             deck_type: Deck type within the language (e.g., "default", "business")
             audio_service: Optional AudioService for dependency injection
             pexels_service: Optional PexelsService for dependency injection
         """
         self.deck_name = deck_name
-        self.backend_type = backend_type
         self.language = language
         self.deck_type = deck_type
 
@@ -140,7 +136,11 @@ class DeckBuilder:
         )
 
         # Initialize backend
-        self._backend = self._create_backend(deck_name, backend_type)
+        self._backend = AnkiBackend(
+            deck_name=deck_name,
+            media_service=self._media_service,
+            language=self._language_impl,
+        )
 
         # Initialize managers with dependency injection
         self._deck_manager = DeckManager(self._backend)
@@ -170,32 +170,7 @@ class DeckBuilder:
         # Records from CSV data
         self._loaded_records: list[BaseRecord] = []
 
-        logger.info(f"Initialized GermanDeckBuilder with {backend_type} backend")
-
-    def _create_backend(self, deck_name: str, backend_type: str) -> DeckBackend:
-        """Create the appropriate backend instance.
-
-        Args:
-            deck_name: Name of the deck
-            backend_type: Type of backend to create
-
-        Returns:
-            Configured DeckBackend instance
-        """
-        if backend_type == "anki":
-            return AnkiBackend(
-                deck_name=deck_name,
-                media_service=self._media_service,
-                language=self._language_impl,
-            )
-        elif backend_type == "genanki":
-            raise ValueError(
-                "GenanKi backend has been deprecated and removed. "
-                "Use backend_type='anki' for production (official Anki library). "
-                "See docs/BACKEND_MIGRATION_GUIDE.md for details."
-            )
-        else:
-            raise ValueError(f"Unknown backend type: {backend_type}")
+        logger.info(f"Initialized DeckBuilder for {language} language")
 
     # Data Loading Methods
 
@@ -475,7 +450,6 @@ class DeckBuilder:
         stats = {
             "deck_info": {
                 "name": self.deck_name,
-                "backend_type": self.backend_type,
                 "media_enabled": True,
             },
             "loaded_data": {

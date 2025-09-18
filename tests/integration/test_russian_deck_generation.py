@@ -28,7 +28,6 @@ class TestRussianDeckGeneration:
         # Create and configure deck builder
         with DeckBuilder(
             deck_name="Test Russian Vocabulary",
-            backend_type="anki",
             language="russian",
             deck_type="default",
         ) as builder:
@@ -92,7 +91,6 @@ class TestRussianDeckGeneration:
         """Test that Russian deck uses correct audio configuration."""
         with DeckBuilder(
             deck_name="Test Audio Config",
-            backend_type="anki",
             language="russian",
             deck_type="default",
         ) as builder:
@@ -112,7 +110,6 @@ class TestRussianDeckGeneration:
 
         with DeckBuilder(
             deck_name="Test Russian Subdecks",
-            backend_type="anki",
             language="russian",
             deck_type="default",
         ) as builder:

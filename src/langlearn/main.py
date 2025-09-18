@@ -79,11 +79,10 @@ def main() -> None:
         # Create the deck using DeckBuilder with language/deck configuration
         with DeckBuilder(
             deck_name=deck_name,
-            backend_type="anki",  # Use AnkiBackend for production
             language=args.language,
             deck_type=args.deck,
         ) as builder:
-            print(f"🚀 Initialized {builder.backend_type} backend")
+            print("🚀 Initialized AnkiBackend")
 
             # Load data from directory
             print(f"\n📚 Loading vocabulary data from {data_dir}...")
