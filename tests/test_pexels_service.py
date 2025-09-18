@@ -75,7 +75,7 @@ class TestPexelsService:
             mock_env("PEXELS_API_KEY", None),
             patch("keyring.get_password") as mock_keyring,
             patch(
-                "langlearn.utils.environment.is_test_environment",
+                "langlearn.infrastructure.utils.environment.is_test_environment",
                 return_value=False,
             ),
         ):

@@ -3,8 +3,8 @@
 from collections.abc import Callable
 from unittest.mock import Mock
 
-from langlearn.protocols.domain_model_protocol import LanguageDomainModel
-from langlearn.protocols.image_query_generation_protocol import (
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
+from langlearn.core.protocols.image_query_generation_protocol import (
     ImageQueryGenerationProtocol,
 )
 

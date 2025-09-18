@@ -2,6 +2,7 @@
 
 import pytest
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
 from langlearn.languages.german.language import GermanLanguage
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.adverb import Adverb
@@ -17,7 +18,6 @@ from langlearn.languages.german.records.noun_record import NounRecord
 from langlearn.languages.german.records.phrase_record import PhraseRecord
 from langlearn.languages.german.records.preposition_record import PrepositionRecord
 from langlearn.languages.german.records.verb_record import VerbRecord
-from langlearn.protocols.domain_model_protocol import LanguageDomainModel
 
 
 class TestGermanDomainModelFactory:
@@ -273,7 +273,7 @@ class TestGermanDomainModelFactory:
             # Mock AI service for image search strategy test
             from unittest.mock import Mock
 
-            from langlearn.protocols.image_query_generation_protocol import (
+            from langlearn.core.protocols.image_query_generation_protocol import (
                 ImageQueryGenerationProtocol,
             )
 

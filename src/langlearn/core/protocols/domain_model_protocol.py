@@ -7,7 +7,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from langlearn.protocols.image_query_generation_protocol import (
+    from langlearn.core.protocols.image_query_generation_protocol import (
         ImageQueryGenerationProtocol,
     )
 

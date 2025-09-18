@@ -14,6 +14,7 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeId
 
+from langlearn.core.protocols.language_protocol import Language
 from langlearn.exceptions import (
     CardGenerationError,
     DataProcessingError,
@@ -25,7 +26,6 @@ from langlearn.infrastructure.services.domain_media_generator import (
 )
 from langlearn.infrastructure.services.image_service import PexelsService
 from langlearn.infrastructure.services.media_service import MediaService
-from langlearn.protocols.language_protocol import Language
 
 from .base import DeckBackend, MediaFile, NoteType
 

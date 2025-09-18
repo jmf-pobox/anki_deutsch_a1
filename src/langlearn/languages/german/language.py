@@ -5,14 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from langlearn.core.protocols.language_protocol import Language
 from langlearn.core.protocols.tts_protocol import TTSConfig
-from langlearn.protocols.language_protocol import Language
 
 if TYPE_CHECKING:
     from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
+    from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
+    from langlearn.core.protocols.media_enricher_protocol import MediaEnricherProtocol
     from langlearn.core.records import BaseRecord
-    from langlearn.protocols.domain_model_protocol import LanguageDomainModel
-    from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 
 
 class GermanLanguage(Language):

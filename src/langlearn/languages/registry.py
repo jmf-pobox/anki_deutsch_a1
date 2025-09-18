@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from langlearn.protocols.language_protocol import Language
+from langlearn.core.protocols.language_protocol import Language
 
 
 class LanguageRegistry:

@@ -8,6 +8,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from langlearn.core.protocols.image_query_generation_protocol import (
+    ImageQueryGenerationProtocol,
+)
+from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.infrastructure.services.ai_service import AnthropicService
 from langlearn.infrastructure.services.audio_service import AudioService
 from langlearn.infrastructure.services.image_service import PexelsService
@@ -15,10 +19,6 @@ from langlearn.infrastructure.services.media_enricher import (
     MediaEnricherBase,
     StandardMediaEnricher,
 )
-from langlearn.protocols.image_query_generation_protocol import (
-    ImageQueryGenerationProtocol,
-)
-from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 
 class MockDomainModel:

@@ -13,7 +13,7 @@ tight coupling to specific implementations.
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from langlearn.protocols.image_query_generation_protocol import (
+    from langlearn.core.protocols.image_query_generation_protocol import (
         ImageQueryGenerationProtocol,
     )
 

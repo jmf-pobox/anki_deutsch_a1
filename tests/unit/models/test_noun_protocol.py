@@ -4,12 +4,12 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.exceptions import MediaGenerationError
-from langlearn.languages.german.models.noun import Noun
-from langlearn.protocols import MediaGenerationCapable
-from langlearn.protocols.image_query_generation_protocol import (
+from langlearn.core.protocols import MediaGenerationCapable
+from langlearn.core.protocols.image_query_generation_protocol import (
     ImageQueryGenerationProtocol,
 )
+from langlearn.exceptions import MediaGenerationError
+from langlearn.languages.german.models.noun import Noun
 
 
 class TestNounProtocolCompliance:

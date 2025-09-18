@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 import keyring
 from anthropic import Anthropic
 
-from langlearn.protocols.image_query_generation_protocol import (
+from langlearn.core.protocols.image_query_generation_protocol import (
     ImageQueryGenerationProtocol,
 )
 
@@ -61,7 +61,7 @@ class AnthropicService(ImageQueryGenerationProtocol):
             api_key = keyring.get_password("ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
 
         # Allow empty API key in unit test environments (will be mocked)
-        from langlearn.utils.environment import is_test_environment
+        from langlearn.infrastructure.utils.environment import is_test_environment
 
         unit_test_env = is_test_environment(api_key)
         if not api_key and not unit_test_env:

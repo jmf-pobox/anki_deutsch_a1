@@ -5,12 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal
 
-from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
+from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from langlearn.protocols.image_query_generation_protocol import (
+    from langlearn.core.protocols.image_query_generation_protocol import (
         ImageQueryGenerationProtocol,
     )
 

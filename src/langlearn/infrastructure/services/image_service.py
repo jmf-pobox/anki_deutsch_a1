@@ -11,7 +11,7 @@ from typing import Any, Literal, TypedDict, cast
 import requests
 from requests.exceptions import HTTPError
 
-from langlearn.protocols.image_search_protocol import ImageSearchProtocol
+from langlearn.core.protocols.image_search_protocol import ImageSearchProtocol
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -97,7 +97,7 @@ class PexelsService(ImageSearchProtocol):
             self.api_key = keyring.get_password("PEXELS_API_KEY", "PEXELS_API_KEY")
 
         # Allow empty API key in test environments (will be mocked)
-        from langlearn.utils.environment import is_test_environment
+        from langlearn.infrastructure.utils.environment import is_test_environment
 
         if not self.api_key and not is_test_environment(self.api_key):
             raise ValueError(

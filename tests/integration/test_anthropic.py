@@ -66,7 +66,8 @@ def test_anthropic_service_initialization(mock_keyring: MagicMock) -> None:
         # Mock the environment detection to simulate a non-test environment
         with (
             patch(
-                "langlearn.utils.environment.is_test_environment", return_value=False
+                "langlearn.infrastructure.utils.environment.is_test_environment",
+                return_value=False,
             ),
             pytest.raises(
                 ValueError,

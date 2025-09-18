@@ -8,6 +8,8 @@ from typing import Any, TypeVar
 
 from langlearn.core.records import BaseRecord
 from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.infrastructure.managers.deck_manager import DeckManager
+from langlearn.infrastructure.managers.media_manager import MediaManager
 from langlearn.infrastructure.services import get_anthropic_service
 from langlearn.infrastructure.services.audio_service import AudioService
 from langlearn.infrastructure.services.image_service import PexelsService
@@ -18,8 +20,6 @@ from langlearn.infrastructure.services.media_service import (
 )
 from langlearn.infrastructure.services.template_service import TemplateService
 from langlearn.languages.registry import LanguageRegistry
-from langlearn.managers.deck_manager import DeckManager
-from langlearn.managers.media_manager import MediaManager
 
 from .data_types import (
     BuiltCards,

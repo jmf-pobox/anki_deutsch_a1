@@ -7,8 +7,8 @@ media enrichment purposes.
 
 from __future__ import annotations
 
+from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.languages.german.records.factory import BaseRecord
-from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 
 class RecordToModelFactory:
