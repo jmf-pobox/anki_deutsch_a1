@@ -14,7 +14,6 @@ from langlearn.core.backends.anki_backend import AnkiBackend
 from langlearn.core.services import get_anthropic_service
 from langlearn.core.services.audio_service import AudioService
 from langlearn.core.services.image_service import PexelsService
-from langlearn.core.services.media_enricher import StandardMediaEnricher
 from langlearn.core.services.media_file_registrar import MediaFileRegistrar
 from langlearn.core.services.media_service import MediaGenerationConfig, MediaService
 from langlearn.core.services.template_service import TemplateService
@@ -145,12 +144,12 @@ class DeckBuilder:
             image_base_path=language_deck_data_dir / "images",
         )
 
-        # Initialize StandardMediaEnricher
+        # Initialize language-specific MediaEnricher
         if self._media_service:
             # Get anthropic service for AI-powered search term generation
             anthropic_service = get_anthropic_service()
 
-            self._media_enricher = StandardMediaEnricher(
+            self._media_enricher = self._language_impl.create_media_enricher(
                 audio_service=actual_audio_service,
                 pexels_service=actual_pexels_service,
                 anthropic_service=anthropic_service,

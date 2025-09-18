@@ -519,3 +519,4 @@ When you see an error like "Field 'DuForm' not found":
 - Speak with humility.  Do not brag, exaggerate, or spew non-sense.
 - use simple plain accurate language.  Do not talk like a marketing droid. Do not obfuscate facts with jargon.
 - STOP USING THE PHRASE CLEAN PIPELINE
+- Do not say "Clean Architecture" this is some buzzword you are inventing.

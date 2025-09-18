@@ -1,250 +1,100 @@
-# Project TODO - Current Status
+# Project TODO
 
 Last updated: 2025-01-17
 
-## 🚨 CRITICAL PRIORITY
+## 🚨 ACTIVE PRIORITIES
 
-### **PRIORITY 1: DeckBuilder Multi-Language Architecture Refactoring** 🔴 **CRITICAL**
+### **PRIORITY 1: Complete DeckBuilder Language-Agnostic Design** 🟠 **HIGH PRIORITY**
 
-**Problem**: `src/langlearn/deck_builder.py` violates Clean Architecture principles with extensive language-specific conditionals and hardcoded imports, making it difficult to scale to new languages.
+**Problem**: DeckBuilder hardcodes `StandardMediaEnricher` for all languages (lines 153-159), preventing language-specific media enrichment strategies.
 
-**Status**: 🚧 **Design Analysis Complete** - Implementation Pending
+**Status**: 95% complete - only MediaEnricher delegation remaining
 
-#### **Architectural Violations Identified**
+**Solution**: Add language-specific media enricher creation to Language protocol.
 
-1. **Scattered Language Conditionals** (Lines 123-143)
-   - Hardcoded voice selection: `if language.lower() in ("ru", "russian")`
-   - Hardcoded TTS configuration per language
-   - Default fallback to German configuration
+**Remaining Work (~4 hours)**:
+1. **Add MediaEnricher method to Language protocol** (1h)
+2. **Update language implementations** (2h) - German, Russian, Korean return appropriate enrichers
+3. **Replace hardcoded StandardMediaEnricher in DeckBuilder** (1h) - Use language delegation
 
-2. **Language-Specific Service Imports** (Lines 325-346)
-   - Direct imports in `generate_all_cards()`: `from .languages.german.services.record_to_model_factory`
-   - Conditional factory selection based on language string
-   - Violation of dependency injection principles
-
-3. **Hardcoded German MediaEnricher** (Lines 173-188)
-   - Forces all languages to use: `from .languages.german.services.media_enricher import StandardMediaEnricher`
-   - Prevents language-specific media enrichment strategies
-
-4. **Mixed Responsibilities**
-   - DeckBuilder is simultaneously: orchestrator, service factory, language configurator
-   - Violates Single Responsibility Principle
-
-#### **Recommended Solution: Service Container Pattern**
-
-**Design Pattern**: Abstract Factory + Dependency Injection + Strategy Pattern
-
-**Implementation Plan** (4 Phases, ~3-4 days total):
-
-##### **Phase 1: Extend Language Protocol** (Low Risk, 4 hours)
-Add service creation responsibilities to Language protocol:
-
-```python
-# src/langlearn/protocols/language_protocol.py
-class Language(Protocol):
-    @abstractmethod
-    def create_audio_service(self, output_dir: Path) -> AudioService:
-        """Create language-configured audio service."""
-        ...
-
-    @abstractmethod
-    def create_record_to_model_factory(self) -> RecordToModelFactory:
-        """Create record to model factory."""
-        ...
-
-    @abstractmethod
-    def create_service_container(
-        self,
-        audio_dir: Path,
-        image_dir: Path,
-        project_root: Path
-    ) -> ServiceContainer:
-        """Create complete service container for this language."""
-        ...
-```
-
-**Quality Gates**:
-- MyPy passes with new protocol methods
-- No existing functionality broken
-
-##### **Phase 2: Implement Service Container** (Medium Risk, 4 hours)
-
-```python
-# src/langlearn/core/services/service_container.py
-@dataclass
-class ServiceContainer:
-    """Container for all language-specific services."""
-    audio_service: AudioService
-    pexels_service: PexelsService
-    media_enricher: MediaEnricher
-    record_mapper: RecordMapper
-    card_builder: CardBuilder
-    template_service: TemplateService
-    grammar_service: Any
-    record_to_model_factory: RecordToModelFactory
-```
-
-Update each language to implement `create_service_container()`:
-- Move TTS configuration to GermanLanguage, RussianLanguage, KoreanLanguage
-- Move service initialization to language implementations
-- Return fully configured ServiceContainer
-
-**Quality Gates**:
-- All 636 unit tests pass
-- Service creation works for all 3 languages
-
-##### **Phase 3: Refactor DeckBuilder** (Higher Risk, 6 hours)
-
-Transform DeckBuilder into pure orchestrator:
-
-```python
-class DeckBuilder:
-    def __init__(self, deck_name: str, language: str, deck_type: str = "default"):
-        # Single language lookup
-        self._language = LanguageRegistry.get(language)
-
-        # Get ALL services from language (no conditionals)
-        paths = self._calculate_paths(language, deck_type)
-        self._services = self._language.create_service_container(
-            audio_dir=paths.audio_dir,
-            image_dir=paths.image_dir,
-            project_root=paths.project_root
-        )
-
-        # Pure delegation from here
-        self._backend = self._create_backend(deck_name, self._language)
-        # No more language-specific logic below this line
-```
-
-Remove ALL:
-- Language conditionals (lines 123-143, 325-346)
-- Direct language service imports
-- Hardcoded German references
-
-**Quality Gates**:
-- Zero language conditionals in deck_builder.py
-- All tests pass
-- Deck generation produces identical output
-
-##### **Phase 4: Cleanup and Documentation** (Low Risk, 2 hours)
-
-- Remove obsolete imports
-- Update architecture documentation
-- Add integration tests for multi-language support
-- Update ENG-SYSTEM-DESIGN.md with new architecture
-
-**Quality Gates**:
-- Full test suite passes
-- Documentation reflects new design
-- Code coverage maintained
-
-#### **Success Metrics**
-
-**Before Refactoring**:
-- ❌ 3+ conditional blocks for language selection
-- ❌ Direct imports of language-specific services
-- ❌ Hardcoded German MediaEnricher for all languages
-- ❌ Mixed orchestration and configuration responsibilities
-
-**After Refactoring**:
-- ✅ Zero language conditionals in DeckBuilder
-- ✅ Pure delegation to ServiceContainer
-- ✅ Each language fully encapsulates its configuration
-- ✅ Single Responsibility: DeckBuilder only orchestrates
-- ✅ New languages require zero changes to DeckBuilder
-
-#### **Risk Mitigation**
-
-1. **Incremental Approach**: Each phase independently deployable
-2. **Backward Compatibility**: Maintain existing public API
-3. **Test Coverage**: Run full test suite after each phase
-4. **Feature Branch**: All work on `refactor/deck-builder-multi-language`
+**Quality Gates**: No hardcoded services in DeckBuilder, all tests pass, all languages work
 
 ---
 
-### **PRIORITY 2: COMPLETED WORK** ✅
+### **PRIORITY 2: DeckBuilder API Redesign** 🔴 **CRITICAL**
 
-**Korean Language Implementation**: ✅ **100% COMPLETE** (2025-01-17)
-- ✅ Complete Korean language package with noun records, templates, and services
-- ✅ Korean particle system (은/는, 이/가, 을/를) with phonological rules
-- ✅ Counter/classifier system (개, 명, 마리, 채, 권) integration
-- ✅ Hangul typography with proper font families
-- ✅ Unicode filename validation for international languages (fixed MediaFileRegistrar)
-- ✅ NamingService architecture for consistent multi-language naming
-- ✅ Korean voice support (Seoyeon) for AWS Polly TTS
-- ✅ Fail-fast template loading without fallbacks
-- ✅ All three languages (German, Russian, Korean) verified working
+**Problem**: DeckBuilder is "a process wrapped in a class" with a 167-line monolithic `generate_all_cards` method that hides intermediate state and provides no read APIs.
 
-**AnkiBackend Language-Agnostic Refactoring**: ✅ **100% COMPLETE**
-- ✅ Removed all German imports from AnkiBackend
-- ✅ Implemented field processing delegation pattern
-- ✅ Complete protocol-based language abstraction
-- ✅ ~83% code reduction in critical method (240 lines → 37 lines)
+**Solution**: Observable Phase-Based API with 5 clear phases:
+- `INITIALIZED → DATA_LOADED → MEDIA_ENRICHED → CARDS_BUILT → DECK_EXPORTED`
 
-**Multi-Language Architecture Foundation**: ✅ **100% COMPLETE**
-- ✅ Language protocol and registry system
-- ✅ German, Russian, Korean language implementations
-- ✅ Template system with language-specific resolution
-- ✅ Data organization: `languages/{language}/{deck}/`
+**Key Features**:
+- **Read APIs**: `get_loaded_data()`, `get_enriched_data()`, `preview_card()`
+- **Progress tracking**: Observable progress within and between phases
+- **Composable operations**: Run phases independently or partially
+- **Backward compatibility**: Legacy interface preserved
 
-**Documentation Consolidation**: ✅ **100% COMPLETE** (2025-01-17)
-- ✅ Updated existing docs to clarify German-specific scope
-- ✅ Created minimal specs for Russian and Korean languages
-- ✅ Enhanced multi-language CSV specification
+**3 Phases (~16 hours)**:
+1. **Parallel Implementation** (8h) - New DeckBuilderAPI class
+2. **Migration Path** (4h) - Backward compatibility adapter
+3. **Update Usage Patterns** (4h) - Migrate to new API patterns
 
 ---
 
-### **PRIORITY 3: Future Enhancement Opportunities** 🟡 LOW PRIORITY
+### **PRIORITY 3: Replace Pydantic with Dataclasses** 🟠 **HIGH PRIORITY**
 
-**Article Cloze System Enhancement**:
-- Re-enable ArticleApplicationService for noun-article practice cards
-- Fix Context card unique audio generation (currently produces blank audio)
-- Architectural redesign for cloze card media processing
+**Problem**: Pydantic creates metaclass conflicts preventing protocol inheritance, adds complexity with minimal benefit (67 files coupled, only 5 test validation).
 
-**Code Quality Improvements**:
-- ServiceContainer refactoring - Remove Optional/None abuse patterns
-- Legacy code removal - Any remaining commented out or deprecated patterns
+**Solution**: Replace with dataclasses + explicit validation
+
+**3 Phases (~16 hours)**:
+1. **Create Dataclass BaseRecord** (4h)
+2. **Migrate All Record Classes** (8h) - Convert 22 record files across 3 languages
+3. **Update Dependent Services** (4h) - Remove Pydantic dependency
+
+**Benefits**: Eliminates metaclass conflicts, reduces complexity, enables clean protocol inheritance
 
 ---
 
-## 🎯 SUCCESS METRICS
+### **PRIORITY 4: Protocol Inheritance Audit** 🟡 **MEDIUM PRIORITY**
 
-**Current State (2025-01-17)**:
-- ✅ **Three working languages**: German (full), Russian (minimal), Korean (minimal)
-- ✅ All languages verified working with media generation and Anki import
-- ✅ Multi-language architecture: **95% complete** (DeckBuilder refactoring pending)
-- ✅ All unit tests passing + integration tests
-- ✅ MyPy strict mode: 0 errors across codebase
+**Problem**: Many concrete classes implement protocols but don't explicitly inherit, breaking PyCharm visibility.
+
+**Status**: ✅ CardProcessor classes fixed, others pending
+
+**Remaining Protocols**:
+- **LanguageDomainModel**: 18 domain model files across languages
+- **ImageQueryGenerationProtocol**: Domain models with search terms
+- **ImageSearchProtocol**: PexelsService
+- **MediaEnricherProtocol**: StandardMediaEnricher
+- **MediaGenerationCapable**: All 18 domain model classes
+
+---
+
+## 🎯 CURRENT STATUS
+
+**Working State**:
+- ✅ Three languages implemented: German (full), Russian (minimal), Korean (minimal)
+- ✅ All tests passing, MyPy strict mode clean
 - ✅ AnkiBackend fully language-agnostic
-- ✅ Unicode filename support for international scripts
-- ⚠️ DeckBuilder contains language-specific conditionals (to be removed)
+- ✅ Multi-language architecture foundation complete
 
-**Target State After DeckBuilder Refactoring**:
-- ✅ 100% language-agnostic core components
-- ✅ Zero conditionals or hardcoded language references
-- ✅ Adding new language requires only creating language package
-- ✅ Complete adherence to Clean Architecture principles
+**Pending Work**:
+- ⚠️ DeckBuilder hardcodes StandardMediaEnricher (final 5% of language-agnostic design)
+- ⚠️ API design needs observable phases and read access
+- ⚠️ Pydantic prevents clean protocol inheritance
 
 ---
 
-## 📚 ARCHIVED: COMPLETED WORK
+## 📚 COMPLETED WORK
 
-### **AnkiBackend Refactoring (2025-01-16)**
-- ✅ Complete language-agnostic transformation
-- ✅ Field processing delegation pattern implemented
-- ✅ Zero German business logic in backend
+### **Recently Completed**
+- ✅ **Korean Language Implementation** - Complete package with particles, counters, typography
+- ✅ **AnkiBackend Language-Agnostic Refactoring** - 83% code reduction (240→37 lines)
+- ✅ **Multi-Language Architecture Foundation** - Protocol system, registry, template resolution
+- ✅ **Documentation Consolidation** - Streamlined technical specs
 
-### **Documentation Consolidation (2025-01-14)**
-- ✅ Technical debt documents consolidated
-- ✅ Coding standards documents consolidated
-- ✅ Component inventory verification complete
-
-### **Multi-Language Architecture Phase 2 (2025-01-08)**
-- ✅ German Record System - 13 record classes extracted
-- ✅ Template Migration - 54 German templates moved
-- ✅ Architecture Foundation established
-
-### **Previous Major Milestones**
+### **Major Milestones**
+- ✅ German Record System (13 classes) + Template Migration (54 files)
 - ✅ MediaGenerationCapable Protocol Migration
-- ✅ Legacy Code Removal
-- ✅ Code Quality Standards achieved
+- ✅ Legacy Code Removal + Quality Standards Achievement
