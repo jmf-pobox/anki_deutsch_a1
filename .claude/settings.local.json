@@ -5,7 +5,11 @@
       "Bash(git add:*)",
       "Read(//dev/**)",
       "Bash(find:*)",
-      "Bash(timeout 30 hatch run app:*)"
+      "Bash(timeout 30 hatch run app:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(python -m pytest tests/test_environment_utils.py::TestEnvironmentUtils::test_is_test_environment_no_api_key --no-header --tb=short -v)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

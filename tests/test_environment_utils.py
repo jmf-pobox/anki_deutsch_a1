@@ -21,11 +21,14 @@ class TestEnvironmentUtils:
 
     def test_is_test_environment_with_api_key_ci(self) -> None:
         """Test is_test_environment with API key in CI outside test context."""
-        with patch.dict(os.environ, {"CI": "true", "PYTEST_CURRENT_TEST": ""}, clear=True):
-            with patch.object(sys, "argv", ["myapp"]):
-                with patch.dict(sys.modules, {}, clear=True):
-                    # Simulate CI environment without pytest context
-                    assert is_test_environment("test-key") is False
+        env_patch = {"CI": "true", "PYTEST_CURRENT_TEST": ""}
+        with (
+            patch.dict(os.environ, env_patch, clear=True),
+            patch.object(sys, "argv", ["myapp"]),
+            patch.dict(sys.modules, {}, clear=True),
+        ):
+            # Simulate CI environment without pytest context
+            assert is_test_environment("test-key") is False
 
     def test_is_test_environment_with_api_key_integration_env(self) -> None:
         """Test is_test_environment with API key and integration test marker."""

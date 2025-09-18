@@ -34,11 +34,8 @@ def is_test_environment(api_key: str | None = None) -> bool:
         return True
 
     # If we have API key and we're in CI (but not in test context), use real APIs
-    if api_key and os.environ.get("CI") == "true":
-        return False
-
     # Default to mocking if no clear context
-    return True
+    return not (api_key and os.environ.get("CI") == "true")
 
 
 def is_ci_environment() -> bool:
