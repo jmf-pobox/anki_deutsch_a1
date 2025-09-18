@@ -26,9 +26,18 @@ jobs:
       with:
         python-version: "3.13"
     
-    - name: Install Hatch
-      run: pip install hatch
-    
+    - name: Install Latest Hatch
+      run: pip install --upgrade hatch
+
+    - name: Debug Hatch Environment
+      run: |
+        echo "Hatch version: $(hatch --version)"
+        echo "Python version: $(python --version)"
+        hatch env show
+
+    - name: Create Hatch Environment
+      run: hatch env create
+
     - name: MyPy Type Check (ZERO errors allowed)
       run: |
         echo "🔍 Running MyPy --strict type checking..."
@@ -43,7 +52,12 @@ jobs:
       run: |
         echo "🔍 Running Ruff linting checks..."
         hatch run lint
-    
+        if [ $? -ne 0 ]; then
+          echo "❌ FAILED: Ruff linting violations detected. NO MERGE ALLOWED."
+          exit 1
+        fi
+        echo "✅ SUCCESS: Ruff linting passed - zero violations found"
+
     - name: Code Formatting Check
       run: |
         echo "🔍 Checking code formatting..."
@@ -53,7 +67,7 @@ jobs:
           exit 1
         fi
         echo "✅ SUCCESS: Code formatting is correct"
-    
+
     - name: Unit Test Suite (ALL must pass)
       env:
         # Real credentials from GitHub Secrets
@@ -70,7 +84,7 @@ jobs:
           exit 1
         fi
         echo "✅ SUCCESS: All unit tests passed"
-    
+
     - name: Coverage Check (Must maintain ≥73%)
       env:
         AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
@@ -86,7 +100,7 @@ jobs:
           exit 1
         fi
         echo "✅ SUCCESS: Test coverage maintained at ≥73%"
-    
+
     - name: Final Verification
       run: |
         echo "🔍 Running final type check verification..."
@@ -119,9 +133,12 @@ jobs:
       with:
         python-version: "3.13"
     
-    - name: Install Hatch
-      run: pip install hatch
-    
+    - name: Install Latest Hatch
+      run: pip install --upgrade hatch
+
+    - name: Create Hatch Environment
+      run: hatch env create
+
     - name: Check for Required Secrets
       id: check-secrets
       run: |
