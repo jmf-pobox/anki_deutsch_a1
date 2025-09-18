@@ -1,6 +1,7 @@
 """Observable phase-based deck builder for Anki language learning decks."""
 
 import logging
+import logging.handlers
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, TypeVar
@@ -32,7 +33,25 @@ from .data_types import (
 from .phases import InvalidPhaseError, Phase
 from .progress import EnrichmentProgress
 
+# Set up logging
 logger = logging.getLogger(__name__)
+
+# Create logs directory if it doesn't exist
+log_dir = Path("logs")
+log_dir.mkdir(exist_ok=True)
+
+# Add file handler for deck_builder.log
+file_handler = logging.handlers.RotatingFileHandler(
+    log_dir / "deck_builder.log",
+    maxBytes=1024 * 1024,
+    backupCount=5,  # 1MB
+)
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)  # Ensure INFO messages are captured
+logger.propagate = False  # Don't propagate to root logger (prevents console output)
 
 
 T = TypeVar("T")

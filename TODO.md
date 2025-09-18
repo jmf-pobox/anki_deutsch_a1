@@ -4,24 +4,26 @@ Last updated: 2025-01-18
 
 ## 🚨 ACTIVE PRIORITIES
 
+### **PRIORITY 1: Package Structure Refactoring** 🔴 **CRITICAL**
 
-### **PRIORITY 1: DeckBuilder API Redesign** 🔴 **CRITICAL**
+**Problem**: Current `core/` concept is too broad and unclear. The `langlearn/core/deck/` package (application orchestration) doesn't belong in infrastructure.
 
-**Problem**: DeckBuilder is "a process wrapped in a class" with a 167-line monolithic `generate_all_cards` method that hides intermediate state and provides no read APIs.
+**Solution**: Restructure around open-closed extensibility principles:
+```
+src/langlearn/
+├── infrastructure/          # CLOSED - Pure technical services
+│   ├── services/           # External APIs (AWS, Pexels, Anthropic)
+│   ├── backends/           # Anki integration
+│   └── storage/            # File/media management
+├── platform/               # OPEN - Extension points & orchestration
+│   ├── deck/               # DeckBuilderAPI (moved from core)
+│   ├── pipeline/           # Data transformation pipeline
+│   ├── records/            # Base record system
+│   └── protocols/          # Extension interfaces
+└── languages/              # EXTENSIONS - Language implementations
+```
 
-**Solution**: Observable Phase-Based API with 5 clear phases:
-- `INITIALIZED → DATA_LOADED → MEDIA_ENRICHED → CARDS_BUILT → DECK_EXPORTED`
-
-**Key Features**:
-- **Read APIs**: `get_loaded_data()`, `get_enriched_data()`, `preview_card()`
-- **Progress tracking**: Observable progress within and between phases
-- **Composable operations**: Run phases independently or partially
-- **Backward compatibility**: Legacy interface preserved
-
-**3 Phases (~16 hours)**:
-1. **Parallel Implementation** (8h) - New DeckBuilderAPI class
-2. **Migration Path** (4h) - Backward compatibility adapter
-3. **Update Usage Patterns** (4h) - Migrate to new API patterns
+**Benefits**: Clear mental model (Infrastructure you use, Platform you extend, Languages you implement), self-documenting extension intent, eliminates confusion about where DeckBuilderAPI belongs.
 
 ---
 
@@ -44,8 +46,6 @@ Last updated: 2025-01-18
 
 **Problem**: Many concrete classes implement protocols but don't explicitly inherit, breaking PyCharm visibility.
 
-**Status**: ✅ CardProcessor classes fixed, others pending
-
 **Remaining Protocols**:
 - **LanguageDomainModel**: 18 domain model files across languages
 - **ImageQueryGenerationProtocol**: Domain models with search terms
@@ -60,12 +60,11 @@ Last updated: 2025-01-18
 **Working State**:
 - ✅ Three languages implemented: German (full), Russian (minimal), Korean (minimal)
 - ✅ All tests passing, MyPy strict mode clean
-- ✅ AnkiBackend fully language-agnostic
-- ✅ **DeckBuilder 100% language-agnostic** - zero hardcoded services
 - ✅ Multi-language architecture foundation complete
+- ✅ **DeckBuilder Observable API** - 5-phase pipeline with structured data access
 
 **Pending Work**:
-- ⚠️ API design needs observable phases and read access
+- ⚠️ Package structure needs open-closed clarity
 - ⚠️ Pydantic prevents clean protocol inheritance
 
 ---
@@ -73,13 +72,6 @@ Last updated: 2025-01-18
 ## 📚 COMPLETED WORK
 
 ### **Recently Completed**
-- ✅ **DeckBuilder Language-Agnostic Architecture** - 100% complete, zero hardcoded services
-- ✅ **Korean Language Implementation** - Complete package with particles, counters, typography
-- ✅ **AnkiBackend Language-Agnostic Refactoring** - 83% code reduction (240→37 lines)
-- ✅ **Multi-Language Architecture Foundation** - Protocol system, registry, template resolution
-- ✅ **Documentation Consolidation** - Streamlined technical specs
-
-### **Major Milestones**
-- ✅ German Record System (13 classes) + Template Migration (54 files)
-- ✅ MediaGenerationCapable Protocol Migration
-- ✅ Legacy Code Removal + Quality Standards Achievement
+- ✅ **DeckBuilder API Redesign** - Observable 5-phase pipeline with read APIs
+- ✅ **Package Refactoring** - langlearn/core/deck/ structure with file logging
+- ✅ **Multi-Language Architecture** - Protocol system, registry, template resolution
