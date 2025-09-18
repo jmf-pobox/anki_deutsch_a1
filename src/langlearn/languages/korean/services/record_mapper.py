@@ -116,26 +116,32 @@ class KoreanRecordMapper:
 
         return KoreanNounRecord.from_csv_fields(csv_fields)
 
-    def load_records_from_csv(self, csv_path: str | Path) -> list[BaseRecord]:
-        """Load Korean records from a single CSV file (interface compatibility method).
+    def load_records_from_csv(
+        self, csv_path: str | Path, record_type: str | None = None
+    ) -> list[BaseRecord]:
+        """Load Korean records from a single CSV file with optional type specification.
 
         Args:
             csv_path: Path to the CSV file to load
+            record_type: Optional record type. If None, type is auto-detected
 
         Returns:
             List of Korean records from the CSV file
         """
         csv_file = Path(csv_path) if isinstance(csv_path, str) else csv_path
-        file_stem = csv_file.stem.lower()
 
-        # Determine record type from filename
-        record_type = self._determine_record_type(file_stem)
-        if not record_type:
-            logger.warning(
-                f"Unknown Korean record type for file: {csv_file}. "
-                f"Supported types: {list(self._supported_record_types.keys())}"
-            )
-            return []
+        # Use provided record type or auto-detect
+        if record_type is None:
+            file_stem = csv_file.stem.lower()
+            record_type = self._determine_record_type(file_stem)
+            if not record_type:
+                logger.warning(
+                    f"Unknown Korean record type for file: {csv_file}. "
+                    f"Supported types: {list(self._supported_record_types.keys())}"
+                )
+                return []
+        else:
+            logger.info("Using specified record type: %s", record_type)
 
         return self._load_csv_records(csv_file, record_type)
 

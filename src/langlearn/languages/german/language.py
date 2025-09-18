@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from langlearn.core.protocols.tts_protocol import TTSConfig
+from langlearn.protocols.language_protocol import Language
 
 if TYPE_CHECKING:
     from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 
 
-class GermanLanguage:
+class GermanLanguage(Language):
     """German language implementation."""
 
     @property
@@ -39,6 +40,20 @@ class GermanLanguage:
             "preposition",
             "phrase",
         ]
+
+    def get_csv_to_record_type_mapping(self) -> dict[str, str]:
+        """Get CSV filename to record type mapping for German language."""
+        return {
+            "nouns.csv": "noun",
+            "adjectives.csv": "adjective",
+            "adverbs.csv": "adverb",
+            "negations.csv": "negation",
+            "prepositions.csv": "preposition",
+            "phrases.csv": "phrase",
+            "articles_unified.csv": "unified_article",
+            "verbs.csv": "verb",
+            "verbs_unified.csv": "verb_conjugation",
+        }
 
     def get_card_builder(self) -> Any:
         """Get the card builder for this language."""

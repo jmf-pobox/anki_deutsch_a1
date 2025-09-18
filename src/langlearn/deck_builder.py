@@ -45,24 +45,23 @@ class DeckBuilder:
     Example:
         ```python
         # Basic usage
-        builder = DeckBuilder("A1 German Vocabulary")
+        builder = DeckBuilder("Language Learning Deck", "german")
 
         # Load data and create deck
-        builder.load_nouns_from_csv("languages/nouns.csv")
-        builder.load_adjectives_from_csv("languages/adjectives.csv")
+        builder.load_data_from_directory("languages/german/default")
 
-        # Generate with media
-        builder.generate_all_media()
+        # Generate cards with media
+        builder.generate_all_cards(generate_media=True)
 
         # Export deck
-        builder.export_deck("output/german_a1.apkg")
+        builder.export_deck("output/language_deck.apkg")
         ```
     """
 
     def __init__(
         self,
         deck_name: str,
-        language: str = "german",
+        language: str,
         deck_type: str = "default",
         audio_service: AudioService | None = None,
         pexels_service: PexelsService | None = None,
@@ -95,12 +94,6 @@ class DeckBuilder:
         # Initialize CardBuilder service via LanguageRegistry
         card_builder_class = self._language_impl.get_card_builder()
         self._card_builder = card_builder_class(template_service=self._template_service)
-
-        # Initialize ArticleApplicationService via language implementation
-        grammar_module = self._language_impl.get_grammar_service()
-        self._article_service = grammar_module.ArticleApplicationService(
-            self._card_builder
-        )
 
         # Initialize StandardMediaEnricher (type annotation)
         self._media_enricher: Any = None  # Will be properly initialized later
@@ -183,24 +176,16 @@ class DeckBuilder:
         data_dir = Path(data_dir)
         logger.info(f"Loading data from directory: {data_dir}")
 
-        # Map CSV files directly to record types
-        csv_to_record_type = {
-            "nouns.csv": "noun",
-            "adjectives.csv": "adjective",
-            "adverbs.csv": "adverb",
-            "negations.csv": "negation",
-            "prepositions.csv": "preposition",
-            "phrases.csv": "phrase",
-            "articles_unified.csv": "unified_article",
-            "verbs.csv": "verb",
-            "verbs_unified.csv": "verb_conjugation",
-        }
+        # Get language-specific CSV to record type mapping
+        csv_to_record_type = self._language_impl.get_csv_to_record_type_mapping()
 
         for filename, record_type in csv_to_record_type.items():
             file_path = data_dir / filename
             if file_path.exists():
                 logger.info(f"Loading {record_type} data from {file_path}")
-                records = self._record_mapper.load_records_from_csv(file_path)
+                records = self._record_mapper.load_records_from_csv(
+                    file_path, record_type
+                )
                 self._loaded_records.extend(records)
                 logger.info(f"Loaded {len(records)} {record_type} records")
             else:
@@ -325,33 +310,10 @@ class DeckBuilder:
 
                 enriched_list = all_enriched
 
-                # Keep only media-related fields to merge into cards
-                media_keys = {
-                    "image",
-                    "word_audio",
-                    "example_audio",
-                    "phrase_audio",
-                    "example1_audio",
-                    "example2_audio",
-                    "du_audio",
-                    "ihr_audio",
-                    "sie_audio",
-                    "wir_audio",
-                    # Article-specific audio fields (CRITICAL FIX)
-                    "pattern_audio",
-                    "example_nom_audio",
-                    "example_akk_audio",
-                    "example_dat_audio",
-                    "example_gen_audio",
-                }
+                # Pass through all media data from MediaEnricher to CardBuilder
+                # MediaEnricher already returns only media fields, no filtering needed
                 for enriched in enriched_list:
-                    # CRITICAL FIX: Don't filter out empty values - let
-                    # CardBuilder handle them
-                    # The `and v` condition was causing data loss when MediaEnricher
-                    # couldn't generate media (e.g., API failures, missing files)
-                    enriched_data_list.append(
-                        {k: v for k, v in enriched.items() if k in media_keys}
-                    )
+                    enriched_data_list.append(enriched)
             else:
                 # No media generation - create empty enrichment data
                 enriched_data_list = [{}] * len(records)

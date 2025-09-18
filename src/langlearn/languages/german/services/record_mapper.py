@@ -451,11 +451,14 @@ class RecordMapper:
             logger.error("Failed to detect record type for %s: %s", csv_path, e)
             raise
 
-    def load_records_from_csv(self, csv_path: str | Path) -> list[BaseRecord]:
-        """Load records from CSV with automatic type detection.
+    def load_records_from_csv(
+        self, csv_path: str | Path, record_type: str | None = None
+    ) -> list[BaseRecord]:
+        """Load records from CSV with optional type specification.
 
         Args:
             csv_path: Path to the CSV file
+            record_type: Optional record type. If None, type is auto-detected
 
         Returns:
             List of Record instances
@@ -467,9 +470,12 @@ class RecordMapper:
         csv_path = Path(csv_path)
         logger.info("Loading records from CSV: %s", csv_path)
 
-        # Auto-detect record type
-        record_type = self.detect_csv_record_type(csv_path)
-        logger.info("Detected record type: %s", record_type)
+        # Use provided record type or auto-detect
+        if record_type is None:
+            record_type = self.detect_csv_record_type(csv_path)
+            logger.info("Detected record type: %s", record_type)
+        else:
+            logger.info("Using specified record type: %s", record_type)
 
         # Handle verb records that may have multiple rows per verb
         if record_type in ["verb_conjugation", "verb_imperative"]:

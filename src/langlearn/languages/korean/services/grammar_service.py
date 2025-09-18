@@ -1,10 +1,7 @@
 """Korean grammar service with particle and honorific system support."""
 
 import logging
-from typing import TYPE_CHECKING, Any, ClassVar
-
-if TYPE_CHECKING:
-    from .card_builder import KoreanCardBuilder
+from typing import Any, ClassVar
 
 logger = logging.getLogger(__name__)
 
@@ -286,20 +283,3 @@ def analyze_korean_noun(
     }
 
 
-class ArticleApplicationService:
-    """No-op ArticleApplicationService for Korean (Korean doesn't have articles).
-
-    This class exists to satisfy the DeckBuilder interface requirement,
-    but Korean doesn't have articles like German (der/die/das), so this
-    service doesn't generate any cards.
-    """
-
-    def __init__(self, card_builder: "KoreanCardBuilder") -> None:
-        """Initialize with card builder (unused for Korean)."""
-        self._card_builder = card_builder
-        logger.info("ArticleApplicationService initialized for Korean (no-op)")
-
-    def generate_article_cards(self, records: list[Any]) -> list[Any]:
-        """Generate article cards (no-op for Korean)."""
-        logger.debug("No article cards generated - Korean doesn't have articles")
-        return []

@@ -119,7 +119,7 @@ class TestGermanDeckBuilder:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
-            builder = DeckBuilder("Test Deck")
+            builder = DeckBuilder("Test Deck", "german")
 
             assert builder._media_service is not None
 
@@ -133,7 +133,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck")
+        builder = DeckBuilder("Test Deck", "german")
 
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create fake CSV files
@@ -171,7 +171,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(builder._deck_manager, "set_current_subdeck") as mock_set:
             builder.create_subdeck("Nouns")
@@ -183,7 +183,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(builder._deck_manager, "reset_to_main_deck") as mock_reset:
             builder.reset_to_main_deck()
@@ -206,7 +206,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(builder._deck_manager, "export_deck") as mock_export:
             builder.export_deck("output/test.apkg")
@@ -221,7 +221,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(
             builder._deck_manager, "get_current_deck_name"
@@ -254,7 +254,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        with DeckBuilder("Test Deck") as builder:
+        with DeckBuilder("Test Deck", "german") as builder:
             assert isinstance(builder, DeckBuilder)
             assert builder.deck_name == "Test Deck"
 
@@ -264,7 +264,7 @@ class TestGermanDeckBuilder:
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck")
+        builder = DeckBuilder("Test Deck", "german")
 
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create all CSV files

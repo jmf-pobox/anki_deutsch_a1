@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -44,16 +43,3 @@ class RussianGrammarService:
         ]
 
 
-class ArticleApplicationService:
-    """Article application service for Russian (articles don't exist in Russian)."""
-
-    def __init__(self, card_builder: Any) -> None:
-        """Initialize Russian article service."""
-        self._card_builder = card_builder
-        logger.debug("Russian ArticleApplicationService initialized")
-        # Russian doesn't have articles, so this is a placeholder
-
-    def apply_article_rules(self, *args: Any, **kwargs: Any) -> None:
-        """Apply article rules - Russian doesn't have articles."""
-        # Russian doesn't have articles like German, so this is a no-op
-        pass

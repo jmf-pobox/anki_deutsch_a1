@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from langlearn.core.protocols.tts_protocol import TTSConfig
+from langlearn.protocols.language_protocol import Language
 
 if TYPE_CHECKING:
     from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 
 
-class RussianLanguage:
+class RussianLanguage(Language):
     """Russian language implementation supporting Cyrillic script and case system."""
 
     @property
@@ -33,6 +34,13 @@ class RussianLanguage:
             "noun",
             # Future: "verb", "adjective", "adverb", etc.
         ]
+
+    def get_csv_to_record_type_mapping(self) -> dict[str, str]:
+        """Get CSV filename to record type mapping for Russian language."""
+        return {
+            "nouns.csv": "noun",
+            # Future: Additional Russian CSV mappings
+        }
 
     def get_card_builder(self) -> Any:
         """Get the card builder for this language."""

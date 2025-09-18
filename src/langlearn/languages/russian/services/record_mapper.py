@@ -80,21 +80,26 @@ class RussianRecordMapper:
         )
         return records
 
-    def load_records_from_csv(self, csv_path: str | Path) -> list[BaseRecord]:
-        """Load Russian records from CSV with automatic type detection."""
+    def load_records_from_csv(
+        self, csv_path: str | Path, record_type: str | None = None
+    ) -> list[BaseRecord]:
+        """Load Russian records from CSV with optional type specification."""
         from pathlib import Path
 
         csv_path = Path(csv_path)
         logger.info("Loading Russian records from CSV: %s", csv_path)
 
-        # Detect record type from filename
-        filename = csv_path.name
-        if "noun" in filename.lower():
-            record_type = "noun"
+        # Use provided record type or auto-detect
+        if record_type is None:
+            filename = csv_path.name
+            if "noun" in filename.lower():
+                record_type = "noun"
+            else:
+                raise ValueError(
+                    f"Cannot detect Russian record type from filename: {filename}"
+                )
         else:
-            raise ValueError(
-                f"Cannot detect Russian record type from filename: {filename}"
-            )
+            logger.info("Using specified record type: %s", record_type)
 
         # Load records using the existing method
         return self.map_csv_to_records(csv_path, record_type)

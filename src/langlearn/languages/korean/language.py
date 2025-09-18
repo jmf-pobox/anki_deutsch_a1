@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from langlearn.core.protocols.tts_protocol import TTSConfig
+from langlearn.protocols.language_protocol import Language
 
 if TYPE_CHECKING:
     from langlearn.core.protocols.card_processor_protocol import LanguageCardProcessor
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     from langlearn.protocols.media_enricher_protocol import MediaEnricherProtocol
 
 
-class KoreanLanguage:
+class KoreanLanguage(Language):
     """Korean language implementation with Hangul support and particle patterns."""
 
     @property
@@ -33,6 +34,13 @@ class KoreanLanguage:
             "korean_noun",
             # Future: "korean_verb", "korean_adjective", etc.
         ]
+
+    def get_csv_to_record_type_mapping(self) -> dict[str, str]:
+        """Get CSV filename to record type mapping for Korean language."""
+        return {
+            "korean_nouns.csv": "korean_noun",
+            # Future: Additional Korean CSV mappings
+        }
 
     def get_card_builder(self) -> Any:
         """Get the card builder for this language."""

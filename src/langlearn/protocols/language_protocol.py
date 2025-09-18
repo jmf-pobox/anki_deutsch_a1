@@ -35,6 +35,16 @@ class Language(Protocol):
         ...
 
     @abstractmethod
+    def get_csv_to_record_type_mapping(self) -> dict[str, str]:
+        """Get CSV filename to record type mapping for this language.
+
+        Returns:
+            Dictionary mapping CSV filenames to record types
+            Example: {"nouns.csv": "noun", "verbs_unified.csv": "verb_conjugation"}
+        """
+        ...
+
+    @abstractmethod
     def get_card_builder(self) -> Any:
         """Get the card builder for this language."""
         ...

@@ -207,6 +207,7 @@ def deck_builder_with_mocks(
     """Create a DeckBuilder instance with mocked services via dependency injection."""
     builder = DeckBuilder(
         "Test Deck",
+        "german",
         audio_service=mock_audio_service,
         pexels_service=mock_pexels_service,
     )

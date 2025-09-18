@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict
 
 class RecordType(Enum):
     """Strongly-typed enumeration for record types."""
+    # FIXME: This needs to be revisited given multi-language support
 
     NOUN = "noun"
     ADJECTIVE = "adjective"
