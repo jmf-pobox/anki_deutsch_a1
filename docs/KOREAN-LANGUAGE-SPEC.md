@@ -12,7 +12,7 @@
 
 ## System Architecture
 
-**Data Flow**: CSV → KoreanNounRecord (Pydantic) → KoreanNoun (Domain Model) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
+**Data Flow**: CSV → KoreanNounRecord (dataclass) → KoreanNoun (Domain Model) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 **Key Features**:
 - Hangul script support with proper typography
@@ -156,7 +156,7 @@ languages/korean/
 
 **✅ Completed**:
 - KoreanLanguage protocol implementation
-- KoreanNounRecord Pydantic model with particle generation
+- KoreanNounRecord dataclass model with particle generation
 - KoreanNoun domain model with MediaGenerationCapable
 - Korean-specific card builder and templates
 - Hangul filename support in MediaFileRegistrar

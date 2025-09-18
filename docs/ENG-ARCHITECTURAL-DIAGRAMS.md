@@ -352,7 +352,7 @@ src/langlearn/
 ├── core/                          # ❌ Mixed concerns
 │   ├── services/                  # Infrastructure + Platform mixed
 │   └── backends/                  # Infrastructure + Platform mixed
-├── models/                        # ❌ Legacy Pydantic patterns
+├── models/                        # ❌ Legacy model patterns
 └── languages/                     # ✅ Language implementations
 ```
 

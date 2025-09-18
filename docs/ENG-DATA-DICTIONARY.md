@@ -323,7 +323,7 @@ All field definitions above have been updated to include the expected language f
 
 #### Phase 2: Code Integration
 1. **Update RecordMapper** to handle standardized column names
-2. **Update Pydantic models** for renamed columns
+2. **Update dataclass models** for renamed columns
 3. **Create migration scripts** for smooth transition
 
 #### Benefits of Standardization
@@ -334,7 +334,7 @@ All field definitions above have been updated to include the expected language f
 
 #### Risk Mitigation
 - **Backup all CSV files** before implementing changes
-- **Update all dependent code** (RecordMapper, Pydantic models, tests)  
+- **Update all dependent code** (RecordMapper, dataclass models, tests)  
 - **Run comprehensive test suite** to verify compatibility
 - **Implement changes incrementally** with validation at each step
 

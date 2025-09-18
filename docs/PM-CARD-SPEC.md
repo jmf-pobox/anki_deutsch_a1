@@ -11,10 +11,10 @@ This document provides comprehensive specifications for all **German language** 
 
 ## System Architecture
 
-**Current Architecture**: CSV → Records (Pydantic models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
+**Current Architecture**: CSV → Records (dataclass models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 **Key Features**:
-- Records use Pydantic models for data validation and transport
+- Records use dataclass models for data validation and transport
 - Domain models use dataclass with MediaGenerationCapable protocol for business logic
 - All word types support intelligent media generation
 - Components process data sequentially: RecordMapper → MediaEnricher → CardBuilder

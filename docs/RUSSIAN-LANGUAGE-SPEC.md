@@ -12,7 +12,7 @@
 
 ## System Architecture
 
-**Data Flow**: CSV → RussianNounRecord (Pydantic) → RussianNoun (Domain Model) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
+**Data Flow**: CSV → RussianNounRecord (dataclass) → RussianNoun (Domain Model) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 **Key Features**:
 - Cyrillic script support with UTF-8 encoding
@@ -140,7 +140,7 @@ languages/russian/
 
 **✅ Completed**:
 - RussianLanguage protocol implementation
-- RussianNounRecord Pydantic model
+- RussianNounRecord dataclass model
 - RussianNoun domain model with MediaGenerationCapable
 - Russian-specific card builder and templates
 - Cyrillic filename support in MediaFileRegistrar

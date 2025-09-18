@@ -232,7 +232,6 @@ from pathlib import Path
 
 # Third-party imports
 import pandas as pd
-from pydantic import BaseModel, Field
 
 # Local imports
 from langlearn.models import NounRecord
@@ -257,7 +256,7 @@ def get_value(key: str) -> str | None:
 # Be specific with exceptions
 try:
     record = create_record(data)
-except ValidationError as e:
+except ValueError as e:
     logger.error(f"Invalid record data: {e}")
     raise RecordCreationError(f"Failed to create record: {e}") from e
 except Exception as e:
@@ -505,9 +504,10 @@ class SpanishNoun(MediaGenerationCapable):
 #### Step 3: Create Record Classes
 ```python
 # File: src/langlearn/languages/spanish/records/noun_record.py
+from dataclasses import dataclass
 from langlearn.core.records import BaseRecord
-from pydantic import field_validator
 
+@dataclass
 class SpanishNounRecord(BaseRecord):
     word: str
     article: str
@@ -515,12 +515,12 @@ class SpanishNounRecord(BaseRecord):
     plural: str
     english: str
 
-    @field_validator('gender')
-    def validate_spanish_gender(cls, v):
+    def validate(self) -> None:
+        """Validate Spanish noun record fields."""
+        super().validate()
         valid_genders = ['masculino', 'femenino']
-        if v not in valid_genders:
-            raise ValueError(f"Invalid Spanish gender: {v}")
-        return v
+        if self.gender not in valid_genders:
+            raise ValueError(f"Invalid Spanish gender: {self.gender}")
 ```
 
 #### Step 4: Build Language Services

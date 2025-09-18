@@ -20,8 +20,6 @@ All major architectural improvements have been completed. The codebase now has:
 - Implement caching strategies for expensive operations
 
 **Option B: Language Expansion**
-- Add French language support
-- Add Spanish language support
 - Enhance Korean/Russian implementations to full feature parity
 
 **Option C: Feature Development**

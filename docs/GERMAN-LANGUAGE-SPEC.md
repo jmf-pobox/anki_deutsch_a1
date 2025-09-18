@@ -12,7 +12,7 @@
 
 ## System Architecture
 
-**Data Flow**: CSV → GermanRecords (Pydantic) → GermanDomainModels → MediaEnricher → CardBuilder → AnkiBackend → .apkg
+**Data Flow**: CSV → GermanRecords (dataclass) → GermanDomainModels → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 **Key Features**:
 - Complete German case system (Nominativ, Akkusativ, Dativ, Genitiv)
@@ -175,7 +175,7 @@ Similar pattern for: adverbs.csv, negations.csv, phrases.csv, personal_pronouns.
 
 ## System Architecture
 
-**Current Architecture**: CSV → Records (Pydantic models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
+**Current Architecture**: CSV → Records (dataclass models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 ### Implementation Status by Card Type
 
@@ -247,7 +247,7 @@ Similar pattern for: adverbs.csv, negations.csv, phrases.csv, personal_pronouns.
 - ✅ German-specific phonology (AWS Polly Marlene voice)
 
 **Technical Implementation**:
-- ✅ 13 German record classes with Pydantic validation
+- ✅ 13 German record classes with dataclass validation
 - ✅ German domain models with MediaGenerationCapable protocol
 - ✅ German-specific card builder and template system
 - ✅ MediaEnricher with German linguistic intelligence

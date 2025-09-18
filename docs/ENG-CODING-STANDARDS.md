@@ -264,7 +264,7 @@ def process_noun(self, noun: NounRecord) -> EnrichedNounRecord:
     """Process a noun record with enrichment.
 
     Raises:
-        ValidationError: If noun record fails validation
+        ValueError: If noun record fails validation
         ServiceUnavailableError: If required enrichment service is down
         MediaGenerationError: If audio/image generation fails
     """
@@ -678,7 +678,7 @@ from typing import TYPE_CHECKING
 
 # Related third party imports
 import pytest
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 # Local application imports (most specific first)
 from langlearn.core.services.audio_service import AudioService

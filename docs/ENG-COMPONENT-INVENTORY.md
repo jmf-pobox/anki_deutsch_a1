@@ -44,7 +44,7 @@ The langlearn system follows a three-tier architecture with clear separation of 
 | **`AnthropicService`** | `ai_service.py` | Anthropic Claude API integration for AI-enhanced content generation. Provides context-aware image queries and content validation for vocabulary learning. |
 | **`MediaEnricher`** | `media_enricher.py` | Orchestrates audio and image generation with intelligent caching and deduplication. Coordinates between AudioService and PexelsService for efficient media creation. |
 | **`StandardMediaEnricher`** | `media_enricher.py` | Standard implementation of MediaEnricher with full audio and image generation capabilities. Used by all language implementations for consistent media handling. |
-| **`CSVService`** | `csv_service.py` | Generic CSV reading with automatic Pydantic model conversion. Provides type-safe data loading from vocabulary files with comprehensive validation and error reporting. |
+| **`CSVService`** | `csv_service.py` | Generic CSV reading with automatic dataclass record conversion. Provides type-safe data loading from vocabulary files with comprehensive validation and error reporting. |
 | **`TemplateService`** | `template_service.py` | Anki card template loading and NoteType creation. Manages HTML/CSS template files with caching and provides card formatting services for all languages. |
 | **`NamingService`** | `naming_service.py` | Standardized filename and path generation for media assets. Ensures consistent naming conventions across audio files, images, and deck outputs. |
 | **`MediaFileRegistrar`** | `media_file_registrar.py` | Tracks and manages media file relationships and dependencies. Prevents duplicate media generation and maintains media file integrity across deck builds. |
@@ -76,7 +76,7 @@ The langlearn system follows a three-tier architecture with clear separation of 
 
 | **Component** | **File** | **Single Responsibility** |
 |---------------|----------|---------------------------|
-| **`BaseRecord`** | `base_record.py` | Abstract foundation for all language record types with common validation patterns. Provides Pydantic-based validation, field transformation utilities, and integration with platform systems. |
+| **`BaseRecord`** | `base_record.py` | Abstract foundation for all language record types with common validation patterns. Provides dataclass-based validation, field transformation utilities, and integration with platform systems. |
 
 ### Extension Protocols
 
@@ -129,9 +129,9 @@ The langlearn system follows a three-tier architecture with clear separation of 
 | **Record** | **File** | **Single Responsibility** |
 |------------|----------|---------------------------|
 | **`GermanRecordFactory`** | `factory.py` | Factory for creating German-specific record types from CSV data with comprehensive validation. Maps CSV rows to appropriate German record classes with language-specific validation rules. |
-| **`NounRecord`** | `noun_record.py` | Pydantic validation for German noun CSV data with article/gender validation. Ensures data integrity for German noun system with comprehensive field validation. |
-| **`VerbRecord`** | `verb_record.py` | Pydantic validation for German verb CSV data with conjugation pattern validation. Handles German verb complexity with separable prefixes and auxiliary selection rules. |
-| **`AdjectiveRecord`** | `adjective_record.py` | Pydantic validation for German adjective CSV data with comparative/superlative form validation. Ensures complete German adjective declension support. |
+| **`NounRecord`** | `noun_record.py` | Dataclass validation for German noun CSV data with article/gender validation. Ensures data integrity for German noun system with comprehensive field validation. |
+| **`VerbRecord`** | `verb_record.py` | Dataclass validation for German verb CSV data with conjugation pattern validation. Handles German verb complexity with separable prefixes and auxiliary selection rules. |
+| **`AdjectiveRecord`** | `adjective_record.py` | Dataclass validation for German adjective CSV data with comparative/superlative form validation. Ensures complete German adjective declension support. |
 
 #### Language Services (`languages/german/services/`)
 

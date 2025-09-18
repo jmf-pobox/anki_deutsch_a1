@@ -154,7 +154,7 @@ src/langlearn/
 │   │   │   ├── preposition.py      # German Preposition with cases
 │   │   │   └── phrase.py           # German Phrase
 │   │   │
-│   │   ├── records/                # German Pydantic records (validation)
+│   │   ├── records/                # German dataclass records (validation)
 │   │   │   ├── __init__.py
 │   │   │   ├── noun_record.py      # German noun validation rules
 │   │   │   ├── verb_record.py      # German verb validation rules
@@ -194,7 +194,7 @@ src/langlearn/
 │   │   │   ├── adjective.py        # Russian Adjective with agreements
 │   │   │   └── ...
 │   │   │
-│   │   ├── records/                # Russian Pydantic records
+│   │   ├── records/                # Russian dataclass records
 │   │   │   ├── __init__.py
 │   │   │   ├── noun_record.py      # Russian noun validation (6 cases)
 │   │   │   ├── verb_record.py      # Russian verb validation (aspects)
@@ -225,7 +225,7 @@ src/langlearn/
 │       │   ├── adjective.py        # Korean Adjective
 │       │   └── ...
 │       │
-│       ├── records/                # Korean Pydantic records
+│       ├── records/                # Korean dataclass records
 │       │   ├── __init__.py
 │       │   ├── noun_record.py      # Korean noun validation
 │       │   ├── verb_record.py      # Korean verb validation (honorifics)
