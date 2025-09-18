@@ -608,3 +608,4 @@ python_version = "3.13"
 - ❌ Different test results between local and CI
 
 **Remember**: If it passes locally but fails in CI, fix the environment mismatch, don't change the code.
+- do not say, "I found the problem!", say, "I found something that could be an issue."

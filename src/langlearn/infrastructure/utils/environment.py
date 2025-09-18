@@ -15,28 +15,30 @@ def is_test_environment(api_key: str | None = None) -> bool:
         True for unit tests that should be mocked, False for integration
         tests that need real API clients in any environment.
     """
-    # If we have real API credentials, check if we're running integration tests
-    if api_key:
-        # Always allow real API calls in CI with credentials
-        if os.environ.get("CI") == "true":
-            return False
+    # First, check if we're running integration tests (always use real APIs)
+    current_test = os.environ.get("PYTEST_CURRENT_TEST", "")
+    if any(marker in current_test for marker in ["integration", "live"]):
+        return False
 
-        # Allow real API calls for integration tests locally
-        # Integration tests marked with @pytest.mark.live or run via test-integration
-        current_test = os.environ.get("PYTEST_CURRENT_TEST", "")
-        if any(marker in current_test for marker in ["integration", "live"]):
-            return False
+    if any("integration" in arg for arg in sys.argv):
+        return False
 
-        # Check if we're explicitly running integration tests
-        if any("integration" in arg for arg in sys.argv):
-            return False
-
-    # Check for pytest unit test environment (should be mocked)
-    return (
+    # Then check if we're in a unit test context (always use mocks)
+    is_unit_test = (
         "pytest" in sys.modules
-        or "PYTEST_CURRENT_TEST" in os.environ
+        or bool(os.environ.get("PYTEST_CURRENT_TEST", "").strip())
         or any("test" in arg for arg in sys.argv)
     )
+
+    if is_unit_test:
+        return True
+
+    # If we have API key and we're in CI (but not in test context), use real APIs
+    if api_key and os.environ.get("CI") == "true":
+        return False
+
+    # Default to mocking if no clear context
+    return True
 
 
 def is_ci_environment() -> bool:
