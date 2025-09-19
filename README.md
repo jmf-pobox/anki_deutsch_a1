@@ -207,6 +207,17 @@ This project builds upon the excellent work of:
 
 ---
 
+## 🚀 Planned Features
+
+### **Interactive CLI for Vocabulary Management**
+- **Multi-language vocabulary builder** with guided prompts for each language's specific fields
+- **Smart validation** ensuring proper formatting (articles for German, cases for Russian, etc.)
+- **CSV management** with add, edit, and organize vocabulary entries
+- **Language-aware templates** that adapt input fields based on selected language
+- [See GitHub Issue #27](https://github.com/jmf-pobox/langlearn-anki/issues/27)
+
+---
+
 ## 🔮 Future Languages
 
 **Priority Languages**:
