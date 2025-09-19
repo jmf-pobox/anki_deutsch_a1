@@ -210,13 +210,13 @@ This project builds upon the excellent work of:
 ## 🔮 Future Languages
 
 **Priority Languages**:
-- 🇮🇱 **Hebrew**: Right-to-left script, verb binyanim system, vowel pointing
-- 🇧🇦 **Bosnian/Croatian/Serbian (BCS)**: Case declensions, aspect pairs, Cyrillic/Latin scripts
+- **Hebrew**: Right-to-left script, verb binyanim system, vowel pointing
+- **Bosnian/Croatian/Serbian (BCS)**: Case declensions, aspect pairs, Cyrillic/Latin scripts
 
 **Additional Planned Languages**:
-- 🇪🇸 **Spanish**: Gendered nouns, subjunctive mood, ser vs estar
-- 🇫🇷 **French**: Nasal vowels, liaison rules, irregular verbs
-- 🇯🇵 **Japanese**: Hiragana/Katakana/Kanji, honorific system, particles
+- **Spanish**: Gendered nouns, subjunctive mood, ser vs estar
+- **French**: Nasal vowels, liaison rules, irregular verbs
+- **Japanese**: Hiragana/Katakana/Kanji, honorific system, particles
 
 Each language will get cards specifically designed for its unique learning challenges.
 
