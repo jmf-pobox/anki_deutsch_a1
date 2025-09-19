@@ -28,7 +28,7 @@ This document describes the current multi-deck, multi-language architecture (par
 
 **Current Implementation**:
 ```
-anki_deutsch_a1/
+langlearn-anki/
 ├── src/langlearn/languages/        # Language-specific code (✅ implemented)
 │   └── german/
 │       ├── models/                 # Domain models

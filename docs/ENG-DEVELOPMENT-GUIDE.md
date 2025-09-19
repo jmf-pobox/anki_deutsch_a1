@@ -645,7 +645,7 @@ def mock_pexels_service(monkeypatch):
 
 ### Directory Layout
 ```
-anki_deutsch_a1/
+langlearn-anki/
 ├── src/langlearn/
 │   ├── models/          # Domain models and records
 │   ├── services/        # Business logic and external APIs

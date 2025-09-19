@@ -4,10 +4,10 @@
 
 Create personalized vocabulary flashcards that understand the unique grammar challenges of your target language. Perfect for language learners and teachers who want effective, scientifically-designed study materials.
 
-[![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
+[![CI](https://github.com/jmf-pobox/langlearn-anki/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/langlearn-anki/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/langlearn.svg)](https://pypi.org/project/langlearn/)
 <a href="https://pypi.org/project/langlearn"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/langlearn?color=blue"></a>
-[![License](https://img.shields.io/github/license/jmf-pobox/anki_deutsch_a1.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/jmf-pobox/langlearn-anki.svg)](https://github.com/jmf-pobox/langlearn-anki/blob/main/LICENSE)
 
 ---
 
@@ -26,8 +26,8 @@ Create personalized vocabulary flashcards that understand the unique grammar cha
 ### 1. Installation
 ```bash
 # Clone and set up
-git clone https://github.com/jmf-pobox/anki_deutsch_a1.git
-cd anki_deutsch_a1
+git clone https://github.com/jmf-pobox/langlearn-anki.git
+cd langlearn-anki
 pip install hatch
 hatch env create
 ```
@@ -191,7 +191,7 @@ hatch run app --help
 - Cards will still have text content and work perfectly
 
 ### **Getting Help**
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/jmf-pobox/anki_deutsch_a1/issues)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/jmf-pobox/langlearn-anki/issues)
 - 💬 **Questions**: Create a GitHub issue with the "question" label
 - 📖 **Documentation**: See developer docs in `docs/` folder
 
