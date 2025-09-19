@@ -157,7 +157,6 @@ class Adjective(LanguageDomainModel, MediaGenerationCapable):
 
     def validate_comparative(self) -> bool:
         """Validate that the comparative form follows German grammar rules.
-        TODO: Remove, we don't want grammar validation computed in the domains
 
         Returns:
             bool: True if the comparative form is valid
@@ -201,8 +200,6 @@ class Adjective(LanguageDomainModel, MediaGenerationCapable):
 
     def validate_superlative(self) -> bool:
         """Validate that the superlative form follows German grammar rules.
-        TODO: Remove, we don't want grammar validation computed in the domains
-
 
         Returns:
             bool: True if the superlative form is valid
