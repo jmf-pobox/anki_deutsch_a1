@@ -39,11 +39,13 @@ class TestRussianDeckGeneration:
             loaded_data = stats["loaded_data"]
             assert sum(loaded_data.values()) > 0, "No Russian data loaded"
 
-            # Generate cards with media
-            results = builder.generate_all_cards(
-                generate_media=False
-            )  # Skip media for faster testing
-            assert sum(results.values()) > 0, "No cards generated"
+            # Skip media enrichment for faster testing
+            for _ in builder.enrich_media():
+                pass  # Consume iterator
+
+            # Build cards
+            built_cards = builder.build_cards()
+            assert len(built_cards.cards) > 0, "No cards generated"
 
             # Export deck
             builder.export_deck(output_file)
@@ -122,7 +124,10 @@ class TestRussianDeckGeneration:
             deck_type="default",
         ) as builder:
             builder.load_data_from_directory(str(russian_data_dir))
-            builder.generate_all_cards(generate_media=False)
+            # Skip media enrichment for faster testing
+            for _ in builder.enrich_media():
+                pass
+            builder.build_cards()
 
             # Check subdeck names
             subdeck_info = builder.get_subdeck_info()

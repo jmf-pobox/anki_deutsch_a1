@@ -277,7 +277,9 @@ class TestGermanDeckBuilder:
     @patch("langlearn.core.deck.builder.PexelsService")
     @patch("langlearn.core.deck.builder.AudioService")
     @patch("langlearn.core.deck.builder.AnkiBackend")
-    def test_build_deck_with_default_services(self, mock_anki: Mock, mock_audio: Mock, mock_pexels: Mock) -> None:
+    def test_build_deck_with_default_services(
+        self, mock_anki: Mock, mock_audio: Mock, mock_pexels: Mock
+    ) -> None:
         """Test building deck when no services provided (creates defaults)."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
@@ -287,8 +289,8 @@ class TestGermanDeckBuilder:
         mock_audio.return_value = mock_audio_instance
         mock_pexels.return_value = mock_pexels_instance
 
-        # Create builder without providing services - this should trigger service creation
-        builder = DeckBuilder("Test Deck", "german")
+        # Create builder without providing services - triggers service creation
+        DeckBuilder("Test Deck", "german")
 
         # Verify services were created when None was provided (covers lines 151, 158)
         mock_audio.assert_called_once()
@@ -298,6 +300,9 @@ class TestGermanDeckBuilder:
     def test_generate_cards_without_media_generation(self, mock_anki: Mock) -> None:
         """Test generating cards without media enrichment using proper API."""
         mock_backend = Mock(spec=DeckBackend)
+        mock_backend.deck_name = "Test Deck"
+        mock_backend.create_note_type.return_value = "note_type_1"
+        mock_backend.add_note.return_value = 42
         mock_anki.return_value = mock_backend
 
         builder = DeckBuilder("Test Deck", "german")
@@ -306,24 +311,47 @@ class TestGermanDeckBuilder:
             temp_path = Path(temp_dir)
             (temp_path / "nouns.csv").touch()
 
-            with patch.object(builder._record_mapper, "load_records_from_csv") as mock_load:
+            with patch.object(
+                builder._record_mapper, "load_records_from_csv"
+            ) as mock_load:
                 from langlearn.languages.german.records.factory import NounRecord
+
                 mock_load.return_value = [
                     NounRecord(
-                        noun="Test", article="der", english="test",
-                        plural="Tests", example="Test", related=""
+                        noun="Test",
+                        article="der",
+                        english="test",
+                        plural="Tests",
+                        example="Test",
+                        related="",
                     )
                 ]
 
                 # Load data first
                 builder.load_data_from_directory(temp_dir)
 
-                # Use generate_all_cards with media generation disabled
-                result = builder.generate_all_cards(generate_media=False)
+                # Skip media enrichment phase - set phase directly for no-media test
+                builder._phase = builder._phase.__class__.MEDIA_ENRICHED
+                if builder._loaded_data:
+                    for (
+                        record_type,
+                        records,
+                    ) in builder._loaded_data.records_by_type.items():
+                        from langlearn.core.deck import EnrichedData
+
+                        builder._enriched_data[record_type] = EnrichedData(
+                            records=records,
+                            media_data=[{}] * len(records),
+                            media_files_created=[],
+                            enrichment_errors=[],
+                        )
+
+                # Build cards using proper API
+                built_cards = builder.build_cards()
 
                 # Should have generated cards without media
-                assert isinstance(result, dict)
-                assert len(result) > 0
+                assert built_cards is not None
+                assert len(built_cards.cards) > 0
 
     @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:

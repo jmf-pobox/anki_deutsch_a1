@@ -794,7 +794,6 @@ class DeckBuilderAPI:
 
         return stats
 
-
     def get_subdeck_info(self) -> dict[str, Any]:
         """Get information about created subdecks."""
         return {
@@ -802,7 +801,6 @@ class DeckBuilderAPI:
             "subdeck_names": self._deck_manager.get_subdeck_names(),
             "full_subdeck_names": self._deck_manager.get_full_subdeck_names(),
         }
-
 
     @property
     def deck_name(self) -> str:

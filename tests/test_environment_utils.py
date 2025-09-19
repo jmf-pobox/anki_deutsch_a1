@@ -122,7 +122,9 @@ class TestEnvironmentUtils:
             assert is_test_environment() is True
 
         # Test integration test detection via sys.argv (covers line 37)
-        with patch.object(sys, "argv", ["python", "tests/integration/test_something.py"]):
+        with patch.object(
+            sys, "argv", ["python", "tests/integration/test_something.py"]
+        ):
             assert is_test_environment() is False  # Should detect integration test
 
         # Test multiple CI environment variable combinations
