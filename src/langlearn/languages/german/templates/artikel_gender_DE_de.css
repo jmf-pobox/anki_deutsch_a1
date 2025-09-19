@@ -183,8 +183,8 @@ img {
 }
 
 .hint-button {
-    background: #4CAF50;
-    color: white;
+    background: #4CAF50 !important;
+    color: white !important;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -194,7 +194,7 @@ img {
 }
 
 .hint-button:hover {
-    background: #45a049;
+    background: #45a049 !important;
 }
 
 .hint-content {

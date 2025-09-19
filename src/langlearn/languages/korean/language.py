@@ -38,7 +38,7 @@ class KoreanLanguage(Language):
     def get_csv_to_record_type_mapping(self) -> dict[str, str]:
         """Get CSV filename to record type mapping for Korean language."""
         return {
-            "korean_nouns.csv": "korean_noun",
+            "nouns.csv": "korean_noun",
             # Future: Additional Korean CSV mappings
         }
 

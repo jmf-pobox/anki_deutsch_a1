@@ -12,7 +12,8 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "WebFetch(domain:shields.io)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(hatch env:*)"
     ],
     "deny": [],
     "ask": []

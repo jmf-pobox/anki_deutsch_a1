@@ -13,7 +13,7 @@
 }
 
 /* Override Anki's dark mode background while preserving specific text colors */
-.card, .card * {
+.card * {
     background-color: #f8f9fa !important;
 }
 .card {
