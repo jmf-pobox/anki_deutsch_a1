@@ -57,7 +57,7 @@ hatch run app --language korean --deck default
 
 ## 🌍 Supported Languages
 
-### 🇩🇪 **German** - Complete Implementation
+### **German** - Complete Implementation
 - **Levels**: A1.1 (Beginner) → A1 (Elementary) → A2/B1 (Intermediate) + Business German
 - **Grammar Features**: Der/die/das articles, 4-case system, verb conjugations, separable verbs
 - **Vocabulary**: 1000+ words across all major word types
@@ -71,7 +71,7 @@ hatch run app --language german --deck default  # Intermediate (most comprehensi
 hatch run app --language german --deck business # Professional vocabulary
 ```
 
-### 🇷🇺 **Russian** - Basic Implementation
+### **Russian** - Basic Implementation
 - **Level**: Basic vocabulary (5 essential nouns)
 - **Grammar Features**: 6-case declensions, animacy distinctions, Cyrillic script
 - **Focus**: Demonstrates different case system from German
@@ -80,7 +80,7 @@ hatch run app --language german --deck business # Professional vocabulary
 hatch run app --language russian --deck default
 ```
 
-### 🇰🇷 **Korean** - Basic Implementation
+### **Korean** - Basic Implementation
 - **Level**: Basic vocabulary (5 essential nouns)
 - **Grammar Features**: Particle system (은/는, 이/가, 을/를), counter/classifiers, Hangul typography
 - **Focus**: Agglutinative language patterns, phonological rules
