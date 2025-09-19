@@ -5,7 +5,7 @@
 Create personalized vocabulary flashcards that understand the unique grammar challenges of your target language. Perfect for language learners and teachers who want effective, scientifically-designed study materials.
 
 [![CI](https://github.com/jmf-pobox/langlearn-anki/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/langlearn-anki/actions/workflows/ci.yml)
-[![Python Version](https://img.shields.io/github/languages/top/jmf-pobox/langlearn-anki)](https://github.com/jmf-pobox/langlearn-anki)
+[![Python](https://img.shields.io/badge/python-3.10+-blue?logo=python&logoColor=white)](https://python.org)
 [![Code Size](https://img.shields.io/github/languages/code-size/jmf-pobox/langlearn-anki)](https://github.com/jmf-pobox/langlearn-anki)
 [![License](https://img.shields.io/github/license/jmf-pobox/langlearn-anki.svg)](https://github.com/jmf-pobox/langlearn-anki/blob/main/LICENSE)
 
