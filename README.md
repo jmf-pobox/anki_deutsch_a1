@@ -7,7 +7,7 @@ Create personalized vocabulary flashcards that understand the unique grammar cha
 [![CI](https://github.com/jmf-pobox/langlearn-anki/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/langlearn-anki/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10+-blue?logo=python&logoColor=white)](https://python.org)
 [![Code Size](https://img.shields.io/github/languages/code-size/jmf-pobox/langlearn-anki)](https://github.com/jmf-pobox/langlearn-anki)
-[![License](https://img.shields.io/github/license/jmf-pobox/langlearn-anki.svg)](https://github.com/jmf-pobox/langlearn-anki/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/jmf-pobox/langlearn-anki/blob/main/LICENSE)
 
 ---
 
