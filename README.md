@@ -18,6 +18,8 @@ Create personalized vocabulary flashcards that understand the unique grammar cha
 
 **The Solution**: This generator creates flashcards that adapt to each language's unique grammar patterns, helping you learn more efficiently and effectively.
 
+**Built for [Anki](https://github.com/ankitects/anki)**: Creates `.apkg` files compatible with the powerful Anki spaced repetition system.
+
 **Inspiration**: Based on principles from *Fluent Forever* by Gabriel Wyner, emphasizing image-based learning and spaced repetition optimization.
 
 ---
@@ -195,6 +197,13 @@ hatch run app --help
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/jmf-pobox/langlearn-anki/issues)
 - 💬 **Questions**: Create a GitHub issue with the "question" label
 - 📖 **Documentation**: See developer docs in `docs/` folder
+
+## 🙏 Credits
+
+This project builds upon the excellent work of:
+
+- **[Anki](https://github.com/ankitects/anki)** by Damien Elmes - The powerful spaced repetition system that makes effective learning possible
+- **[Fluent Forever](https://fluent-forever.com/)** by Gabriel Wyner - Language learning methodology emphasizing image-based memory and spaced repetition
 
 ---
 
