@@ -216,6 +216,13 @@ This project builds upon the excellent work of:
 - **Language-aware templates** that adapt input fields based on selected language
 - [See GitHub Issue #27](https://github.com/jmf-pobox/langlearn-anki/issues/27)
 
+### **MCP (Model Context Protocol) Integration**
+- **Chat-based deck creation** through Claude, ChatGPT, and other AI interfaces
+- **Natural language vocabulary input** - describe words and let AI format them properly
+- **Conversational deck building** - "Create a German A1 deck with 20 kitchen vocabulary words"
+- **AI-assisted language validation** - automatic grammar checking and field completion
+- **Seamless workflow** from chat conversation to ready-to-use Anki deck
+
 ---
 
 ## 🔮 Future Languages
