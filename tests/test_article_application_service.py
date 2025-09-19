@@ -5,10 +5,12 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from langlearn.infrastructure.services.template_service import TemplateService
 from langlearn.languages.german.records.factory import NounRecord
-from langlearn.services.article_application_service import ArticleApplicationService
-from langlearn.services.card_builder import CardBuilder
-from langlearn.services.template_service import TemplateService
+from langlearn.languages.german.services.article_application_service import (
+    ArticleApplicationService,
+)
+from langlearn.languages.german.services.card_builder import CardBuilder
 
 
 class TestArticleApplicationService:

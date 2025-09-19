@@ -1,0 +1,239 @@
+/* Korean Noun Card Styles with Hangul Typography */
+
+.card {
+  font-family: 'Noto Sans CJK KR', 'Malgun Gothic', '맑은 고딕', 'Nanum Gothic', sans-serif;
+  text-align: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Hangul Text Styling */
+.hangul {
+  font-size: 3em;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 20px 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  line-height: 1.2;
+  font-family: 'Noto Sans CJK KR', 'Malgun Gothic', '맑은 고딕';
+}
+
+.romanization {
+  font-size: 1.2em;
+  color: #7f8c8d;
+  font-style: italic;
+  margin: 10px 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.english {
+  font-size: 1.5em;
+  color: #34495e;
+  font-weight: 600;
+  margin: 15px 0;
+}
+
+/* Particle Pattern Display */
+.particle-section {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  border-left: 4px solid #3498db;
+}
+
+.particle-title {
+  font-size: 1em;
+  color: #2980b9;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.particle-group {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.particle-item {
+  background: #ecf0f1;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 2px solid #bdc3c7;
+  min-width: 120px;
+}
+
+.particle-label {
+  font-size: 0.8em;
+  color: #7f8c8d;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.particle-form {
+  font-size: 1.1em;
+  color: #2c3e50;
+  font-weight: 600;
+  font-family: 'Noto Sans CJK KR', '맑은 고딕';
+}
+
+/* Counter Information */
+.counter-section {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  border-left: 4px solid #e74c3c;
+}
+
+.counter-title {
+  font-size: 1em;
+  color: #c0392b;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.counter-info {
+  font-size: 1.1em;
+  color: #2c3e50;
+  font-family: 'Noto Sans CJK KR', '맑은 고딕';
+}
+
+.counter-example {
+  font-style: italic;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+/* Example Section */
+.example-section {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  border-left: 4px solid #27ae60;
+}
+
+.example-korean {
+  font-size: 1.2em;
+  color: #2c3e50;
+  font-family: 'Noto Sans CJK KR', '맑은 고딕';
+  margin: 5px 0;
+}
+
+.example-english {
+  font-size: 1em;
+  color: #7f8c8d;
+  font-style: italic;
+  margin: 5px 0;
+}
+
+/* Image Styling */
+.image-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.image-container img {
+  max-width: 300px;
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border: 3px solid #ffffff;
+}
+
+/* Audio Controls */
+.audio-section {
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.audio-button {
+  background: #3498db;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background 0.3s;
+}
+
+.audio-button:hover {
+  background: #2980b9;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .hangul {
+    font-size: 2.5em;
+  }
+
+  .particle-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .particle-item {
+    min-width: auto;
+  }
+
+  .card {
+    padding: 15px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    background: white;
+    border: 2px solid black;
+  }
+
+  .hangul {
+    color: black;
+    text-shadow: none;
+  }
+
+  .particle-item {
+    border: 2px solid black;
+    background: white;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #ecf0f1;
+  }
+
+  .hangul {
+    color: #ecf0f1;
+  }
+
+  .particle-section,
+  .counter-section,
+  .example-section {
+    background: rgba(52, 73, 94, 0.8);
+  }
+
+  .particle-item {
+    background: #34495e;
+    border-color: #7f8c8d;
+  }
+}

@@ -1,12 +1,12 @@
 """VerbConjugationRecord for German verb conjugation data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
 
-from pydantic import Field, field_validator, model_validator
-
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class VerbConjugationRecord(BaseRecord):
     """Record for German verb conjugation data from CSV.
 
@@ -14,67 +14,51 @@ class VerbConjugationRecord(BaseRecord):
     ich, du, er/sie/es, wir, ihr, sie/Sie
     """
 
-    infinitive: str = Field(..., description="German infinitive verb")
-    english: str = Field(..., description="English meaning")
-    classification: str = Field(
-        ..., description="Verb type (regelmäßig/unregelmäßig/gemischt)"
-    )
-    separable: bool = Field(..., description="Whether verb is separable")
-    auxiliary: str = Field(..., description="Auxiliary verb (haben/sein)")
-    tense: str = Field(..., description="Tense (present/preterite/perfect/future)")
+    infinitive: str
+    english: str
+    classification: str
+    separable: bool
+    auxiliary: str
+    tense: str
 
     # Six conjugation forms (optional for imperative/perfect tenses)
-    ich: str = Field(default="", description="First person singular form")
-    du: str = Field(default="", description="Second person singular form")
-    er: str = Field(default="", description="Third person singular form (er/sie/es)")
-    wir: str = Field(default="", description="First person plural form")
-    ihr: str = Field(default="", description="Second person plural form")
-    sie: str = Field(
-        default="", description="Third person plural/formal form (sie/Sie)"
-    )
+    ich: str = ""
+    du: str = ""
+    er: str = ""
+    wir: str = ""
+    ihr: str = ""
+    sie: str = ""
 
-    example: str = Field(..., description="Example sentence using this tense")
+    example: str = ""
 
     # Media fields (populated during enrichment)
-    word_audio: str | None = Field(
-        default=None, description="Infinitive audio reference"
-    )
-    example_audio: str | None = Field(
-        default=None, description="Example audio reference"
-    )
-    image: str | None = Field(default=None, description="Image reference")
+    word_audio: str | None = None
+    example_audio: str | None = None
+    image: str | None = None
 
-    @classmethod
-    def get_record_type(cls) -> RecordType:
-        """Return the record type for verb conjugations."""
-        return RecordType.VERB_CONJUGATION
+    def __post_init__(self) -> None:
+        """Post-init validation for dataclass."""
+        self.validate()
 
-    @field_validator("classification")
-    @classmethod
-    def validate_classification(cls, v: str) -> str:
-        """Validate verb classification."""
+    def validate(self) -> None:
+        """Validate the record after initialization."""
+        # Validate classification
         valid_classifications = {"regelmäßig", "unregelmäßig", "gemischt", "modal"}
-        if v not in valid_classifications:
+        if self.classification not in valid_classifications:
             raise ValueError(
-                f"Invalid classification: {v}. Must be one of {valid_classifications}"
+                f"Invalid classification: {self.classification}. "
+                f"Must be one of {valid_classifications}"
             )
-        return v
 
-    @field_validator("auxiliary")
-    @classmethod
-    def validate_auxiliary(cls, v: str) -> str:
-        """Validate auxiliary verb."""
+        # Validate auxiliary
         valid_auxiliaries = {"haben", "sein"}
-        if v not in valid_auxiliaries:
+        if self.auxiliary not in valid_auxiliaries:
             raise ValueError(
-                f"Invalid auxiliary: {v}. Must be one of {valid_auxiliaries}"
+                f"Invalid auxiliary: {self.auxiliary}. "
+                f"Must be one of {valid_auxiliaries}"
             )
-        return v
 
-    @field_validator("tense")
-    @classmethod
-    def validate_tense(cls, v: str) -> str:
-        """Validate tense name."""
+        # Validate tense
         valid_tenses = {
             "present",
             "preterite",
@@ -83,22 +67,23 @@ class VerbConjugationRecord(BaseRecord):
             "subjunctive",
             "imperative",
         }
-        if v not in valid_tenses:
-            raise ValueError(f"Invalid tense: {v}. Must be one of {valid_tenses}")
-        return v
+        if self.tense not in valid_tenses:
+            raise ValueError(
+                f"Invalid tense: {self.tense}. Must be one of {valid_tenses}"
+            )
 
-    @field_validator("ich", "du", "er", "wir", "ihr", "sie")
-    @classmethod
-    def validate_conjugation_forms(cls, v: str) -> str:
-        """Validate conjugation forms, allowing empty for specific tenses."""
-        # Allow empty/None values for imperative and perfect tenses
-        # These will be validated in model_validator for completeness
-        if v is None or v == "":
-            return ""
-        return v.strip()
+        # Clean conjugation forms
+        self.ich = self.ich.strip() if self.ich else ""
+        self.du = self.du.strip() if self.du else ""
+        self.er = self.er.strip() if self.er else ""
+        self.wir = self.wir.strip() if self.wir else ""
+        self.ihr = self.ihr.strip() if self.ihr else ""
+        self.sie = self.sie.strip() if self.sie else ""
 
-    @model_validator(mode="after")
-    def validate_tense_completeness(self) -> "VerbConjugationRecord":
+        # Validate tense completeness
+        self._validate_tense_completeness()
+
+    def _validate_tense_completeness(self) -> None:
         """Validate that required conjugation forms are present for each tense."""
         tense = self.tense.lower()
 
@@ -149,7 +134,10 @@ class VerbConjugationRecord(BaseRecord):
             raise ValueError("Perfect tense requires auxiliary form in 'sie' field")
             # Other persons can be empty for perfect tense
 
-        return self
+    @classmethod
+    def get_record_type(cls) -> RecordType:
+        """Return the record type for verb conjugations."""
+        return RecordType.VERB_CONJUGATION
 
     @classmethod
     def from_csv_fields(cls, fields: list[str]) -> "VerbConjugationRecord":

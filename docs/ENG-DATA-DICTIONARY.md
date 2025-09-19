@@ -1,8 +1,11 @@
-# Data Dictionary
+# German Language - Data Dictionary
 
-## Version 1.0 - German Language Learning System
+## Version 1.2 - German Language Learning System
 
-This document provides a comprehensive field-by-field description of all data elements across all CSV files in the German Language Learning System. Each field includes data type, constraints, validation rules, and examples.
+This document provides a comprehensive field-by-field description of all data elements across all CSV files in the **German Language Learning System**. Each field includes data type, constraints, validation rules, and examples.
+
+> **Language Scope**: This data dictionary is specific to the German language implementation only.
+> Other languages (Russian, Korean) have separate, minimal data structures documented in their respective language packages.
 
 ## General Data Standards
 
@@ -320,7 +323,7 @@ All field definitions above have been updated to include the expected language f
 
 #### Phase 2: Code Integration
 1. **Update RecordMapper** to handle standardized column names
-2. **Update Pydantic models** for renamed columns
+2. **Update dataclass models** for renamed columns
 3. **Create migration scripts** for smooth transition
 
 #### Benefits of Standardization
@@ -331,7 +334,7 @@ All field definitions above have been updated to include the expected language f
 
 #### Risk Mitigation
 - **Backup all CSV files** before implementing changes
-- **Update all dependent code** (RecordMapper, Pydantic models, tests)  
+- **Update all dependent code** (RecordMapper, dataclass models, tests)  
 - **Run comprehensive test suite** to verify compatibility
 - **Implement changes incrementally** with validation at each step
 

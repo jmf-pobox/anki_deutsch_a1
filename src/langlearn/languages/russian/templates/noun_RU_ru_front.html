@@ -1,0 +1,17 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="part-of-speech">существительное</div>
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Подсказка</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

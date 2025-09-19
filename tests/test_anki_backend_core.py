@@ -9,7 +9,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends.anki_backend import AnkiBackend
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestAnkiBackendCore:
@@ -21,7 +22,7 @@ class TestAnkiBackendCore:
         """Test initialization and media generation statistics."""
         with (
             patch(
-                "langlearn.backends.anki_backend.Collection"
+                "langlearn.infrastructure.backends.anki_backend.Collection"
             ) as mock_collection_class,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
@@ -32,7 +33,7 @@ class TestAnkiBackendCore:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Verify initialization worked
             assert backend.deck_name == "Test Deck"
@@ -42,10 +43,10 @@ class TestAnkiBackendCore:
     def test_generate_or_get_audio_success(self, mock_media_service: Mock) -> None:
         """Test audio generation method success path."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock successful audio generation
             with patch.object(
@@ -63,10 +64,10 @@ class TestAnkiBackendCore:
     ) -> None:
         """Test audio generation error handling and statistics."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock service failure
             with patch.object(
@@ -87,10 +88,10 @@ class TestAnkiBackendCore:
     def test_generate_or_get_image_success(self, mock_media_service: Mock) -> None:
         """Test image generation method success path."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock successful image generation
             with patch.object(
@@ -112,10 +113,10 @@ class TestAnkiBackendCore:
     ) -> None:
         """Test image generation error handling."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock service failure
             with patch.object(
@@ -136,10 +137,10 @@ class TestAnkiBackendCore:
     def test_backward_compatibility_properties(self, mock_media_service: Mock) -> None:
         """Test backward compatibility properties for service access."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock the nested service properties using patch.object
             mock_audio_service = Mock()
@@ -160,14 +161,14 @@ class TestAnkiBackendCore:
     def test_cleanup_on_deletion(self, mock_media_service: Mock) -> None:
         """Test temporary directory cleanup functionality exists."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test_cleanup"),
             patch("os.path.exists", return_value=True),
             patch("shutil.rmtree") as mock_rmtree,
-            patch("langlearn.backends.anki_backend.AudioService"),
-            patch("langlearn.backends.anki_backend.PexelsService"),
+            patch("langlearn.infrastructure.backends.anki_backend.AudioService"),
+            patch("langlearn.infrastructure.backends.anki_backend.PexelsService"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             temp_dir = backend._temp_dir
 
             # Verify temp dir is set correctly
@@ -183,7 +184,7 @@ class TestAnkiBackendCore:
         """Test statistics retrieval with mocked data."""
         with (
             patch(
-                "langlearn.backends.anki_backend.Collection"
+                "langlearn.infrastructure.backends.anki_backend.Collection"
             ) as mock_collection_class,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
@@ -195,7 +196,7 @@ class TestAnkiBackendCore:
             )
             mock_collection.db.scalar.return_value = 25  # 25 notes
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Set up some test data
             backend._note_type_map = {"1": Mock(), "2": Mock()}  # 2 note types
@@ -228,7 +229,7 @@ class TestAnkiBackendCore:
         """Test adding audio media file with proper formatting."""
         with (
             patch(
-                "langlearn.backends.anki_backend.Collection"
+                "langlearn.infrastructure.backends.anki_backend.Collection"
             ) as mock_collection_class,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
             patch("os.path.exists", return_value=True),
@@ -239,7 +240,7 @@ class TestAnkiBackendCore:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock media.add_file method
             mock_collection.media.add_file.return_value = None
@@ -255,7 +256,7 @@ class TestAnkiBackendCore:
         """Test adding image media file without sound formatting."""
         with (
             patch(
-                "langlearn.backends.anki_backend.Collection"
+                "langlearn.infrastructure.backends.anki_backend.Collection"
             ) as mock_collection_class,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
             patch("os.path.exists", return_value=True),
@@ -266,7 +267,7 @@ class TestAnkiBackendCore:
                 id=12345
             )
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             mock_collection.media.add_file.return_value = None
 
             media_file = backend.add_media_file("/path/to/image.jpg")
@@ -278,11 +279,11 @@ class TestAnkiBackendCore:
     def test_add_media_file_not_found_error(self, mock_media_service: Mock) -> None:
         """Test error handling when media file doesn't exist."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
             patch("os.path.exists", return_value=False),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             with pytest.raises(FileNotFoundError, match="Media file not found"):
                 backend.add_media_file("/nonexistent/file.mp3")

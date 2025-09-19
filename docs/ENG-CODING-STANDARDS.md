@@ -264,7 +264,7 @@ def process_noun(self, noun: NounRecord) -> EnrichedNounRecord:
     """Process a noun record with enrichment.
 
     Raises:
-        ValidationError: If noun record fails validation
+        ValueError: If noun record fails validation
         ServiceUnavailableError: If required enrichment service is down
         MediaGenerationError: If audio/image generation fails
     """
@@ -574,26 +574,220 @@ For external services, create both:
 2. Integration tests that run against external services requiring valid API keys
 3. Credentials stored in and accessed via keyring package
 
-### Import Organization
+### Import Standards for PyCharm Refactoring Support
 
-Always follow PEP 8 standards on imports:
+#### Core Principles
+
+**CRITICAL**: Import patterns must support PyCharm's automatic refactoring capabilities. Poor import patterns prevent PyCharm from correctly tracking dependencies during moves/renames.
+
+#### 1. Consistent Import Patterns (MANDATORY)
+
+**✅ PREFERRED**: Direct, specific imports enable PyCharm tracking:
+```python
+# Direct class import - PyCharm can track and refactor automatically
+from langlearn.core.services.audio_service import AudioService
+from langlearn.core.services.ai_service import AnthropicService
+
+# Usage
+audio_service = AudioService()
+```
+
+**❌ AVOID**: Mixed import patterns confuse PyCharm refactoring:
+```python
+# Multiple ways to import same class - PyCharm struggles with refactoring
+from langlearn.services.audio import AudioService      # Direct
+from langlearn.services import AudioService           # Through __init__.py
+import langlearn.services.audio                       # Module import
+```
+
+#### 2. TYPE_CHECKING Pattern for Complex Dependencies (MANDATORY)
+
+Use TYPE_CHECKING for services with complex dependency chains:
+
+```python
+from typing import TYPE_CHECKING
+
+# Always import the actual class/service you need
+from langlearn.core.services.ai_service import AnthropicService
+
+if TYPE_CHECKING:
+    # Only import complex dependencies here
+    from langlearn.services.audio import AudioService
+    from langlearn.services.pexels_service import PexelsService
+
+class ServiceContainer:
+    _audio_service: "AudioService | None" = None
+    _pexels_service: "PexelsService | None" = None
+    _anthropic_service: AnthropicService | None = None  # Direct import used
+```
+
+#### 3. Service Container Pattern for High-Usage Services (PREFERRED)
+
+For services used in 15+ locations, use service container pattern:
+
+```python
+# ✅ GOOD: Service container abstracts direct imports
+from langlearn.core.services import get_audio_service
+
+class MediaEnricher:
+    def __init__(self):
+        self.audio_service = get_audio_service()
+
+# This makes refactoring easier - only service_container.py imports AudioService directly
+```
+
+#### 4. Package __init__.py Export Standards (RESTRICTIVE)
+
+**MINIMIZE** exports in `__init__.py` to reduce refactoring complexity:
+
+```python
+# ✅ PREFERRED: Minimal exports, functions over classes
+"""Services module for langlearn."""
+
+# Export functions that abstract dependencies
+from .service_container import (
+    get_audio_service,
+    get_anthropic_service,
+    reset_services,
+)
+
+__all__ = [
+    "get_audio_service",
+    "get_anthropic_service",
+    "reset_services",
+]
+```
+
+**❌ AVOID**: Large class exports create refactoring complexity:
+```python
+# Avoid exporting many classes - makes moves hard
+from .audio import AudioService
+from .pexels_service import PexelsService
+from .ai_service import AnthropicService
+# ... 15+ class exports
+```
+
+#### 5. Import Organization (PEP 8 + Refactoring Support)
 
 ```python
 # Standard library imports
 import os
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 # Related third party imports
 import pytest
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-# Local application/library specific imports
-from langlearn.models import NounRecord
-from langlearn.services import AudioService
+# Local application imports (most specific first)
+from langlearn.core.services.audio_service import AudioService
+from langlearn.core.services.ai_service import AnthropicService
+
+# TYPE_CHECKING imports last
+if TYPE_CHECKING:
+    from langlearn.services.pexels_service import PexelsService
 ```
 
-Put a blank line between each group of imports. Use absolute imports.
+#### 6. Refactoring-Safe Patterns
+
+**Pattern A - Service Factory Functions** (Best for PyCharm):
+```python
+# src/langlearn/core/services/__init__.py
+from .service_container import get_audio_service, get_ai_service
+
+# Usage throughout codebase
+from langlearn.core.services import get_audio_service
+audio_service = get_audio_service()
+```
+
+**Pattern B - Direct Import with Consistent Path** (Good for PyCharm):
+```python
+# Always use the same import path
+from langlearn.core.services.audio_service import AudioService
+
+# Never mix with:
+# from langlearn.core.services import AudioService  # Different path
+```
+
+**Pattern C - Dependency Injection** (Best for testing + refactoring):
+```python
+class MediaEnricher:
+    def __init__(self, audio_service: AudioService):
+        self.audio_service = audio_service
+
+# Factory handles the import complexity
+def create_media_enricher() -> MediaEnricher:
+    return MediaEnricher(get_audio_service())
+```
+
+#### 7. Anti-Patterns That Break PyCharm Refactoring
+
+**❌ Mixed Import Patterns**:
+```python
+# File A uses direct import
+from langlearn.services.audio import AudioService
+
+# File B uses package import
+from langlearn.services import AudioService
+
+# PyCharm can't track all references during refactoring
+```
+
+**❌ Dynamic Imports**:
+```python
+# PyCharm cannot track dynamic imports
+module = importlib.import_module("langlearn.services.audio")
+AudioService = getattr(module, "AudioService")
+```
+
+**❌ Circular Dependencies**:
+```python
+# services/audio.py
+from langlearn.services.media_service import MediaService
+
+# services/media_service.py
+from langlearn.services.audio import AudioService
+# PyCharm struggles with circular reference tracking
+```
+
+#### 8. Testing Import Patterns
+
+Test files should use the same import patterns as production:
+
+```python
+# test_audio_service.py
+# ✅ Same import pattern as production code
+from langlearn.core.services.audio_service import AudioService
+
+# ❌ Don't use different import patterns in tests
+# from langlearn.services.audio import AudioService  # Different path than production
+```
+
+#### 9. Migration-Safe Import Updates
+
+When moving services, update imports in order of dependency:
+
+1. **Move the service file**: `git mv src/langlearn/services/audio.py src/langlearn/core/services/audio_service.py`
+2. **Update direct imports first**: Files that import the class directly
+3. **Update package exports**: Update `__init__.py` files
+4. **Update service container**: Update dependency injection patterns
+5. **Run quality gates**: Ensure PyCharm can track all references
+
+#### 10. PyCharm Configuration Support
+
+Configure PyCharm to support this pattern:
+
+**Settings → Editor → Code Style → Python → Imports**:
+- ✅ "Sort imports" enabled
+- ✅ "From import style: Always use from imports for relative imports"
+- ✅ "Structure order: stdlib, third-party, project"
+
+**Settings → Tools → Python Integrated Tools**:
+- ✅ Default test runner: pytest
+- ✅ Docstring format: Google
+
+This ensures PyCharm's refactoring and auto-import features work optimally with our standards.
 
 ---
 

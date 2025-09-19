@@ -11,6 +11,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+# Import to ensure language registration happens at test session start
+import langlearn.languages  # noqa: F401
+
 
 @pytest.fixture(autouse=True)
 def mock_external_services(
@@ -53,8 +56,12 @@ def mock_external_services(
 
     # Mock external service calls
     with (
-        patch("langlearn.services.audio.boto3.client") as mock_boto_client,
-        patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+        patch(
+            "langlearn.infrastructure.services.audio_service.boto3.client"
+        ) as mock_boto_client,
+        patch(
+            "langlearn.infrastructure.services.image_service.requests.get"
+        ) as mock_requests,
         patch("keyring.get_password") as mock_keyring,
     ):
         # Configure mocks

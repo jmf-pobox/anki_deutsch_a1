@@ -6,8 +6,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends.base import CardTemplate, NoteType
 from langlearn.exceptions import MediaGenerationError
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
+from langlearn.infrastructure.services.template_service import TemplateService
 from langlearn.languages.german.records.factory import (
     AdjectiveRecord,
     BaseRecord,
@@ -15,8 +16,7 @@ from langlearn.languages.german.records.factory import (
     VerbConjugationRecord,
     create_record,
 )
-from langlearn.services.card_builder import CardBuilder
-from langlearn.services.template_service import TemplateService
+from langlearn.languages.german.services.card_builder import CardBuilder
 
 
 class TestCardBuilder:

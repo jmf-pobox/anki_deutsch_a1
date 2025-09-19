@@ -1,28 +1,26 @@
 """NounRecord for German noun data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
 
-from pydantic import Field
-
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class NounRecord(BaseRecord):
     """Record for German noun data from CSV."""
 
-    noun: str = Field(..., description="German noun")
-    article: str = Field(..., description="Definite article (der/die/das)")
-    english: str = Field(..., description="English translation")
-    plural: str = Field(..., description="Plural form")
-    example: str = Field(..., description="Example sentence")
-    related: str = Field(default="", description="Related words/phrases")
+    noun: str
+    article: str
+    english: str
+    plural: str
+    example: str
+    related: str = ""
 
     # Media fields (populated during enrichment)
-    image: str | None = Field(default=None, description="Image reference")
-    word_audio: str | None = Field(default=None, description="Word audio reference")
-    example_audio: str | None = Field(
-        default=None, description="Example audio reference"
-    )
+    image: str | None = None
+    word_audio: str | None = None
+    example_audio: str | None = None
 
     @classmethod
     def get_record_type(cls) -> RecordType:

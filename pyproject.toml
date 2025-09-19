@@ -23,7 +23,6 @@ dependencies = [
     "python-pexels>=1.1",
     "keyring>=24.3.0",
     "pandas>=2.2.0",
-    "pydantic>=2.11.9",
 ]
 
 [project.optional-dependencies]
@@ -105,7 +104,7 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -124,6 +123,10 @@ minversion = "8.0"
 addopts = "-ra -q --doctest-modules"
 testpaths = [
     "tests",
+]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "live: marks tests as requiring live API calls",
 ]
 
 [tool.coverage.run]

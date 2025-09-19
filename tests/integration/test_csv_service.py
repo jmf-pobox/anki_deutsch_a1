@@ -2,11 +2,11 @@
 
 from pathlib import Path
 
+from langlearn.infrastructure.services.csv_service import CSVService
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.noun import Noun
 from langlearn.languages.german.models.preposition import Preposition
 from langlearn.languages.german.models.verb import Verb
-from langlearn.services.csv_service import CSVService
 
 
 def test_read_nouns(tmp_path: Path) -> None:

@@ -11,7 +11,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends.anki_backend import AnkiBackend
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestAnkiBackendDeduplication:
@@ -20,10 +21,10 @@ class TestAnkiBackendDeduplication:
     def test_audio_deduplication_new_file(self, mock_media_service: Mock) -> None:
         """Test audio generation for new file (not duplicate)."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file doesn't exist (new file)
             text = "Guten Tag"
@@ -47,10 +48,10 @@ class TestAnkiBackendDeduplication:
     def test_audio_deduplication_existing_file(self, mock_media_service: Mock) -> None:
         """Test audio deduplication when file already exists."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file exists (duplicate)
             text = "Hallo Welt"
@@ -73,10 +74,10 @@ class TestAnkiBackendDeduplication:
     def test_image_deduplication_new_file(self, mock_media_service: Mock) -> None:
         """Test image generation for new file (not duplicate)."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file doesn't exist (new file)
             word = "Katze"
@@ -100,10 +101,10 @@ class TestAnkiBackendDeduplication:
     def test_image_deduplication_existing_file(self, mock_media_service: Mock) -> None:
         """Test image deduplication when file already exists."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Mock file system - file exists (duplicate)
             word = "Hund"
@@ -128,10 +129,10 @@ class TestAnkiBackendDeduplication:
     ) -> None:
         """Test statistics tracking with mixed new and duplicate media."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Directly set statistics to test calculation logic
             backend._media_generation_stats.update(
@@ -155,7 +156,9 @@ class TestAnkiBackendDeduplication:
     def test_deduplication_stats_in_get_stats(self, mock_media_service: Mock) -> None:
         """Test that deduplication stats appear in comprehensive statistics."""
         with (
-            patch("langlearn.backends.anki_backend.Collection") as mock_col_cls,
+            patch(
+                "langlearn.infrastructure.backends.anki_backend.Collection"
+            ) as mock_col_cls,
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
             mock_collection = Mock()
@@ -165,7 +168,7 @@ class TestAnkiBackendDeduplication:
             )
             mock_collection.db.scalar.return_value = 10
 
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Set up deduplication statistics
             backend._media_generation_stats.update(
@@ -197,10 +200,10 @@ class TestAnkiBackendDeduplication:
     ) -> None:
         """Test that audio deduplication uses correct MD5 hash logic."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             text = "Spezielle deutsche Wörter"
             expected_hash = hashlib.md5(text.encode()).hexdigest()
 
@@ -224,10 +227,10 @@ class TestAnkiBackendDeduplication:
     ) -> None:
         """Test that image deduplication uses word-based file naming."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
             word = "Schmetterling"
 
             # Test word-based filename logic
@@ -249,10 +252,10 @@ class TestAnkiBackendDeduplication:
     ) -> None:
         """Test deduplication behavior when MediaService fails."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             with (
                 patch.object(
@@ -274,10 +277,10 @@ class TestAnkiBackendDeduplication:
     def test_optimization_directory_setup(self, mock_media_service: Mock) -> None:
         """Test that AnkiBackend sets up optimized directory structure."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Verify directories are set up for optimization (using MediaService)
             assert backend._audio_dir is not None
@@ -288,10 +291,10 @@ class TestAnkiBackendDeduplication:
     def test_concurrent_deduplication_safety(self, mock_media_service: Mock) -> None:
         """Test deduplication is safe under concurrent access patterns."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Simulate concurrent calls with same text
             text = "Gleichzeitig"
@@ -323,10 +326,10 @@ class TestAnkiBackendOptimizationFeatures:
     def test_media_directory_optimization(self, mock_media_service: Mock) -> None:
         """Test optimized media directory structure creation."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Verify directory paths are set up correctly for optimization
             assert backend._audio_dir is not None
@@ -337,10 +340,10 @@ class TestAnkiBackendOptimizationFeatures:
     def test_statistics_optimization_tracking(self, mock_media_service: Mock) -> None:
         """Test that statistics track optimization effectiveness."""
         with (
-            patch("langlearn.backends.anki_backend.Collection"),
+            patch("langlearn.infrastructure.backends.anki_backend.Collection"),
             patch("tempfile.mkdtemp", return_value="/tmp/test"),
         ):
-            backend = AnkiBackend("Test Deck", mock_media_service)
+            backend = AnkiBackend("Test Deck", mock_media_service, GermanLanguage())
 
             # Set up scenario with high reuse (good optimization)
             backend._media_generation_stats.update(

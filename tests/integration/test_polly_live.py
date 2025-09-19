@@ -7,7 +7,7 @@ from botocore.exceptions import (
     NoCredentialsError,
 )
 
-from langlearn.services import AudioService
+from langlearn.infrastructure.services.audio_service import AudioService
 
 
 def has_aws_credentials() -> bool:

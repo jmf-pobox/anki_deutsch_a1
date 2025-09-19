@@ -8,7 +8,7 @@ This directory contains GitHub Actions workflows for continuous integration and 
 **Triggers**: Push to `main`/`develop`, Pull Requests
 **Jobs**:
 - **Lint and Type Check**: Runs ruff linting and mypy type checking
-- **Unit Tests**: Runs unit tests with coverage on Python 3.10, 3.11, 3.12  
+- **Unit Tests**: Runs unit tests with coverage on Python 3.13  
 - **Integration Tests**: Runs integration tests (PR to main only)
 - **Coverage Report**: Posts coverage report on PRs
 

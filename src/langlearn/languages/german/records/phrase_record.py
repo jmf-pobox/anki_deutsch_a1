@@ -1,30 +1,28 @@
 """PhraseRecord for German phrase data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
 
-from pydantic import Field
-
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class PhraseRecord(BaseRecord):
     """Record for German phrase data from CSV.
 
-    Simple Clean Pipeline migration for current phrases.csv structure.
+    Simple record processing migration for current phrases.csv structure.
     Matches existing phrases.csv format:
     phrase,english,context,related
     """
 
-    phrase: str = Field(..., description="German phrase")
-    english: str = Field(..., description="English translation")
-    context: str = Field(..., description="Usage context description")
-    related: str = Field(default="", description="Related phrases")
+    phrase: str
+    english: str
+    context: str
+    related: str = ""
 
     # Media fields (populated during enrichment)
-    phrase_audio: str | None = Field(
-        default=None, description="Phrase pronunciation audio reference"
-    )
-    image: str | None = Field(default=None, description="Image reference")
+    phrase_audio: str | None = None
+    image: str | None = None
 
     @classmethod
     def get_record_type(cls) -> RecordType:

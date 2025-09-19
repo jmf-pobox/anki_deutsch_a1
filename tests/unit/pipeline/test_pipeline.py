@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from langlearn.pipeline.pipeline import (
+from langlearn.core.pipeline.pipeline import (
     Pipeline,
     PipelineObject,
     PipelineTask,
@@ -178,7 +178,7 @@ def test_main_prints_result(capsys: pytest.CaptureFixture[str]) -> None:
     # Configure holder to known value and run the sample pipeline inside main
     import logging
 
-    from langlearn.pipeline import pipeline as mod
+    from langlearn.core.pipeline import pipeline as mod
 
     logging.getLogger(__name__)  # ensure logging import exercised
 
@@ -186,3 +186,16 @@ def test_main_prints_result(capsys: pytest.CaptureFixture[str]) -> None:
     captured = capsys.readouterr().out.strip().splitlines()
     # Expect the demo to print the reversed uppercase of "Hello World"
     assert captured[-1] == "DLROW OLLEH"
+
+
+def test_pipeline_output_property() -> None:
+    """Test the output property of PipelineObject."""
+    # Create a simple pipeline to test the output property
+    pipeline_obj: PipelineObject[str] = PipelineObject()
+
+    # Test that initial output is None (covers the missing line 345)
+    assert pipeline_obj.output is None
+
+    # Set input and verify output property
+    pipeline_obj.input = "test_value"
+    assert pipeline_obj.output == "test_value"

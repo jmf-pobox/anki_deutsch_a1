@@ -5,7 +5,9 @@ from unittest.mock import Mock, patch
 import pytest
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.services.domain_media_generator import DomainMediaGenerator
+from langlearn.infrastructure.services.domain_media_generator import (
+    DomainMediaGenerator,
+)
 
 
 class TestDomainMediaGenerator:
@@ -157,7 +159,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test context enhanced query with all parameters provided."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.infrastructure.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_context_enhanced_query(
                 "Hund", "dog", "Der Hund bellt"
@@ -172,7 +174,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test context enhanced query with missing data."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.infrastructure.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_context_enhanced_query("", "dog", "")
 
@@ -192,7 +194,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test conceptual search terms with all parameters."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.infrastructure.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_conceptual_search_terms(
                 "adverb", "schnell", "quickly"
@@ -207,7 +209,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test conceptual search terms with missing data."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.infrastructure.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_conceptual_search_terms("", "word", "")
 
@@ -220,7 +222,7 @@ class TestDomainMediaGenerator:
     ) -> None:
         """Test conceptual search terms without English translation."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.debug"
+            "langlearn.infrastructure.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             result = generator.get_conceptual_search_terms("adverb", "schnell", "")
 
@@ -246,27 +248,29 @@ class TestDomainMediaGenerator:
         assert result == {"audio_generated": 5, "images_downloaded": 3}
         mock_media_service.get_stats.assert_called_once()
 
-    def test_get_stats_service_returns_dict(
+    def test_get_stats_service_returns_invalid_stats(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
     ) -> None:
-        """Test get_stats when media service returns non-dict object."""
+        """Test get_stats with invalid stats object - should fail fast."""
         mock_media_service.get_stats.return_value = "some_stats_string"
 
-        result = generator.get_stats()
-
-        assert result == {"stats": "some_stats_string"}
+        with pytest.raises(
+            MediaGenerationError, match="Failed to get media service stats"
+        ):
+            generator.get_stats()
 
     def test_get_stats_service_no_stats_method(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
     ) -> None:
-        """Test get_stats when media service has no stats method."""
+        """Test get_stats when media service has no stats method - should fail fast."""
         # Remove get_stats method
         if hasattr(mock_media_service, "get_stats"):
             delattr(mock_media_service, "get_stats")
 
-        result = generator.get_stats()
-
-        assert result == {"media_service_stats": "unavailable"}
+        with pytest.raises(
+            MediaGenerationError, match="Failed to get media service stats"
+        ):
+            generator.get_stats()
 
     def test_get_stats_service_exception(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
@@ -279,40 +283,22 @@ class TestDomainMediaGenerator:
         ):
             generator.get_stats()
 
-    def test_clear_cache_service_has_method(
+    def test_clear_cache_is_noop(
         self, generator: DomainMediaGenerator, mock_media_service: Mock
     ) -> None:
-        """Test clear_cache when service has clear_cache method."""
+        """Test clear_cache is a no-op since MediaService doesn't support caching."""
         with patch(
-            "langlearn.services.domain_media_generator.logger.info"
+            "langlearn.infrastructure.services.domain_media_generator.logger.debug"
         ) as mock_logger:
             generator.clear_cache()
 
-            mock_media_service.clear_cache.assert_called_once()
+            # Should not call media service (it doesn't have clear_cache)
+            assert (
+                not hasattr(mock_media_service, "clear_cache")
+                or not mock_media_service.clear_cache.called
+            )
             mock_logger.assert_called_once()
-            assert "Media service cache cleared" in mock_logger.call_args[0][0]
-
-    def test_clear_cache_service_no_method(
-        self, generator: DomainMediaGenerator, mock_media_service: Mock
-    ) -> None:
-        """Test clear_cache when service has no clear_cache method."""
-        # Remove clear_cache method
-        if hasattr(mock_media_service, "clear_cache"):
-            delattr(mock_media_service, "clear_cache")
-
-        # Should execute without error when no method exists
-        generator.clear_cache()  # No exception should be raised
-
-    def test_clear_cache_service_exception(
-        self, generator: DomainMediaGenerator, mock_media_service: Mock
-    ) -> None:
-        """Test clear_cache when service raises exception."""
-        mock_media_service.clear_cache.side_effect = Exception("Cache error")
-
-        with pytest.raises(
-            MediaGenerationError, match="Failed to clear media service cache"
-        ):
-            generator.clear_cache()
+            assert "no action taken" in mock_logger.call_args[0][0]
 
 
 if __name__ == "__main__":

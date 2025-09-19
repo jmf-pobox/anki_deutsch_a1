@@ -4,8 +4,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends.base import CardTemplate, DeckBackend, NoteType
-from langlearn.managers.deck_manager import DeckManager
+from langlearn.infrastructure.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.infrastructure.managers.deck_manager import DeckManager
 
 
 class TestDeckManager:

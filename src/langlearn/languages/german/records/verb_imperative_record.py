@@ -1,12 +1,12 @@
 """VerbImperativeRecord for German verb imperative data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
 
-from pydantic import Field, field_validator
-
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class VerbImperativeRecord(BaseRecord):
     """Record for German verb imperative data from CSV.
 
@@ -14,33 +14,43 @@ class VerbImperativeRecord(BaseRecord):
     Handles imperative forms: du, ihr, Sie, wir
     """
 
-    infinitive: str = Field(..., description="German infinitive verb")
-    english: str = Field(..., description="English meaning")
+    infinitive: str
+    english: str
 
     # Four imperative forms as per specification
-    du: str = Field(..., description="Imperative for du (informal singular)")
-    ihr: str = Field(..., description="Imperative for ihr (informal plural)")
-    sie: str = Field(..., description="Imperative for Sie (formal)")
-    wir: str = Field(..., description="Imperative for wir (let's...)")
+    du: str
+    ihr: str
+    sie: str
+    wir: str
 
     # Examples for three forms (no example_wir per spec)
-    example_du: str = Field(..., description="Example sentence with du-form")
-    example_ihr: str = Field(..., description="Example sentence with ihr-form")
-    example_sie: str = Field(..., description="Example sentence with Sie-form")
+    example_du: str
+    example_ihr: str
+    example_sie: str
 
     # Media fields (populated during enrichment)
-    word_audio: str | None = Field(
-        default=None, description="Combined imperative audio reference"
-    )
-    image: str | None = Field(default=None, description="Image reference")
+    word_audio: str | None = None
+    image: str | None = None
 
-    @field_validator("du", "ihr", "sie", "wir")
-    @classmethod
-    def validate_imperative_forms(cls, v: str) -> str:
-        """Ensure imperative forms are not empty."""
-        if not v or v.strip() == "":
-            raise ValueError("Imperative forms cannot be empty")
-        return v.strip()
+    def __post_init__(self) -> None:
+        """Post-init validation for dataclass."""
+        self.validate()
+
+    def validate(self) -> None:
+        """Validate the record after initialization."""
+        # Validate imperative forms are not empty
+        imperative_forms = [self.du, self.ihr, self.sie, self.wir]
+        form_names = ["du", "ihr", "sie", "wir"]
+
+        for form, name in zip(imperative_forms, form_names, strict=False):
+            if not form or form.strip() == "":
+                raise ValueError(f"Imperative form '{name}' cannot be empty")
+
+        # Clean the forms
+        self.du = self.du.strip()
+        self.ihr = self.ihr.strip()
+        self.sie = self.sie.strip()
+        self.wir = self.wir.strip()
 
     @classmethod
     def get_record_type(cls) -> RecordType:

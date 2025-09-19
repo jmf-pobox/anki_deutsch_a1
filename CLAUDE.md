@@ -157,6 +157,45 @@ hatch run test-cov      # Full test suite with coverage
   - `refactor(utils): extract rate_limit_reached() [no behavior change]`
 - **Push frequency**: Every 3-5 commits OR every 30 minutes
 
+### Changelog Maintenance (MANDATORY):
+**🚨 CRITICAL: Update CHANGELOG.md with every significant change**
+
+**When to Update the Changelog:**
+- **Every feature addition** - Add to "Added" section in [Unreleased]
+- **Every breaking change** - Add to "Changed" section with **BREAKING** label
+- **Every bug fix** - Add to "Fixed" section
+- **Every removal** - Add to "Removed" section
+- **Before major releases** - Move [Unreleased] items to versioned release
+
+**Format Requirements:**
+```markdown
+## [Unreleased]
+### Added
+- New Korean particle validation system
+- Russian case declension support
+
+### Changed
+- **BREAKING**: Updated record validation from Pydantic to dataclass pattern
+
+### Fixed
+- Bug in German verb conjugation templates
+
+### Removed
+- Pydantic dependency (replaced with dataclasses)
+```
+
+**Version Release Process:**
+1. **Move [Unreleased] to version**: `## [0.3.0] - 2025-01-19`
+2. **Add new [Unreleased] section**: Keep it empty for next changes
+3. **Update version numbers**: Follow semantic versioning (Major.Minor.Patch)
+4. **Tag release**: Create git tag with version number
+
+**Benefits:**
+- **Historical tracking**: Easy to recall what was accomplished
+- **User communication**: Clear understanding of changes between versions
+- **Release planning**: Helps determine appropriate version increments
+- **Team coordination**: Everyone can see recent work and breaking changes
+
 ### Required Quality Gates (MANDATORY):
 
 ```bash
@@ -508,6 +547,7 @@ When you see an error like "Field 'DuForm' not found":
 
 **Code Standards**:
 - Prefer well defined protocols over duck typing and hasattr
+- **Protocol Inheritance Required**: All classes implementing protocols MUST explicitly inherit from the protocol class (e.g., `class ConcreteClass(ProtocolClass):`) for PyCharm visibility, type safety, and IDE support
 - Use None sparingly; avoid `type | None` parameters unless no alternative
 - Never write inline import statements
 - Never use mock objects in production code, only test code
@@ -515,3 +555,57 @@ When you see an error like "Field 'DuForm' not found":
 - Do not code hacks, defensive coding, or fallbacks
 - Write well-typed code with low conditional complexity that fails fast (throws exceptions) when validation fails
 - Avoid buzzwords, jargon, and adjectives (especially superlatives), and use precise, factual, accurate descriptions instead in all documentation and all conversation.
+- Speak with humility.  Do not brag, exaggerate, or spew non-sense.
+- use simple plain accurate language.  Do not talk like a marketing droid. Do not obfuscate facts with jargon.
+- STOP USING THE PHRASE CLEAN PIPELINE
+- Do not say "Clean Architecture" this is some buzzword you are inventing.
+- do not worry about backwards compatibility or fallback logic that masks errors
+
+## CI/LOCAL ENVIRONMENT CONSISTENCY (MANDATORY)
+
+**🚨 CRITICAL: Local and CI environments must match to prevent unpredictable failures**
+
+### Python Version Alignment (ABSOLUTE REQUIREMENT)
+- **Local Hatch environment**: Check with `hatch run python --version`
+- **GitHub Actions CI**: Must match in `.github/workflows/ci.yml`
+- **MyPy configuration**: Must match in `pyproject.toml` under `[tool.mypy] python_version`
+
+**Example Alignment:**
+```yaml
+# .github/workflows/ci.yml
+- name: Set up Python 3.13
+  uses: actions/setup-python@v4
+  with:
+    python-version: "3.13"
+```
+
+```toml
+# pyproject.toml
+[tool.mypy]
+python_version = "3.13"
+```
+
+### Preventing Version Drift
+- **When upgrading Python locally**: Update CI configuration immediately
+- **When updating dependencies**: Test both locally and create test PR
+- **Before major changes**: Verify `hatch run check-unit` passes locally
+
+### Troubleshooting CI Failures
+1. **Check Python versions first**: Compare local vs CI
+2. **Check Hatch versions**: CI uses latest, local may be different
+3. **Run exact CI commands locally**:
+   ```bash
+   hatch run type      # Same as CI MyPy step
+   hatch run lint      # Same as CI Ruff step
+   hatch run test-unit # Same as CI test step
+   ```
+4. **If commands work locally but fail in CI**: Version mismatch likely
+
+### Warning Signs of Version Issues
+- ❌ "JSON object must be str" errors in Hatch
+- ❌ MyPy errors in CI that don't occur locally
+- ❌ Import errors for modules that exist locally
+- ❌ Different test results between local and CI
+
+**Remember**: If it passes locally but fails in CI, fix the environment mismatch, don't change the code.
+- do not say, "I found the problem!", say, "I found something that could be an issue."

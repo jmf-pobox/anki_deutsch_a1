@@ -1,280 +1,231 @@
-# 🎓 Language Learn, an Anki Flashcard Generator
+# 🎓 Language Learning Flashcard Generator
 
-**Multi-language flashcard generation system that adapts to specific language grammar patterns.**
+**Multi-language Anki deck generator with intelligent language-specific features**
 
-This project generates customized language learning Anki decks. One issue 
-this system addresses is that many existing Anki decks do not reflect the 
-specific challenges of the target language.  For example, memorizing 
-German and irregular verb conjugations are two challenges. The grammar of 
-the target language affects the best Anki deck design. This Anki deck 
-generator seeks to address that challenge.  The primary user of this 
-system is intended to be the language learner. A secondary user of the 
-system is intended to be foreign language teachers. This system is 
-inspired by Fluent Forever, a book by Gabriel Wyner.
+Create personalized vocabulary flashcards that understand the unique grammar challenges of your target language. Perfect for language learners and teachers who want effective, scientifically-designed study materials.
 
 [![CI](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml/badge.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/langlearn.svg)](https://pypi.org/project/langlearn/)
 <a href="https://pypi.org/project/langlearn"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/langlearn?color=blue"></a>
 [![License](https://img.shields.io/github/license/jmf-pobox/anki_deutsch_a1.svg)](https://github.com/jmf-pobox/anki_deutsch_a1/blob/main/LICENSE)
 
-## 🎯 What This Does For You
+---
 
-**Generate language-specific learning decks with the following features:**
-- **Language-Specific Adaptation** → Handles unique grammar patterns (currently German, expanding to Russian, Korean, others)
-- **Complete Grammar Coverage** → All word types with language-specific challenges (German: der/die/das articles, verb conjugations, cases)
-- **Rich Media Integration** → AWS Polly audio pronunciation, Pexels contextual images
-- **Card Templates** → Clean design with hint buttons, proper styling, contextual examples
-- **Test Coverage & Quality Tools** → Comprehensive test suite, 0 MyPy strict mode errors
+## 🎯 Why This Tool Exists
+
+**The Problem**: Most Anki decks are generic and don't address the specific challenges of learning different languages. Learning German articles (der/die/das) requires different strategies than Korean particles (은/는/이/가) or Russian cases.
+
+**The Solution**: This generator creates flashcards that adapt to each language's unique grammar patterns, helping you learn more efficiently and effectively.
+
+**Inspiration**: Based on principles from *Fluent Forever* by Gabriel Wyner, emphasizing image-based learning and spaced repetition optimization.
+
+---
 
 ## 🚀 Quick Start
 
-### 1. Install and Setup
+### 1. Installation
 ```bash
-# Clone the repository
+# Clone and set up
 git clone https://github.com/jmf-pobox/anki_deutsch_a1.git
 cd anki_deutsch_a1
-
-# Install dependencies using Hatch
 pip install hatch
 hatch env create
 ```
 
-### 2. Generate German Decks
+### 2. Generate Your First Deck
 ```bash
-# Generate default German deck (A2/B1 level - 1000+ cards)
-hatch run app
+# German (comprehensive A1-B1 vocabulary)
+hatch run app --language german --deck default
 
-# Generate specific German decks by level
-hatch run app -- --language german --deck a1.1    # Beginner (A1.1)
-hatch run app -- --language german --deck a1      # Elementary (A1)
-hatch run app -- --language german --deck default # Intermediate (A2/B1)
-hatch run app -- --language german --deck business # Business German
+# Russian (basic vocabulary with case system)
+hatch run app --language russian --deck default
 
-# Custom output file
-hatch run app -- --language german --deck a1 --output my-german-a1.apkg
+# Korean (basic vocabulary with particle system)
+hatch run app --language korean --deck default
 ```
 
-### 3. Generate with Media (Advanced)
-Set up API keys for enhanced features:
+### 3. Import to Anki
+1. Open Anki desktop application
+2. **File > Import**
+3. Select your `.apkg` file from the `output/` folder
+4. Start studying!
+
+---
+
+## 🌍 Supported Languages
+
+### 🇩🇪 **German** - Complete Implementation
+- **Levels**: A1.1 (Beginner) → A1 (Elementary) → A2/B1 (Intermediate) + Business German
+- **Grammar Features**: Der/die/das articles, 4-case system, verb conjugations, separable verbs
+- **Vocabulary**: 1000+ words across all major word types
+- **Special Focus**: Gender recognition, case usage, irregular plurals
+
 ```bash
-# AWS credentials for pronunciation audio
+# Available German decks
+hatch run app --language german --deck a1.1     # Absolute beginner
+hatch run app --language german --deck a1       # Elementary
+hatch run app --language german --deck default  # Intermediate (most comprehensive)
+hatch run app --language german --deck business # Professional vocabulary
+```
+
+### 🇷🇺 **Russian** - Basic Implementation
+- **Level**: Basic vocabulary (5 essential nouns)
+- **Grammar Features**: 6-case declensions, animacy distinctions, Cyrillic script
+- **Focus**: Demonstrates different case system from German
+
+```bash
+hatch run app --language russian --deck default
+```
+
+### 🇰🇷 **Korean** - Basic Implementation
+- **Level**: Basic vocabulary (5 essential nouns)
+- **Grammar Features**: Particle system (은/는, 이/가, 을/를), counter/classifiers, Hangul typography
+- **Focus**: Agglutinative language patterns, phonological rules
+
+```bash
+hatch run app --language korean --deck default
+```
+
+---
+
+## 🎴 What Makes These Cards Special
+
+### **Language-Specific Design**
+Each language gets cards designed for its unique challenges:
+
+**German Cards**: Focus on gender/article recognition
+- Front: Image + "house" (English hint)
+- Back: "das Haus" + plural "Häuser" + example sentence
+
+**Korean Cards**: Focus on particle selection
+- Front: Image + "student" (English hint)
+- Back: "학생" + particles (학생이/학생은/학생을) + counter information
+
+**Russian Cards**: Focus on case declensions
+- Front: Image + "house" (English hint)
+- Back: "дом" + all 6 case forms + animacy information
+
+### **Rich Media Integration**
+- **🔊 Audio**: Native pronunciation using AWS Polly (German: Marlene, Russian: Tatyana, Korean: Seoyeon)
+- **🖼️ Images**: Contextual photos from Pexels based on example sentences
+- **💡 Hint System**: Clean design with expandable translations
+
+### **Proven Learning Techniques**
+- **Visual Learning**: Images before text to build natural associations
+- **Contextual Examples**: Real sentences, not isolated words
+- **Graduated Difficulty**: Cards reveal information progressively
+
+---
+
+## 📚 For Language Teachers
+
+### **Classroom Integration**
+- **Customizable Vocabulary**: Edit CSV files to match your curriculum
+- **CEFR-Aligned**: German decks follow established proficiency levels
+- **Consistent Quality**: All cards follow the same professional design standards
+
+### **Curriculum Support**
+```bash
+# Create custom vocabulary lists
+# Edit files in: languages/{language}/{deck}/
+# Example: languages/german/business/nouns.csv
+```
+
+**File Structure Example**:
+```
+languages/german/a1/
+├── nouns.csv          # Nouns with articles and plurals
+├── verbs.csv          # Conjugations and perfect tense
+├── adjectives.csv     # Comparative/superlative forms
+├── prepositions.csv   # Case requirements
+└── phrases.csv        # Common expressions
+```
+
+---
+
+## ⚙️ Advanced Features (Optional)
+
+### **Enhanced Audio & Images**
+Set up API keys for professional-quality media:
+
+```bash
+# German/Russian/Korean pronunciation (AWS Polly)
 export AWS_ACCESS_KEY_ID=your_key
 export AWS_SECRET_ACCESS_KEY=your_secret
 export AWS_DEFAULT_REGION=us-east-1
 
-# Pexels API for contextual images
+# Contextual images (Pexels)
 python scripts/api_keyring.py add PEXELS_API_KEY your_key
 
-# Test your API key setup (tests both Anthropic and Pexels APIs)
+# Test setup
 hatch run test-env
 ```
 
-### 4. Import to Anki
-1. Open Anki desktop application
-2. Click **File > Import**
-3. Select the `.apkg` file from `output/` folder
-4. Start studying with intelligent, language-specific flashcards!
-
-## 📚 Current Implementation: German Vocabulary Decks
-
-The system includes comprehensive German decks organized by CEFR levels:
-
-- **A1.1 (Beginner)**: Basic vocabulary for absolute beginners
-- **A1 (Elementary)**: Complete A1 level vocabulary  
-- **Default (A2/B1)**: Intermediate vocabulary for advanced learners
-- **Business**: German business and professional vocabulary 
-
-### Available German Decks:
-
+### **Custom Output**
 ```bash
-# Check what decks are available
-hatch run app -- --help
+# Specify output filename
+hatch run app --language german --deck a1 --output "My_German_A1_Deck.apkg"
 
-# List available German decks
-hatch run app -- --language german --deck nonexistent
-# (Will show available deck options)
+# Check available options
+hatch run app --help
 ```
 
-**Deck Structure** - Each deck contains:
-```
-languages/german/{deck}/
-├── nouns.csv           # German nouns with articles and cases
-├── verbs.csv           # Verbs with conjugations and perfect tense
-├── adjectives.csv      # Comparative and superlative forms
-├── adverbs.csv         # Common German adverbs with examples
-├── prepositions.csv    # Case-dependent prepositions  
-├── phrases.csv         # Essential German phrases
-└── negations.csv       # German negation patterns
-```
+---
 
-### CSV Format Examples:
+## 🔧 Troubleshooting
 
-**Nouns** (Gender and case-aware):
-```csv
-noun,article,english,plural,example,related,case_context
-Hund,der,dog,Hunde,Der Hund bellt laut,Tier,Nominativ
-```
+### **Common Issues**
 
-**Verbs** (Complete conjugation support):
-```csv
-verb,english,present_ich,present_du,present_er,perfect,example
-sprechen,to speak,spreche,sprichst,spricht,habe gesprochen,Ich spreche Deutsch
-```
+**❌ "No cards generated"**
+- Verify CSV files exist in `languages/{language}/{deck}/`
+- Run `hatch run test` to check system integrity
 
-## 🎨 Generated Card Types
+**❌ "Anki import failed"**
+- Use Anki desktop (not AnkiWeb browser)
+- Check that `.apkg` file exists in `output/` folder
+- Try a smaller test deck: `hatch run app --language korean`
 
-### 🏠 **Noun Cards** - German Gender Mastery
-- **Image + Hint Design:** Visual learning with hidden English translation
-- **Article Testing:** "_____ Hund" → "der" (tests gender recall)
-- **Context Learning:** "dog" → "der Hund" with example sentences
-- **Audio:** Perfect German pronunciation for all forms
+**❌ "No audio/images"**
+- Media is optional - cards work without it
+- Check API key setup in Advanced Features section
+- Cards will still have text content and work perfectly
 
-### ⚡ **Verb Cards** - Complete Conjugation System  
-- **Full Conjugation Audio:** Includes infinitive + all persons + perfect tense
-- **Visual Context:** Images based on example sentences
-- **Hint System:** Clean design with expandable translations
-- **Templates:** Consistent styling matching established patterns
+### **Getting Help**
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/jmf-pobox/anki_deutsch_a1/issues)
+- 💬 **Questions**: Create a GitHub issue with the "question" label
+- 📖 **Documentation**: See developer docs in `docs/` folder
 
-### 🎯 **Other Card Types**
-- **Adjectives:** Comparative and superlative forms with audio
-- **Adverbs:** Contextual usage with pronunciation
-- **Prepositions:** Case-dependent forms (Akkusativ/Dativ)
-- **Phrases:** Common expressions with natural audio
-- **Negations:** German negation patterns and usage
+---
 
-### ✨ **System Features**
-- **Clean Pipeline:** CSV → Records → MediaEnricher → CardBuilder → AnkiBackend data flow
-- **Media Integration:** Automatic audio/image embedding in .apkg files
-- **Filename Sanitization:** Comprehensive validation for safe file operations
-- **Batch Processing:** Efficient handling and caching of media files
-- **German-Specific Logic:** Handles separable verbs, case declensions, gender patterns
+## 🔮 Future Languages
 
-## 🏗️ System Architecture
+**Planned Implementations**:
+- 🇪🇸 **Spanish**: Gendered nouns, subjunctive mood, ser vs estar
+- 🇫🇷 **French**: Nasal vowels, liaison rules, irregular verbs
+- 🇯🇵 **Japanese**: Hiragana/Katakana/Kanji, honorific system, particles
+- 🇮🇹 **Italian**: Regional pronunciation variants, subjunctive usage
 
-### Architecture
+Each language will get cards specifically designed for its unique learning challenges.
 
-The system turns CSV data into Anki cards using the following flow:
-
-```
-CSV → RecordMapper → Records → MediaEnricher → Domain Models → Enriched Records → CardBuilder → AnkiBackend
-```
-
-### Architecture Components:
-- **Records**: Pydantic data transport objects with validation
-- **Domain Models**: Objects with German language business logic methods  
-- **MediaEnricher**: Converts Records → Domain Models, calls business logic, returns enriched Records
-- **CardBuilder**: Transforms enriched Records into formatted card templates
-- **AnkiBackend**: Uses enriched Records for card creation, falls back to ModelFactory when needed
-
-### Current Word Type Support:
-- ✅ **Full Support:** All 7 German word types (noun, adjective, adverb, negation, verb, preposition, phrase)
-- ✅ **Dual System:** Records for validation + Domain Models for business logic
-- ✅ **Media Generation:** German-specific audio and image processing
-
-## ⚙️ Advanced Configuration
-
-### API Services (Optional)
-Enhance your decks with audio and images:
-
-**AWS Polly (Audio Pronunciation):**
-```bash
-export AWS_ACCESS_KEY_ID=your_key
-export AWS_SECRET_ACCESS_KEY=your_secret  
-export AWS_DEFAULT_REGION=us-east-1
-```
-
-**Pexels (Contextual Images):**
-```bash
-python scripts/api_keyring.py add PEXELS_API_KEY your_key
-```
-
-## 📊 Quality & Development
-
-### Quality Standards
-- ✅ **Test Coverage:** Edge case and error handling tests included (run `hatch run test-cov` for current metrics)
-- ✅ **Zero MyPy Errors:** Strict type checking across all source files
-- ✅ **Zero Linting Violations:** Ruff and black compliance
-
-### Development Commands
-```bash
-# Quality verification (required for contributions)
-hatch run type                 # MyPy type checking (0 errors required)
-hatch run test                 # Full test suite
-hatch run test-cov             # Coverage analysis (see current metrics)
-hatch run format               # Code formatting
-hatch run ruff check --fix     # Linting compliance
-
-# Application usage
-hatch run app                  # Generate default German deck (A2/B1)
-hatch run app -- --deck a1.1  # Generate A1.1 beginner deck  
-hatch run app -- --deck a1    # Generate A1 elementary deck
-hatch run app -- --deck business # Generate business German deck
-```
-
-## 🔄 Roadmap: Multi-Language Vision
-
-### **Phase 1: Multi-Language Expansion** 🚀 **Future**
-- **Russian**: Cyrillic script, case system, aspect pairs
-- **Korean**: Hangul, honorifics, complex verb conjugations  
-- **Additional Languages**: Spanish, French, Italian, Japanese
-- Language-specific grammar intelligence for each
-
-### **Phase 2: Advanced Features**
-- Voice recording comparison
-- Progress tracking analytics
-- Spaced repetition optimization
-- Community deck sharing
-
-## 🆘 Getting Help
-
-### Common Solutions
-
-**"No cards generated":**
-- Run `hatch run test` to verify system integrity
-- Check CSV file formats match expected structure
-- Ensure all tests pass for proper system validation
-
-**"Import failed in Anki":**
-- Use Anki desktop application (not AnkiWeb browser version)
-- Ensure .apkg file was generated successfully in `output/` folder
-- Try `hatch run run-sample` for smaller test deck first
-
-**"Media not working":**
-- API keys are optional - cards work without media
-- See Advanced Configuration for AWS Polly and Pexels setup
-- Use `hatch run app --generate-media` with configured API keys
-
-### Support & Documentation
-- 🐛 **Issues:** [GitHub Issues](https://github.com/jmf-pobox/anki_deutsch_a1/issues)
-- 📖 **Technical Docs:** `docs/ENG-DESIGN-INDEX.md` for navigation
-- 🏗️ **Architecture:** `docs/ENG-DEVELOPMENT-STANDARDS.md` for development standards
-- 💡 **Contributing:** Review `CLAUDE.md` and `docs/ENG-PYTHON-STANDARDS.md` for guidelines
+---
 
 ## 🏗️ For Developers
 
-### Development Environment
+**Quick Developer Setup**:
 ```bash
-# Complete development setup
-hatch env create
-hatch run type          # MyPy strict type checking (0 errors required)
-hatch run test          # All tests (unit + integration)
-hatch run test-unit     # Unit tests only (100% pass rate required)
-hatch run test-cov      # Coverage analysis (current metrics maintained)
-hatch run format        # Code formatting (PEP 8 compliance)
-hatch run lint          # Linting (zero violations required)
-hatch run check         # Complete quality verification
+hatch run test      # Verify everything works
+hatch run type      # Type checking (must pass)
+hatch run format    # Code formatting
 ```
 
-### Contributing Guidelines
-1. **Read Required Docs:** `CLAUDE.md`, `docs/ENG-PYTHON-STANDARDS.md`, and `docs/ENG-DESIGN-INDEX.md`
-2. **Follow Quality Standards:** All 6 quality gates must pass (see CLAUDE.md)
-3. **Use Micro-Commits:** Atomic changes with comprehensive testing
-4. **Branch Workflow:** Feature branches with PR review process
-5. **Architecture Compliance:** Follow clean pipeline architecture patterns
+**📋 Developer Documentation**:
+- **Getting Started**: `docs/ENG-DESIGN-INDEX.md`
+- **Architecture**: `docs/ENG-DEVELOPMENT-STANDARDS.md`
+- **Standards**: `CLAUDE.md` and `docs/ENG-PYTHON-STANDARDS.md`
+- **Language Specs**: `docs/GERMAN-LANGUAGE-SPEC.md`, `docs/RUSSIAN-LANGUAGE-SPEC.md`, `docs/KOREAN-LANGUAGE-SPEC.md`
 
-### Key Architecture Files
-- **Services:** `src/langlearn/services/` (CardBuilder, MediaEnricher, RecordMapper)
-- **Models:** `src/langlearn/models/` (Records + Domain Models for German processing)
-- **Records System:** Pydantic objects for data validation and transport
-- **Domain Models:** Objects with German language business logic methods
-- **Backend Integration:** `src/langlearn/backends/` (Anki library abstraction)
+**🤝 Contributing**: All contributions welcome! Please read `CLAUDE.md` for development workflow and quality standards.
+
+---
+
+*Built with ❤️ for language learners and teachers worldwide*

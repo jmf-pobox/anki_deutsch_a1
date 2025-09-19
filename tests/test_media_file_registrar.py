@@ -7,8 +7,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends.base import DeckBackend
-from langlearn.services.media_file_registrar import MediaFileRegistrar
+from langlearn.infrastructure.backends.base import DeckBackend
+from langlearn.infrastructure.services.media_file_registrar import MediaFileRegistrar
 
 
 class TestMediaFileRegistrar:
@@ -358,7 +358,7 @@ class TestMediaFileRegistrarIntegration:
             mock_backend = Mock(spec=DeckBackend)
             mock_backend.add_media_file.return_value = Mock()
 
-            # Simulate card field data from Clean Pipeline
+            # Simulate card field data from record processing
             card_fields = [
                 "Katze",  # German word
                 "cat",  # English translation

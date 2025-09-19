@@ -1,0 +1,47 @@
+{{#Image}}<div class="image-container">{{Image}}</div>{{/Image}}
+
+<div class="noun-forms">
+    <div class="word-with-audio">
+        <span class="russian">{{Noun}}</span>
+        {{#WordAudio}}<span class="inline-audio">🔊 {{WordAudio}}</span>{{/WordAudio}}
+    </div>
+    <div class="english-translation">{{English}}</div>
+
+    <div class="grammatical-info">
+        <div class="gender-info">
+            <strong>Род:</strong> {{Gender}}
+        </div>
+        {{#Genitive}}
+        <div class="case-info">
+            <strong>Родительный падеж:</strong> {{Genitive}}
+        </div>
+        {{/Genitive}}
+    </div>
+</div>
+
+{{#Example}}
+<div class="example-with-audio">
+    <span class="example-sentence">{{Example}}</span>
+    {{#ExampleAudio}}<span class="inline-audio">🔊 {{ExampleAudio}}</span>{{/ExampleAudio}}
+</div>
+{{/Example}}
+
+{{#Related}}
+<div class="related-words">
+    <strong>Связанные слова:</strong> {{Related}}
+</div>
+{{/Related}}
+
+<div class="hint-container">
+    <button class="hint-button" onclick="showHint()">💡 Подсказка</button>
+    <div id="hint-content" class="hint-content hidden">{{English}}</div>
+</div>
+
+<script>
+function showHint() {
+    var hint = document.getElementById('hint-content');
+    var button = document.querySelector('.hint-button');
+    hint.classList.remove('hidden');
+    button.style.display = 'none';
+}
+</script>

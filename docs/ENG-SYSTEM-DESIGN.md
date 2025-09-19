@@ -36,7 +36,7 @@ Mann,der,man,Männer,Der Mann arbeitet.
 - One row per vocabulary item
 - See `docs/PM-CSV-SPEC.md` for complete field specifications
 
-### 2. Records (Pydantic Models)
+### 2. Records (Dataclass Models)
 **Purpose**: Validate CSV data and provide type safety
 
 **Location**: `src/langlearn/languages/german/records/`
@@ -49,7 +49,7 @@ record = create_record("noun", ["Mann", "der", "man", "Männer", "Der Mann arbei
 ```
 
 **Key Functions**:
-- Data validation using Pydantic models
+- Data validation using dataclass models
 - Type conversion and field validation
 - Transport layer between CSV and domain models
 
@@ -255,7 +255,7 @@ Create template files in `src/langlearn/languages/german/templates/`:
 The system follows fail-fast error handling - operations stop immediately when validation fails or required services are unavailable.
 
 ### Validation Errors
-- **Records**: Pydantic validation raises exceptions for malformed CSV data
+- **Records**: Dataclass validation raises exceptions for malformed CSV data
 - **Domain Models**: `__post_init__` validation raises exceptions for invalid business rules
 - **Media Services**: Raise exceptions when API services are unavailable or return errors
 
@@ -265,7 +265,7 @@ The system follows fail-fast error handling - operations stop immediately when v
 - **API Keys**: Process stops with clear error message if credentials missing
 
 ### Exception Types
-- `ValidationError`: Pydantic validation failures
+- `ValueError`: Dataclass validation failures
 - `ValueError`: Domain model validation failures
 - `RuntimeError`: Service unavailability or API failures
 - `KeyError`: Missing required configuration or API keys

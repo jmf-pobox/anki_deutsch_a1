@@ -9,8 +9,8 @@ from unittest.mock import mock_open, patch
 import pytest
 from pydantic import BaseModel, ValidationError, field_validator
 
+from langlearn.infrastructure.services.csv_service import CSVService
 from langlearn.languages.german.records.factory import AdjectiveRecord, NounRecord
-from langlearn.services.csv_service import CSVService
 
 
 class SimpleModel(BaseModel):
@@ -237,7 +237,7 @@ class TestCSVServiceOptionalFields:
 
 
 class TestCSVServiceRecords:
-    """Test CSVService Record-based functionality for Clean Pipeline Architecture."""
+    """Test CSVService Record-based functionality for record processing Architecture."""
 
     @pytest.fixture
     def csv_service(self) -> CSVService:

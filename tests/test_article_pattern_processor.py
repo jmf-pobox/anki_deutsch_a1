@@ -17,14 +17,16 @@ from unittest.mock import Mock
 
 import pytest
 
-from langlearn.backends.base import CardTemplate, NoteType
+from langlearn.infrastructure.backends.base import CardTemplate, NoteType
 from langlearn.languages.german.records.factory import (
     ArticleRecord,
     IndefiniteArticleRecord,
     NegativeArticleRecord,
     UnifiedArticleRecord,
 )
-from langlearn.services.article_pattern_processor import ArticlePatternProcessor
+from langlearn.languages.german.services.article_pattern_processor import (
+    ArticlePatternProcessor,
+)
 
 
 class TestArticlePatternProcessor:

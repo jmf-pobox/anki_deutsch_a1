@@ -7,8 +7,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from langlearn.backends.anki_backend import AnkiBackend
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
+from langlearn.infrastructure.backends.anki_backend import AnkiBackend
+from langlearn.languages.german.language import GermanLanguage
 
 
 # Rate limit detection utilities
@@ -125,7 +126,9 @@ def temp_directory_with_nested_path(
 @pytest.fixture
 def mock_aws_services() -> Any:
     """Mock AWS services to avoid requiring credentials in unit tests."""
-    with patch("langlearn.services.audio.boto3.client") as mock_boto3:
+    with patch(
+        "langlearn.infrastructure.services.audio_service.boto3.client"
+    ) as mock_boto3:
         mock_polly = MagicMock()
         mock_boto3.return_value = mock_polly
         yield mock_polly
@@ -135,10 +138,14 @@ def mock_aws_services() -> Any:
 def mock_external_services() -> Any:
     """Mock all external services for unit testing."""
     with (
-        patch("langlearn.services.audio.boto3.client") as mock_boto3,
-        patch("langlearn.services.pexels_service.PexelsService") as mock_pexels,
         patch(
-            "langlearn.services.anthropic_service.AnthropicService"
+            "langlearn.infrastructure.services.audio_service.boto3.client"
+        ) as mock_boto3,
+        patch(
+            "langlearn.infrastructure.services.image_service.PexelsService"
+        ) as mock_pexels,
+        patch(
+            "langlearn.infrastructure.services.ai_service.AnthropicService"
         ) as mock_anthropic,
     ):
         # Configure mock boto3 client
@@ -182,11 +189,20 @@ def mock_media_service(mock_audio_service: Any, mock_pexels_service: Any) -> Mag
 
 
 @pytest.fixture
+def mock_german_language() -> GermanLanguage:
+    """Create a GermanLanguage instance for testing."""
+    return GermanLanguage()
+
+
+@pytest.fixture
 def anki_backend_with_mocks(
     mock_media_service: Any,
+    mock_german_language: GermanLanguage,
 ) -> Generator[AnkiBackend]:
     """Create an AnkiBackend instance with mocked services via dependency injection."""
-    backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
+    backend = AnkiBackend(
+        "Test Deck", mock_media_service, mock_german_language, "Test description"
+    )
     yield backend
     # Cleanup if needed - removed as AnkiBackend doesn't have cleanup method
     pass
@@ -199,6 +215,7 @@ def deck_builder_with_mocks(
     """Create a DeckBuilder instance with mocked services via dependency injection."""
     builder = DeckBuilder(
         "Test Deck",
+        "german",
         audio_service=mock_audio_service,
         pexels_service=mock_pexels_service,
     )
@@ -209,9 +226,12 @@ def deck_builder_with_mocks(
 def anki_backend_no_aws(
     mock_external_services: Any,
     mock_media_service: Any,
+    mock_german_language: GermanLanguage,
 ) -> Generator[AnkiBackend]:
     """Create an AnkiBackend instance with mocked external services."""
-    backend = AnkiBackend("Test Deck", mock_media_service, "Test description")
+    backend = AnkiBackend(
+        "Test Deck", mock_media_service, mock_german_language, "Test description"
+    )
     yield backend
     # Cleanup if needed - removed as AnkiBackend doesn't have cleanup method
     pass

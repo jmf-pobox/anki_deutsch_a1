@@ -1,61 +1,55 @@
 """UnifiedArticleRecord for unified German articles from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
 
-from pydantic import Field, field_validator
-
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class UnifiedArticleRecord(BaseRecord):
     """Record for unified German articles from CSV with German terminology."""
 
-    artikel_typ: str = Field(
-        ..., description="Article type (bestimmt, unbestimmt, verneinend)"
-    )
-    geschlecht: str = Field(
-        ..., description="Gender (maskulin, feminin, neutral, plural)"
-    )
-    nominativ: str = Field(..., description="Nominative case form")
-    akkusativ: str = Field(..., description="Accusative case form")
-    dativ: str = Field(..., description="Dative case form")
-    genitiv: str = Field(..., description="Genitive case form")
-    beispiel_nom: str = Field(..., description="Example sentence in nominative")
-    beispiel_akk: str = Field(..., description="Example sentence in accusative")
-    beispiel_dat: str = Field(..., description="Example sentence in dative")
-    beispiel_gen: str = Field(..., description="Example sentence in genitive")
+    artikel_typ: str
+    geschlecht: str
+    nominativ: str
+    akkusativ: str
+    dativ: str
+    genitiv: str
+    beispiel_nom: str
+    beispiel_akk: str
+    beispiel_dat: str
+    beispiel_gen: str
 
     # Media fields (populated during enrichment)
-    article_audio: str | None = Field(
-        default=None, description="Article audio reference"
-    )
-    example_audio: str | None = Field(
-        default=None, description="Example audio reference"
-    )
-    image: str | None = Field(default=None, description="Image reference")
+    article_audio: str | None = None
+    example_audio: str | None = None
+    image: str | None = None
+
+    def __post_init__(self) -> None:
+        """Post-init validation for dataclass."""
+        self.validate()
+
+    def validate(self) -> None:
+        """Validate the record after initialization."""
+        # Validate article type
+        valid_types = {"bestimmt", "unbestimmt", "verneinend"}
+        if self.artikel_typ not in valid_types:
+            raise ValueError(
+                f"Invalid artikel_typ: {self.artikel_typ}. Must be one of {valid_types}"
+            )
+
+        # Validate gender
+        valid_genders = {"maskulin", "feminin", "neutral", "plural"}
+        if self.geschlecht not in valid_genders:
+            raise ValueError(
+                f"Invalid geschlecht: {self.geschlecht}. Must be one of {valid_genders}"
+            )
 
     @classmethod
     def get_record_type(cls) -> RecordType:
         """Return the record type for unified articles."""
         return RecordType.UNIFIED_ARTICLE
-
-    @field_validator("artikel_typ")
-    @classmethod
-    def validate_artikel_typ(cls, v: str) -> str:
-        """Validate article type."""
-        valid_types = {"bestimmt", "unbestimmt", "verneinend"}
-        if v not in valid_types:
-            raise ValueError(f"Invalid artikel_typ: {v}. Must be one of {valid_types}")
-        return v
-
-    @field_validator("geschlecht")
-    @classmethod
-    def validate_geschlecht(cls, v: str) -> str:
-        """Validate gender."""
-        valid_genders = {"maskulin", "feminin", "neutral", "plural"}
-        if v not in valid_genders:
-            raise ValueError(f"Invalid geschlecht: {v}. Must be one of {valid_genders}")
-        return v
 
     @classmethod
     def get_expected_field_count(cls) -> int:

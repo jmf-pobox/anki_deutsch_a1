@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends.base import DeckBackend, MediaFile
-from langlearn.deck_builder import DeckBuilder
+from langlearn.core.deck import DeckBuilderAPI as DeckBuilder
+from langlearn.infrastructure.backends.base import DeckBackend, MediaFile
 from langlearn.languages.german.models.adjective import Adjective
 from langlearn.languages.german.models.adverb import Adverb, AdverbType
 from langlearn.languages.german.models.negation import Negation, NegationType
@@ -113,48 +113,27 @@ class TestGermanDeckBuilder:
             ),
         ]
 
-    def test_initialization_genanki_backend_deprecated(self) -> None:
-        """Test GermanDeckBuilder properly rejects deprecated genanki backend."""
-        with pytest.raises(ValueError, match="GenanKi backend has been deprecated"):
-            DeckBuilder("Test Deck", backend_type="genanki")
-
-    def test_initialization_anki_backend(self) -> None:
-        """Test GermanDeckBuilder initialization with official Anki backend."""
-        with patch("langlearn.deck_builder.AnkiBackend") as mock_anki:
-            mock_backend = Mock(spec=DeckBackend)
-            mock_anki.return_value = mock_backend
-
-            builder = DeckBuilder("Test Deck", backend_type="anki")
-
-            assert builder.backend_type == "anki"
-            mock_anki.assert_called_once()
-
-    def test_initialization_invalid_backend(self) -> None:
-        """Test GermanDeckBuilder initialization with invalid backend."""
-        with pytest.raises(ValueError, match="Unknown backend type: invalid"):
-            DeckBuilder("Test Deck", backend_type="invalid")
-
     def test_initialization_media_disabled(self) -> None:
         """Test GermanDeckBuilder initialization with media generation disabled."""
-        with patch("langlearn.deck_builder.AnkiBackend") as mock_anki:
+        with patch("langlearn.core.deck.builder.AnkiBackend") as mock_anki:
             mock_backend = Mock(spec=DeckBackend)
             mock_anki.return_value = mock_backend
 
-            builder = DeckBuilder("Test Deck", backend_type="anki")
+            builder = DeckBuilder("Test Deck", "german")
 
             assert builder._media_service is not None
 
     # Legacy CSV loading tests removed - use load_data_from_directory
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_load_data_from_directory(
         self, mock_anki: Mock, sample_noun_data: list[Noun]
     ) -> None:
-        """Test loading data from directory with multiple files using Clean Pipeline."""
+        """Test loading data from directory with multiple files."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", "german")
 
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create fake CSV files
@@ -186,25 +165,25 @@ class TestGermanDeckBuilder:
                 # Should have loaded records
                 assert len(builder._loaded_records) == 1
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_create_subdeck(self, mock_anki: Mock) -> None:
         """Test creating subdecks."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(builder._deck_manager, "set_current_subdeck") as mock_set:
             builder.create_subdeck("Nouns")
             mock_set.assert_called_once_with("Nouns")
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_reset_to_main_deck(self, mock_anki: Mock) -> None:
         """Test resetting to main deck."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(builder._deck_manager, "reset_to_main_deck") as mock_reset:
             builder.reset_to_main_deck()
@@ -221,28 +200,44 @@ class TestGermanDeckBuilder:
     # Legacy test removed: test_generate_all_cards
     # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_export_deck(self, mock_anki: Mock) -> None:
-        """Test exporting deck to file."""
+        """Test exporting deck to file with proper phase management."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", "german")
+
+        # Set up the builder in the proper phase for export
+        # Set to CARDS_BUILT phase
+        builder._phase = builder._phase.__class__.CARDS_BUILT
+        # Mock the built cards so export doesn't fail
+        from langlearn.core.deck import BuiltCards
+
+        builder._built_cards = BuiltCards(
+            cards=[([], mock_anki)],  # Mock cards data
+            cards_by_type={"test": []},
+            template_usage={"test": 1},
+            build_errors=[],
+        )
 
         with patch.object(builder._deck_manager, "export_deck") as mock_export:
-            builder.export_deck("output/test.apkg")
+            result = builder.export_deck("output/test.apkg")
             mock_export.assert_called_once_with("output/test.apkg")
+            # Verify the result has expected structure
+            assert result.output_path.name == "test.apkg"
+            assert result.cards_exported == 1
 
     # Legacy test removed: test_get_statistics
     # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_get_subdeck_info(self, mock_anki: Mock) -> None:
         """Test getting subdeck information."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+        builder = DeckBuilder("Test Deck", "german")
 
         with patch.object(
             builder._deck_manager, "get_current_deck_name"
@@ -269,23 +264,102 @@ class TestGermanDeckBuilder:
     # Legacy test removed: test_clear_loaded_data
     # - tested functionality removed from DeckBuilder
 
-    @patch("langlearn.deck_builder.AnkiBackend")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_context_manager_support(self, mock_anki: Mock) -> None:
         """Test context manager support."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        with DeckBuilder("Test Deck", backend_type="anki") as builder:
+        with DeckBuilder("Test Deck", "german") as builder:
             assert isinstance(builder, DeckBuilder)
             assert builder.deck_name == "Test Deck"
 
-    @patch("langlearn.deck_builder.AnkiBackend")
-    def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
-        """Test loading data from directory with all file types using Clean Pipeline."""
+    @patch("langlearn.core.deck.builder.PexelsService")
+    @patch("langlearn.core.deck.builder.AudioService")
+    @patch("langlearn.core.deck.builder.AnkiBackend")
+    def test_build_deck_with_default_services(
+        self, mock_anki: Mock, mock_audio: Mock, mock_pexels: Mock
+    ) -> None:
+        """Test building deck when no services provided (creates defaults)."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        builder = DeckBuilder("Test Deck", backend_type="anki")
+        mock_audio_instance = Mock()
+        mock_pexels_instance = Mock()
+        mock_audio.return_value = mock_audio_instance
+        mock_pexels.return_value = mock_pexels_instance
+
+        # Create builder without providing services - triggers service creation
+        DeckBuilder("Test Deck", "german")
+
+        # Verify services were created when None was provided (covers lines 151, 158)
+        mock_audio.assert_called_once()
+        mock_pexels.assert_called_once()
+
+    @patch("langlearn.core.deck.builder.AnkiBackend")
+    def test_generate_cards_without_media_generation(self, mock_anki: Mock) -> None:
+        """Test generating cards without media enrichment using proper API."""
+        mock_backend = Mock(spec=DeckBackend)
+        mock_backend.deck_name = "Test Deck"
+        mock_backend.create_note_type.return_value = "note_type_1"
+        mock_backend.add_note.return_value = 42
+        mock_anki.return_value = mock_backend
+
+        builder = DeckBuilder("Test Deck", "german")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            (temp_path / "nouns.csv").touch()
+
+            with patch.object(
+                builder._record_mapper, "load_records_from_csv"
+            ) as mock_load:
+                from langlearn.languages.german.records.factory import NounRecord
+
+                mock_load.return_value = [
+                    NounRecord(
+                        noun="Test",
+                        article="der",
+                        english="test",
+                        plural="Tests",
+                        example="Test",
+                        related="",
+                    )
+                ]
+
+                # Load data first
+                builder.load_data_from_directory(temp_dir)
+
+                # Skip media enrichment phase - set phase directly for no-media test
+                builder._phase = builder._phase.__class__.MEDIA_ENRICHED
+                if builder._loaded_data:
+                    for (
+                        record_type,
+                        records,
+                    ) in builder._loaded_data.records_by_type.items():
+                        from langlearn.core.deck import EnrichedData
+
+                        builder._enriched_data[record_type] = EnrichedData(
+                            records=records,
+                            media_data=[{}] * len(records),
+                            media_files_created=[],
+                            enrichment_errors=[],
+                        )
+
+                # Build cards using proper API
+                built_cards = builder.build_cards()
+
+                # Should have generated cards without media
+                assert built_cards is not None
+                assert len(built_cards.cards) > 0
+
+    @patch("langlearn.core.deck.builder.AnkiBackend")
+    def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:
+        """Test loading data from directory with all file types."""
+        mock_backend = Mock(spec=DeckBackend)
+        mock_anki.return_value = mock_backend
+
+        builder = DeckBuilder("Test Deck", "german")
 
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create all CSV files

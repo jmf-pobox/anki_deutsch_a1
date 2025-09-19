@@ -8,7 +8,11 @@ import pytest
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from langlearn.exceptions import MediaGenerationError
-from langlearn.services.pexels_service import PexelsService, Photo, PhotoSize
+from langlearn.infrastructure.services.image_service import (
+    PexelsService,
+    Photo,
+    PhotoSize,
+)
 from tests.test_utils import mock_env
 
 
@@ -71,7 +75,7 @@ class TestPexelsService:
             mock_env("PEXELS_API_KEY", None),
             patch("keyring.get_password") as mock_keyring,
             patch(
-                "langlearn.utils.environment.is_test_environment",
+                "langlearn.infrastructure.utils.environment.is_test_environment",
                 return_value=False,
             ),
         ):

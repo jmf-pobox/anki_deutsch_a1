@@ -1,7 +1,6 @@
 """Tests for UnifiedArticleRecord class."""
 
 import pytest
-from pydantic import ValidationError
 
 from langlearn.languages.german.records.factory import UnifiedArticleRecord
 
@@ -88,7 +87,7 @@ class TestUnifiedArticleRecord:
 
     def test_invalid_artikel_typ(self) -> None:
         """Test validation error for invalid artikel_typ."""
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(ValueError) as exc_info:
             UnifiedArticleRecord(
                 artikel_typ="invalid",
                 geschlecht="maskulin",
@@ -102,13 +101,11 @@ class TestUnifiedArticleRecord:
                 beispiel_gen="das Auto des Mannes",
             )
 
-        error = exc_info.value.errors()[0]
-        assert error["type"] == "value_error"
-        assert "Invalid artikel_typ: invalid" in str(error["ctx"])
+        assert "Invalid artikel_typ: invalid" in str(exc_info.value)
 
     def test_invalid_geschlecht(self) -> None:
         """Test validation error for invalid geschlecht."""
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(ValueError) as exc_info:
             UnifiedArticleRecord(
                 artikel_typ="bestimmt",
                 geschlecht="invalid",
@@ -122,9 +119,7 @@ class TestUnifiedArticleRecord:
                 beispiel_gen="das Auto des Mannes",
             )
 
-        error = exc_info.value.errors()[0]
-        assert error["type"] == "value_error"
-        assert "Invalid geschlecht: invalid" in str(error["ctx"])
+        assert "Invalid geschlecht: invalid" in str(exc_info.value)
 
     def test_from_csv_fields_valid(self) -> None:
         """Test creating record from CSV fields."""

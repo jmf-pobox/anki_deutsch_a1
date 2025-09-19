@@ -1,5 +1,5 @@
 """
-Tests for Record types in the Clean Pipeline Architecture.
+Tests for Record types in the record processing Architecture.
 
 This module tests the pure data container records that represent structured CSV data.
 """
@@ -522,7 +522,7 @@ class TestRecordDataIntegrity:
         assert isinstance(record, AdjectiveRecord)  # Type narrowing for MyPy
 
         # Should be serializable
-        json_data = record.model_dump()
+        json_data = record.to_dict()
         assert json_data["word"] == "schön"
         assert json_data["english"] == "beautiful"
 

@@ -3,8 +3,10 @@
 from unittest.mock import Mock
 
 from langlearn.languages.german.records.factory import VerbConjugationRecord
-from langlearn.services.card_builder import CardBuilder
-from langlearn.services.verb_conjugation_processor import VerbConjugationProcessor
+from langlearn.languages.german.services.card_builder import CardBuilder
+from langlearn.languages.german.services.verb_conjugation_processor import (
+    VerbConjugationProcessor,
+)
 
 
 class TestVerbConjugationProcessor:

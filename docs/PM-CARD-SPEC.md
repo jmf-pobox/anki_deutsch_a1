@@ -1,15 +1,20 @@
-# German Anki Card Type Specifications
+# German Language - Anki Card Type Specifications
 
-This document provides comprehensive specifications for all German language card types in the system.
+This document provides comprehensive specifications for all **German language** card types in the system.
 
+**Language**: German (Deutsch)
 **Total Card Types**: 15
+
+> **Note**: This specification is specific to the German language implementation. For other languages, see:
+> - Russian Language: Minimal noun cards (5 basic nouns)
+> - Korean Language: Minimal noun cards with particle system (5 basic nouns)
 
 ## System Architecture
 
-**Current Architecture**: CSV → Records (Pydantic models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
+**Current Architecture**: CSV → Records (dataclass models) → Domain Models (dataclass + MediaGenerationCapable) → MediaEnricher → CardBuilder → AnkiBackend → .apkg
 
 **Key Features**:
-- Records use Pydantic models for data validation and transport
+- Records use dataclass models for data validation and transport
 - Domain models use dataclass with MediaGenerationCapable protocol for business logic
 - All word types support intelligent media generation
 - Components process data sequentially: RecordMapper → MediaEnricher → CardBuilder

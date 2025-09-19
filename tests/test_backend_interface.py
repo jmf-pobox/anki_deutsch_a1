@@ -6,8 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from langlearn.backends import AnkiBackend
-from langlearn.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.infrastructure.backends import AnkiBackend
+from langlearn.infrastructure.backends.base import CardTemplate, DeckBackend, NoteType
+from langlearn.languages.german.language import GermanLanguage
 
 
 class TestDeckBackendInterface:
@@ -18,8 +19,12 @@ class TestDeckBackendInterface:
         """Create a backend instance for testing."""
         # Mock external services for unit testing
         with (
-            patch("langlearn.services.audio.boto3.client") as mock_boto_client,
-            patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+            patch(
+                "langlearn.infrastructure.services.audio_service.boto3.client"
+            ) as mock_boto_client,
+            patch(
+                "langlearn.infrastructure.services.image_service.requests.get"
+            ) as mock_requests,
             patch("keyring.get_password") as mock_keyring,
         ):
             mock_boto_client.return_value = Mock()
@@ -42,7 +47,12 @@ class TestDeckBackendInterface:
                 os.environ[key] = value
 
             try:
-                return AnkiBackend("Test Deck", mock_media_service, "Test description")
+                return AnkiBackend(
+                    "Test Deck",
+                    mock_media_service,
+                    GermanLanguage(),
+                    "Test description",
+                )
             finally:
                 # Restore original environment
                 for key, original_value in original_env.items():
@@ -164,12 +174,18 @@ class TestDeckBackendInterface:
         """Test that AnkiBackend supports all interface operations."""
         # Mock AWS services to avoid region configuration issues in CI
         with (
-            patch("langlearn.services.audio.boto3.client") as mock_boto_client,
-            patch("langlearn.services.pexels_service.requests.get") as mock_requests,
+            patch(
+                "langlearn.infrastructure.services.audio_service.boto3.client"
+            ) as mock_boto_client,
+            patch(
+                "langlearn.infrastructure.services.image_service.requests.get"
+            ) as mock_requests,
         ):
             mock_boto_client.return_value = Mock()
             mock_requests.return_value = Mock()
-            backend = AnkiBackend("Interface Test", mock_media_service)
+            backend = AnkiBackend(
+                "Interface Test", mock_media_service, GermanLanguage()
+            )
 
             template = CardTemplate(
                 name="Test Template", front_html="{{Field1}}", back_html="{{Field2}}"

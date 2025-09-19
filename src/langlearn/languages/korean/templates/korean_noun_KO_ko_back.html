@@ -1,0 +1,52 @@
+<!-- Korean Noun Card Back Template -->
+<div class="card korean-noun-back">
+  <!-- Show front side -->
+  {{FrontSide}}
+
+  <hr style="border: 1px solid #bdc3c7; margin: 20px 0;">
+
+  <!-- English translation -->
+  <div class="english">{{English}}</div>
+
+  <!-- Particle Patterns Section - Most Important for Korean Learning -->
+  <div class="particle-section">
+    <div class="particle-title">Particle Patterns</div>
+    <div class="particle-group">
+      <!-- Topic Particle -->
+      <div class="particle-item">
+        <span class="particle-label">Topic (은/는)</span>
+        <div class="particle-form">{{TopicParticle}}</div>
+      </div>
+
+      <!-- Subject Particle -->
+      <div class="particle-item">
+        <span class="particle-label">Subject (이/가)</span>
+        <div class="particle-form">{{SubjectParticle}}</div>
+      </div>
+
+      <!-- Object Particle -->
+      <div class="particle-item">
+        <span class="particle-label">Object (을/를)</span>
+        <div class="particle-form">{{ObjectParticle}}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example Sentence Section -->
+  {{#Example}}
+  <div class="example-section">
+    <div class="particle-title">Example</div>
+    <div class="example-korean">{{Example}}</div>
+    {{#ExampleAudio}}
+    <div class="audio-section">
+      {{ExampleAudio}}
+    </div>
+    {{/ExampleAudio}}
+  </div>
+  {{/Example}}
+
+  <!-- Learning Notes -->
+  <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.9); border-radius: 5px; font-size: 0.9em; color: #666;">
+    💡 <strong>Learning Tip:</strong> Korean particles change based on whether the noun ends with a consonant or vowel. Practice these patterns for fluent Korean!
+  </div>
+</div>

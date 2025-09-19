@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from langlearn.protocols.image_query_generation_protocol import (
+from langlearn.core.protocols.image_query_generation_protocol import (
     ImageQueryGenerationProtocol,
 )
 

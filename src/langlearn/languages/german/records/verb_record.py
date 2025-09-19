@@ -1,42 +1,36 @@
 """VerbRecord for German verb data from CSV."""
 
+from dataclasses import dataclass
 from typing import Any
 
-from pydantic import Field
-
-from .base import BaseRecord, RecordType
+from langlearn.core.records import BaseRecord, RecordType
 
 
+@dataclass
 class VerbRecord(BaseRecord):
     """Record for German verb data from CSV.
 
-    Enhanced Clean Pipeline for complete verb CSV structure.
+    Enhanced record processing for complete verb CSV structure.
     Matches enhanced verbs.csv format:
     verb,english,classification,present_ich,present_du,present_er,präteritum,auxiliary,perfect,example,separable
     """
 
-    verb: str = Field(..., description="German verb in infinitive form")
-    english: str = Field(..., description="English translation")
-    classification: str = Field(
-        ..., description="Verb classification (regelmäßig, unregelmäßig, gemischt)"
-    )
-    present_ich: str = Field(..., description="First person singular present")
-    present_du: str = Field(..., description="Second person singular present")
-    present_er: str = Field(..., description="Third person singular present")
-    präteritum: str = Field(..., description="Präteritum 3rd person singular form")
-    auxiliary: str = Field(..., description="Auxiliary verb (haben or sein)")
-    perfect: str = Field(..., description="Perfect tense form")
-    example: str = Field(..., description="Example sentence")
-    separable: bool = Field(..., description="Whether the verb is separable")
+    verb: str
+    english: str
+    classification: str
+    present_ich: str
+    present_du: str
+    present_er: str
+    präteritum: str
+    auxiliary: str
+    perfect: str
+    example: str
+    separable: bool
 
     # Media fields (populated during enrichment)
-    word_audio: str | None = Field(
-        default=None, description="Verb pronunciation audio reference"
-    )
-    example_audio: str | None = Field(
-        default=None, description="Example sentence audio reference"
-    )
-    image: str | None = Field(default=None, description="Image reference")
+    word_audio: str | None = None
+    example_audio: str | None = None
+    image: str | None = None
 
     @classmethod
     def get_record_type(cls) -> RecordType:

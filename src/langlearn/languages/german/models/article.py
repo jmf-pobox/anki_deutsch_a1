@@ -4,13 +4,14 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from langlearn.core.protocols.domain_model_protocol import LanguageDomainModel
+from langlearn.core.protocols.media_generation_protocol import MediaGenerationCapable
 from langlearn.exceptions import MediaGenerationError
-from langlearn.protocols.media_generation_protocol import MediaGenerationCapable
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from langlearn.protocols.image_query_generation_protocol import (
+    from langlearn.core.protocols.image_query_generation_protocol import (
         ImageQueryGenerationProtocol,
     )
 
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class Article(MediaGenerationCapable):
+class Article(LanguageDomainModel, MediaGenerationCapable):
     """German article domain model with linguistic expertise and media generation.
 
     Represents German articles (der, die, das, ein, eine, kein, keine) with their
