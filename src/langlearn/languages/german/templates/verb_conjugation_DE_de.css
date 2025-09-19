@@ -330,12 +330,6 @@ img {
         padding: 15px;
     }
 
-/* Force light colors on all elements */
-* {
-    background-color: inherit !important;
-    color: inherit !important;
-}
-    
     .german {
         font-size: 24px;
     }
