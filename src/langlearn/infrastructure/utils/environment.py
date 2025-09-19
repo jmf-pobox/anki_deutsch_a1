@@ -20,7 +20,20 @@ def is_test_environment(api_key: str | None = None) -> bool:
     if any(marker in current_test for marker in ["integration", "live"]):
         return False
 
-    if any("integration" in arg for arg in sys.argv):
+    # Check if we're explicitly running integration tests (not just ignoring them)
+    # Look for integration test paths that are being executed, not ignored
+    integration_test_patterns = [
+        "tests/integration/",
+        "/integration/",
+        "integration_test",
+        "test_integration",
+    ]
+    if any(
+        pattern in arg
+        for arg in sys.argv
+        for pattern in integration_test_patterns
+        if not arg.startswith("--ignore")  # Exclude --ignore arguments
+    ):
         return False
 
     # Then check if we're in a unit test context (always use mocks)
