@@ -10,7 +10,10 @@
       "Bash(gh run view:*)",
       "Bash(python -m pytest tests/test_environment_utils.py::TestEnvironmentUtils::test_is_test_environment_no_api_key --no-header --tb=short -v)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:shields.io)",
+      "Read(//private/tmp/**)",
+      "Bash(hatch env:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,12 +1,17 @@
 /* Russian Noun Card Styles - Following UX-CARD-DESIGN.md Standards */
 
-/* Base card styles */
+/* Base card styles - Force light mode on all platforms */
 .card {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
     padding: 20px;
-    color: #333;
+    color: #333 !important;
+}
+
+/* Override Anki's dark mode background while preserving specific text colors */
+.card, .card * {
+    background-color: #f8f9fa !important;
 }
 
 /* Primary content - Russian word */
@@ -121,8 +126,8 @@
 }
 
 .hint-button {
-    background: #4CAF50;
-    color: white;
+    background: #4CAF50 !important;
+    color: white !important;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -132,7 +137,7 @@
 }
 
 .hint-button:hover {
-    background: #45a049;
+    background: #45a049 !important;
 }
 
 .hint-content {
@@ -175,23 +180,3 @@
 }
 
 /* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .card {
-        background-color: #2d3748;
-        color: #e2e8f0;
-    }
-
-    .noun-forms {
-        background: #4a5568;
-        border-color: #63b3ed;
-    }
-
-    .example-with-audio, .related-words {
-        background: #4a5568;
-    }
-
-    .hint-content {
-        background: #4a5568;
-        color: #e2e8f0;
-    }
-}

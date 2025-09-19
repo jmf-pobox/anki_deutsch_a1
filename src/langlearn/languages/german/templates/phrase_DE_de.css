@@ -2,9 +2,17 @@
 .card {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
     padding: 20px;
-    color: #333;
+    color: #333 !important;
+}
+
+/* Override Anki's dark mode background while preserving specific text colors */
+.card, .card * {
+    background-color: #f8f9fa !important;
+}
+.card {
+    color: #333 !important;
 }
 
 .german {
@@ -59,8 +67,8 @@ img {
 }
 
 .hint-button {
-    background: #4CAF50;
-    color: white;
+    background: #4CAF50 !important;
+    color: white !important;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -70,7 +78,7 @@ img {
 }
 
 .hint-button:hover {
-    background: #45a049;
+    background: #45a049 !important;
 }
 
 .hint-content {
