@@ -1,12 +1,18 @@
 /* Russian Noun Card Styles - Following UX-CARD-DESIGN.md Standards */
 
-/* Base card styles */
+/* Base card styles - Force light mode on all platforms */
 .card {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
     padding: 20px;
-    color: #333;
+    color: #333 !important;
+}
+
+/* Force light colors on all elements */
+* {
+    background-color: inherit !important;
+    color: inherit !important;
 }
 
 /* Primary content - Russian word */

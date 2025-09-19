@@ -11,6 +11,12 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+/* Force light colors on all elements */
+* {
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
 /* Hangul Text Styling */
 .hangul {
   font-size: 3em;
@@ -195,6 +201,12 @@
   .card {
     padding: 15px;
   }
+
+/* Force light colors on all elements */
+* {
+    background-color: inherit !important;
+    color: inherit !important;
+}
 }
 
 /* High contrast mode support */
@@ -203,6 +215,12 @@
     background: white;
     border: 2px solid black;
   }
+
+/* Force light colors on all elements */
+* {
+    background-color: inherit !important;
+    color: inherit !important;
+}
 
   .hangul {
     color: black;

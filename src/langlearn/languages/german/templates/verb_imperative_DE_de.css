@@ -2,9 +2,15 @@
 .card {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
     padding: 20px;
-    color: #333;
+    color: #333 !important;
+}
+
+/* Force light colors on all elements */
+* {
+    background-color: inherit !important;
+    color: inherit !important;
 }
 
 .german {
@@ -294,6 +300,12 @@ img {
     .card {
         padding: 15px;
     }
+
+/* Force light colors on all elements */
+* {
+    background-color: inherit !important;
+    color: inherit !important;
+}
     
     .german {
         font-size: 24px;
