@@ -274,52 +274,29 @@ class TestGermanDeckBuilder:
             assert isinstance(builder, DeckBuilder)
             assert builder.deck_name == "Test Deck"
 
+    @patch("langlearn.core.deck.builder.PexelsService")
+    @patch("langlearn.core.deck.builder.AudioService")
     @patch("langlearn.core.deck.builder.AnkiBackend")
-    def test_build_deck_with_default_services(self, mock_anki: Mock) -> None:
+    def test_build_deck_with_default_services(self, mock_anki: Mock, mock_audio: Mock, mock_pexels: Mock) -> None:
         """Test building deck when no services provided (creates defaults)."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
-        # Create builder without providing services (they should be None initially)
+        mock_audio_instance = Mock()
+        mock_pexels_instance = Mock()
+        mock_audio.return_value = mock_audio_instance
+        mock_pexels.return_value = mock_pexels_instance
+
+        # Create builder without providing services - this should trigger service creation
         builder = DeckBuilder("Test Deck", "german")
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Mock the build_deck method to exercise service creation paths
-            temp_path = Path(temp_dir)
-            (temp_path / "nouns.csv").touch()
-
-            with patch.object(builder._record_mapper, "load_records_from_csv") as mock_load:
-                from langlearn.languages.german.records.factory import NounRecord
-                mock_load.return_value = [
-                    NounRecord(
-                        noun="Test", article="der", english="test",
-                        plural="Tests", example="Test", related=""
-                    )
-                ]
-
-                # Load data first
-                builder.load_data_from_directory(temp_dir)
-
-                # Mock the service creation paths to avoid actual service instantiation
-                with (
-                    patch("langlearn.infrastructure.services.audio_service.AudioService") as mock_audio,
-                    patch("langlearn.infrastructure.services.image_service.PexelsService") as mock_pexels,
-                ):
-                    mock_audio_instance = Mock()
-                    mock_pexels_instance = Mock()
-                    mock_audio.return_value = mock_audio_instance
-                    mock_pexels.return_value = mock_pexels_instance
-
-                    # This should trigger the service creation branches (lines 148, etc.)
-                    builder.generate_all_cards(generate_media=True)
-
-                    # Verify services were created when None was provided
-                    mock_audio.assert_called_once()
-                    mock_pexels.assert_called_once()
+        # Verify services were created when None was provided (covers lines 151, 158)
+        mock_audio.assert_called_once()
+        mock_pexels.assert_called_once()
 
     @patch("langlearn.core.deck.builder.AnkiBackend")
-    def test_build_deck_without_media_generation(self, mock_anki: Mock) -> None:
-        """Test building deck with media generation disabled."""
+    def test_generate_cards_without_media_generation(self, mock_anki: Mock) -> None:
+        """Test generating cards without media enrichment using proper API."""
         mock_backend = Mock(spec=DeckBackend)
         mock_anki.return_value = mock_backend
 
@@ -341,15 +318,12 @@ class TestGermanDeckBuilder:
                 # Load data first
                 builder.load_data_from_directory(temp_dir)
 
-                # Mock build_cards to avoid complex card building
-                with patch.object(builder, "build_cards") as mock_build_cards:
-                    mock_build_cards.return_value = Mock()
+                # Use generate_all_cards with media generation disabled
+                result = builder.generate_all_cards(generate_media=False)
 
-                    # Test with media generation disabled - different code path
-                    builder.build_deck(temp_dir, generate_media=False)
-
-                    # Should have called build_cards
-                    mock_build_cards.assert_called_once()
+                # Should have generated cards without media
+                assert isinstance(result, dict)
+                assert len(result) > 0
 
     @patch("langlearn.core.deck.builder.AnkiBackend")
     def test_load_data_from_directory_all_files(self, mock_anki: Mock) -> None:

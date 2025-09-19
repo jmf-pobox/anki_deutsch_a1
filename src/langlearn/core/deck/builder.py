@@ -794,46 +794,6 @@ class DeckBuilderAPI:
 
         return stats
 
-    def generate_all_cards(self, generate_media: bool = True) -> dict[str, int]:
-        """Generate all cards from loaded records (backward compatibility)."""
-        # Enrich media if requested
-        if generate_media:
-            for _ in self.enrich_media():
-                pass  # Consume the iterator
-        else:
-            self._phase = Phase.MEDIA_ENRICHED
-            # Create empty enriched data
-            if self._loaded_data:
-                for record_type, records in self._loaded_data.records_by_type.items():
-                    self._enriched_data[record_type] = EnrichedData(
-                        records=records,
-                        media_data=[{}] * len(records),
-                        media_files_created=[],
-                        enrichment_errors=[],
-                    )
-
-        # Build cards
-        built_cards = self.build_cards()
-
-        # Format results like old DeckBuilder
-        results: dict[str, int] = {}
-        for record_type, cards in built_cards.cards_by_type.items():
-            # Use record class to get result key
-            if self._loaded_data and record_type in self._loaded_data.records_by_type:
-                records = self._loaded_data.records_by_type[record_type]
-                if records:
-                    result_key = records[0].__class__.get_result_key()
-                else:
-                    result_key = record_type.replace("_", "") + "s"
-            else:
-                result_key = record_type.replace("_", "") + "s"
-
-            if result_key in results:
-                results[result_key] += len(cards)
-            else:
-                results[result_key] = len(cards)
-
-        return results
 
     def get_subdeck_info(self) -> dict[str, Any]:
         """Get information about created subdecks."""
@@ -842,6 +802,7 @@ class DeckBuilderAPI:
             "subdeck_names": self._deck_manager.get_subdeck_names(),
             "full_subdeck_names": self._deck_manager.get_full_subdeck_names(),
         }
+
 
     @property
     def deck_name(self) -> str:

@@ -9,7 +9,8 @@
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
       "Bash(python -m pytest tests/test_environment_utils.py::TestEnvironmentUtils::test_is_test_environment_no_api_key --no-header --tb=short -v)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
