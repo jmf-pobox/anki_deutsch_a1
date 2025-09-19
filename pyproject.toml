@@ -70,6 +70,8 @@ dependencies = [
  run-all = "PYTHONPATH=src python src/langlearn/main.py"
  # Environment validation
  test-env = "python scripts/test_api_key.py"
+ # Code metrics
+ count-lines = "bash -c 'echo \"Counting Python lines in src tree...\"; find src -name \"*.py\" -exec wc -l {} + | tail -1'"
 
 [tool.ruff]
 line-length = 88
