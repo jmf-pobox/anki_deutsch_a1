@@ -222,6 +222,7 @@ This project builds upon the excellent work of:
 - **Conversational deck building** - "Create a German A1 deck with 20 kitchen vocabulary words"
 - **AI-assisted language validation** - automatic grammar checking and field completion
 - **Seamless workflow** from chat conversation to ready-to-use Anki deck
+- [See GitHub Issue #42](https://github.com/jmf-pobox/langlearn-anki/issues/42)
 
 ---
 
