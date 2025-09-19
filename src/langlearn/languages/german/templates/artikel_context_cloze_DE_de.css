@@ -12,10 +12,12 @@
     margin: 0 auto;
 }
 
-/* Force light colors on all elements */
-* {
-    background-color: inherit !important;
-    color: inherit !important;
+/* Override Anki's dark mode background while preserving specific text colors */
+.card, .card * {
+    background-color: #f8f9fa !important;
+}
+.card {
+    color: #333 !important;
 }
 
 /* Cloze styling with case-specific colors */
